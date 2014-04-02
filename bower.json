@@ -10,5 +10,16 @@
     "license": "MIT",
     "dependencies": {
         "jquery": "1.10"
+    },
+    "keywords": [
+        "mindmeld",
+        "expect labs",
+        "sdk",
+        "js",
+        "api"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/expectlabs/mindmeld-js-sdk.git"
     }
 }
