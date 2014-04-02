@@ -13,3 +13,6 @@ bower_components/
 # IntelliJ project files
 mindmeld-js-sdk.iml
 .idea/
+
+# Development sandbox
+sandbox/
