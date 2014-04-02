@@ -621,7 +621,9 @@ $.extend(MM, {
     },
 
     /**
-     * Gets a token from the API and stores it if successful
+     * Gets a token from the API and stores it. This token is automatically used for all subsequent requests to the API.
+     * If we successfully obtain a token, {@link MM.getToken} automatically calls {@link MM.setActiveUserID} with the
+     * appropriate user id
      *
      * @param {Object} credentials credentials for obtaining an API token.
      * Please refer to [documentation here](https://developer.expectlabs.com/docs/authentication) for details
@@ -670,7 +672,7 @@ $.extend(MM, {
      */
     getToken: function (credentials, onSuccess, onError) {
         var headers = {'X-MindMeld-Appid': MM.config.appid}; // included on every token request
-
+        var isAdminToken = false;
         var params = null;
         if (credentials.facebook) { // User token
             params = {
@@ -687,6 +689,7 @@ $.extend(MM, {
         }
         else if (credentials.appsecret) { // Admin token
             headers['X-MindMeld-Appsecret'] = credentials.appsecret;
+            isAdminToken = true;
         }
         else { // Invalid credentials passed in
             var error = {
@@ -701,13 +704,30 @@ $.extend(MM, {
         MM.callApi('POST', 'tokens', params, onTokenSuccess, onError, headers);
 
         // Sets MM.token on success
-        function onTokenSuccess(responseData) {
-            if (responseData.data && responseData.data.token) {
-                MM.token = responseData.data.token;
-                MM.Util.testAndCall(onSuccess, responseData.data);
+        function onTokenSuccess(response) {
+            if (response.data && response.data.token) {
+                MM.token = response.data.token;
+                if (isAdminToken) {
+                    // The admin user id is not returned when requesting a new token
+                    // It can be found in the app object's 'ownerid' field
+                    MM.get( null,
+                            function (response) {
+                                var adminId = response.data.ownerid;
+                                MM.setActiveUserID(adminId);
+                                MM.Util.testAndCall(onSuccess, response.data);
+                            }
+                    );
+                }
+                else {
+                    // The user id is returned when requesting a new user token
+                    if (response.data.user && response.data.user.userid) {
+                        MM.setActiveUserID(response.data.user.userid);
+                        MM.Util.testAndCall(onSuccess, response.data);
+                    }
+                }
             }
             else {
-                MM.Util.testAndCall(onError, responseData);
+                MM.Util.testAndCall(onError, response);
             }
         }
     },
@@ -804,8 +824,10 @@ $.extend(MM, {
 
     /**
      * Sets the active user to a specified user id. {@link MM.setActiveUserID} also tries to fetch the user object
-     * and clears all event handlers from the previous user. You must call setActiveUserID before calling
-     * any of the functions in {@link MM.activeUser} namespace
+     * and clears all event handlers from the previous user. {@link MM.setActiveUserID} is automatically called
+     * after successfully calling {@link MM.getToken}. You should only to call this method if you are using an
+     * admin token and want to impersonate other users, or if you call {@link MM.setToken} with an existing token
+     * and already know the corresponding user id
      *
      * @param {string} userid
      * @param onSuccess {apiSuccessCallback=} callback for when user data successfully fetched
@@ -815,24 +837,14 @@ $.extend(MM, {
      *
      * @example
      *
-     function setActiveUserIDExample () {
-        // First try and get a token
-        var credentials = {
-            appsecret: '<appsecret>',
-            simple: {
-                userid: 'einstein79',
-                name: 'Albert Einstein'
-            }
-        };
-        MM.getToken(credentials, onGetToken);
+     var userToken = '<known user token>';
+     MM.setToken(userToken, onTokenValid);
+
+     function onTokenValid () {
+        MM.setActiveUserID('<known mindmeld user  id>', onGetUserInfo);
      }
-     function onGetToken (result) {
-        // You can access the userid from the getToken's result.user object:
-        var userId = result.user.userid;
-        MM.setActiveUserID(userId, onGetUserInfo);
-     }
-     function onGetUserInfo (result) {
-        var userInfo = result.data;
+     function onGetUserInfo (response) {
+        var userInfo = response.data;
      }
      */
     setActiveUserID: function (userid, onSuccess, onError) {
@@ -859,7 +871,8 @@ $.extend(MM, {
      * Set the MM token directly instead of calling {@link MM.getToken}. This function also
      * provides valid/invalid callbacks to determine if the given token is valid or not.
      * Regardless of the token being valid, {@link MM.setToken} always sets the token
-     * used by MM
+     * used by MM. Unlike {@link MM.getToken}, {@link MM.setToken} does not automatically
+     * call {@link MM.setActiveUserID}
      *
      * @param {string} token token to be used by SDK
      * @param {function=} onTokenValid callback for when given token is valid
