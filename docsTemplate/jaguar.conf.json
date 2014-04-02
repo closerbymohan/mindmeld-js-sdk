@@ -9,7 +9,7 @@
         "default": {
             "outputSourceFiles": false
         },
-        "applicationName": "Expect Labs mindmeld-js-sdk-2.0",
+        "applicationName": "Expect Labs mindmeld-js-sdk",
         "openGraph": {
             "title": "Expect Labs mindmeld-js-sdk-2.0 Documentation",
             "type": "website",
