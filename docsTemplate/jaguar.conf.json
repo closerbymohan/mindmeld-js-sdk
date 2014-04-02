@@ -1,0 +1,31 @@
+{
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "plugins": ["plugins/markdown"],
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true,
+        "default": {
+            "outputSourceFiles": false
+        },
+        "applicationName": "Expect Labs mindmeld-js-sdk-2.0",
+        "openGraph": {
+            "title": "Expect Labs mindmeld-js-sdk-2.0 Documentation",
+            "type": "website",
+            "image": "http://developer.expectlabs.com/public/images/ogImgDevCenter.jpg",
+            "site_name": "Expect Labs",
+            "url": "https://developer.expectlabs.com/docs/sdks/js/referenceDocs/"
+        },
+        "meta": {
+            "title": "Expect Labs mindmeld-js-sdk-2.0 Documentation",
+            "description": "Expect Labs mindmeld-js-sdk-2.0 Documentation",
+            "keyword": "Expect Labs, JavaScript, MindMeld, SDK"
+        }
+    },
+    "markdown": {
+        "parser": "gfm",
+        "hardwrap": true,
+        "tags": ["examples"]
+    }
+}

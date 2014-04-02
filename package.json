@@ -1,0 +1,21 @@
+{
+  "name": "mindmeld-js-sdk",
+  "description": "JavaScript SDK for MindMeld API",
+  "version": "2.0.0",
+  "homepage": "https://developer.expectlabs.com",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "load-grunt-tasks": "^0.4.0",
+    "time-grunt": "^0.2.10",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-zip": "^0.13.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-exec": "^0.4.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/expectlabs/mindmeld-js-sdk.git"
+  }
+}

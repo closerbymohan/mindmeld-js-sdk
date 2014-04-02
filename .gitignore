@@ -1,0 +1,15 @@
+# JSDoc generated documentation
+doc/
+
+# Grunt packages
+node_modules/
+
+# Client-side packages
+bower_components/
+
+# OS X garbage
+.DS_STORE
+
+# IntelliJ project files
+mindmeld-js-sdk.iml
+.idea/
