@@ -3625,6 +3625,147 @@ MM.Util = $.extend({}, {
     }
 });
 
+
+/**
+ *  @memberOf MM
+ *
+ */
+MM.Listener = MM.Internal.createSubclass(Object, {
+    /**
+     * Constructor for Listener class
+     *
+     * @constructs Listener
+     * @classdesc This is class for the MindMeld speech recognition API.
+     * @param {} config an object containing the listener's configuration properties
+     */
+    constructor: function(config) {
+        // defaults
+        var configWithDefaults = $.extend({
+            onStart: null,
+            onEnd: null,
+            onError: null,
+            continuous: false,
+            interimResults: false
+        }, config);
+        this.setConfig(configWithDefaults);
+        this._listening = false;
+    },
+
+    /**
+     * Sets the listener object's configuration. Configurable properties are as follows:
+     * continuous: whethe
+     *
+     * continuous - If true, recording will continue until stop() is called. Otherwise, recording will continue
+     * until the speech recognition provider recognizes a sufficient pause in speech. default: false
+     * interimResults - If true, will send interim results. default: false
+     * onResult(result) - The callback in which client will handle speech results. The callback will receive one
+     * argument @TODO add more here default: set by constructor
+     * onError(error) - The callback in which client will handle errors. The callback will receive an error object
+     * one argument. default: null
+     * onStart - This callback is called when a listening session begins. default: null
+     * onStop - This callback is called when a listening session ends. default: null
+     *
+     * @param {} config an object containing the listener properties to change
+     * @instance
+     *
+     */
+    setConfig: function(config) {
+        var configProperties = {
+            onResult: 'resultHandler',
+            onStart: 'startHandler',
+            onEnd: 'endHandler',
+            onError: 'errorHandler',
+            continuous: '_continuous',
+            interimResults: '_interimResults'
+        };
+
+        for (var configProperty in configProperties) {
+            if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
+                this[configProperties[configProperty]] = config[configProperty];
+            }
+        }
+    },
+    /**
+     * Begins a speech recognition session.
+     */
+    start: function () {
+        var listener = this,
+            recognizer = this._recognizer = new webkitSpeechRecognition();
+        recognizer.continuous = this.continuous;
+        recognizer.interimResults = this.interimResults;
+
+        // TODO: set language based on browser settings
+        // recognizer.lang = "eng-USA";
+
+        recognizer.onaudiostart = function(event) {
+//            MM.Internal.log(Date.now(), "Listener: on audio start");
+//            MM.Internal.log(event);
+        };
+        recognizer.onsoundstart = function(event) {
+//            MM.Internal.log(Date.now(), "Listener: on sound start");
+//            MM.Internal.log(event);
+        };
+        recognizer.onspeechstart = function(event) {
+//            MM.Internal.log(Date.now(), "Listener: on speech start");
+//            MM.Internal.log(event);
+        };
+        recognizer.onspeechend= function(event) {
+//            MM.Internal.log(Date.now(), "Listener: on speech end");
+//            MM.Internal.log(event);
+        };
+        recognizer.onsoundend = function(event) {
+//            MM.Internal.log(Date.now(), "Listener: on sound end");
+//            MM.Internal.log(event);
+        };
+        recognizer.onaudioend = function(event) {
+//            MM.Internal.log(Date.now(), "Listener: on audio end");
+//            MM.Internal.log(event);
+        };
+        recognizer.onresult = function(event) {
+//            MM.Internal.log(Date.now(), "Listener: on result");
+//            MM.Internal.log(event);
+
+            listener.resultHandler(event);
+        };
+        recognizer.onnomatch = function(event) {
+            MM.Internal.log(Date.now(), "Listener: on no match " + Date.now());
+            MM.Internal.log(event);
+        };
+        recognizer.onerror = function(event) {
+            MM.Internal.log(Date.now(), "Listener: onerror");
+            MM.Internal.log("Listener: " + event.error);
+            listener.errorHandler(event);
+            // TODO(jj): do we need to restart in any instances?
+        };
+        recognizer.onstart = function(event) {
+            MM.Internal.log(Date.now(), "Listener: on start");
+            MM.Internal.log(event);
+            listener._listening = true;
+            listener.startHandler(event);
+        };
+        recognizer.onend = function(event) {
+            MM.Internal.log(Date.now(), "Listener: on end");
+            MM.Internal.log(event);
+            listener._listening = false;
+            listener.endHandler(event);
+        };
+
+        recognizer.start();
+    },
+    /**
+     * Ends a speech recognition. One more result may be send to the onResult callback.
+     */
+    stop: function () {
+        this._recognizer.stop();
+    },
+    /**
+     * Cancels a speech recognition session. No further results will be sent to the onResult callback
+     */
+    cancel: function () {
+        this._recognizer.abort();
+    }
+});
+
 // Setup MM SDK
 MM.Internal.setup();
 
