@@ -339,3 +339,26 @@ footer {
 .code-caption {
     font-style: italic;
 }
+
+.readme h1 {
+    font-size: 28px;
+    color: black;
+}
+
+.readme  h2 {
+    font-size: 24px;
+    border-bottom: 1px solid #cccccc;
+    color: black;
+}
+
+.readme h3 {
+    font-size: 18px;
+}
+
+.readme h4 {
+    font-size: 16px;
+}
+
+.readme h5 {
+    font-size: 14px;
+}
