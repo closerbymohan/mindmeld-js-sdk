@@ -466,18 +466,18 @@ MM.Internal = $.extend({}, {
      */
     customEventHandlers: {
         /**
-         * The namedEventCallback is used when subscribing to a specific event on a channel, as opposed
+         * The NamedEventCallBack is used when subscribing to a specific event on a channel, as opposed
          * to subscribing to all events on a channel
          *
-         * @callback namedEventCallback
+         * @callback NamedEventCallBack
          * @param {EventPayload} payload
          */
 
         /**
-         * The allEventsCallback is used when subscribing to every event on a given channel. The callback
+         * The AllEventsCallback is used when subscribing to every event on a given channel. The callback
          * takes an 'event' parameter object that contains the event name and the event payload
          *
-         * @callback allEventsCallback
+         * @callback AllEventsCallback
          * @param {Object} eventObject event object received from push server
          * @param {string} eventObject.event    name of the event
          * @param {EventPayload} eventObject.payload    payload from the event
@@ -514,7 +514,7 @@ MM.Internal = $.extend({}, {
          * Uses {@link MM.Internal.EventHandler} to subscribe to a custom event
          *
          * @param eventName {string} name of event to subscribe to
-         * @param eventHandler  {namedEventCallback} callback for when event is fired
+         * @param eventHandler  {NamedEventCallBack} callback for when event is fired
          * @param onSuccess {function} callback for when subscription is successful
          * @param onError   {function} callback for when there is an error subscribing
          * @instance
@@ -550,7 +550,7 @@ MM.Internal = $.extend({}, {
         /**
          * Subscribes to every event on this object's channel
          *
-         * @param {allEventsCallback} eventHandler callback for when an event on this object's channel is fired
+         * @param {AllEventsCallback} eventHandler callback for when an event on this object's channel is fired
          * @param onSuccess {function=} callback for when subscription is successful
          * @param onError   {function=} callback for when there is an error subscribing
          * @instance
@@ -791,8 +791,8 @@ $.extend(MM, {
      * any of the functions in the {@link MM.activeSession} namespace
      *
      * @param {string} sessionid session id to set active session to
-     * @param onSuccess {apiSuccessCallback=} callback for when session data was successfully fetched
-     * @param onError   {apiErrorCallback=} callback for when there was an error fetching session data
+     * @param onSuccess {ApiSuccessCallback=} callback for when session data was successfully fetched
+     * @param onError   {ApiErrorCallback=} callback for when there was an error fetching session data
      * @memberOf MM
      * @instance
      *
@@ -830,8 +830,8 @@ $.extend(MM, {
      * and already know the corresponding user id
      *
      * @param {string} userid
-     * @param onSuccess {apiSuccessCallback=} callback for when user data successfully fetched
-     * @param onError   {apiErrorCallback=} callback for when there was an error fetching user data
+     * @param onSuccess {ApiSuccessCallback=} callback for when user data successfully fetched
+     * @param onError   {ApiErrorCallback=} callback for when there was an error fetching user data
      * @memberOf MM
      * @instance
      *
@@ -905,10 +905,10 @@ $.extend(MM, {
     },
 
     /**
-     * The apiSuccessCallback handles successful responses from the API. Every response from the MindMeld API conforms
+     * The ApiSuccessCallback handles successful responses from the API. Every response from the MindMeld API conforms
      * to the same format
      *
-     * @callback apiSuccessCallback
+     * @callback ApiSuccessCallback
      * @param {Object} result result object containing response from the API
      * @param {(Object | Array)} result.data data returned from the API. For object endpoints (e.g., "/user/:userid"), data is an Object,
      * but for collection endpoints (e.g., "/documents"), data is an Array of Objects
@@ -919,10 +919,10 @@ $.extend(MM, {
      */
 
     /**
-     * The apiErrorCallback handles unsuccessful response from the API. Every error response from the api conforms
+     * The ApiErrorCallback handles unsuccessful response from the API. Every error response from the api conforms
      * to the same format
      *
-     * @callback apiErrorCallback
+     * @callback ApiErrorCallback
      * @param {Object} error error object containing information about an API Error
      * @param {number} error.code API error code
      * @param {string} error.message API error message
@@ -969,9 +969,9 @@ $.extend(MM, {
      * @param {QueryParameters=}                params      Parameters to be sent to MindMeld API. Params are URL
      * encoded for GET and DELETE requests
      *                                                      and are sent as POST data for POST requests
-     * @param {apiSuccessCallback=}             success     A callback function to be called if the API request succeeds.
+     * @param {ApiSuccessCallback=}             success     A callback function to be called if the API request succeeds.
      * The function receives one argument containing the data returned from the server
-     * @param {apiErrorCallback=}               error       A callback function to be called if the API request fails.
+     * @param {ApiErrorCallback=}               error       A callback function to be called if the API request fails.
      * The function receives one argument, the error message returned from the server
      * @memberOf MM
      * @instance
@@ -1203,8 +1203,8 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * @param {string} method HTTP method to use for API call
      * @param {string} path API endpoint path
      * @param {Object=} params query parameters or data to be sent API
-     * @param {apiSuccessCallback=} success callback for when {@link Model} request is successful
-     * @param {apiErrorCallback=} error callback for when there is an error with {@link Model} request
+     * @param {ApiSuccessCallback=} success callback for when {@link Model} request is successful
+     * @param {ApiErrorCallback=} error callback for when there is an error with {@link Model} request
      * @private
      * @memberOf Model
      * @instance
@@ -1272,7 +1272,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * Internal function that sets this model's onUpdate handler. If no handler is passed in
      * onUpdate unsubscribes from push events
      *
-     * @param {?namedEventCallback} updateHandler callback for when this {@link Model}'s collection updates
+     * @param {?NamedEventCallBack} updateHandler callback for when this {@link Model}'s collection updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf Model
@@ -1376,7 +1376,7 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
      * deregister a previously set updateHandler. If the updateHandler has been set, it
      * is automatically called when application info is fetched (e.g. {@link MM.get})
      *
-     * @param {apiSuccessCallback=} updateHandler callback for when the app object updates
+     * @param {ApiSuccessCallback=} updateHandler callback for when the app object updates
      * @memberOf MM
      * @instance
      *
@@ -1465,7 +1465,7 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
      * Subscribe to a custom event on the app channel
      *
      * @param eventName {string} name of event to subscribe to
-     * @param eventHandler  {namedEventCallback} callback for when event is fired
+     * @param eventHandler  {NamedEventCallBack} callback for when event is fired
      * @param onSuccess {function=} callback for when subscription is successful
      * @param onError   {function=} callback for when there is an error subscribing
      * @memberOf MM
@@ -1530,7 +1530,7 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Subscribes to every event on the app channel
      *
-     * @param {allEventsCallback} eventHandler callback for when an event on the app channel is fired
+     * @param {AllEventsCallback} eventHandler callback for when an event on the app channel is fired
      * @param onSuccess {function=} callback for when subscription is successful
      * @param onError   {function=} callback for when there is an error subscribing
      * @instance
@@ -1635,7 +1635,7 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
      * deregister a previously set updateHandler. If the updateHandler has been set, it
      * is automatically called when active user info is fetched (e.g. {@link MM.activeUser.get})
      *
-     * @param {apiSuccessCallback=} updateHandler callback for when the activeUser object updates
+     * @param {ApiSuccessCallback=} updateHandler callback for when the activeUser object updates
      * @memberOf MM.activeUser
      * @instance
      *
@@ -1740,7 +1740,7 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
      * Subscribe to a custom event on the active user's channel
      *
      * @param eventName {string} name of event to subscribe to
-     * @param eventHandler  {namedEventCallback} callback for when event is fired
+     * @param eventHandler  {NamedEventCallBack} callback for when event is fired
      * @param onSuccess {function=} callback for when subscription is successful
      * @param onError   {function=} callback for when there is an error subscribing
      * @memberOf MM.activeUser
@@ -1805,7 +1805,7 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Subscribes to every event on the active user's channel
      *
-     * @param {allEventsCallback} eventHandler callback for when an event on the user channel is fired
+     * @param {AllEventsCallback} eventHandler callback for when an event on the user channel is fired
      * @param onSuccess {function=} callback for when subscription is successful
      * @param onError   {function=} callback for when there is an error subscribing
      * @instance
@@ -1904,7 +1904,7 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Sets the activeUser.session's onUpdate handler. If no handler is passed in, onUpdate unsubscribes from push events
      *
-     * @param {namedEventCallback=} updateHandler callback for when the active user's session list updates
+     * @param {NamedEventCallBack=} updateHandler callback for when the active user's session list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeUser.sessions
@@ -2072,7 +2072,7 @@ MM.models.TextEntryList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession.textentries' onUpdate handler. If no handler is passed in,
      * onUpdate unsubscribes from push events
      *
-     * @param {namedEventCallback=} updateHandler callback for when the activeSession's text entry list updates
+     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's text entry list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.textentries
@@ -2262,7 +2262,7 @@ MM.models.EntityList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession.entities' onUpdate handler. If no handler is passed in,
      * onUpdate unsubscribes from push events
      *
-     * @param {namedEventCallback=} updateHandler callback for when the activeSession's entity list updates
+     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's entity list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.entities
@@ -2452,7 +2452,7 @@ MM.models.ArticleList = MM.Internal.createSubclass(MM.models.Model, {
      * collection so it must be polled instead. The update handler will be called automatically when
      * calling {@link MM.activeSession.articles.get}
      *
-     * @param {apiSuccessCallback=} updateHandler callback for when the activeSession's article list updates.
+     * @param {ApiSuccessCallback=} updateHandler callback for when the activeSession's article list updates.
      *
      * @memberOf MM.activeSession.articles
      * @instance
@@ -2561,7 +2561,7 @@ MM.models.SessionDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * collection so it must be polled instead. The update handler will be called automatically when
      * calling {@link MM.activeSession.documents.get}
      *
-     * @param {apiSuccessCallback=} updateHandler callback for when the activeSession's document list updates.
+     * @param {ApiSuccessCallback=} updateHandler callback for when the activeSession's document list updates.
      * @memberOf MM.activeSession.documents
      * @instance
      *
@@ -2689,7 +2689,7 @@ MM.models.AppDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * collection so it must be polled instead. The update handler will be called automatically when
      * calling {@link MM.documents.get}
      *
-     * @param {apiSuccessCallback=} updateHandler callback for when the app's document list updates.
+     * @param {ApiSuccessCallback=} updateHandler callback for when the app's document list updates.
      * @memberOf MM.documents
      * @instance
      *
@@ -2879,7 +2879,7 @@ MM.models.LiveUserList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession.liveusers' onUpdate handler. If no handler is passed in,
      * onUpdate unsubscribes from push events
      *
-     * @param {namedEventCallback=} updateHandler callback for when the activeSession's live users list updates
+     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's live users list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.liveusers
@@ -3037,7 +3037,7 @@ MM.models.InvitedUserList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession.invitedusers' onUpdate handler. If no handler is passed in,
      * onUpdate unsubscribes from push events
      *
-     * @param {namedEventCallback=} updateHandler callback for when the activeSession's invited users list updates
+     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's invited users list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.invitedusers
@@ -3203,7 +3203,7 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
      * activities list is fetched successfully. If no updateHandler is passed in,
      * {@link MM.activeSession.activities.onUpdate} unsubscribes from push events.
      *
-     * @param {namedEventCallback=} updateHandler callback for when the activeSession's activity list updates
+     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's activity list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.activities
@@ -3388,7 +3388,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      * deregister a previously set updateHandler. If the updateHandler has been set, it
      * is automatically called when active session info is fetched (e.g. {@link MM.activeSession.get})
      *
-     * @param {apiSuccessCallback=} updateHandler callback for when the activeSession object updates
+     * @param {ApiSuccessCallback=} updateHandler callback for when the activeSession object updates
      * @memberOf MM.activeSession
      * @instance
      *
@@ -3499,7 +3499,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      * Subscribe to a custom event on the active session's channel
      *
      * @param eventName {string} name of event to subscribe to
-     * @param eventHandler  {namedEventCallback} callback for when event is fired
+     * @param eventHandler  {NamedEventCallBack} callback for when event is fired
      * @param onSuccess {function=} callback for when subscription is successful
      * @param onError   {function=} callback for when there is an error subscribing
      * @memberOf MM.activeSession
@@ -3564,7 +3564,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Subscribes to every event on the active session's channel
      *
-     * @param {allEventsCallback} eventHandler callback for when an event on the active session's channel is fired
+     * @param {AllEventsCallback} eventHandler callback for when an event on the active session's channel is fired
      * @param onSuccess {function=} callback for when subscription is successful
      * @param onError   {function=} callback for when there is an error subscribing
      * @instance
