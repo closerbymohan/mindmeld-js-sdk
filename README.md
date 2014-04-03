@@ -2,25 +2,15 @@
 
 This is the reference document for Expect Labs' MindMeld JavaScript SDK, mindmeld-2.0.js.
 
-[Documentation Link][sdkDocsLink]
+## Important Links
+
+* [mindmeld-js-sdk Documentation][sdkDocsLink]
+* [Git Repo][repoUrl]
+* [Expect Labs Developer Site][developerSite]
+* [MindMeld API Documentation][apiDocsLink]
 
 
-### Repository Contents ([mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
-* *mindmeld-2.0.js*: Un-minified, documented JavaScript SDK
-* *mindmeld-2.0.min.js*: Minified, production ready version of mindmeld-2.0.js
-* *HelloWorld.html*: Fully functional, stand-alone HTML page demonstrating basic use of mindmeld-2.0.js
-* *mindmeld-js-sdk.zip*: Zip archive containing mindmeld-2.0.js, mindmeld-2.0.min.js, and HelloWorld.html
-* *docsTemplate/* - templates and configuration required to build JSDoc. Based on
-[jaguarjs-doc](https://github.com/davidshimjs/jaguarjs-jsdoc/)
-* *Gruntfile.js*: [grunt](http://gruntjs.com/) file for mindmeld-2.0.js used to minify JS, create zip archive, and
-generate JSDocs
-* *bower.json*: Used to describe client-side dependencies for mindmeld-2.0.js and publish repository to
-[bower](http://bower.io/) registry
-* *package.json*: Used to describe grunt dependencies
-* *README.md*: Describes this file!
-
-
-### Installation
+## Installation
 
 There are a few ways to get started using MindMeld JavaScript SDK
 
@@ -234,6 +224,20 @@ function onCustomSessionEvent (payload) {
 }
 ```
 
+## Repository Contents ([mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
+* *mindmeld-2.0.js*: Un-minified, documented JavaScript SDK
+* *mindmeld-2.0.min.js*: Minified, production ready version of mindmeld-2.0.js
+* *HelloWorld.html*: Fully functional, stand-alone HTML page demonstrating basic use of mindmeld-2.0.js
+* *mindmeld-js-sdk.zip*: Zip archive containing mindmeld-2.0.js, mindmeld-2.0.min.js, and HelloWorld.html
+* *docsTemplate/* - templates and configuration required to build JSDoc. Based on
+[jaguarjs-doc](https://github.com/davidshimjs/jaguarjs-jsdoc/)
+* *Gruntfile.js*: [grunt](http://gruntjs.com/) file for mindmeld-2.0.js used to minify JS, create zip archive, and
+generate JSDocs
+* *bower.json*: Used to describe client-side dependencies for mindmeld-2.0.js and publish repository to
+[bower](http://bower.io/) registry
+* *package.json*: Used to describe grunt dependencies
+* *README.md*: Describes this file!
+
 ## Grunt Tasks
 
 `Gruntfile.js` specifies a `grunt build` task that executes the following tasks:
@@ -247,5 +251,7 @@ function onCustomSessionEvent (payload) {
 
 [sdkDocsLink]:https://developer.expectlabs.com/docs/sdks/js/referenceDocs/
 [apiDocsLink]:https://developer.expectlabs.com/docs
+[developerSite]:https://developer.expectlabs.com
+[repoUrl]:https://github.com/expectlabs/mindmeld-js-sdk
 [sdkDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.js
 [sdkMinifiedDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.min.js
