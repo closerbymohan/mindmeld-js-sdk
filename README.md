@@ -2,7 +2,7 @@
 
 This is the Expect Labs MindMeld JS SDK, mindmeld-2.0.js. The full documentation for mindmeld-js-sdk can be found here: [https://developer.expectlabs.com/docs/sdks/js/referenceDocs/][sdkDocsLink]
 
-### Repository Contents ([https://github.com/expectlabs/mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
+### Repository Contents ([mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
 * *mindmeld-2.0.js*: Un-minified, documented JavaScript SDK
 * *mindmeld-2.0.min.js*: Minified, production ready version of mindmeld-2.0.js
 * *HelloWorld.html*: Fully functional, stand-alone HTML page demonstrating basic use of mindmeld-2.0.js
