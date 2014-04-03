@@ -791,8 +791,8 @@ $.extend(MM, {
      * any of the functions in the {@link MM.activeSession} namespace
      *
      * @param {string} sessionid session id to set active session to
-     * @param onSuccess {ApiSuccessCallback=} callback for when session data was successfully fetched
-     * @param onError   {ApiErrorCallback=} callback for when there was an error fetching session data
+     * @param onSuccess {APISuccessCallback=} callback for when session data was successfully fetched
+     * @param onError   {APIErrorCallback=} callback for when there was an error fetching session data
      * @memberOf MM
      * @instance
      *
@@ -830,8 +830,8 @@ $.extend(MM, {
      * and already know the corresponding user id
      *
      * @param {string} userid
-     * @param onSuccess {ApiSuccessCallback=} callback for when user data successfully fetched
-     * @param onError   {ApiErrorCallback=} callback for when there was an error fetching user data
+     * @param onSuccess {APISuccessCallback=} callback for when user data successfully fetched
+     * @param onError   {APIErrorCallback=} callback for when there was an error fetching user data
      * @memberOf MM
      * @instance
      *
@@ -905,10 +905,10 @@ $.extend(MM, {
     },
 
     /**
-     * The ApiSuccessCallback handles successful responses from the API. Every response from the MindMeld API conforms
+     * The APISuccessCallback handles successful responses from the API. Every response from the MindMeld API conforms
      * to the same format
      *
-     * @callback ApiSuccessCallback
+     * @callback APISuccessCallback
      * @param {Object} result result object containing response from the API
      * @param {(Object | Array)} result.data data returned from the API. For object endpoints (e.g., "/user/:userid"), data is an Object,
      * but for collection endpoints (e.g., "/documents"), data is an Array of Objects
@@ -919,10 +919,10 @@ $.extend(MM, {
      */
 
     /**
-     * The ApiErrorCallback handles unsuccessful response from the API. Every error response from the api conforms
+     * The APIErrorCallback handles unsuccessful response from the API. Every error response from the api conforms
      * to the same format
      *
-     * @callback ApiErrorCallback
+     * @callback APIErrorCallback
      * @param {Object} error error object containing information about an API Error
      * @param {number} error.code API error code
      * @param {string} error.message API error message
@@ -969,9 +969,9 @@ $.extend(MM, {
      * @param {QueryParameters=}                params      Parameters to be sent to MindMeld API. Params are URL
      * encoded for GET and DELETE requests
      *                                                      and are sent as POST data for POST requests
-     * @param {ApiSuccessCallback=}             success     A callback function to be called if the API request succeeds.
+     * @param {APISuccessCallback=}             success     A callback function to be called if the API request succeeds.
      * The function receives one argument containing the data returned from the server
-     * @param {ApiErrorCallback=}               error       A callback function to be called if the API request fails.
+     * @param {qAPIErrorCallback=}               error       A callback function to be called if the API request fails.
      * The function receives one argument, the error message returned from the server
      * @memberOf MM
      * @instance
@@ -1203,8 +1203,8 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * @param {string} method HTTP method to use for API call
      * @param {string} path API endpoint path
      * @param {Object=} params query parameters or data to be sent API
-     * @param {ApiSuccessCallback=} success callback for when {@link Model} request is successful
-     * @param {ApiErrorCallback=} error callback for when there is an error with {@link Model} request
+     * @param {APISuccessCallback=} success callback for when {@link Model} request is successful
+     * @param {APIErrorCallback=} error callback for when there is an error with {@link Model} request
      * @private
      * @memberOf Model
      * @instance
@@ -1376,7 +1376,7 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
      * deregister a previously set updateHandler. If the updateHandler has been set, it
      * is automatically called when application info is fetched (e.g. {@link MM.get})
      *
-     * @param {ApiSuccessCallback=} updateHandler callback for when the app object updates
+     * @param {APISuccessCallback=} updateHandler callback for when the app object updates
      * @memberOf MM
      * @instance
      *
@@ -1635,7 +1635,7 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
      * deregister a previously set updateHandler. If the updateHandler has been set, it
      * is automatically called when active user info is fetched (e.g. {@link MM.activeUser.get})
      *
-     * @param {ApiSuccessCallback=} updateHandler callback for when the activeUser object updates
+     * @param {APISuccessCallback=} updateHandler callback for when the activeUser object updates
      * @memberOf MM.activeUser
      * @instance
      *
@@ -2452,7 +2452,7 @@ MM.models.ArticleList = MM.Internal.createSubclass(MM.models.Model, {
      * collection so it must be polled instead. The update handler will be called automatically when
      * calling {@link MM.activeSession.articles.get}
      *
-     * @param {ApiSuccessCallback=} updateHandler callback for when the activeSession's article list updates.
+     * @param {APISuccessCallback=} updateHandler callback for when the activeSession's article list updates.
      *
      * @memberOf MM.activeSession.articles
      * @instance
@@ -2561,7 +2561,7 @@ MM.models.SessionDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * collection so it must be polled instead. The update handler will be called automatically when
      * calling {@link MM.activeSession.documents.get}
      *
-     * @param {ApiSuccessCallback=} updateHandler callback for when the activeSession's document list updates.
+     * @param {APISuccessCallback=} updateHandler callback for when the activeSession's document list updates.
      * @memberOf MM.activeSession.documents
      * @instance
      *
@@ -2689,7 +2689,7 @@ MM.models.AppDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * collection so it must be polled instead. The update handler will be called automatically when
      * calling {@link MM.documents.get}
      *
-     * @param {ApiSuccessCallback=} updateHandler callback for when the app's document list updates.
+     * @param {APISuccessCallback=} updateHandler callback for when the app's document list updates.
      * @memberOf MM.documents
      * @instance
      *
@@ -3388,7 +3388,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      * deregister a previously set updateHandler. If the updateHandler has been set, it
      * is automatically called when active session info is fetched (e.g. {@link MM.activeSession.get})
      *
-     * @param {ApiSuccessCallback=} updateHandler callback for when the activeSession object updates
+     * @param {APISuccessCallback=} updateHandler callback for when the activeSession object updates
      * @memberOf MM.activeSession
      * @instance
      *
