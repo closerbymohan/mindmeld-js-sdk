@@ -234,6 +234,15 @@ function onCustomSessionEvent (payload) {
 }
 ```
 
+## Grunt Tasks
+
+`Gruntfile.js` specifies a `grunt build` task that executes the following tasks:
+
+* `grunt clean` (Cleans up auto-generated files)
+* `grunt exec:jsdoc` (Generates JSDocs)
+* `grunt uglify:dist` (Minifies `mindmeld-2.0.js` into `mindmeld-2.0.min.js`)
+* `grunt zip:dist` (Creates a zip archive of `mindmeld-2.0.js`, `mindmeld-2.0.min.js`, and `HelloWorld.html`)
+
 
 
 [sdkDocsLink]:https://developer.expectlabs.com/docs/sdks/js/referenceDocs/
