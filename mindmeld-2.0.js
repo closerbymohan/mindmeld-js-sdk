@@ -1400,8 +1400,8 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
      * has already been specified for this object, the onUpdate handler will be invoked
      * first, followed by any specified 'onSuccess' callback.
      * @param {QueryParameters=} params query parameters when fetching the application object
-     * @param {function=} onSuccess callback for when getting application data was successful
-     * @param {function=} onFail callback for when getting application data failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting application data was successful
+     * @param {APIErrorCallback=} onFail callback for when getting application data failed
      * @memberOf MM
      * @instance
      *
@@ -1421,8 +1421,8 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
      * Update application information. This function requires an admin token
      *
      * @param {Object} appData
-     * @param {function=} onSuccess
-     * @param {function=} onFail
+     * @param {APISuccessCallback=} onSuccess
+     * @param {APISuccessCallback=} onFail
      * @memberOf MM
      * @private
      * @instance
@@ -1658,8 +1658,8 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
      * with admin privileges, this request is permitted for any user of the app.
      *
      * @param {QueryParameters=} params query parameters when fetching the user object
-     * @param {function=} onSuccess callback for when getting user data was successful
-     * @param {function=} onFail callback for when getting user data failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting user data was successful
+     * @param {APIErrorCallback=} onFail callback for when getting user data failed
      * @memberOf MM.activeUser
      * @instance
      *
@@ -1682,8 +1682,8 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
      * the 'location' attribute for the user to be updated. Please see User endpoints documentation
      * [here](https://developer.expectlabs.com/docs/endpointUser#postUserUserid) for more info
      * @param {Location} userInfo.location location object containing lat/long
-     * @param {function=} onSuccess callback for when updating user info was successful
-     * @param {function=} onFail callback for when updating user info failed
+     * @param {APISuccessCallback=} onSuccess callback for when updating user info was successful
+     * @param {APIErrorCallback=} onFail callback for when updating user info failed
      * @memberOf MM.activeUser
      * @instance
      *
@@ -1904,7 +1904,7 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Sets the activeUser.session's onUpdate handler. If no handler is passed in, onUpdate unsubscribes from push events
      *
-     * @param {NamedEventCallBack=} updateHandler callback for when the active user's session list updates
+     * @param {APISuccessCallback=} updateHandler callback for when the active user's session list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeUser.sessions
@@ -1952,8 +1952,8 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      *
      * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the sessions returned.
      * See documentation [here](https://developer.expectlabs.com/docs/endpointUser#getUserUseridSessions) for more details
-     * @param {function=} onSuccess callback for when getting the session list was successful
-     * @param {function=} onFail callback for when getting the session list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting the session list was successful
+     * @param {APISuccessCallback=} onFail callback for when getting the session list failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
@@ -1984,8 +1984,8 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      * by the session organizer and any user on the inviteduser list for the session. Sessions that
      * are 'friendsonly' can be accessed by users who are in the friends collection of the session
      * organizer. Sessions that are 'public' can be accessed by all users of your application.
-     * @param {function=} onSuccess callback for when creating new session was successful
-     * @param {function=} onFail callback for when creating new session failed
+     * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
+     * @param {APISuccessCallback=} onFail callback for when creating new session failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
@@ -2009,8 +2009,8 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      * Delete a session from the application and the user's session list
      *
      * @param {string} sessionid id of the session to delete
-     * @param {function=} onSuccess callback for when deleting object was successful
-     * @param {function=} onFail callback for when deleting object failed
+     * @param {APISuccessCallback=} onSuccess callback for when deleting object was successful
+     * @param {APISuccessCallback=} onFail callback for when deleting object failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
@@ -2072,7 +2072,7 @@ MM.models.TextEntryList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession.textentries' onUpdate handler. If no handler is passed in,
      * onUpdate unsubscribes from push events
      *
-     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's text entry list updates
+     * @param {APISuccessCallback=} updateHandler callback for when the activeSession's text entry list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.textentries
@@ -2127,8 +2127,8 @@ MM.models.TextEntryList = MM.Internal.createSubclass(MM.models.Model, {
      *
      * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the text entries returned.
      * See documentation [here](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidTextentries) for more details
-     * @param {function=} onSuccess callback for when getting the text entry list was successful
-     * @param {function=} onFail callback for when getting the text entry list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting the text entry list was successful
+     * @param {APIErrorCallback=} onFail callback for when getting the text entry list failed
      * @memberOf MM.activeSession.textentries
      * @instance
      *
@@ -2171,8 +2171,8 @@ MM.models.TextEntryList = MM.Internal.createSubclass(MM.models.Model, {
      * context of the session. A value of 1 indicates that any contextual information
      * contained in the text entry will have the maximum amount of influence over
      * document ranking and recommendations.
-     * @param {function=} onSuccess callback for when creating new session was successful
-     * @param {function=} onFail callback for when creating new session failed
+     * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
+     * @param {APIErrorCallback=} onFail callback for when creating new session failed
      * @memberOf MM.activeSession.textentries
      * @instance
      *
@@ -2198,8 +2198,8 @@ MM.models.TextEntryList = MM.Internal.createSubclass(MM.models.Model, {
      * Delete a text entry from the active session
      *
      * @param {string} textentryid id of the text entry to delete
-     * @param {function=} onSuccess callback for when deleting the text entry was successful
-     * @param {function=} onFail callback for when deleting the text entry failed
+     * @param {APISuccessCallback=} onSuccess callback for when deleting the text entry was successful
+     * @param {APIErrorCallback=} onFail callback for when deleting the text entry failed
      * @memberOf MM.activeSession.textentries
      * @instance
      *
@@ -2262,7 +2262,7 @@ MM.models.EntityList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession.entities' onUpdate handler. If no handler is passed in,
      * onUpdate unsubscribes from push events
      *
-     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's entity list updates
+     * @param {APISuccessCallback=} updateHandler callback for when the activeSession's entity list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.entities
@@ -2318,8 +2318,8 @@ MM.models.EntityList = MM.Internal.createSubclass(MM.models.Model, {
      *
      * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the entities returned.
      * See documentation [here](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidEntities) for more details
-     * @param {function=} onSuccess callback for when getting the entity list was successful
-     * @param {function=} onFail callback for when getting the entity list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting the entity list was successful
+     * @param {APIErrorCallback=} onFail callback for when getting the entity list failed
      * @memberOf MM.activeSession.entities
      * @instance
      *
@@ -2360,8 +2360,8 @@ MM.models.EntityList = MM.Internal.createSubclass(MM.models.Model, {
      * impact on the session context. A value of 1 indicates that this entity is very important
      * in interpreting the overall context of the session and therefore also important in
      * determining search ranking and recommendations.
-     * @param {function=} onSuccess callback for when creating new entity was successful
-     * @param {function=} onFail callback for when creating new entity failed
+     * @param {APISuccessCallback=} onSuccess callback for when creating new entity was successful
+     * @param {APIErrorCallback=} onFail callback for when creating new entity failed
      * @memberOf MM.activeSession.entities
      * @instance
      *
@@ -2386,8 +2386,8 @@ MM.models.EntityList = MM.Internal.createSubclass(MM.models.Model, {
      * Delete an entity from the active session
      *
      * @param {string} entityid id of the entity to delete
-     * @param {function=} onSuccess callback for when deleting the entity was successful
-     * @param {function=} onFail callback for when deleting the entity failed
+     * @param {APISuccessCallback=} onSuccess callback for when deleting the entity was successful
+     * @param {APIErrorCallback=} onFail callback for when deleting the entity failed
      * @memberOf MM.activeSession.entities
      * @instance
      *
@@ -2493,8 +2493,8 @@ MM.models.ArticleList = MM.Internal.createSubclass(MM.models.Model, {
      * only articles related to the specified number of most recent entities will be returned in the response.
      * @param {(string[]|string)=} params.textentryids An array of textentryid values or a single textentryid
      * value. If specified, only articles related to the specified text entries will be returned in the response
-     * @param {function=} onSuccess callback for when getting the article list was successful
-     * @param {function=} onFail callback for when getting the article list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting the article list was successful
+     * @param {APIErrorCallback=} onFail callback for when getting the article list failed
      * @memberOf MM.activeSession.articles
      * @instance
      *
@@ -2613,8 +2613,8 @@ MM.models.SessionDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * contextual history time window that will be used to influence the document results. Any contextual
      * data uploaded after the end of this window will be ignored in the calculation to determine contextually
      * relevant document results. If not specified, the value defaults to the latest contextual history of the session
-     * @param {function=} onSuccess callback for when getting the session document list was successful
-     * @param {function=} onFail callback for when getting the session document list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting the session document list was successful
+     * @param {APIErrorCallback=} onFail callback for when getting the session document list failed
      * @memberOf MM.activeSession.documents
      * @instance
      *
@@ -2721,8 +2721,8 @@ MM.models.AppDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * used to rank the documents returned by this request. Read the section on
      * [custom ranking factors](https://developer.expectlabs.com/docs/customRankingFactors) to learn more about
      * how you can adjust the search ranking factors to customize the document results for your application
-     * @param {function=} onSuccess callback for when getting the application document list was successful
-     * @param {function=} onFail callback for when getting the application document list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting the application document list was successful
+     * @param {APIErrorCallback=} onFail callback for when getting the application document list failed
      * @memberOf MM.documents
      * @instance
      *
@@ -2793,8 +2793,8 @@ MM.models.AppDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * calculation. See the documentation on
      * [custom ranking factors](https://developer.expectlabs.com/docs/customRankingFactors) for more information
      *
-     * @param {function=} onSuccess callback for when posting data to collection was successful
-     * @param {function=} onFail callback for when posting data to collection failed
+     * @param {APISuccessCallback=} onSuccess callback for when posting data to collection was successful
+     * @param {APIErrorCallback=} onFail callback for when posting data to collection failed
      * @memberOf MM.documents
      * @instance
      *
@@ -2818,8 +2818,8 @@ MM.models.AppDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * Delete a document from the application. This requires an admin token
      *
      * @param {string} documentid id of the document to delete
-     * @param {function=} onSuccess callback for when deleting object was successful
-     * @param {function=} onFail callback for when deleting object failed
+     * @param {APISuccessCallback=} onSuccess callback for when deleting object was successful
+     * @param {APIErrorCallback=} onFail callback for when deleting object failed
      * @memberOf MM.documents
      * @instance
      *
@@ -2879,7 +2879,7 @@ MM.models.LiveUserList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession.liveusers' onUpdate handler. If no handler is passed in,
      * onUpdate unsubscribes from push events
      *
-     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's live users list updates
+     * @param {APISuccessCallback=} updateHandler callback for when the activeSession's live users list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.liveusers
@@ -2927,8 +2927,8 @@ MM.models.LiveUserList = MM.Internal.createSubclass(MM.models.Model, {
      * with your application.
      *
      * @param {QueryParameters=} params query parameters when fetching the live user list
-     * @param {function=} onSuccess callback for when getting live user list was successful
-     * @param {function=} onFail callback for when getting live user list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting live user list was successful
+     * @param {APIErrorCallback=} onFail callback for when getting live user list failed
      * @memberOf MM.activeSession.liveusers
      * @instance
      *
@@ -2950,8 +2950,8 @@ MM.models.LiveUserList = MM.Internal.createSubclass(MM.models.Model, {
      *
      * @param {Object} newLiveUserData object specifying userid of user to be added to live user list
      * @param {string} newLiveUserData.userid The MindMeld userid for the user to add to the liveusers list for the session
-     * @param {function=} onSuccess callback for when adding live user was successful
-     * @param {function=} onFail callback for when adding live user failed
+     * @param {APISuccessCallback=} onSuccess callback for when adding live user was successful
+     * @param {APIErrorCallback=} onFail callback for when adding live user failed
      * @memberOf MM.activeSession.liveusers
      * @instance
      *
@@ -2974,8 +2974,8 @@ MM.models.LiveUserList = MM.Internal.createSubclass(MM.models.Model, {
      * Deletes a user from the list of active users for the active session
      *
      * @param {string} liveuserid id of the user to remove from active user list
-     * @param {function=} onSuccess callback for when removing user from active users list was successful
-     * @param {function=} onFail callback for when removing user from active users list failed
+     * @param {APISuccessCallback=} onSuccess callback for when removing user from active users list was successful
+     * @param {APIErrorCallback=} onFail callback for when removing user from active users list failed
      * @memberOf MM.activeSession.liveusers
      * @instance
      *
@@ -3037,7 +3037,7 @@ MM.models.InvitedUserList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession.invitedusers' onUpdate handler. If no handler is passed in,
      * onUpdate unsubscribes from push events
      *
-     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's invited users list updates
+     * @param {APISuccessCallback=} updateHandler callback for when the activeSession's invited users list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.invitedusers
@@ -3085,8 +3085,8 @@ MM.models.InvitedUserList = MM.Internal.createSubclass(MM.models.Model, {
      * associated with your application.
      *
      * @param {QueryParameters=} params query parameters when fetching the invited user list
-     * @param {function=} onSuccess callback for when getting invited user list was successful
-     * @param {function=} onFail callback for when getting invited user list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting invited user list was successful
+     * @param {APIErrorCallback=} onFail callback for when getting invited user list failed
      * @memberOf MM.activeSession.invitedusers
      * @instance
      *
@@ -3112,8 +3112,8 @@ MM.models.InvitedUserList = MM.Internal.createSubclass(MM.models.Model, {
      * @param {string} newInvitedUserData.userid The userid for the user to invite. This should be the user
      * id value provided by your authentication service. This should not be the MindMeld userid
      * @param {string} newInvitedUserData.name The name of the user to invite
-     * @param {function=} onSuccess callback for when adding user to session was successful
-     * @param {function=} onFail callback for when adding live user to session failed
+     * @param {APISuccessCallback=} onSuccess callback for when adding user to session was successful
+     * @param {APIErrorCallback=} onFail callback for when adding live user to session failed
      * @memberOf MM.activeSession.invitedusers
      * @instance
      *
@@ -3138,8 +3138,8 @@ MM.models.InvitedUserList = MM.Internal.createSubclass(MM.models.Model, {
      * Uninvite the specified user from the specified session
      *
      * @param {string} inviteduserid The MindMeld userid of the user to remove from invited user list
-     * @param {function=} onSuccess callback for when removing a user from the session was successful
-     * @param {function=} onFail callback for when removing a user from the session failed
+     * @param {APISuccessCallback=} onSuccess callback for when removing a user from the session was successful
+     * @param {APIErrorCallback=} onFail callback for when removing a user from the session failed
      * @memberOf MM.activeSession.invitedusers
      * @instance
      *
@@ -3203,7 +3203,7 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
      * activities list is fetched successfully. If no updateHandler is passed in,
      * {@link MM.activeSession.activities.onUpdate} unsubscribes from push events.
      *
-     * @param {NamedEventCallBack=} updateHandler callback for when the activeSession's activity list updates
+     * @param {APISuccessCallback=} updateHandler callback for when the activeSession's activity list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
      * @param {function=} onError callback for when subscription to onUpdate event fails
      * @memberOf MM.activeSession.activities
@@ -3257,8 +3257,8 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
      * for any session associated with your application.
      *
      * @param {QueryParameters=} params query parameters when fetching the activities list
-     * @param {function=} onSuccess callback for when getting activities list was successful
-     * @param {function=} onFail callback for when getting activities list failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting activities list was successful
+     * @param {APIErrorCallback=} onFail callback for when getting activities list failed
      * @memberOf MM.activeSession.activities
      * @instance
      *
@@ -3295,8 +3295,8 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
      * @param {string=} activityData.articleid The id of an article, if any, associated with the activity
      * @param {string=} activityData.entityid The id of an entity, if any, associated with the activity
      * @param {string=} activityData.textentryid The id of a textentry, if any, associated with the activity
-     * @param {function=} onSuccess callback for when creating new activity was successful
-     * @param {function=} onFail callback for when creating new activity failed
+     * @param {APISuccessCallback=} onSuccess callback for when creating new activity was successful
+     * @param {APIErrorCallback=} onFail callback for when creating new activity failed
      * @memberOf MM.activeSession.activities
      * @instance
      *
@@ -3320,8 +3320,8 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
      * Delete an activity from the active session
      *
      * @param {string} activityid id of the activity to delete
-     * @param {function=} onSuccess callback for when deleting the activity was successful
-     * @param {function=} onFail callback for when deleting the activity failed
+     * @param {APISuccessCallback=} onSuccess callback for when deleting the activity was successful
+     * @param {APIErrorCallback=} onFail callback for when deleting the activity failed
      * @memberOf MM.activeSession.activities
      * @instance
      *
@@ -3415,8 +3415,8 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      * If the user token belongs to the session organizer, it will be allowed to access the session.
      * Admin privileges allow access to all sessions associated with your application.
      * @param {QueryParameters=} params query parameters when fetching the session object
-     * @param {function=} onSuccess callback for when getting session data was successful
-     * @param {function=} onFail callback for when getting session data failed
+     * @param {APISuccessCallback=} onSuccess callback for when getting session data was successful
+     * @param {APIErrorCallback=} onFail callback for when getting session data failed
      * @memberOf MM.activeSession
      * @instance
      *
@@ -3443,8 +3443,8 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      * @param {string=} sessionInfo.privacymode update privacy mode of the active session. The supported privacy modes
      * are 'friendsonly', 'inviteonly', and 'public'
      *
-     * @param {function=} onSuccess callback for when updating session info was successful
-     * @param {function=} onFail callback for when updating session info failed
+     * @param {APISuccessCallback=} onSuccess callback for when updating session info was successful
+     * @param {APIErrorCallback=} onFail callback for when updating session info failed
      * @memberOf MM.activeSession
      * @instance
      *
