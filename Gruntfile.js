@@ -38,7 +38,7 @@ module.exports = function (grunt) {
                     'mindmeld-2.0.min.js',
                     'HelloWorld.html'
                 ],
-                dest: 'mindmeld-js-sdk-2.0.zip'
+                dest: 'mindmeld-js-sdk.zip'
             }
         },
         watch: {

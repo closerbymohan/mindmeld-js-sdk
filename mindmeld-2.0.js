@@ -621,7 +621,9 @@ $.extend(MM, {
     },
 
     /**
-     * Gets a token from the API and stores it if successful
+     * Requests a new admin or user token from the API and stores it locally. This token is automatically
+     * used for all subsequent requests to the API. If we successfully obtain a token, {@link MM.getToken}
+     * automatically calls {@link MM.setActiveUserID} with the appropriate user id
      *
      * @param {Object} credentials credentials for obtaining an API token.
      * Please refer to [documentation here](https://developer.expectlabs.com/docs/authentication) for details
@@ -670,7 +672,7 @@ $.extend(MM, {
      */
     getToken: function (credentials, onSuccess, onError) {
         var headers = {'X-MindMeld-Appid': MM.config.appid}; // included on every token request
-
+        var isAdminToken = false;
         var params = null;
         if (credentials.facebook) { // User token
             params = {
@@ -687,6 +689,7 @@ $.extend(MM, {
         }
         else if (credentials.appsecret) { // Admin token
             headers['X-MindMeld-Appsecret'] = credentials.appsecret;
+            isAdminToken = true;
         }
         else { // Invalid credentials passed in
             var error = {
@@ -701,13 +704,30 @@ $.extend(MM, {
         MM.callApi('POST', 'tokens', params, onTokenSuccess, onError, headers);
 
         // Sets MM.token on success
-        function onTokenSuccess(responseData) {
-            if (responseData.data && responseData.data.token) {
-                MM.token = responseData.data.token;
-                MM.Util.testAndCall(onSuccess, responseData.data);
+        function onTokenSuccess(response) {
+            if (response.data && response.data.token) {
+                MM.token = response.data.token;
+                if (isAdminToken) {
+                    // The admin user id is not returned when requesting a new token
+                    // It can be found in the app object's 'ownerid' field
+                    MM.get( null,
+                            function (response) {
+                                var adminId = response.data.ownerid;
+                                MM.setActiveUserID(adminId);
+                                MM.Util.testAndCall(onSuccess, response.data);
+                            }
+                    );
+                }
+                else {
+                    // The user id is returned when requesting a new user token
+                    if (response.data.user && response.data.user.userid) {
+                        MM.setActiveUserID(response.data.user.userid);
+                        MM.Util.testAndCall(onSuccess, response.data);
+                    }
+                }
             }
             else {
-                MM.Util.testAndCall(onError, responseData);
+                MM.Util.testAndCall(onError, response);
             }
         }
     },
@@ -804,8 +824,10 @@ $.extend(MM, {
 
     /**
      * Sets the active user to a specified user id. {@link MM.setActiveUserID} also tries to fetch the user object
-     * and clears all event handlers from the previous user. You must call setActiveUserID before calling
-     * any of the functions in {@link MM.activeUser} namespace
+     * and clears all event handlers from the previous user. {@link MM.setActiveUserID} is automatically called
+     * after successfully calling {@link MM.getToken}. You should only to call this method if you are using an
+     * admin token and want to impersonate other users, or if you call {@link MM.setToken} with an existing token
+     * and already know the corresponding user id
      *
      * @param {string} userid
      * @param onSuccess {apiSuccessCallback=} callback for when user data successfully fetched
@@ -815,24 +837,14 @@ $.extend(MM, {
      *
      * @example
      *
-     function setActiveUserIDExample () {
-        // First try and get a token
-        var credentials = {
-            appsecret: '<appsecret>',
-            simple: {
-                userid: 'einstein79',
-                name: 'Albert Einstein'
-            }
-        };
-        MM.getToken(credentials, onGetToken);
+     var userToken = '<known user token>';
+     MM.setToken(userToken, onTokenValid);
+
+     function onTokenValid () {
+        MM.setActiveUserID('<known mindmeld user  id>', onGetUserInfo);
      }
-     function onGetToken (result) {
-        // You can access the userid from the getToken's result.user object:
-        var userId = result.user.userid;
-        MM.setActiveUserID(userId, onGetUserInfo);
-     }
-     function onGetUserInfo (result) {
-        var userInfo = result.data;
+     function onGetUserInfo (response) {
+        var userInfo = response.data;
      }
      */
     setActiveUserID: function (userid, onSuccess, onError) {
@@ -859,7 +871,8 @@ $.extend(MM, {
      * Set the MM token directly instead of calling {@link MM.getToken}. This function also
      * provides valid/invalid callbacks to determine if the given token is valid or not.
      * Regardless of the token being valid, {@link MM.setToken} always sets the token
-     * used by MM
+     * used by MM. Unlike {@link MM.getToken}, {@link MM.setToken} does not automatically
+     * call {@link MM.setActiveUserID}
      *
      * @param {string} token token to be used by SDK
      * @param {function=} onTokenValid callback for when given token is valid
@@ -906,7 +919,8 @@ $.extend(MM, {
      */
 
     /**
-     * The apiErrorCallback handles unsuccessful response from the API. Every error response from the api conforms to the same format
+     * The apiErrorCallback handles unsuccessful response from the API. Every error response from the api conforms
+     * to the same format
      *
      * @callback apiErrorCallback
      * @param {Object} error error object containing information about an API Error
@@ -947,20 +961,25 @@ $.extend(MM, {
      */
 
     /**
-     * Makes a call directly to the MindMeld API. This method can be used to make calls to any path of the MindMeld API
-     * that are not currently supported by this SDK.
+     * Makes a call directly to the MindMeld API. This method can be used to make calls to any path of
+     * the MindMeld API that are not part of the namespaces
      *
-     * @param {string}                          method      HTTP method to use for API call. {@link MM.callApi} expects the string 'GET', 'POST', or 'DELETE'
+     * @param {string}                          method      HTTP method to use for API call ('GET', 'POST', or 'DELETE')
      * @param {string}                          path        API endpoint path (e.g., 'session/:sessionid/textentries')
-     * @param {QueryParameters=}                params      Parameters to be sent to MindMeld API. Params are URL encoded for GET and DELETE requests
+     * @param {QueryParameters=}                params      Parameters to be sent to MindMeld API. Params are URL
+     * encoded for GET and DELETE requests
      *                                                      and are sent as POST data for POST requests
-     * @param {apiSuccessCallback=}             success     Callback for when API call is successful. The callback accepts one parameter containing the result data
-     * @param {apiErrorCallback=}               error       Callback for when there is an error with the API call.
+     * @param {apiSuccessCallback=}             success     A callback function to be called if the API request succeeds.
+     * The function receives one argument containing the data returned from the server
+     * @param {apiErrorCallback=}               error       A callback function to be called if the API request fails.
+     * The function receives one argument, the error message returned from the server
      * @memberOf MM
      * @instance
      *
      * @example <caption> Example GET request
-     * to the [session text entries endpoint](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidTextentries) </caption>
+     * to the
+     * [session text entries endpoint](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidTextentries)
+     * </caption>
      *
      function callAPI () {
         MM.callApi('GET', 'session/47978/textentries', null, onGetTextEntries);
@@ -1573,9 +1592,9 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
 MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * MM.activeUser is a namespace that represents the currently active user. It can only be used after
-     * {@link MM.setActiveUserID} has been called. All API call requiring a user's context will use the
-     * ActiveUser's userid. It is possible to subscribe to push events on the user channel and is the interface to the
-     * user's session list via 'MM.activeUser.sessions'.
+     * {@link MM.setActiveUserID} has been called. All API calls requiring a user's context use the activeUser's
+     * userid. This namespace provides methods to subscribe to user's push events and interface to the
+     * user's session list via {@link MM.activeUser.sessions}
      *
      * @namespace MM.activeUser
      * @memberOf MM
@@ -1657,7 +1676,7 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
         this._get(null, onSuccess, onFail);
     },
     /**
-     * Modify information about the user with the specified userid.
+     * Modify information about the active user
      *
      * @param {Object} userInfo Object containing updated user data. Currently, this function permits
      * the 'location' attribute for the user to be updated. Please see User endpoints documentation
@@ -2390,9 +2409,9 @@ MM.models.EntityList = MM.Internal.createSubclass(MM.models.Model, {
 
 MM.models.ArticleList = MM.Internal.createSubclass(MM.models.Model, {
     /**
-     * MM.activeSession.articles represents the Articles collection in the MindMeld API. The searchable
-     * collection of Article objects that are relevant to the contextual history of
-     * the Session. (Available for premium accounts only).
+     * MM.activeSession.articles represents the Articles collection in the MindMeld API. This searchable collection
+     * contains Article objects that are relevant to the contextual history of the active session
+     * (Available for Enterprise developer accounts only).
      *
      * @namespace MM.activeSession.articles
      * @memberOf MM.activeSession
@@ -2462,7 +2481,7 @@ MM.models.ArticleList = MM.Internal.createSubclass(MM.models.Model, {
      * a user token can retrieve articles only if the associated user is permitted to access
      * the session object itself. A request with an admin token can retrieve articles for
      * any session associated with your application. Custom configuration of article
-     * sources is available for premium accounts only.
+     * sources is available for Enterprise developer accounts only.
      *
      *
      * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the articles returned.
@@ -3142,8 +3161,8 @@ MM.models.InvitedUserList = MM.Internal.createSubclass(MM.models.Model, {
 
 MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
     /**
-     * MM.activeSession.activities represents the Activities collection in the MindMeld API. The history
-     * of user actions and other non-text contextual signals associated with the Session
+     * MM.activeSession.activities represents the Activities collection in the MindMeld API. This collection captures
+     * the history of user actions and other non-text contextual signals associated with the active session
      *
      * @namespace MM.activeSession.activities
      * @memberOf MM.activeSession
