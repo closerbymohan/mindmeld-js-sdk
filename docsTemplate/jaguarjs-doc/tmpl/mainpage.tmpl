@@ -8,6 +8,10 @@ var self = this;
 <?js } ?>
 
 <?js if (data.readme) { ?>
+
+    <link rel="stylesheet" href="https://yandex.st/highlightjs/8.0/styles/github.min.css">
+    <script src="https://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
     <section>
         <article class="readme"><?js= data.readme ?></article>
     </section>
