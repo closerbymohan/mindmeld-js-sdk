@@ -3646,15 +3646,38 @@ MM.Util = $.extend({}, {
  *
  */
 MM.Listener = MM.Internal.createSubclass(Object, {
+
+    /**
+     * The listenerResultCallback handles results from the Speech Recognition API. A listenerResultCallback should at
+     * minimum handle the result param.
+     *
+     * @callback listenerResultCallback
+     * @param {Object} result result object containing response from the S API
+     * @param {string} result.transcript transcript returned from the API.
+     * @param {boolean} result.final a boolean indicating whether this result is final or interim
+     * @param {number} resultIndex the index of the provided result in the results array
+     * @param {Array} results an array of results received during the current speech recognition session
+     * @param {Event} event the original event received from the underlying SpeechRecognition instance
+     */
+
     /**
      * Constructor for Listener class
      *
      * @constructs Listener
-     * @classdesc This is class for the MindMeld speech recognition API.
-     * @param {} config an object containing the listener's configuration properties
+     * @classdesc This is the class for the MindMeld speech recognition API.
+     * @param {Object} config an object containing the listener's configuration properties
+     * @param {listenerResultCallback=} config.onResult the callback that will process listener results. This property must be provided.
+     * @param {boolean} [config.continuous=false] whether the listener should continue listening until stop() is called. If false,
+     * recording will continue until the speech recognition provider recognizes a sufficient pause in speech
+     * @param {boolean} [config.interimResults=false] whether the listener should provide interim results
+     * @param {function} [config.onError=null] the event handler which is called to handle errors
+     * @param {function} [config.onStart=null] the event handler which is called when a listening session begins.
+     * @param {function} [config.onStop=null] the event handler which is called when a listening session ends.
+     *
+     * @example TODO:
      */
     constructor: function(config) {
-        // defaults
+        // initialize to defaults if they weren't passed in
         var configWithDefaults = $.extend({
             onStart: null,
             onEnd: null,
@@ -3668,19 +3691,16 @@ MM.Listener = MM.Internal.createSubclass(Object, {
 
     /**
      * Sets the listener object's configuration. Configurable properties are as follows:
-     * continuous: whethe
      *
-     * continuous - If true, recording will continue until stop() is called. Otherwise, recording will continue
-     * until the speech recognition provider recognizes a sufficient pause in speech. default: false
-     * interimResults - If true, will send interim results. default: false
-     * onResult(result) - The callback in which client will handle speech results. The callback will receive one
-     * argument @TODO add more here default: set by constructor
-     * onError(error) - The callback in which client will handle errors. The callback will receive an error object
-     * one argument. default: null
-     * onStart - This callback is called when a listening session begins. default: null
-     * onStop - This callback is called when a listening session ends. default: null
-     *
-     * @param {} config an object containing the listener properties to change
+     * @param {Object} config an object containing the listener's configuration properties
+     * @param {listenerResultCallback=} config.onResult the callback that will process listener results. This property must be provided.
+     * @param {boolean} [config.continuous=false] whether the listener should continue listening until stop() is called. If false,
+     * recording will continue until the speech recognition provider recognizes a sufficient pause in speech
+     * @param {boolean} [config.interimResults=false] whether the listener should provide interim results
+     * @param {function} [config.onError=null] the event handler which is called to handle errors
+     * @param {function} [config.onStart=null] the event handler which is called when a listening session begins.
+     * @param {function} [config.onStop=null] the event handler which is called when a listening session ends.
+     * @memberOf MM.Listener
      * @instance
      *
      */
@@ -3702,12 +3722,15 @@ MM.Listener = MM.Internal.createSubclass(Object, {
     },
     /**
      * Begins a speech recognition session.
+     *
+     * @memberOf MM.Listener
+     * @instance
      */
     start: function () {
         var listener = this,
-            recognizer = this._recognizer = new webkitSpeechRecognition();
-        recognizer.continuous = this.continuous;
-        recognizer.interimResults = this.interimResults;
+            recognizer = this._recognizer = new SpeechRecognition();
+        recognizer.continuous = this.continuous();
+        recognizer.interimResults = this.interimResults();
 
         // TODO: set language based on browser settings
         // recognizer.lang = "eng-USA";
@@ -3769,15 +3792,45 @@ MM.Listener = MM.Internal.createSubclass(Object, {
     },
     /**
      * Ends a speech recognition. One more result may be send to the onResult callback.
+     *
+     * @memberOf MM.Listener
+     * @instance
      */
     stop: function () {
         this._recognizer.stop();
     },
     /**
      * Cancels a speech recognition session. No further results will be sent to the onResult callback
+     *
+     * @memberOf MM.Listener
+     * @instance
      */
     cancel: function () {
         this._recognizer.abort();
+    },
+    /**
+     * @returns a boolean indicating whether or not the listener is active
+     * @memberOf MM.Listener
+     * @instance
+     */
+    listening: function() {
+        return this._listening;
+    },
+    /**
+     * @returns a boolean indicating whether or not interimResults are enabled
+     * @memberOf MM.Listener
+     * @instance
+     */
+    interimResults: function() {
+        return this._interimResults;
+    },
+    /**
+     * @returns a boolean indicating whether or not continuous recognition is enabled
+     * @memberOf MM.Listener
+     * @instance
+     */
+    continuous: function() {
+        return this._continuous;
     }
 });
 
