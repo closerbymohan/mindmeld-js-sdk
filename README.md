@@ -1,6 +1,9 @@
 # Expect Labs mindmeld-js-sdk Reference
 
-This is the Expect Labs MindMeld JS SDK, mindmeld-2.0.js. The full documentation for mindmeld-js-sdk can be found here: [https://developer.expectlabs.com/docs/sdks/js/referenceDocs/][sdkDocsLink]
+This is the Expect Labs MindMeld JavaScript SDK, mindmeld-2.0.js.
+
+[Documentation Link][sdkDocsLink]
+
 
 ### Repository Contents ([mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
 * *mindmeld-2.0.js*: Un-minified, documented JavaScript SDK
@@ -63,11 +66,6 @@ loading the MindMeld library.
 <script src="bower_components/jquery/jquery.min.js"></script>
 <script src="bower_components/mindmeld-js-sdk/mindmeld-2.0.js"></script>
 ```
-
-[sdkDocsLink]:https://developer.expectlabs.com/docs/sdks/js/referenceDocs/
-[apiDocsLink]:https://developer.expectlabs.com/docs
-[sdkDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.js
-[sdkMinifiedDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.min.js
 
 ## Getting Started
 
@@ -237,3 +235,10 @@ function onCustomSessionEvent (payload) {
    // received CustomSessionEvent with payload: cause and effect
 }
 ```
+
+
+
+[sdkDocsLink]:https://developer.expectlabs.com/docs/sdks/js/referenceDocs/
+[apiDocsLink]:https://developer.expectlabs.com/docs
+[sdkDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.js
+[sdkMinifiedDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.min.js
