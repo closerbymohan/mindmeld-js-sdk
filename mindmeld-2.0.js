@@ -1,6 +1,6 @@
 /**
- * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM.init} before anything
- * else. Next obtain a token via {@link MM.getToken} to start making API calls.
+ * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM#init} before anything
+ * else. Next obtain a token via {@link MM#getToken} to start making API calls.
  *
  * @namespace
  */
@@ -448,7 +448,7 @@ MM.Internal = $.extend({}, {
                 delete self.fayeSubscriptions[channel];
             }
 
-            if(MM.config.debug){
+            if(MM.config.debug) {
                 MM.Internal.log('Cleared all event handlers on ' + channel + ' channel');
             }
         }
@@ -619,8 +619,8 @@ $.extend(MM, {
 
     /**
      * Requests a new admin or user token from the API and stores it locally. This token is automatically
-     * used for all subsequent requests to the API. If we successfully obtain a token, {@link MM.getToken}
-     * automatically calls {@link MM.setActiveUserID} with the appropriate user id
+     * used for all subsequent requests to the API. If we successfully obtain a token, {@link MM#getToken}
+     * automatically calls {@link MM#setActiveUserID} with the appropriate user id
      *
      * @param {Object} credentials credentials for obtaining an API token.
      * Please refer to [documentation here](https://developer.expectlabs.com/docs/authentication) for details
@@ -783,7 +783,7 @@ $.extend(MM, {
     },
 
     /**
-     * Sets the active session to a specified session id. {@link MM.setActiveSessionID} also tries to fetch the session
+     * Sets the active session to a specified session id. {@link MM#setActiveSessionID} also tries to fetch the session
      * object and clears all event handlers from the previous session. You must call setActiveSessionID before calling
      * any of the functions in the {@link MM.activeSession} namespace
      *
@@ -808,7 +808,7 @@ $.extend(MM, {
     },
 
     /**
-     * Deprecated function for setting active session id. Use {@link MM.setActiveSessionID} instead
+     * Deprecated function for setting active session id. Use {@link MM#setActiveSessionID} instead
      *
      * @memberOf MM
      * @instance
@@ -820,10 +820,10 @@ $.extend(MM, {
     },
 
     /**
-     * Sets the active user to a specified user id. {@link MM.setActiveUserID} also tries to fetch the user object
-     * and clears all event handlers from the previous user. {@link MM.setActiveUserID} is automatically called
-     * after successfully calling {@link MM.getToken}. You should only to call this method if you are using an
-     * admin token and want to impersonate other users, or if you call {@link MM.setToken} with an existing token
+     * Sets the active user to a specified user id. {@link MM#setActiveUserID} also tries to fetch the user object
+     * and clears all event handlers from the previous user. {@link MM#setActiveUserID} is automatically called
+     * after successfully calling {@link MM#getToken}. You should only to call this method if you are using an
+     * admin token and want to impersonate other users, or if you call {@link MM#setToken} with an existing token
      * and already know the corresponding user id
      *
      * @param {string} userid
@@ -853,7 +853,7 @@ $.extend(MM, {
     },
 
     /**
-     * Deprecated function for setting active user id. Use {@link MM.setActiveUserID} instead
+     * Deprecated function for setting active user id. Use {@link MM#setActiveUserID} instead
      *
      * @memberOf MM
      * @instance
@@ -865,11 +865,11 @@ $.extend(MM, {
     },
 
     /**
-     * Set the MM token directly instead of calling {@link MM.getToken}. This function also
+     * Set the MM token directly instead of calling {@link MM#getToken}. This function also
      * provides valid/invalid callbacks to determine if the given token is valid or not.
-     * Regardless of the token being valid, {@link MM.setToken} always sets the token
-     * used by MM. Unlike {@link MM.getToken}, {@link MM.setToken} does not automatically
-     * call {@link MM.setActiveUserID}
+     * Regardless of the token being valid, {@link MM#setToken} always sets the token
+     * used by MM. Unlike {@link MM#getToken}, {@link MM#setToken} does not automatically
+     * call {@link MM#setActiveUserID}
      *
      * @param {string} token token to be used by SDK
      * @param {function=} onTokenValid callback for when given token is valid
@@ -1193,7 +1193,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
     },
 
     /**
-     * Use {@link MM.callApi} to GET, POST, or DELETE data. {@link Model.makeModelRequest} (by default) saves data returned from
+     * Use {@link MM#callApi} to GET, POST, or DELETE data. {@link Model#makeModelRequest} (by default) saves data returned from
      * GET requests to localstorage. It also records the ETag returned from the API responses. Note, this is an internal
      * function, and not needed to use the SDK
      *
@@ -1347,8 +1347,8 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
         return('');
     },
     /**
-     * Helper function returns the JSON data for the current application. You must have called {@link MM.get}
-     * first, before {@link MM.json} returns any data.
+     * Helper function returns the JSON data for the current application. You must have called {@link MM#get}
+     * first, before {@link MM#json} returns any data.
      *
      *
      * @returns {Object}
@@ -1371,7 +1371,7 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Sets the app object's onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. If the updateHandler has been set, it
-     * is automatically called when application info is fetched (e.g. {@link MM.get})
+     * is automatically called when application info is fetched (e.g. {@link MM#get})
      *
      * @param {apiSuccessCallback=} updateHandler callback for when the app object updates
      * @memberOf MM
@@ -1589,9 +1589,9 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
 MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * MM.activeUser is a namespace that represents the currently active user. It can only be used after
-     * {@link MM.setActiveUserID} has been called. All API calls requiring a user's context use the activeUser's
+     * {@link MM#setActiveUserID} has been called. All API calls requiring a user's context use the activeUser's
      * userid. This namespace provides methods to subscribe to user's push events and interface to the
-     * user's session list via {@link MM.activeUser.sessions}
+     * user's session list via {@link MM.activeUser#sessions}
      *
      * @namespace MM.activeUser
      * @memberOf MM
@@ -1630,7 +1630,7 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Sets the activeUser's onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. If the updateHandler has been set, it
-     * is automatically called when active user info is fetched (e.g. {@link MM.activeUser.get})
+     * is automatically called when active user info is fetched (e.g. {@link MM.activeUser#get})
      *
      * @param {apiSuccessCallback=} updateHandler callback for when the activeUser object updates
      * @memberOf MM.activeUser
@@ -2447,7 +2447,7 @@ MM.models.ArticleList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession's articles' onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. Note that there are no push events for the articles
      * collection so it must be polled instead. The update handler will be called automatically when
-     * calling {@link MM.activeSession.articles.get}
+     * calling {@link MM.activeSession.articles#get}
      *
      * @param {apiSuccessCallback=} updateHandler callback for when the activeSession's article list updates.
      *
@@ -2556,7 +2556,7 @@ MM.models.SessionDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession's documents' onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. Note that there are no push events for the documents
      * collection so it must be polled instead. The update handler will be called automatically when
-     * calling {@link MM.activeSession.documents.get}
+     * calling {@link MM.activeSession.documents#get}
      *
      * @param {apiSuccessCallback=} updateHandler callback for when the activeSession's document list updates.
      * @memberOf MM.activeSession.documents
@@ -2684,7 +2684,7 @@ MM.models.AppDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the MM documents' onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. Note that there are no push events for the documents
      * collection so it must be polled instead. The update handler will be called automatically when
-     * calling {@link MM.documents.get}
+     * calling {@link MM.documents#get}
      *
      * @param {apiSuccessCallback=} updateHandler callback for when the app's document list updates.
      * @memberOf MM.documents
@@ -3198,7 +3198,7 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession's activities' onUpdate handler. The onUpdate handler is called once
      * there is an update to the active session's activities list AND the latest
      * activities list is fetched successfully. If no updateHandler is passed in,
-     * {@link MM.activeSession.activities.onUpdate} unsubscribes from push events.
+     * {@link MM.activeSession.activities#onUpdate} unsubscribes from push events.
      *
      * @param {namedEventCallback=} updateHandler callback for when the activeSession's activity list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
@@ -3341,7 +3341,7 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
 MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * The MM.activeSession object represents the currently active session. It can only be used after
-     * {@link MM.setActiveSessionID} has been called. This object is a container for capturing a history of contextual
+     * {@link MM#setActiveSessionID} has been called. This object is a container for capturing a history of contextual
      * information for one or more users interacting with an application. The activeSession contains
      * several child object collections that can be used to upload contextual information and
      * display relevant search results to your users. The activeSession object is also used to
@@ -3353,7 +3353,22 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
     constructor: function () {
         MM.models.ActiveSession.superclass.constructor.apply(this, arguments);
         var session = this;
-        // TODO: document activeSession.listener
+
+        /**
+         * A session's listener is automatically configured to post text entries with type 'speech' and weight of 0.5
+         * when it receives results. Use {@link MM.activeSession#onListenerResult}, {@link MM.activeSession#onListenerStart},
+         * {@link MM.activeSession#onListenerEnd}, and {@link MM.activeSession#onListenerError} to register callbacks.
+         *
+         * @name listener
+         * @memberOf MM.activeSession
+         * @type {MM.Listener}
+         * @instance
+         * @example
+         MM.activeSession.onListenerResult(function(result) {
+             // update UI
+         });
+         MM.activeSession.listener.start();
+         */
         this.listener = new MM.Listener({
             interimResults: true,
             onResult: function(result, resultIndex, results, event) {
@@ -3424,7 +3439,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Sets the activeSession's onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. If the updateHandler has been set, it
-     * is automatically called when active session info is fetched (e.g. {@link MM.activeSession.get})
+     * is automatically called when active session info is fetched (e.g. {@link MM.activeSession#get})
      *
      * @param {apiSuccessCallback=} updateHandler callback for when the activeSession object updates
      * @memberOf MM.activeSession
@@ -3446,49 +3461,53 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
     },
     /**
      * Sets the activeSession's onListenerResult handler. Pass null as the listenerResultHandler parameter
-     * to unregister a previously set listenerResultHandler. If the listenerResultHandler has been set, it
+     * to deregister a previously set listenerResultHandler. If the listenerResultHandler has been set, it
      * is automatically called when active session's listener receives results.
      *
-     * @param {listenerResultCallback=} listenerResultHandler callback for when the activeSession's listener
+     * @param {ListenerResultCallback=} listenerResultHandler callback for when the activeSession's listener
      * receives results
      * @memberOf MM.activeSession
      * @instance
+     * @see {@link MM.Listener#setConfig}
      */
     onListenerResult: function (listenerResultHandler) {
         this.listenerResultHandler = listenerResultHandler;
     },
     /**
-     * Sets the activeSession's onListenerStart handler. Pass null as the listenerStartHandlerparameter
-     * to unregister a previously set listenerStartHandler. If the listenerStartHandler has been set, it
+     * Sets the activeSession's onListenerStart handler. Pass null as the listenerStartHandler parameter
+     * to deregister a previously set listenerStartHandler. If the listenerStartHandler has been set, it
      * is automatically called when active session's listener starts listening.
      *
-     * @param {function} listenerStartHandler callback for when the activeSession's listener starts listening
+     * @param {function=} listenerStartHandler callback for when the activeSession's listener starts listening
      * @memberOf MM.activeSession
      * @instance
+     * @see {@link MM.Listener#setConfig}
      */
     onListenerStart: function (listenerStartHandler) {
         this.listenerStartHandler = listenerStartHandler;
     },
     /**
      * Sets the activeSession's onListenerEnd handler. Pass null as the listenerEndHandler parameter
-     * to unregister a previously set listenerEndHandler. If the listenerEndHandler has been set, it
+     * to deregister a previously set listenerEndHandler. If the listenerEndHandler has been set, it
      * is automatically called when active session's listener stops listening.
      *
-     * @param {function} listenerEndHandler  callback for when the activeSession's listener stops listening
+     * @param {ListenerEndCallback=} listenerEndHandler  callback for when the activeSession's listener stops listening
      * @memberOf MM.activeSession
      * @instance
+     * @see {@link MM.Listener#setConfig}
      */
     onListenerEnd: function (listenerEndHandler ) {
         this.listenerEndHandler  = listenerEndHandler ;
     },
     /**
      * Sets the activeSession's onListenerError handler. Pass null as the listenerErrorHandler parameter
-     * to unregister a previously set listenerResultHandler. If the listenerResultHandler has been set, it
+     * to deregister a previously set listenerResultHandler. If the listenerResultHandler has been set, it
      * is automatically called when active session's listener receives results.
      *
-     * @param {function} listenerErrorHandler  callback for when the activeSession's listener receives errors
+     * @param {function=} listenerErrorHandler  callback for when the activeSession's listener receives errors
      * @memberOf MM.activeSession
      * @instance
+     * @see {@link MM.Listener#setConfig}
      */
     onListenerError: function (listenerErrorHandler) {
         this.listenerErrorHandler = listenerErrorHandler;
@@ -3731,18 +3750,14 @@ MM.Util = $.extend({}, {
     }
 });
 
-/**
- *  @memberOf MM
- *
- */
 MM.Listener = MM.Internal.createSubclass(Object, {
 
     /**
-     * The listenerResultCallback handles results from the Speech Recognition API. A listenerResultCallback should at
+     * The ListenerResultCallback handles results from the Speech Recognition API. A ListenerResultCallback should at
      * minimum handle the result param.
      *
-     * @callback listenerResultCallback
-     * @param {Object} result result object containing response from the S API
+     * @callback ListenerResultCallback
+     * @param {Object} result result object containing speech recognition result
      * @param {string} result.transcript transcript returned from the API.
      * @param {boolean} result.final a boolean indicating whether this result is final or interim
      * @param {number} resultIndex the index of the provided result in the results array
@@ -3751,20 +3766,44 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      */
 
     /**
+     * The ListenerEndCallback handles results from the Speech Recognition API.
+     *
+     * @callback ListenerEndCallback
+     * @param {Event} event the original event received from the underlying SpeechRecognition instance
+     * @param {Object} lastResult object containing the last speech recognition result received
+     * @param {string} lastResult.transcript transcript returned from the API.
+     * @param {boolean} lastResult.final a boolean indicating whether the result is final or interim
+     */
+
+    /**
      * Constructor for Listener class
      *
-     * @constructs Listener
+     * @constructs MM.Listener
      * @classdesc This is the class for the MindMeld speech recognition API.
      * @param {Object} config an object containing the listener's configuration properties
-     * @param {listenerResultCallback=} config.onResult the callback that will process listener results. This property must be provided.
+     * @param {ListenerResultCallback} config.onResult the callback that will process listener results. This property must be provided.
      * @param {boolean} [config.continuous=false] whether the listener should continue listening until stop() is called. If false,
      * recording will continue until the speech recognition provider recognizes a sufficient pause in speech
      * @param {boolean} [config.interimResults=false] whether the listener should provide interim results
      * @param {function} [config.onError=null] the event handler which is called to handle errors
      * @param {function} [config.onStart=null] the event handler which is called when a listening session begins.
-     * @param {function} [config.onStop=null] the event handler which is called when a listening session ends.
+     * @param {ListenerEndCallback} [config.onEnd=null] the event handler which is called when a listening session ends.
      *
-     * @example TODO:
+     * @example
+     var myListener = new MM.Listener({
+         continuous: true,
+         interimResults: true,
+         onResult: function(result) {
+             if (result.final) {
+                 // post text entry for final results
+                 MM.activeSession.textentries.post({
+                     text: result.transcript,
+                     type: 'speech',
+                     weight: '0.5'
+                 });
+             }
+         }
+     });
      */
     constructor: function(config) {
         // initialize to defaults if they weren't passed in
@@ -3783,13 +3822,13 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * Sets the listener object's configuration. Configurable properties are as follows:
      *
      * @param {Object} config an object containing the listener's configuration properties
-     * @param {listenerResultCallback=} config.onResult the callback that will process listener results. This property must be provided.
+     * @param {ListenerResultCallback} config.onResult the callback that will process listener results. This property must be provided.
      * @param {boolean} [config.continuous=false] whether the listener should continue listening until stop() is called. If false,
      * recording will continue until the speech recognition provider recognizes a sufficient pause in speech
      * @param {boolean} [config.interimResults=false] whether the listener should provide interim results
      * @param {function} [config.onError=null] the event handler which is called to handle errors
      * @param {function} [config.onStart=null] the event handler which is called when a listening session begins.
-     * @param {function} [config.onStop=null] the event handler which is called when a listening session ends.
+     * @param {ListenerEndCallback} [config.onEnd=null] the event handler which is called when a listening session ends.
      * @memberOf MM.Listener
      * @instance
      *
@@ -3914,7 +3953,7 @@ MM.Listener = MM.Internal.createSubclass(Object, {
         this._recognizer.abort();
     },
     /**
-     * @returns a boolean indicating whether or not the listener is active
+     * @returns {boolean} indicates whether or not the listener is active
      * @memberOf MM.Listener
      * @instance
      */
@@ -3922,7 +3961,7 @@ MM.Listener = MM.Internal.createSubclass(Object, {
         return this._listening;
     },
     /**
-     * @returns a boolean indicating whether or not interimResults are enabled
+     * @returns {boolean} indicates whether or not interimResults are enabled
      * @memberOf MM.Listener
      * @instance
      */
@@ -3930,7 +3969,7 @@ MM.Listener = MM.Internal.createSubclass(Object, {
         return this._interimResults;
     },
     /**
-     * @returns a boolean indicating whether or not continuous recognition is enabled
+     * @returns {boolean} indicates whether or not continuous recognition is enabled
      * @memberOf MM.Listener
      * @instance
      */
@@ -3943,12 +3982,11 @@ MM.Listener = MM.Internal.createSubclass(Object, {
  * An overview of features supported in the browser.
  *
  * @memberOf MM
- * @instance
+ * @namespace
+ * @property {boolean} speechRecognition - whether speech recognition is supported in the current browser
+ * @property {boolean} localStorage - whether local storage is supported in the current browser
  */
 MM.support = {
-    /**
-     * A boolean indicating whether the current browser supports the MindMeld Listener
-     */
     speechRecognition: (function(window) {
         'use strict';
         window = window || {};
