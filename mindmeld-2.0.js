@@ -3731,61 +3731,68 @@ MM.Listener = MM.Internal.createSubclass(Object, {
             recognizer = this._recognizer = new SpeechRecognition();
         recognizer.continuous = this.continuous();
         recognizer.interimResults = this.interimResults();
+        listener._results = [];
 
         // TODO: set language based on browser settings
         // recognizer.lang = "eng-USA";
 
-        recognizer.onaudiostart = function(event) {
-//            MM.Internal.log(Date.now(), "Listener: on audio start");
-//            MM.Internal.log(event);
-        };
-        recognizer.onsoundstart = function(event) {
-//            MM.Internal.log(Date.now(), "Listener: on sound start");
-//            MM.Internal.log(event);
-        };
-        recognizer.onspeechstart = function(event) {
-//            MM.Internal.log(Date.now(), "Listener: on speech start");
-//            MM.Internal.log(event);
-        };
-        recognizer.onspeechend= function(event) {
-//            MM.Internal.log(Date.now(), "Listener: on speech end");
-//            MM.Internal.log(event);
-        };
-        recognizer.onsoundend = function(event) {
-//            MM.Internal.log(Date.now(), "Listener: on sound end");
-//            MM.Internal.log(event);
-        };
-        recognizer.onaudioend = function(event) {
-//            MM.Internal.log(Date.now(), "Listener: on audio end");
-//            MM.Internal.log(event);
-        };
         recognizer.onresult = function(event) {
-//            MM.Internal.log(Date.now(), "Listener: on result");
-//            MM.Internal.log(event);
+            MM.Internal.log(Date.now() + " Listener: onresult");
+            MM.Internal.log("resultIndex: " + event.resultIndex);
+            MM.Internal.log(event.results);
 
-            listener.resultHandler(event);
+            var result = {
+                final: false,
+                transcript: '',
+                pendingTranscript: ''
+            },
+                resultIndex = event.resultIndex,
+                results = listener._results;
+
+            // If there is a new result
+            for (var i = event.resultIndex; i < event.results.length; ++i) {
+
+                var transcript = event.results[i][0].transcript;
+
+                if (event.results[i].isFinal) {
+                    result.final = true;
+                    result.transcript = transcript;
+                    break;
+                } else {
+                    result.transcript += transcript;
+                }
+            }
+            results[event.resultIndex] = result;
+            listener.resultHandler(result, resultIndex, results, event);
         };
         recognizer.onnomatch = function(event) {
-            MM.Internal.log(Date.now(), "Listener: on no match " + Date.now());
-            MM.Internal.log(event);
+            MM.Internal.log(Date.now() + " Listener: onnomatch");
+//            MM.Internal.log(event);
         };
         recognizer.onerror = function(event) {
-            MM.Internal.log(Date.now(), "Listener: onerror");
-            MM.Internal.log("Listener: " + event.error);
-            listener.errorHandler(event);
+            MM.Internal.log(Date.now() + " Listener: onerror");
+//            MM.Internal.log("Listener: " + event.error);
+            if (listener.errorHandler) {
+                listener.errorHandler(event);
+            }
             // TODO(jj): do we need to restart in any instances?
         };
         recognizer.onstart = function(event) {
-            MM.Internal.log(Date.now(), "Listener: on start");
-            MM.Internal.log(event);
+            MM.Internal.log(Date.now() + " Listener: onstart");
+//            MM.Internal.log(event);
             listener._listening = true;
-            listener.startHandler(event);
+
+            if (listener.startHandler) {
+                listener.startHandler(event);
+            }
         };
         recognizer.onend = function(event) {
-            MM.Internal.log(Date.now(), "Listener: on end");
-            MM.Internal.log(event);
+            MM.Internal.log(Date.now() + " Listener: onend");
             listener._listening = false;
-            listener.endHandler(event);
+
+            if (listener.endHandler) {
+                listener.endHandler(event);
+            }
         };
 
         recognizer.start();
