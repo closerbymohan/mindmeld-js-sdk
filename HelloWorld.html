@@ -62,7 +62,7 @@ $(document).on('click', '.requestAdminToken', function() {
     if (appIsNotSet()) return;
     var onSuccess = function(response) {
         log("Admin token (" + MM.token + ") successfully retrieved " +
-            "for the application " + response.app.appname + " (appid: " + response.app.appid + ").");
+            "for the application " + response.appname + " (appid: " + response.appid + ").");
     };
     var onFail = function(error) { 
         log("Error getting admin token:  (Type " + error.code + " - " + error.type + "): " + error.message + "  " +
@@ -247,6 +247,11 @@ $(document).on('click', '.publishSessionEvent', function() {
 function log(msg) {
     $('#log').prepend("<div class='logentry'>"+msg+"</div>");
 }
+
+function logError (error) {
+    $('#log').prepend("<div class='logentry error'>"+error+"</div>");
+}
+
 function handleUpdate(response) {
     if (!response.request) {
         log("Event received: " + JSON.stringify(response));
@@ -280,14 +285,14 @@ function activeSessionIsNotSet() {
 }
 function appIdNotSet() {
     if (APPID.length != 40)  {
-        alert('Please enter a valid APPID value. This can be found on your app console at developer.expectlabs.com.');
+        logError('Please enter a valid APPID value. This can be found on your app console at developer.expectlabs.com.');
         return true;
     }
     return false;    
 }
 function appSecretNotSet() {
     if (APPSECRET.length != 40)  {
-        alert('Please enter a valid APPSECRET value. This can be found on your app console at developer.expectlabs.com.');
+        logError('Please enter a valid APPSECRET value. This can be found on your app console at developer.expectlabs.com.');
         return true;
     }
     return false;    
@@ -351,6 +356,10 @@ td.controlPanel {
 }
 #json {
     height: 800px;
+}
+
+.error {
+    color: red;
 }
 </style>
 
