@@ -48,9 +48,6 @@ MM.Internal = $.extend({}, {
     setup: function () {
         MM.activeSessionId = null;
         MM.activeUserId = null;
-
-        // Check for LocalStorage support
-        MM.supportsLocalStorage = typeof(Storage) !== 'undefined';
     },
 
     /**
@@ -1102,7 +1099,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * @private
      */
     backupData: function () {
-        if (MM.supportsLocalStorage) {
+        if (MM.support.localStorage) {
             localStorage[this.localStoragePath()] = JSON.stringify(this.result);
         }
     },
@@ -1127,7 +1124,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * @private
      */
     clearLocalData: function () {
-        if (MM.supportsLocalStorage) {
+        if (MM.support.localStorage) {
             localStorage.removeItem(this.localStoragePath());
         }
     },
@@ -1165,7 +1162,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * @private
      */
     restore: function (onSuccess, onFail) {
-        if (MM.supportsLocalStorage) {
+        if (MM.support.localStorage) {
             var storedData = localStorage[this.localStoragePath()];
             if (storedData) {
                 storedData = JSON.parse(storedData);
@@ -3644,7 +3641,6 @@ MM.Util = $.extend({}, {
     }
 });
 
-
 /**
  *  @memberOf MM
  *
@@ -3784,6 +3780,34 @@ MM.Listener = MM.Internal.createSubclass(Object, {
         this._recognizer.abort();
     }
 });
+
+/**
+ * An overview of features supported in the browser.
+ *
+ * @memberOf MM
+ * @instance
+ */
+MM.support = {
+    /**
+     * A boolean indicating whether the current browser supports the MindMeld Listener
+     */
+    speechRecognition: (function(window) {
+        'use strict';
+        window = window || {};
+        var SpeechRecognition = window.webkitSpeechRecognition ||
+            window.mozSpeechRecognition ||
+            window.msSpeechRecognition ||
+            window.oSpeechRecognition ||
+            window.SpeechRecognition;
+        window.SpeechRecognition = SpeechRecognition;
+        return (typeof(SpeechRecognition) !== 'undefined');
+    })(window),
+    localStorage: (function(window) {
+        'use strict';
+        window = window || {};
+        return (typeof(window.Storage) !== 'undefined');
+    })(window)
+};
 
 // Setup MM SDK
 MM.Internal.setup();
