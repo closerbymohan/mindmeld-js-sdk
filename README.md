@@ -2,6 +2,21 @@
 
 This is the Expect Labs MindMeld JS SDK, mindmeld-2.0.js. The full documentation for mindmeld-js-sdk can be found here: [https://developer.expectlabs.com/docs/sdks/js/referenceDocs/][sdkDocsLink]
 
+### Repository Contents ([https://github.com/expectlabs/mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
+* *mindmeld-2.0.js*: Un-minified, documented JavaScript SDK
+* *mindmeld-2.0.min.js*: Minified, production ready version of mindmeld-2.0.js
+* *HelloWorld.html*: Fully functional, stand-alone HTML page demonstrating basic use of mindmeld-2.0.js
+* *mindmeld-js-sdk.zip*: Zip archive containing mindmeld-2.0.js, mindmeld-2.0.min.js, and HelloWorld.html
+* *docsTemplate/* - templates and configuration required to build JSDoc. Based on
+[jaguarjs-doc](https://github.com/davidshimjs/jaguarjs-jsdoc/)
+* *Gruntfile.js*: [grunt](http://gruntjs.com/) file for mindmeld-2.0.js used to minify JS, create zip archive, and
+generate JSDocs
+* *bower.json*: Used to describe client-side dependencies for mindmeld-2.0.js and publish repository to
+[bower](http://bower.io/) registry
+* *package.json*: Used to describe grunt dependencies
+* *README.md*: Describes this file!
+
+
 ### Installation
 
 There are a few ways to get started using MindMeld JavaScript SDK
