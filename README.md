@@ -1,6 +1,6 @@
 # Expect Labs mindmeld-js-sdk Reference
 
-This is the Expect Labs MindMeld JavaScript SDK, mindmeld-2.0.js.
+This is the reference document for Expect Labs' MindMeld JavaScript SDK, mindmeld-2.0.js.
 
 [Documentation Link][sdkDocsLink]
 
@@ -25,25 +25,23 @@ generate JSDocs
 There are a few ways to get started using MindMeld JavaScript SDK
 
 ### Download from site
-The easiest way to get started using the mindmeld-2.0.js is by downloading the files directly
-from the Expect Labs site
+The easiest way to install mindmeld-2.0.js is by downloading one of the following
+files directly from the Expect Labs site:
 
 * Un-minified: [mindmeld-2.0.js][sdkDownloadLink]
 * Minified: [mindmeld-2.0.min.js][sdkMinifiedDownloadLink]
 
 ### Clone git repository 
-Both files are also available directly from this git repository
-
-Simply clone this repo:
+Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
 ```bash
 git clone https://github.com/expectlabs/mindmeld-js-sdk.git
 ```
 Copy either mindmeld-2.0.js or mindmeld-2.0.min.js into your project's directory
 
-### Bower
+### Install with Bower
 Bower is a popular package manager for the web. Read more about it at [bower.io](http://bower.io/)
 
-If you're using Bower, install mindmeld-js-sdk as a bower package
+If you are using Bower, install mindmeld-js-sdk as a bower package
 ```bash
 bower install mindmeld-js-sdk
 ```
