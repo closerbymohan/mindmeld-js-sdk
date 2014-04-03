@@ -2,7 +2,7 @@
 
 This is the Expect Labs MindMeld JS SDK, mindmeld-2.0.js. The full documentation for mindmeld-js-sdk can be found here: [https://developer.expectlabs.com/docs/sdks/js/referenceDocs/][sdkDocsLink]
 
-## Installation
+### Installation
 
 There are a few ways to get started using MindMeld JavaScript SDK
 
@@ -20,18 +20,22 @@ Simply clone this repo:
 ```bash
 git clone https://github.com/expectlabs/mindmeld-js-sdk.git
 ```
-Copy either mindmeld-2.0.js or mindmeld-2.0.min.js into your project's direcotry
+Copy either mindmeld-2.0.js or mindmeld-2.0.min.js into your project's directory
 
 ### Bower
-If you're using the Bower, install mindmeld-js-sdk as a bower package
+Bower is a popular package manager for the web. Read more about it at [bower.io](http://bower.io/)
+
+If you're using Bower, install mindmeld-js-sdk as a bower package
 ```bash
 bower install mindmeld-js-sdk
 ```
+To save the dependency in bower.json, run the above command with `--save`
 
 
 ## Usage
 
-The MindMeld JavaScript SDK relies on the popular jQuery library. You should first load the jQuery library before loading the MindMeld library. 
+The MindMeld JavaScript SDK relies on the popular jQuery library. You should first load the jQuery library before
+loading the MindMeld library.
 
 ### Without Bower
 ```html
@@ -51,3 +55,170 @@ The MindMeld JavaScript SDK relies on the popular jQuery library. You should fir
 [sdkMinifiedDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.min.js
 
 ## Getting Started
+
+This is a quick guide on how to start using the MindMeld JavaScript SDK in your own projects. The MindMeld JavaScript
+SDK enables developers to build browser-based applications that take advantage of the full range of functionality
+supported by the MindMeld API. The JavaScript SDK wraps the objects and collections supported by the MindMeld
+RESTful API with convenient JavaScript objects. These objects can then be used to communicate with the MindMeld
+API. The JavaScript SDK also provides the ability to send and receive real-time push events in most modern browsers.
+
+
+### Initialization
+
+When the JavaScript SDK creates the global MM object, which contains all of the data classes and functionality to
+access MindMeld. The first step is to initialize the SDK by calling `MM.init` with a `config` object specifying
+your application id and a callback for when the SDK is initialized:
+
+```javascript
+var config = {
+    appid: "<your application id>",
+    onInit: start
+};
+MM.init(config);
+
+// This is where things begin after the MindMeld JavaScript API is initialized.
+function start () {
+    console.log('MindMeld SDK ready!');
+}
+```
+
+Once the JavaScript SDK has been initialized, the MM object is your interface to the MindMeld API.
+
+### Request an Access Token
+
+With your application's app secret you can generate a new user token. You can find the app secret on the
+[Management Console](https://developer.expectlabs.com/console).
+
+```javascript
+var credentials = {
+    appsecret: '<app secret>',
+    simple: {
+        userid: 'einstein79',
+        name: 'Albert Einstein'
+    }
+};
+MM.getToken(credentials, onTokenSuccess, onTokenError);
+
+function onTokenSuccess () {
+    console.log('Your access token was successfully retrieved: ' + MM.token + '.');
+    console.log('The active user id has been set to: ' + MM.activeUserId);
+}
+
+function onTokenError (error) {
+    console.log('Error getting access token:  (Type ' + error.code +
+        ' - ' + error.type + '): ' + error.message + '  ' +
+        'Please make sure your appid and appsecret are set correctly.');
+}
+```
+
+### Create a Session
+All entity extraction and document ranking happens inside of a MindMeld session. Using this SDK, you create
+you own session to which you can later add text entries and fetch relevant documents.
+
+```javascript
+var newSessionData = {
+    name: 'A test session',
+    privacymode: 'inviteonly'
+};
+MM.activeUser.sessions.post(newSessionData,
+    // New session created successfully
+    function (response) {
+        var sessionID = response.data.sessionid;
+        console.log('New session created with id ' + sessionID);
+        MM.setActiveSessionID(sessionID);
+    },
+    // Error
+    function (error) {
+        console.log('Error creating new session:  (Type ' + error.code +
+            ' - ' + error.type + '): ' + error.message);
+    }
+);
+```
+
+### Post a Text Entry
+To post a text entry to the session
+
+```javascript
+var textEntryData = {
+    text: 'Sandra Bullock might win an Academy Award for Best Actress in the movie Gravity',
+    type: 'text',
+    weight: 1.0
+
+};
+MM.activeSession.textentries.post(textEntryData);
+```
+
+### Example Flow to Get Contextually Relevant Documents to a Conversation
+The following code snippet will post a text entry, receive a notification once the MindMeld API
+has extracted entities from a text entry, and fetch documents related to the original text entry
+
+```javascript
+// Subscribe to push events for when the entities collection updates
+MM.activeSession.entities.onUpdate(onEntitiesUpdate, onSubscribedToEntityUpdates);
+
+function onSubscribedToEntityUpdates () {
+    console.log('subscribed to updates to the entities collection');
+
+    var textEntryData = {
+        text: 'Sandra Bullock might win an Academy Award for Best Actress in the movie Gravity',
+        type: 'text',
+        weight: 1.0
+
+    };
+    console.log('posting a new text entry to the session');
+    MM.activeSession.textentries.post(textEntryData);
+}
+
+function onEntitiesUpdate () {
+    console.log('received an update to the entities collection');
+    var entities = MM.activeSession.entities.json();
+    console.log('Entities extracted: ' + JSON.stringify(entities));
+
+    // Now, fetch documents
+    MM.activeSession.documents.get(null, onDocumentsFetched);
+}
+
+function onDocumentsFetched () {
+    console.log('fetched documents related to the session');
+    // get the documents fetched from MM.activeSession.documents.get()
+    var documents =  MM.activeSession.documents.json();
+    console.log('Related Documents: ' + JSON.stringify(documents));
+}
+```
+
+### Sending and Receiving Custom Push Events
+In addition to the push events that indicate that API objects have changed, you can also create custom
+push events. In the example below, we show you how to subscribe to a custom push event on the user
+channel, and then publish a custom push event with a on that same channel. We also do the same for
+the session channel.
+
+```javascript
+// subscribe / publish a custom event on user channel
+MM.activeUser.subscribe('CustomUserEvent', onCustomUserEvent, onSubscribedCustomUserEvent);
+
+function onSubscribedCustomUserEvent () {
+    console.log('successfully subscribed to CustomUserEvent on user channel');
+    var payload = {
+        field1: 'test field',
+        field2: 'temet nosce'
+    };
+    MM.activeUser.publish('CustomUserEvent', payload);
+}
+function onCustomUserEvent (payload) {
+    console.log('received CustomUserEvent. field2 of payload: ' + payload.field2);
+    // received CustomUserEvent. field2 of payload: temet nosce
+}
+
+// subscribe / publish a custom event on session channel
+MM.activeSession.subscribe('CustomSessionEvent', onCustomSessionEvent, onSubscribedCustomSessionEvent);
+
+function onSubscribedCustomSessionEvent () {
+   console.log('successfully subscribed to CustomSessionEvent on session channel');
+   var payload = 'cause and effect';
+   MM.activeSession.publish('CustomSessionEvent', payload);
+}
+function onCustomSessionEvent (payload) {
+   console.log('received CustomSessionEvent with payload: ' + payload);
+   // received CustomSessionEvent with payload: cause and effect
+}
+```
