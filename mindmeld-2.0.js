@@ -3352,6 +3352,47 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      */
     constructor: function () {
         MM.models.ActiveSession.superclass.constructor.apply(this, arguments);
+        var session = this;
+        // TODO: document activeSession.listener
+        this.listener = new MM.Listener({
+            interimResults: true,
+            onResult: function(result, resultIndex, results, event) {
+                // post a text entry for finalized results
+                if (result.final) {
+                    session.textentries.post({
+                        text: result.transcript,
+                        type: 'speech',
+                        weight: 0.5
+                    });
+                }
+                // notify handler
+                if (session.listenerResultHandler != null) {
+                    session.listenerResultHandler(result, resultIndex, results, event);
+                }
+            },
+            onStart: function(event) {
+                if (session.listenerStartHandler != null) {
+                    session.listenerStartHandler(event);
+                }
+            },
+            onEnd: function(event, lastResult) {
+                if (!lastResult.final) {
+                    session.textentries.post({
+                        text: lastResult.transcript,
+                        type: 'speech',
+                        weight: 0.5
+                    });
+                }
+                if (session.listenerEndHandler != null) {
+                    session.listenerEndHandler(event, lastResult);
+                }
+            },
+            onError: function(error) {
+                if (session.listenerErrorHandler != null) {
+                    session.listenerErrorHandler(error);
+                }
+            }
+        });
         $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
     },
     localStoragePath: function () {
@@ -3402,6 +3443,55 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      */
     onUpdate: function (updateHandler) {
         this._onUpdate(updateHandler,  null, null);
+    },
+    /**
+     * Sets the activeSession's onListenerResult handler. Pass null as the listenerResultHandler parameter
+     * to unregister a previously set listenerResultHandler. If the listenerResultHandler has been set, it
+     * is automatically called when active session's listener receives results.
+     *
+     * @param {listenerResultCallback=} listenerResultHandler callback for when the activeSession's listener
+     * receives results
+     * @memberOf MM.activeSession
+     * @instance
+     */
+    onListenerResult: function (listenerResultHandler) {
+        this.listenerResultHandler = listenerResultHandler;
+    },
+    /**
+     * Sets the activeSession's onListenerStart handler. Pass null as the listenerStartHandlerparameter
+     * to unregister a previously set listenerStartHandler. If the listenerStartHandler has been set, it
+     * is automatically called when active session's listener starts listening.
+     *
+     * @param {function} listenerStartHandler callback for when the activeSession's listener starts listening
+     * @memberOf MM.activeSession
+     * @instance
+     */
+    onListenerStart: function (listenerStartHandler) {
+        this.listenerStartHandler = listenerStartHandler;
+    },
+    /**
+     * Sets the activeSession's onListenerEnd handler. Pass null as the listenerEndHandler parameter
+     * to unregister a previously set listenerEndHandler. If the listenerEndHandler has been set, it
+     * is automatically called when active session's listener stops listening.
+     *
+     * @param {function} listenerEndHandler  callback for when the activeSession's listener stops listening
+     * @memberOf MM.activeSession
+     * @instance
+     */
+    onListenerEnd: function (listenerEndHandler ) {
+        this.listenerEndHandler  = listenerEndHandler ;
+    },
+    /**
+     * Sets the activeSession's onListenerError handler. Pass null as the listenerErrorHandler parameter
+     * to unregister a previously set listenerResultHandler. If the listenerResultHandler has been set, it
+     * is automatically called when active session's listener receives results.
+     *
+     * @param {function} listenerErrorHandler  callback for when the activeSession's listener receives errors
+     * @memberOf MM.activeSession
+     * @instance
+     */
+    onListenerError: function (listenerErrorHandler) {
+        this.listenerErrorHandler = listenerErrorHandler;
     },
     /**
      * Get information about the active session. User privileges may allow access to this object
@@ -3789,9 +3879,17 @@ MM.Listener = MM.Internal.createSubclass(Object, {
         recognizer.onend = function(event) {
             MM.Internal.log(Date.now() + " Listener: onend");
             listener._listening = false;
+            var results = listener._results,
+                numResults = results.length,
 
+                result = results[numResults-1];
+            if (!result.final) {
+                result.final = true;
+                // TODO: should we call onResult here?
+                // listener.resultHandler(result, resultIndex, results, event);
+            }
             if (listener.endHandler) {
-                listener.endHandler(event);
+                listener.endHandler(event, result);
             }
         };
 
