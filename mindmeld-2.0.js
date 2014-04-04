@@ -711,10 +711,13 @@ $.extend(MM, {
                     // The admin user id is not returned when requesting a new token
                     // It can be found in the app object's 'ownerid' field
                     MM.get( null,
-                            function (response) {
-                                var adminId = response.data.ownerid;
+                            function (appResponse) {
+                                var adminId = appResponse.data.ownerid;
                                 MM.setActiveUserID(adminId);
                                 MM.Util.testAndCall(onSuccess, response.data);
+                            },
+                            function (error) {
+                                MM.Util.testAndCall(onError, error);
                             }
                     );
                 }
