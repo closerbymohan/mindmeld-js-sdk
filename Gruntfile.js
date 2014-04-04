@@ -8,14 +8,23 @@ module.exports = function (grunt) {
 
     // grunt task configuration
     grunt.initConfig({
-        exec: {
-            jsdoc: {
-                cmd: 'jsdoc mindmeld-2.0.js README.md -d doc/ -c docsTemplate/jaguar.conf.json -t docsTemplate/jaguarjs-doc'
+        jsdoc : {
+            dist: {
+                src: ['mindmeld-2.0.js', 'README.md'],
+                dest: 'doc/',
+                options: {
+                    configure: 'docsTemplate/jaguar.conf.json',
+                    template: 'docsTemplate/jaguarjs-doc',
+                    private: false
+                }
             }
         },
         clean: {
             localDocs: {
               src: ['./doc']
+            },
+            dist: {
+                src: ['./doc', 'mindmeld-2.0.min.js', 'mindmeld-js-sdk.zip']
             }
         },
         uglify: {
@@ -52,12 +61,12 @@ module.exports = function (grunt) {
     // grunt tasks
     grunt.registerTask('docs', [
         'clean:localDocs',
-        'exec:jsdoc'
+        'jsdoc:dist'
     ]);
 
     grunt.registerTask('build', [
-        'clean',
-        'exec:jsdoc',
+        'clean:dist',
+        'jsdoc:dist',
         'uglify:dist',
         'zip:dist'
     ]);
