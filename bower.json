@@ -1,25 +1,25 @@
 {
-    "name": "mindmeld-js-sdk",
-    "main": "mindmeld-2.0.min.js",
-    "version": "2.0.2",
-    "description": "JavaScript SDK for MindMeld API",
-    "homepage": "https://developer.expectlabs.com",
-    "authors": [
-        "swaraj <swaraj@expectlabs.com>"
-    ],
-    "license": "MIT",
-    "dependencies": {
-        "jquery": "^1.9"
-    },
-    "keywords": [
-        "mindmeld",
-        "expect labs",
-        "sdk",
-        "js",
-        "api"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/expectlabs/mindmeld-js-sdk.git"
-    }
+  "name": "mindmeld-js-sdk",
+  "main": "mindmeld-2.0.min.js",
+  "version": "2.0.3",
+  "description": "JavaScript SDK for MindMeld API",
+  "homepage": "https://developer.expectlabs.com",
+  "authors": [
+    "swaraj <swaraj@expectlabs.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "^1.9"
+  },
+  "keywords": [
+    "mindmeld",
+    "expect labs",
+    "sdk",
+    "js",
+    "api"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/expectlabs/mindmeld-js-sdk.git"
+  }
 }
