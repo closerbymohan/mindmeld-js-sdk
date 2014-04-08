@@ -3387,12 +3387,12 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                 }
                 // notify handler
                 if (session._onListenerResult !== null) {
-                    session._onListenerResult(result, resultIndex, results, event);
+                    session._onListenerResult.call(session.listener, result, resultIndex, results, event);
                 }
             },
             onStart: function(event) {
                 if (session._onListenerStart !== null) {
-                    session._onListenerStart(event);
+                    session._onListenerStart.call(session.listener, event);
                 }
             },
             onEnd: function(event) {
@@ -3410,12 +3410,12 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                     }
                 }
                 if (session._onListenerEnd !== null) {
-                    session._onListenerEnd(event);
+                    session._onListenerEnd.call(session.listener, event);
                 }
             },
-            onError: function(error) {
+            onError: function(event) {
                 if (session._onListenerError !== null) {
-                    session._onListenerError(error);
+                    session._onListenerError.call(session.listener, event);
                 }
             }
         });
@@ -3846,6 +3846,7 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * @instance
      */
     start: function() {
+        // TODO: throw error if no onResult ?
         var listener = this;
         var recognizer = this._recognizer = new SpeechRecognition();
         recognizer.continuous = this.continuous;
@@ -3885,7 +3886,8 @@ MM.Listener = MM.Internal.createSubclass(Object, {
             MM.Internal.log(Date.now() + " Listener: onstart");
 
             listener._listening = true;
-            if (listener._onStart) {
+            // TODO: use MM.Util.testAndCall
+            if (listener._onStart !== null) {
                 listener._onStart(event);
             }
         };
@@ -3893,14 +3895,16 @@ MM.Listener = MM.Internal.createSubclass(Object, {
             MM.Internal.log(Date.now() + " Listener: onend");
 
             listener._listening = false;
-            if (listener._onEnd) {
+            // TODO: use MM.Util.testAndCall
+            if (listener._onEnd !== null) {
                 listener._onEnd(event);
             }
         };
         recognizer.onerror = function(event) {
             MM.Internal.log(Date.now() + " Listener: onerror - " + event.error);
 
-            if (listener._onError) {
+            // TODO: use MM.Util.testAndCall
+            if (listener._onError !== null) {
                 listener._onError(event);
             }
             // TODO(jj): do we need to restart in any instances?
