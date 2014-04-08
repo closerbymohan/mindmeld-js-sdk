@@ -3945,27 +3945,47 @@ MM.Listener = MM.Internal.createSubclass(Object, {
  *
  * @memberOf MM
  * @namespace
- * @property {boolean} speechRecognition - whether speech recognition is supported in the current browser
- * @property {boolean} localStorage - whether local storage is supported in the current browser
+ *
+ * @property {boolean} speechRecognition whether speech recognition is supported in the current browser
+ * @property {boolean} localStorage      whether local storage is supported in the current browser
  */
-MM.support = {
-    speechRecognition: (function(window) {
-        'use strict';
-        window = window || {};
-        var SpeechRecognition = window.webkitSpeechRecognition ||
-            window.mozSpeechRecognition ||
-            window.msSpeechRecognition ||
-            window.oSpeechRecognition ||
-            window.SpeechRecognition;
-        window.SpeechRecognition = SpeechRecognition;
-        return (typeof(SpeechRecognition) !== 'undefined');
-    })(window),
-    localStorage: (function(window) {
-        'use strict';
-        window = window || {};
-        return (typeof(window.Storage) !== 'undefined');
-    })(window)
-};
+MM.support = (function(window) {
+    var support = {};
+
+    var localStorage = false;
+    var speechRecognition = false;
+
+    support.__defineGetter__('localStorage', function() { return localStorage; });
+    support.__defineGetter__('speechRecognition', function() { return speechRecognition; });
+
+    try {
+        speechRecognition = (function(window) {
+            'use strict';
+            window = window || {};
+            var SpeechRecognition = window.webkitSpeechRecognition ||
+//                window.mozSpeechRecognition || // TODO: add these as they become supported
+//                window.msSpeechRecognition ||
+//                window.oSpeechRecognition ||
+                window.SpeechRecognition;
+            window.SpeechRecognition = SpeechRecognition; // now we can use one!
+            return (typeof(SpeechRecognition) !== 'undefined');
+        })(window);
+    } catch (e) {
+        // TODO: maybe add something here?
+    }
+    try {
+        var localStorage = (function(window) {
+            'use strict';
+            window = window || {};
+            return (typeof(window.Storage) !== 'undefined');
+        })(window);
+    } catch (e) {
+        // TODO: maybe add something here?
+    }
+
+    return support;
+})(window);
+
 
 // Setup MM SDK
 MM.Internal.setup();
