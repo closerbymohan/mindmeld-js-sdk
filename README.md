@@ -190,7 +190,7 @@ function onDocumentsFetched () {
 ### Sending and Receiving Custom Push Events
 In addition to the push events that indicate that API objects have changed, you can also create custom
 push events. In the example below, we show you how to subscribe to a custom push event on the user
-channel, and then publish a custom push event with a on that same channel. We also do the same for
+channel, and then publish a custom push event on that same channel. We also do the same for
 the session channel.
 
 ```javascript
