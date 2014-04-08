@@ -3846,8 +3846,8 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * @instance
      */
     start: function() {
-        var listener = this,
-            recognizer = this._recognizer = new SpeechRecognition();
+        var listener = this;
+        var recognizer = this._recognizer = new SpeechRecognition();
         recognizer.continuous = this.continuous;
         recognizer.interimResults = this.interimResults;
         listener._results = []; // clear previous results
@@ -3863,12 +3863,11 @@ MM.Listener = MM.Internal.createSubclass(Object, {
             var result = {
                 final: false,
                 transcript: ''
-            },
-                resultIndex = event.resultIndex,
-                results = listener._results;
+            };
+            var resultIndex = event.resultIndex;
+            var results = listener._results;
 
             for (var i = event.resultIndex; i < event.results.length; ++i) {
-
                 var transcript = event.results[i][0].transcript;
 
                 if (event.results[i].isFinal) {
