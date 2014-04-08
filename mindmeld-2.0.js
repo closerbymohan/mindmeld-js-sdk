@@ -3847,11 +3847,15 @@ MM.Listener = MM.Internal.createSubclass(Object, {
     /**
      * Begins a speech recognition session.
      *
+     * @throws When speech recognition is not supported in the browser, an error is thrown.
      * @memberOf MM.Listener
      * @instance
      */
     start: function() {
-        // TODO: throw error if no onResult ?
+        if (!MM.support.speechRecognition) {
+            MM.Internal.log('Speech recognition is not supported');
+            throw new Error('Speech recognition is not supported');
+        }
         var listener = this;
         var recognizer = this._recognizer = new SpeechRecognition();
         recognizer.continuous = this.continuous;
