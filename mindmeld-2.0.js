@@ -3800,6 +3800,12 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
      * are omitted default to either null or false.
      *
+     * @property {boolean} listening  - indicates whether or not the listener is active
+     * @property {boolean} interimResults - indicates whether or not interimResults are enabled
+     * @property {boolean} continuous indicates whether or not continuous recognition is enabled
+     * @property {Array} results array of {@link ListenerResult} objects received during the current or most recent
+     * listening session
+     *
      * @example
      var myListener = new MM.Listener({
          continuous: true,
@@ -3816,18 +3822,48 @@ MM.Listener = MM.Internal.createSubclass(Object, {
          }
      });
      */
-    constructor: function(config) {
-        // initialize to defaults if they weren't passed in
-        var configWithDefaults = $.extend({
-            onStart: null,
-            onEnd: null,
-            onError: null,
-            continuous: false,
-            interimResults: false
-        }, config);
-        this.setConfig(configWithDefaults);
-        this._listening = false;
-    },
+    constructor: (function() {
+        var constructor = function(config) {
+          this.setConfig(config);
+        }
+
+        /**
+         * @property {boolean} listening indicates whether or not the listener is active. Readonly
+         * @memberOf MM.Listener
+         * @instance
+         * @readonly
+         */
+        constructor.prototype._listening = false;
+        constructor.prototype.__defineGetter__('listening', function() {
+            return this._listening;
+        });
+
+        /**
+         * @property {Array} results an array of {@link ListenerResult} objects received during the current or most recent
+         * speech recognition session. Readonly
+         * @memberOf MM.Listener
+         * @instance
+         * @readonly
+         */
+        constructor.prototype._results = [];
+        constructor.prototype.__defineGetter__('results', function() {
+            return JSON.parse(JSON.stringify(this._results));
+        });
+
+        /**
+         * @property {boolean} continuous indicates whether or not continuous recognition is enabled
+         * @memberOf MM.Listener
+         * @instance
+         */
+        constructor.prototype.continuous = false;
+        /**
+         * @property {boolean} interimResults indicates whether or not interimResults are enabled
+         * @memberOf MM.Listener
+         * @instance
+         */
+        constructor.prototype.interimResults = false;
+        return constructor;
+    }()),
 
     /**
      * Sets the listener object's configuration. Configurable properties are as follows:
@@ -3839,15 +3875,15 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      */
     setConfig: function(config) {
         var configProperties = {
-            onResult: 'resultHandler',
-            onStart: 'startHandler',
-            onEnd: 'endHandler',
-            onError: 'errorHandler',
-            continuous: '_continuous',
-            interimResults: '_interimResults'
+            onResult: '_onResult',
+            onStart: '_onStart',
+            onEnd: '_onEnd',
+            onError: '_onError',
+            continuous: 'continuous',
+            interimResults: 'interimResults'
         };
 
-        for (var configProperty in configProperties) {
+        for (var configProperty in configProperties) { // only look at safe properties
             if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
                 this[configProperties[configProperty]] = config[configProperty];
             }
@@ -3862,9 +3898,9 @@ MM.Listener = MM.Internal.createSubclass(Object, {
     start: function() {
         var listener = this,
             recognizer = this._recognizer = new SpeechRecognition();
-        recognizer.continuous = this.continuous();
-        recognizer.interimResults = this.interimResults();
-        listener._results = [];
+        recognizer.continuous = this.continuous;
+        recognizer.interimResults = this.interimResults;
+        listener._results = []; // clear previous results
 
         // TODO: set language based on browser settings
         // recognizer.lang = "eng-USA";
@@ -3876,13 +3912,11 @@ MM.Listener = MM.Internal.createSubclass(Object, {
 
             var result = {
                 final: false,
-                transcript: '',
-                pendingTranscript: ''
+                transcript: ''
             },
                 resultIndex = event.resultIndex,
                 results = listener._results;
 
-            // If there is a new result
             for (var i = event.resultIndex; i < event.results.length; ++i) {
 
                 var transcript = event.results[i][0].transcript;
@@ -3895,43 +3929,33 @@ MM.Listener = MM.Internal.createSubclass(Object, {
                     result.transcript += transcript; // collapse multiple pending results into one
                 }
             }
-            results[event.resultIndex] = result;
-            listener.resultHandler(result, resultIndex, results, event);
-        };
-        recognizer.onerror = function(event) {
-            MM.Internal.log(Date.now() + " Listener: onerror");
-//            MM.Internal.log("Listener: " + event.error);
-            if (listener.errorHandler) {
-                listener.errorHandler(event);
-            }
-            // TODO(jj): do we need to restart in any instances?
+            results[resultIndex] = result;
+            listener._onResult(result, resultIndex, results, event);
         };
         recognizer.onstart = function(event) {
             MM.Internal.log(Date.now() + " Listener: onstart");
-//            MM.Internal.log(event);
-            listener._listening = true;
 
-            if (listener.startHandler) {
-                listener.startHandler(event);
+            listener._listening = true;
+            if (listener._onStart) {
+                listener._onStart(event);
             }
         };
         recognizer.onend = function(event) {
             MM.Internal.log(Date.now() + " Listener: onend");
-            listener._listening = false;
-            var results = listener._results,
-                numResults = results.length,
 
-                result = results[numResults-1];
-            if (!result.final) {
-                result.final = true;
-                // TODO: should we call onResult here?
-                // listener.resultHandler(result, resultIndex, results, event);
-            }
-            if (listener.endHandler) {
-                listener.endHandler(event, result);
+            listener._listening = false;
+            if (listener._onEnd) {
+                listener._onEnd(event);
             }
         };
+        recognizer.onerror = function(event) {
+            MM.Internal.log(Date.now() + " Listener: onerror - " + event.error);
 
+            if (listener._onError) {
+                listener._onError(event);
+            }
+            // TODO(jj): do we need to restart in any instances?
+        };
         recognizer.start();
     },
     /**
@@ -3940,7 +3964,7 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * @memberOf MM.Listener
      * @instance
      */
-    stop: function () {
+    stop: function() {
         this._recognizer.stop();
     },
     /**
@@ -3949,32 +3973,8 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * @memberOf MM.Listener
      * @instance
      */
-    cancel: function () {
+    cancel: function() {
         this._recognizer.abort();
-    },
-    /**
-     * @returns {boolean} indicates whether or not the listener is active
-     * @memberOf MM.Listener
-     * @instance
-     */
-    listening: function() {
-        return this._listening;
-    },
-    /**
-     * @returns {boolean} indicates whether or not interimResults are enabled
-     * @memberOf MM.Listener
-     * @instance
-     */
-    interimResults: function() {
-        return this._interimResults;
-    },
-    /**
-     * @returns {boolean} indicates whether or not continuous recognition is enabled
-     * @memberOf MM.Listener
-     * @instance
-     */
-    continuous: function() {
-        return this._continuous;
     }
 });
 
