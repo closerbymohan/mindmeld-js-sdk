@@ -3746,11 +3746,12 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * The ListenerConfig object represents the configuration of a {@link MM.Listener}
      *
      * @typedef  {Object}  ListenerConfig
-     * @property {boolean} [continuous=false]        whether the listener should continue listening until stop() is called. If false,
-     * recording will continue until the speech recognition provider recognizes a sufficient pause in speech
+     * @property {boolean} [continuous=false]        whether the listener should continue listening until stop() is called.
+     *                                               If false, recording will continue until the speech recognition provider
+     *                                               recognizes a sufficient pause in speech.
      * @property {boolean} [interimResults=false]    whether the listener should provide interim results
-     * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be provided
-     * when creating a new {@link MM.Listener}.
+     * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
+     *                                               provided when creating a new {@link MM.Listener}.
      * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
      * @property {function} [onEnd=null]             the event handler which is called when a listening session ends.
      * @property {function} [onError=null]           the event handler which is called when errors are received.
@@ -3773,13 +3774,13 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * @constructs MM.Listener
      * @classdesc This is the class for the MindMeld speech recognition API.
      * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
-     * are omitted default to either null or false.
+     *                         are omitted default to either null or false.
      *
-     * @property {boolean} listening  - indicates whether or not the listener is active
-     * @property {boolean} interimResults - indicates whether or not interimResults are enabled
-     * @property {boolean} continuous indicates whether or not continuous recognition is enabled
-     * @property {Array} results array of {@link ListenerResult} objects received during the current or most recent
-     * listening session
+     * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
+     * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
+     *                                    recent listening session. Readonly.
+     * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
+     * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
      *
      * @example
      var myListener = new MM.Listener({
@@ -3802,51 +3803,25 @@ MM.Listener = MM.Internal.createSubclass(Object, {
           this.setConfig(config);
         }
 
-        /**
-         * @property {boolean} listening indicates whether or not the listener is active. Readonly
-         * @memberOf MM.Listener
-         * @instance
-         * @readonly
-         */
         constructor.prototype._listening = false;
         constructor.prototype.__defineGetter__('listening', function() {
             return this._listening;
         });
-
-        /**
-         * @property {Array} results an array of {@link ListenerResult} objects received during the current or most recent
-         * speech recognition session. Readonly
-         * @memberOf MM.Listener
-         * @instance
-         * @readonly
-         */
         constructor.prototype._results = [];
         constructor.prototype.__defineGetter__('results', function() {
             return JSON.parse(JSON.stringify(this._results));
         });
-
-        /**
-         * @property {boolean} continuous indicates whether or not continuous recognition is enabled
-         * @memberOf MM.Listener
-         * @instance
-         */
         constructor.prototype.continuous = false;
-        /**
-         * @property {boolean} interimResults indicates whether or not interimResults are enabled
-         * @memberOf MM.Listener
-         * @instance
-         */
         constructor.prototype.interimResults = false;
         return constructor;
     }()),
 
     /**
-     * Sets the listener object's configuration. Configurable properties are as follows:
+     * Sets the listener object's configuration. Pass null for callback fields to remove previous callbacks.
      *
      * @param {ListenerConfig} config an object containing the listener's configuration properties
      * @memberOf MM.Listener
      * @instance
-     *
      */
     setConfig: function(config) {
         var configProperties = {
