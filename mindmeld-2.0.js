@@ -3360,19 +3360,21 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
         /**
          * A session's listener is automatically configured to post text entries with type 'speech' and weight of 0.5
          * when it receives a final {@link ListenerResult} object. Use {@link MM.activeSession#setListenerConfig} to
-         * register callbacks.
+         * register callbacks. Before using a Listener, check that it is supported with {@link MM.support}.
          *
          * @name listener
          * @memberOf MM.activeSession
          * @type {MM.Listener}
          * @instance
          * @example
-         MM.activeSession.setListenerConfig({
-             onResult: function(result) {
-                 // update UI
-             }
-         });
-         MM.activeSession.listener.start();
+         if (MM.support.speechRecognition) {
+             MM.activeSession.setListenerConfig({
+                 onResult: function(result) {
+                     // update UI
+                 }
+             });
+             MM.activeSession.listener.start();
+         }
          */
         this.listener = new MM.Listener({
             interimResults: true,
@@ -3772,7 +3774,8 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * Constructor for Listener class
      *
      * @constructs MM.Listener
-     * @classdesc This is the class for the MindMeld speech recognition API.
+     * @classdesc This is the class for the MindMeld speech recognition API. Before using a Listener, check that it is
+     *            supported with {@link MM.support}.
      * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
      *                         are omitted default to either null or false.
      *
@@ -3783,20 +3786,22 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
      *
      * @example
-     var myListener = new MM.Listener({
-         continuous: true,
-         interimResults: true,
-         onResult: function(result) {
-             if (result.final) {
-                 // post text entry for final results
-                 MM.activeSession.textentries.post({
-                     text: result.transcript,
-                     type: 'speech',
-                     weight: '0.5'
-                 });
+     if (MM.support.speechRecognition) {
+         var myListener = new MM.Listener({
+             continuous: true,
+             interimResults: true,
+             onResult: function(result) {
+                 if (result.final) {
+                     // post text entry for final results
+                     MM.activeSession.textentries.post({
+                         text: result.transcript,
+                         type: 'speech',
+                         weight: '0.5'
+                     });
+                 }
              }
-         }
-     });
+         });
+     }
      */
     constructor: (function() {
         var constructor = function(config) {
