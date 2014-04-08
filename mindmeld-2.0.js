@@ -3639,11 +3639,61 @@ MM.Util = $.extend({}, {
      * Tests whether given parameter is a function, and if so calls it
      *
      * @param {?function} func object to test if it is a function
-     * @param {Array=} args array of arguments to pass as parameters to function
      * @memberOf MM.Util
+     *
+     * @example
+     var func = function(arg1, arg2) {
+        console.log('Argument 1: ' + arg1);
+        console.log('Argument 2: ' + arg2);
+     };
+
+     MM.Util.testAndCall(func, 'a', 'b');
+     // Argument 1: a
+     // Argument 2: b
+
      */
-    testAndCall: function (func, args) {
-        $.isFunction(func) && func(args);
+    testAndCall: function (func) {
+        if($.isFunction(func)){
+            // args will be the arguments to be passed to func
+            // arguments[0] is a reference to func, so we call
+            // slice to remove it from the arguments list
+            var args = Array.prototype.slice.call(arguments, 1);
+            func.apply(this, args);
+        }
+    },
+
+    /**
+     * Tests whether given parameter is a function, and if so calls it
+     * with a given 'this' value
+     *
+     * @param {?function} func object to test if it is a function
+     * @param {Object} thisArg value for 'this' when func is called
+     * @memberOf MM.Util
+     *
+     * @example
+     var func = function(arg1, arg2) {
+        console.log('This.prop: ' + this.prop);
+        console.log('Argument 1: ' + arg1);
+        console.log('Argument 2: ' + arg2);
+     };
+
+     var self = {
+        prop: 'property'
+     };
+
+     MM.Util.testAndCallThis(func, self, 'a', 'b');
+     // This.prop: property
+     // Argument 1: a
+     // Argument 2: b
+     */
+    testAndCallThis: function (func, thisArg) {
+        if($.isFunction(func)){
+            // args will be the arguments to be passed to func
+            // arguments[0] is a reference to func, so we call
+            // slice to remove it from the arguments list
+            var args = Array.prototype.slice.call(arguments, 2);
+            func.apply(thisArg, args);
+        }
     }
 });
 
