@@ -3359,16 +3359,18 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
 
         /**
          * A session's listener is automatically configured to post text entries with type 'speech' and weight of 0.5
-         * when it receives results. Use {@link MM.activeSession#onListenerResult}, {@link MM.activeSession#onListenerStart},
-         * {@link MM.activeSession#onListenerEnd}, and {@link MM.activeSession#onListenerError} to register callbacks.
+         * when it receives a final {@link ListenerResult} object. Use {@link MM.activeSession#setListenerConfig} to
+         * register callbacks.
          *
          * @name listener
          * @memberOf MM.activeSession
          * @type {MM.Listener}
          * @instance
          * @example
-         MM.activeSession.onListenerResult(function(result) {
-             // update UI
+         MM.activeSession.setListenerConfig({
+             onResult: function(result) {
+                 // update UI
+             }
          });
          MM.activeSession.listener.start();
          */
@@ -3384,35 +3386,36 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                     });
                 }
                 // notify handler
-                if (session.listenerResultHandler !== null) {
-                    session.listenerResultHandler(result, resultIndex, results, event);
+                if (session._onListenerResult !== null) {
+                    session._onListenerResult(result, resultIndex, results, event);
                 }
             },
             onStart: function(event) {
-                if (session.listenerStartHandler !== null) {
-                    session.listenerStartHandler(event);
+                if (session._onListenerStart !== null) {
+                    session._onListenerStart(event);
                 }
             },
             onEnd: function(event) {
-                var results = this.results,
-                    lastResult = null;
+                // Add last result if it was not final
+                var results = this.results;
+                var lastResult = null;
                 if (results.length >= 0) {
                     lastResult = results[results.length - 1];
+                    if (!lastResult.final) {
+                        session.textentries.post({
+                            text: lastResult.transcript,
+                            type: 'speech',
+                            weight: 0.5
+                        });
+                    }
                 }
-                if (!lastResult.final) {
-                    session.textentries.post({
-                        text: lastResult.transcript,
-                        type: 'speech',
-                        weight: 0.5
-                    });
-                }
-                if (session.listenerEndHandler !== null) {
-                    session.listenerEndHandler(event);
+                if (session._onListenerEnd !== null) {
+                    session._onListenerEnd(event);
                 }
             },
             onError: function(error) {
-                if (session.listenerErrorHandler !== null) {
-                    session.listenerErrorHandler(error);
+                if (session._onListenerError !== null) {
+                    session._onListenerError(error);
                 }
             }
         });
@@ -3468,57 +3471,29 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
         this._onUpdate(updateHandler,  null, null);
     },
     /**
-     * Sets the activeSession's onListenerResult handler. Pass null as the listenerResultHandler parameter
-     * to deregister a previously set listenerResultHandler. If the listenerResultHandler has been set, it
-     * is automatically called when active session's listener receives results.
+     * Sets the active session listener configuration. Pass null for callback fields to remove previous callbacks.
      *
-     * @param {ListenerResultCallback=} listenerResultHandler callback for when the activeSession's listener
-     * receives results
+     * @param {ListenerConfig} config an object containing the active session listener's configuration properties
      * @memberOf MM.activeSession
      * @instance
      * @see {@link MM.Listener#setConfig}
      */
-    onListenerResult: function (listenerResultHandler) {
-        this.listenerResultHandler = listenerResultHandler;
-    },
-    /**
-     * Sets the activeSession's onListenerStart handler. Pass null as the listenerStartHandler parameter
-     * to deregister a previously set listenerStartHandler. If the listenerStartHandler has been set, it
-     * is automatically called when active session's listener starts listening.
-     *
-     * @param {function=} listenerStartHandler callback for when the activeSession's listener starts listening
-     * @memberOf MM.activeSession
-     * @instance
-     * @see {@link MM.Listener#setConfig}
-     */
-    onListenerStart: function (listenerStartHandler) {
-        this.listenerStartHandler = listenerStartHandler;
-    },
-    /**
-     * Sets the activeSession's onListenerEnd handler. Pass null as the listenerEndHandler parameter
-     * to deregister a previously set listenerEndHandler. If the listenerEndHandler has been set, it
-     * is automatically called when active session's listener stops listening.
-     *
-     * @param {function=} listenerEndHandler callback for when the activeSession's listener stops listening
-     * @memberOf MM.activeSession
-     * @instance
-     * @see {@link MM.Listener#setConfig}
-     */
-    onListenerEnd: function (listenerEndHandler ) {
-        this.listenerEndHandler  = listenerEndHandler ;
-    },
-    /**
-     * Sets the activeSession's onListenerError handler. Pass null as the listenerErrorHandler parameter
-     * to deregister a previously set listenerResultHandler. If the listenerResultHandler has been set, it
-     * is automatically called when active session's listener receives results.
-     *
-     * @param {function=} listenerErrorHandler  callback for when the activeSession's listener receives errors
-     * @memberOf MM.activeSession
-     * @instance
-     * @see {@link MM.Listener#setConfig}
-     */
-    onListenerError: function (listenerErrorHandler) {
-        this.listenerErrorHandler = listenerErrorHandler;
+    setListenerConfig: function (config) {
+        var configProperties = {
+            onResult: '_onListenerResult',
+            onStart: '_onListenerStart',
+            onEnd: '_onListenerEnd',
+            onError: '_onListenerError'
+        };
+
+        for (var configProperty in configProperties) { // only look at safe properties
+            if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
+                this[configProperties[configProperty]] = config[configProperty];
+                delete config[configProperty]; // remove from config
+            }
+        }
+
+        this.listener.setConfig(config); // pass other configuration settings to listener
     },
     /**
      * Get information about the active session. User privileges may allow access to this object
