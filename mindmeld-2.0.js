@@ -3384,12 +3384,12 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                     });
                 }
                 // notify handler
-                if (session.listenerResultHandler != null) {
+                if (session.listenerResultHandler !== null) {
                     session.listenerResultHandler(result, resultIndex, results, event);
                 }
             },
             onStart: function(event) {
-                if (session.listenerStartHandler != null) {
+                if (session.listenerStartHandler !== null) {
                     session.listenerStartHandler(event);
                 }
             },
@@ -3406,12 +3406,12 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                         weight: 0.5
                     });
                 }
-                if (session.listenerEndHandler != null) {
+                if (session.listenerEndHandler !== null) {
                     session.listenerEndHandler(event);
                 }
             },
             onError: function(error) {
-                if (session.listenerErrorHandler != null) {
+                if (session.listenerErrorHandler !== null) {
                     session.listenerErrorHandler(error);
                 }
             }
