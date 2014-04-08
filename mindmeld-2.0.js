@@ -3393,7 +3393,12 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                     session.listenerStartHandler(event);
                 }
             },
-            onEnd: function(event, lastResult) {
+            onEnd: function(event) {
+                var results = this.results,
+                    lastResult = null;
+                if (results.length >= 0) {
+                    lastResult = results[results.length - 1];
+                }
                 if (!lastResult.final) {
                     session.textentries.post({
                         text: lastResult.transcript,
@@ -3402,7 +3407,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                     });
                 }
                 if (session.listenerEndHandler != null) {
-                    session.listenerEndHandler(event, lastResult);
+                    session.listenerEndHandler(event);
                 }
             },
             onError: function(error) {
@@ -3494,7 +3499,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      * to deregister a previously set listenerEndHandler. If the listenerEndHandler has been set, it
      * is automatically called when active session's listener stops listening.
      *
-     * @param {ListenerEndCallback=} listenerEndHandler  callback for when the activeSession's listener stops listening
+     * @param {function=} listenerEndHandler callback for when the activeSession's listener stops listening
      * @memberOf MM.activeSession
      * @instance
      * @see {@link MM.Listener#setConfig}
@@ -3754,28 +3759,37 @@ MM.Util = $.extend({}, {
 });
 
 MM.Listener = MM.Internal.createSubclass(Object, {
+    /**
+     * The ListenerResult object represent the speech recognition result.
+     *
+     * @typedef  {Object}  ListenerResult
+     * @property {string}  transcript - the text of the speech that was processed
+     * @property {boolean} final - indicates whether the result is final or interim
+     */
+
+    /**
+     * The ListenerConfig object represents the configuration of a {@link MM.Listener}
+     *
+     * @typedef  {Object}  ListenerConfig
+     * @property {boolean} [continuous=false]        whether the listener should continue listening until stop() is called. If false,
+     * recording will continue until the speech recognition provider recognizes a sufficient pause in speech
+     * @property {boolean} [interimResults=false]    whether the listener should provide interim results
+     * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be provided
+     * when creating a new {@link MM.Listener}.
+     * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
+     * @property {function} [onEnd=null]             the event handler which is called when a listening session ends.
+     * @property {function} [onError=null]           the event handler which is called when errors are received.
+     */
 
     /**
      * The ListenerResultCallback handles results from the Speech Recognition API. A ListenerResultCallback should at
      * minimum handle the result param.
      *
      * @callback ListenerResultCallback
-     * @param {Object} result result object containing speech recognition result
-     * @param {string} result.transcript transcript returned from the API.
-     * @param {boolean} result.final a boolean indicating whether this result is final or interim
+     * @param {ListenerResult} result result object containing speech recognition result
      * @param {number} resultIndex the index of the provided result in the results array
-     * @param {Array} results an array of results received during the current speech recognition session
+     * @param {Array} results an array of {@link ListenerResult} objects received during the current speech recognition session
      * @param {Event} event the original event received from the underlying SpeechRecognition instance
-     */
-
-    /**
-     * The ListenerEndCallback handles results from the Speech Recognition API.
-     *
-     * @callback ListenerEndCallback
-     * @param {Event} event the original event received from the underlying SpeechRecognition instance
-     * @param {Object} lastResult object containing the last speech recognition result received
-     * @param {string} lastResult.transcript transcript returned from the API.
-     * @param {boolean} lastResult.final a boolean indicating whether the result is final or interim
      */
 
     /**
@@ -3783,14 +3797,8 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      *
      * @constructs MM.Listener
      * @classdesc This is the class for the MindMeld speech recognition API.
-     * @param {Object} config an object containing the listener's configuration properties
-     * @param {ListenerResultCallback} config.onResult the callback that will process listener results. This property must be provided.
-     * @param {boolean} [config.continuous=false] whether the listener should continue listening until stop() is called. If false,
-     * recording will continue until the speech recognition provider recognizes a sufficient pause in speech
-     * @param {boolean} [config.interimResults=false] whether the listener should provide interim results
-     * @param {function} [config.onError=null] the event handler which is called to handle errors
-     * @param {function} [config.onStart=null] the event handler which is called when a listening session begins.
-     * @param {ListenerEndCallback} [config.onEnd=null] the event handler which is called when a listening session ends.
+     * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
+     * are omitted default to either null or false.
      *
      * @example
      var myListener = new MM.Listener({
@@ -3824,14 +3832,7 @@ MM.Listener = MM.Internal.createSubclass(Object, {
     /**
      * Sets the listener object's configuration. Configurable properties are as follows:
      *
-     * @param {Object} config an object containing the listener's configuration properties
-     * @param {ListenerResultCallback} config.onResult the callback that will process listener results. This property must be provided.
-     * @param {boolean} [config.continuous=false] whether the listener should continue listening until stop() is called. If false,
-     * recording will continue until the speech recognition provider recognizes a sufficient pause in speech
-     * @param {boolean} [config.interimResults=false] whether the listener should provide interim results
-     * @param {function} [config.onError=null] the event handler which is called to handle errors
-     * @param {function} [config.onStart=null] the event handler which is called when a listening session begins.
-     * @param {ListenerEndCallback} [config.onEnd=null] the event handler which is called when a listening session ends.
+     * @param {ListenerConfig} config an object containing the listener's configuration properties
      * @memberOf MM.Listener
      * @instance
      *
@@ -3858,7 +3859,7 @@ MM.Listener = MM.Internal.createSubclass(Object, {
      * @memberOf MM.Listener
      * @instance
      */
-    start: function () {
+    start: function() {
         var listener = this,
             recognizer = this._recognizer = new SpeechRecognition();
         recognizer.continuous = this.continuous();
@@ -3891,15 +3892,11 @@ MM.Listener = MM.Internal.createSubclass(Object, {
                     result.transcript = transcript;
                     break;
                 } else {
-                    result.transcript += transcript;
+                    result.transcript += transcript; // collapse multiple pending results into one
                 }
             }
             results[event.resultIndex] = result;
             listener.resultHandler(result, resultIndex, results, event);
-        };
-        recognizer.onnomatch = function(event) {
-            MM.Internal.log(Date.now() + " Listener: onnomatch");
-//            MM.Internal.log(event);
         };
         recognizer.onerror = function(event) {
             MM.Internal.log(Date.now() + " Listener: onerror");
