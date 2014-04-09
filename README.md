@@ -226,30 +226,52 @@ function onCustomSessionEvent (payload) {
 
 ### Using Speech Recognition
 If you would like to use speech recognition to enable users to interact with your application with their voices
-use MM.Listener. The simplest way to enable speech recognition is to use the active session listener, which is
+use MM.Listener. Currently the browsers known to support MM.Listener are Google Chrome for Desktop (versions 25+)
+and Android (versions 31+). The MM.Listener class relies upon the speech recognition portion of the Web Speech API
+(https://dvcs.w3.org/hg/speech-api/raw-file/tip/webspeechapi.html) which has not yet been implemented by all major
+browsers. The simplest way to enable speech recognition is to use the active session listener, which is
 preconfigured to post text entries when it receives final results. Below we illustrate how to use the active session
 listener.
 
+
+```html
+<div id="textStream">
+  <span id="confirmed"></span>
+  <span id="pending" style="opacity: 0.5;"></span>
+</div>
+```
+
 ```javascript
-if (MM.support.speechRecognition) { // check that it is supported in the current browser
+if (MM.support.speechRecognition) { // check for support in the current browser
   MM.activeSession.setListenerConfig({
     onResult: function(result) {
       console.log("Listener received result: " + result);
       // Display speech
       if (result.final) {
         // Display speech segment as final
+        $('#confirmed').append(' <span class="tran">' + result.transcript + '</span>');
+        $('#pending').text('');
       } else {
-        // Display speech segment as pending
+        $('#pending').text(result.transcript);
       }
     },
     onStart: function(event) {
       // Update UI so user knows to speak
+
+      // Clear previous text
+      $('#confirmed').text('');
     },
     onEnd: function(event) {
       // Update UI so user knows recording has ended
+      var pendingText = $("#pending").text();
+      if (pendingText.length > 0) {
+        $('#confirmed').append(' <span class="tran">' + pendingText + '</span>');
+        $('#pending').text('');
+      }
     },
     onError: function(error) {
       // let user know something went wrong
+      alert('Sorry, there was a problem with speech recognition');
     }
   });
   MM.activeSession.listener.start();
@@ -257,11 +279,11 @@ if (MM.support.speechRecognition) { // check that it is supported in the current
 }
 ```
 
-If you would like to have more control over how text entries are posted, you can create your own MM.Listener object,
-as shown below.
+If you would like to have more control over how and when text entries are posted, you can create your own MM.Listener
+object, as shown below.
 
 ```javascript
-if (MM.support.speechRecognition) { // check that it is supported in the current browser
+if (MM.support.speechRecognition) { // check for support in the current browser
   var myListener = new MM.Listener({
     continuous: true, // we will continue listening until myListener.stop() is called
     interimResults:, true // we will receive results before the API
@@ -275,8 +297,11 @@ if (MM.support.speechRecognition) { // check that it is supported in the current
           weight: 0.5
         });
         // Display speech segment as final
+        $('#confirmed').append(' <span class="tran">' + result.transcript + '</span>');
+        $('#pending').text('');
       } else {
         // Display speech segment as pending
+        $('#pending').text(result.transcript);
       }
     },
     onStart: function(event) {
@@ -284,11 +309,18 @@ if (MM.support.speechRecognition) { // check that it is supported in the current
     },
     onEnd: function(event) {
       // Update UI so user knows recording has ended
+      //
+      var pendingText = $("#pending").text();
+      if (pendingText != '') {
+        $('#confirmed').append(' <span class="tran">' + pendingText + '</span>');
+        $('#pending').text('');
+      }
     },
     onError: function(error) {
       // let user know something went wrong
     }
   });
+
   myListener.start();
   // user begins speaking now
 }
