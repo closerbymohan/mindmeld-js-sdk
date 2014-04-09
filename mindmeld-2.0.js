@@ -1597,7 +1597,7 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
      * MM.activeUser is a namespace that represents the currently active user. It can only be used after
      * {@link MM#setActiveUserID} has been called. All API calls requiring a user's context use the activeUser's
      * userid. This namespace provides methods to subscribe to user's push events and interface to the
-     * user's session list via {@link MM.activeUser#sessions}
+     * user's session list via {@link MM.activeUser.sessions}
      *
      * @namespace MM.activeUser
      * @memberOf MM
