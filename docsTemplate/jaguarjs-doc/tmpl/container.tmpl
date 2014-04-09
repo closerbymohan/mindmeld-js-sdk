@@ -19,31 +19,32 @@
     <?js if (doc.variation) { ?>
         <sup class="variation"><?js= doc.variation ?></sup>
     <?js } ?></h2>
-    <?js if (doc.classdesc) { ?>
-        <div class="class-description"><?js= doc.classdesc ?></div>
-    <?js } ?>
-</header>  
+</header>
 
 <article>
     <div class="container-overview">
-    <?js if (doc.kind === 'module' && doc.module) { ?>
-        <?js= self.partial('method.tmpl', doc.module) ?>
-    <?js } ?>
-    
-    <?js if (doc.kind === 'class') { ?>
-        <?js= self.partial('method.tmpl', doc) ?>
-    <?js } else { ?>
-        <?js if (doc.description) { ?>
-            <div class="description"><?js= doc.description ?></div>
+        <?js if (doc.kind === 'module' && doc.module) { ?>
+            <?js= self.partial('method.tmpl', doc.module) ?>
         <?js } ?>
+
+        <?js if (doc.kind === 'class') { ?>
+            <?js if (doc.classdesc) { ?>
+                <div class="class-description"><p><?js= doc.classdesc ?><p></div>
+            <?js } ?>
+
+            <?js= self.partial('method.tmpl', doc) ?>
+        <?js } else { ?>
+            <?js if (doc.description) { ?>
+                <div class="description"><?js= doc.description ?></div>
+            <?js } ?>
         
-        <?js= self.partial('details.tmpl', doc) ?>
+            <?js= self.partial('details.tmpl', doc) ?>
         
-        <?js if (doc.examples && doc.examples.length) { ?>
-            <h3>Example<?js= doc.examples.length > 1? 's':'' ?></h3>
-            <?js= self.partial('examples.tmpl', doc.examples) ?>
+            <?js if (doc.examples && doc.examples.length) { ?>
+                <h3>Example<?js= doc.examples.length > 1? 's':'' ?></h3>
+                <?js= self.partial('examples.tmpl', doc.examples) ?>
+            <?js } ?>
         <?js } ?>
-    <?js } ?>
     </div>
     
     <?js if (doc.augments && doc.augments.length) { ?>
