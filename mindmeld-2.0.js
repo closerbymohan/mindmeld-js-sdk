@@ -3388,14 +3388,10 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                     });
                 }
                 // notify handler
-                if (session._onListenerResult !== null) {
-                    session._onListenerResult.call(session.listener, result, resultIndex, results, event);
-                }
+                MM.Util.testAndCallThis(session._onListenerResult, session.listener, result, resultIndex, results, event);
             },
             onStart: function(event) {
-                if (session._onListenerStart !== null) {
-                    session._onListenerStart.call(session.listener, event);
-                }
+                MM.Util.testAndCallThis(session._onListenerStart, session.listener, event);
             },
             onEnd: function(event) {
                 // Add last result if it was not final
@@ -3411,14 +3407,10 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                         });
                     }
                 }
-                if (session._onListenerEnd !== null) {
-                    session._onListenerEnd.call(session.listener, event);
-                }
+                MM.Util.testAndCallThis(session._onListenerEnd, session.listener, event);
             },
             onError: function(event) {
-                if (session._onListenerError !== null) {
-                    session._onListenerError.call(session.listener, event);
-                }
+                MM.Util.testAndCallThis(session._onListenerError, session.listener, event);
             }
         });
         $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
@@ -3939,33 +3931,23 @@ MM.Listener = MM.Internal.createSubclass(Object, {
                 }
             }
             results[resultIndex] = result;
-            listener._onResult(result, resultIndex, results, event);
+            MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
         };
         recognizer.onstart = function(event) {
             MM.Internal.log(Date.now() + " Listener: onstart");
 
             listener._listening = true;
-            // TODO: use MM.Util.testAndCall
-            if (listener._onStart !== null) {
-                listener._onStart(event);
-            }
+            MM.Util.testAndCallThis(listener._onStart, listener, event);
         };
         recognizer.onend = function(event) {
             MM.Internal.log(Date.now() + " Listener: onend");
 
             listener._listening = false;
-            // TODO: use MM.Util.testAndCall
-            if (listener._onEnd !== null) {
-                listener._onEnd(event);
-            }
+            MM.Util.testAndCallThis(listener._onEnd, listener, event);
         };
         recognizer.onerror = function(event) {
             MM.Internal.log(Date.now() + " Listener: onerror - " + event.error);
-
-            // TODO: use MM.Util.testAndCall
-            if (listener._onError !== null) {
-                listener._onError(event);
-            }
+            MM.Util.testAndCallThis(listener._onError, listener, event);
             // TODO(jj): do we need to restart in any instances?
         };
         recognizer.start();
