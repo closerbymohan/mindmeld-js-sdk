@@ -9,15 +9,11 @@ MM = {};
 /**
  * MindMeld SDK Version
  *
- * @name version
  * @type {string}
  * @static
  * @private
  */
-Object.defineProperty(MM, 'version', {
-    value: '2.1.0',
-    writable: false
-});
+MM.version = '2.0.0';
 
 /**
  *
