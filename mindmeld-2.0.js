@@ -3468,12 +3468,12 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
         this._onUpdate(updateHandler,  null, null);
     },
     /**
-     * Sets the active session listener configuration. Pass null for callback fields to remove previous callbacks.
+     * Sets the listener configuration of the active session. Pass null for callback fields to remove previous callbacks.
+     * See {@link MM.Listener#setConfig} for more details.
      *
-     * @param {ListenerConfig} config an object containing the active session listener's configuration properties
+     * @param {ListenerConfig} config an object containing listener configuration properties
      * @memberOf MM.activeSession
      * @instance
-     * @see {@link MM.Listener#setConfig}
      */
     setListenerConfig: function (config) {
         var configProperties = {
@@ -3783,15 +3783,15 @@ MM.Util = $.extend({}, {
 MM.Listener = (function () {
     var Listener = MM.Internal.createSubclass(Object, {
         /**
-         * The ListenerResult object represent the speech recognition result.
+         * An object representing the text result from the speech recognition API.
          *
          * @typedef  {Object}  ListenerResult
-         * @property {string}  transcript - the text of the speech that was processed
-         * @property {boolean} final - indicates whether the result is final or interim
+         * @property {string}  transcript the text of the speech that was processed
+         * @property {boolean} final      indicates whether the result is final or interim
          */
 
         /**
-         * The ListenerConfig object represents the configuration of a {@link MM.Listener}
+         * An object representing the configuration of a {@link MM.Listener}
          *
          * @typedef  {Object}  ListenerConfig
          * @property {boolean} [continuous=false]        whether the listener should continue listening until stop() is called.
@@ -3807,7 +3807,7 @@ MM.Listener = (function () {
 
         /**
          * The ListenerResultCallback handles results from the Speech Recognition API. A ListenerResultCallback should at
-         * minimum handle the result param.
+         * minimum handle the result parameter.
          *
          * @callback ListenerResultCallback
          * @param {ListenerResult} result result object containing speech recognition result
@@ -3820,10 +3820,14 @@ MM.Listener = (function () {
          * Constructor for Listener class
          *
          * @constructs MM.Listener
-         * @classdesc This is the class for the MindMeld speech recognition API. Before using a Listener, check that it is
-         *            supported with {@link MM.support}.
          * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
          *                         are omitted default to either null or false.
+         *
+         * @classdesc This is the class for the MindMeld speech recognition API. Before using a Listener, check that it
+         *            is supported with {@link MM.support}. Currently the known browsers which support MM.Listener are
+         *            Google Chrome for Desktop (versions 25+) and Android (versions 31+). The MM.Listener class relies
+         *            upon the speech recognition portion of the Web Speech API (https://dvcs.w3.org/hg/speech-api/raw-file/tip/webspeechapi.html)
+         *            which has not yet been implemented by all major browsers.
          *
          * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
          * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
@@ -3832,6 +3836,14 @@ MM.Listener = (function () {
          * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
          *
          * @example
+         function postTextEntry(text) {
+             MM.activeSession.textentries.post({
+                 text: text,
+                 type: 'speech',
+                 weight: '0.5'
+             });
+         }
+
          if (MM.support.speechRecognition) {
              var myListener = new MM.Listener({
                  continuous: true,
@@ -3839,22 +3851,42 @@ MM.Listener = (function () {
                  onResult: function(result) {
                      if (result.final) {
                          // post text entry for final results
-                         MM.activeSession.textentries.post({
-                             text: result.transcript,
-                             type: 'speech',
-                             weight: '0.5'
-                         });
+                         postTextEntry(result.transcript);
+
+                         // update UI to show final result
+                     } else {
+                         // update UI to show interim result
                      }
+                 },
+                 onStart: function(event) {
+                     // update ui to show listening
+                 },
+                 onEnd: function(event) {
+                     var results = this.results;
+                     var lastResult = null;
+                     if (results.length > 0) {
+                         lastResult = results[results.length - 1];
+                     }
+
+                     if (!lastResult.final) { // wasn't final when last received onResult
+                         // post for the last result
+                         postTextEntry(lastResult.transcript);
+                         // update UI to show final result
+                     }
+                 },
+                 onError: function(event) {
+                     console.log('listener encountered error: ' + event.error);
+                     // notify user of error if applicable
                  }
              });
+             myListener.start();
          }
          */
         constructor: function(config) {
             this.setConfig(config);
         },
-
         /**
-         * Sets the listener object's configuration. Pass null for callback fields to remove previous callbacks.
+         * Sets the listener object's configuration. Pass null for callback fields to deregister previous callbacks.
          *
          * @param {ListenerConfig} config an object containing the listener's configuration properties
          * @memberOf MM.Listener
@@ -3877,7 +3909,8 @@ MM.Listener = (function () {
             }
         },
         /**
-         * Begins a speech recognition session.
+         * Starts a speech recognition session. The onResult callback will begin receiving results as the user's speech
+         * is recognized.
          *
          * @throws When speech recognition is not supported in the browser, an error is thrown.
          * @memberOf MM.Listener
@@ -3944,7 +3977,7 @@ MM.Listener = (function () {
             recognizer.start();
         },
         /**
-         * Ends a speech recognition. One more result may be send to the onResult callback.
+         * Stops the active speech recognition session. One more result may be send to the onResult callback.
          *
          * @memberOf MM.Listener
          * @instance
@@ -3953,7 +3986,7 @@ MM.Listener = (function () {
             this._recognizer.stop();
         },
         /**
-         * Cancels a speech recognition session. No further results will be sent to the onResult callback
+         * Cancels the active speech recognition session. No further results will be sent to the onResult callback.
          *
          * @memberOf MM.Listener
          * @instance
@@ -4011,7 +4044,7 @@ MM.support = (function(window) {
             'use strict';
             window = window || {};
             var SpeechRecognition = window.webkitSpeechRecognition ||
-//                window.mozSpeechRecognition || // TODO: add these as they become supported
+//                window.mozSpeechRecognition || // TODO: add these as they become supported, and update MM.Listener docs
 //                window.msSpeechRecognition ||
 //                window.oSpeechRecognition ||
                 window.SpeechRecognition;
