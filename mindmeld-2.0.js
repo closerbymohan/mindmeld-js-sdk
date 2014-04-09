@@ -13,7 +13,10 @@ MM = {};
  * @static
  * @private
  */
-MM.version = '2.0.0';
+Object.defineProperty(MM, 'version', {
+    value: '2.0.0',
+    writable: false
+});
 
 /**
  *
