@@ -1,6 +1,6 @@
 # Expect Labs mindmeld-js-sdk Reference
 
-This is the reference document for Expect Labs' MindMeld JavaScript SDK, mindmeld-2.0.js.
+This is the reference document for Expect Labs' MindMeld JavaScript SDK, mindmeld.js.
 
 ## Important Links
 
@@ -15,18 +15,18 @@ This is the reference document for Expect Labs' MindMeld JavaScript SDK, mindmel
 There are a few ways to get started using MindMeld JavaScript SDK
 
 ### Download from site
-The easiest way to install mindmeld-2.0.js is by downloading one of the following
+The easiest way to install mindmeld.js is by downloading one of the following
 files directly from the Expect Labs site:
 
-* Un-minified: [mindmeld-2.0.js][sdkDownloadLink]
-* Minified: [mindmeld-2.0.min.js][sdkMinifiedDownloadLink]
+* Un-minified: [mindmeld.js][sdkDownloadLink]
+* Minified: [mindmeld.min.js][sdkMinifiedDownloadLink]
 
 ### Clone git repository 
 Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
 ```bash
 git clone https://github.com/expectlabs/mindmeld-js-sdk.git
 ```
-Copy either mindmeld-2.0.js or mindmeld-2.0.min.js into your project's directory
+Copy either mindmeld.js or mindmeld.min.js into your project's directory
 
 ### Install with Bower
 Bower is a popular package manager for the web. Read more about it at [bower.io](http://bower.io/)
@@ -46,13 +46,13 @@ loading the MindMeld library.
 ### Without Bower
 ```html
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="path/to/mindmeld-2.0.min.js"></script>
+<script src="path/to/mindmeld.min.js"></script>
 ```
 
 ### With Bower
 ```html
 <script src="bower_components/jquery/jquery.min.js"></script>
-<script src="bower_components/mindmeld-js-sdk/mindmeld-2.0.js"></script>
+<script src="bower_components/mindmeld-js-sdk/mindmeld.js"></script>
 ```
 
 ## Getting Started
@@ -260,6 +260,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 
       // Clear previous text
       $('#confirmed').text('');
+      $('#pending').text('');
     },
     onEnd: function(event) {
       // Update UI so user knows recording has ended
@@ -306,6 +307,9 @@ if (MM.support.speechRecognition) { // check for support in the current browser
     },
     onStart: function(event) {
       // Update UI so user knows to speak
+      // Clear previous text
+      $('#confirmed').text('');
+      $('#pending').text('');
     },
     onEnd: function(event) {
       // Update UI so user knows recording has ended
@@ -318,6 +322,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
     },
     onError: function(error) {
       // let user know something went wrong
+      alert('Sorry, there was a problem with speech recognition');
     }
   });
 
@@ -327,15 +332,15 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 ```
 
 ## Repository Contents ([mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
-* *mindmeld-2.0.js*: Un-minified, documented JavaScript SDK
-* *mindmeld-2.0.min.js*: Minified, production ready version of mindmeld-2.0.js
-* *HelloWorld.html*: Fully functional, stand-alone HTML page demonstrating basic use of mindmeld-2.0.js
-* *mindmeld-js-sdk.zip*: Zip archive containing mindmeld-2.0.js, mindmeld-2.0.min.js, and HelloWorld.html
+* *mindmeld.js*: Un-minified, documented JavaScript SDK
+* *mindmeld.min.js*: Minified, production ready version of mindmeld.js
+* *HelloWorld.html*: Fully functional, stand-alone HTML page demonstrating basic use of mindmeld.js
+* *mindmeld-js-sdk.zip*: Zip archive containing mindmeld.js, mindmeld.min.js, and HelloWorld.html
 * *docsTemplate/* - templates and configuration required to build JSDoc. Based on
 [jaguarjs-doc](https://github.com/davidshimjs/jaguarjs-jsdoc/)
-* *Gruntfile.js*: [grunt](http://gruntjs.com/) file for mindmeld-2.0.js used to minify JS, create zip archive, and
+* *Gruntfile.js*: [grunt](http://gruntjs.com/) file for mindmeld.js used to minify JS, create zip archive, and
 generate JSDocs
-* *bower.json*: Used to describe client-side dependencies for mindmeld-2.0.js and publish repository to
+* *bower.json*: Used to describe client-side dependencies for mindmeld.js and publish repository to
 [bower](http://bower.io/) registry
 * *package.json*: Used to describe grunt dependencies
 * *README.md*: Describes this file!
@@ -346,8 +351,8 @@ generate JSDocs
 
 * `grunt clean` (Cleans up auto-generated files)
 * `grunt exec:jsdoc` (Generates JSDocs)
-* `grunt uglify:dist` (Minifies `mindmeld-2.0.js` into `mindmeld-2.0.min.js`)
-* `grunt zip:dist` (Creates a zip archive of `mindmeld-2.0.js`, `mindmeld-2.0.min.js`, and `HelloWorld.html`)
+* `grunt uglify:dist` (Minifies `mindmeld.js` into `mindmeld.min.js`)
+* `grunt zip:dist` (Creates a zip archive of `mindmeld.js`, `mindmeld.min.js`, and `HelloWorld.html`)
 
 
 
@@ -355,5 +360,5 @@ generate JSDocs
 [apiDocsLink]:https://developer.expectlabs.com/docs
 [developerSite]:https://developer.expectlabs.com
 [repoUrl]:https://github.com/expectlabs/mindmeld-js-sdk
-[sdkDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.js
-[sdkMinifiedDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.0.min.js
+[sdkDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.js
+[sdkMinifiedDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.min.js
