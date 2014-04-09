@@ -3397,7 +3397,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                 // Add last result if it was not final
                 var results = this.results;
                 var lastResult = null;
-                if (results.length >= 0) {
+                if (results.length > 0) {
                     lastResult = results[results.length - 1];
                     if (!lastResult.final) {
                         session.textentries.post({
@@ -3409,8 +3409,8 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                 }
                 MM.Util.testAndCallThis(session._onListenerEnd, session.listener, event);
             },
-            onError: function(event) {
-                MM.Util.testAndCallThis(session._onListenerError, session.listener, event);
+            onError: function(error) {
+                MM.Util.testAndCallThis(session._onListenerError, session.listener, error);
             }
         });
         $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
@@ -3777,200 +3777,208 @@ MM.Util = $.extend({}, {
     }
 });
 
-MM.Listener = MM.Internal.createSubclass(Object, {
-    /**
-     * The ListenerResult object represent the speech recognition result.
-     *
-     * @typedef  {Object}  ListenerResult
-     * @property {string}  transcript - the text of the speech that was processed
-     * @property {boolean} final - indicates whether the result is final or interim
-     */
+MM.Listener = (function () {
+    var Listener = MM.Internal.createSubclass(Object, {
+        /**
+         * The ListenerResult object represent the speech recognition result.
+         *
+         * @typedef  {Object}  ListenerResult
+         * @property {string}  transcript - the text of the speech that was processed
+         * @property {boolean} final - indicates whether the result is final or interim
+         */
 
-    /**
-     * The ListenerConfig object represents the configuration of a {@link MM.Listener}
-     *
-     * @typedef  {Object}  ListenerConfig
-     * @property {boolean} [continuous=false]        whether the listener should continue listening until stop() is called.
-     *                                               If false, recording will continue until the speech recognition provider
-     *                                               recognizes a sufficient pause in speech.
-     * @property {boolean} [interimResults=false]    whether the listener should provide interim results
-     * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
-     *                                               provided when creating a new {@link MM.Listener}.
-     * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
-     * @property {function} [onEnd=null]             the event handler which is called when a listening session ends.
-     * @property {function} [onError=null]           the event handler which is called when errors are received.
-     */
+        /**
+         * The ListenerConfig object represents the configuration of a {@link MM.Listener}
+         *
+         * @typedef  {Object}  ListenerConfig
+         * @property {boolean} [continuous=false]        whether the listener should continue listening until stop() is called.
+         *                                               If false, recording will continue until the speech recognition provider
+         *                                               recognizes a sufficient pause in speech.
+         * @property {boolean} [interimResults=false]    whether the listener should provide interim results
+         * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
+         *                                               provided when creating a new {@link MM.Listener}.
+         * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
+         * @property {function} [onEnd=null]             the event handler which is called when a listening session ends.
+         * @property {function} [onError=null]           the event handler which is called when errors are received.
+         */
 
-    /**
-     * The ListenerResultCallback handles results from the Speech Recognition API. A ListenerResultCallback should at
-     * minimum handle the result param.
-     *
-     * @callback ListenerResultCallback
-     * @param {ListenerResult} result result object containing speech recognition result
-     * @param {number} resultIndex the index of the provided result in the results array
-     * @param {Array} results an array of {@link ListenerResult} objects received during the current speech recognition session
-     * @param {Event} event the original event received from the underlying SpeechRecognition instance
-     */
+        /**
+         * The ListenerResultCallback handles results from the Speech Recognition API. A ListenerResultCallback should at
+         * minimum handle the result param.
+         *
+         * @callback ListenerResultCallback
+         * @param {ListenerResult} result result object containing speech recognition result
+         * @param {number} resultIndex the index of the provided result in the results array
+         * @param {Array} results an array of {@link ListenerResult} objects received during the current speech recognition session
+         * @param {Event} event the original event received from the underlying SpeechRecognition instance
+         */
 
-    /**
-     * Constructor for Listener class
-     *
-     * @constructs MM.Listener
-     * @classdesc This is the class for the MindMeld speech recognition API. Before using a Listener, check that it is
-     *            supported with {@link MM.support}.
-     * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
-     *                         are omitted default to either null or false.
-     *
-     * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
-     * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
-     *                                    recent listening session. Readonly.
-     * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
-     * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
-     *
-     * @example
-     if (MM.support.speechRecognition) {
-         var myListener = new MM.Listener({
-             continuous: true,
-             interimResults: true,
-             onResult: function(result) {
-                 if (result.final) {
-                     // post text entry for final results
-                     MM.activeSession.textentries.post({
-                         text: result.transcript,
-                         type: 'speech',
-                         weight: '0.5'
-                     });
+        /**
+         * Constructor for Listener class
+         *
+         * @constructs MM.Listener
+         * @classdesc This is the class for the MindMeld speech recognition API. Before using a Listener, check that it is
+         *            supported with {@link MM.support}.
+         * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
+         *                         are omitted default to either null or false.
+         *
+         * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
+         * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
+         *                                    recent listening session. Readonly.
+         * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
+         * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
+         *
+         * @example
+         if (MM.support.speechRecognition) {
+             var myListener = new MM.Listener({
+                 continuous: true,
+                 interimResults: true,
+                 onResult: function(result) {
+                     if (result.final) {
+                         // post text entry for final results
+                         MM.activeSession.textentries.post({
+                             text: result.transcript,
+                             type: 'speech',
+                             weight: '0.5'
+                         });
+                     }
                  }
-             }
-         });
-     }
-     */
-    constructor: (function() {
-        var constructor = function(config) {
-          this.setConfig(config);
-        }
+             });
+         }
+         */
+        constructor: function(config) {
+            this.setConfig(config);
+        },
 
-        constructor.prototype._listening = false;
-        constructor.prototype.__defineGetter__('listening', function() {
-            return this._listening;
-        });
-        constructor.prototype._results = [];
-        constructor.prototype.__defineGetter__('results', function() {
-            return JSON.parse(JSON.stringify(this._results));
-        });
-        constructor.prototype.continuous = false;
-        constructor.prototype.interimResults = false;
-        return constructor;
-    }()),
-
-    /**
-     * Sets the listener object's configuration. Pass null for callback fields to remove previous callbacks.
-     *
-     * @param {ListenerConfig} config an object containing the listener's configuration properties
-     * @memberOf MM.Listener
-     * @instance
-     */
-    setConfig: function(config) {
-        var configProperties = {
-            onResult: '_onResult',
-            onStart: '_onStart',
-            onEnd: '_onEnd',
-            onError: '_onError',
-            continuous: 'continuous',
-            interimResults: 'interimResults'
-        };
-
-        for (var configProperty in configProperties) { // only look at safe properties
-            if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
-                this[configProperties[configProperty]] = config[configProperty];
-            }
-        }
-    },
-    /**
-     * Begins a speech recognition session.
-     *
-     * @throws When speech recognition is not supported in the browser, an error is thrown.
-     * @memberOf MM.Listener
-     * @instance
-     */
-    start: function() {
-        if (!MM.support.speechRecognition) {
-            MM.Internal.log('Speech recognition is not supported');
-            throw new Error('Speech recognition is not supported');
-        }
-        var listener = this;
-        var recognizer = this._recognizer = new SpeechRecognition();
-        recognizer.continuous = this.continuous;
-        recognizer.interimResults = this.interimResults;
-        listener._results = []; // clear previous results
-
-        // TODO: set language based on browser settings
-        // recognizer.lang = "eng-USA";
-
-        recognizer.onresult = function(event) {
-            MM.Internal.log(Date.now() + " Listener: onresult");
-            MM.Internal.log("resultIndex: " + event.resultIndex);
-            MM.Internal.log(event.results);
-
-            var result = {
-                final: false,
-                transcript: ''
+        /**
+         * Sets the listener object's configuration. Pass null for callback fields to remove previous callbacks.
+         *
+         * @param {ListenerConfig} config an object containing the listener's configuration properties
+         * @memberOf MM.Listener
+         * @instance
+         */
+        setConfig: function(config) {
+            var configProperties = {
+                onResult: '_onResult',
+                onStart: '_onStart',
+                onEnd: '_onEnd',
+                onError: '_onError',
+                continuous: 'continuous',
+                interimResults: 'interimResults'
             };
-            var resultIndex = event.resultIndex;
-            var results = listener._results;
 
-            for (var i = event.resultIndex; i < event.results.length; ++i) {
-                var transcript = event.results[i][0].transcript;
-
-                if (event.results[i].isFinal) {
-                    result.final = true;
-                    result.transcript = transcript;
-                    break;
-                } else {
-                    result.transcript += transcript; // collapse multiple pending results into one
+            for (var configProperty in configProperties) { // only look at safe properties
+                if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
+                    this[configProperties[configProperty]] = config[configProperty];
                 }
             }
-            results[resultIndex] = result;
-            MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
-        };
-        recognizer.onstart = function(event) {
-            MM.Internal.log(Date.now() + " Listener: onstart");
+        },
+        /**
+         * Begins a speech recognition session.
+         *
+         * @throws When speech recognition is not supported in the browser, an error is thrown.
+         * @memberOf MM.Listener
+         * @instance
+         */
+        start: function() {
+            if (!MM.support.speechRecognition) {
+                MM.Internal.log('Speech recognition is not supported');
+                throw new Error('Speech recognition is not supported');
+            }
+            var listener = this;
+            var recognizer = this._recognizer = new SpeechRecognition();
+            recognizer.continuous = this.continuous;
+            recognizer.interimResults = this.interimResults;
+            listener._results = []; // clear previous results
 
-            listener._listening = true;
-            MM.Util.testAndCallThis(listener._onStart, listener, event);
-        };
-        recognizer.onend = function(event) {
-            MM.Internal.log(Date.now() + " Listener: onend");
+            // TODO: set language based on browser settings
+            // recognizer.lang = "eng-USA";
 
-            listener._listening = false;
-            MM.Util.testAndCallThis(listener._onEnd, listener, event);
-        };
-        recognizer.onerror = function(event) {
-            MM.Internal.log(Date.now() + " Listener: onerror - " + event.error);
-            MM.Util.testAndCallThis(listener._onError, listener, event);
-            // TODO(jj): do we need to restart in any instances?
-        };
-        recognizer.start();
-    },
-    /**
-     * Ends a speech recognition. One more result may be send to the onResult callback.
-     *
-     * @memberOf MM.Listener
-     * @instance
-     */
-    stop: function() {
-        this._recognizer.stop();
-    },
-    /**
-     * Cancels a speech recognition session. No further results will be sent to the onResult callback
-     *
-     * @memberOf MM.Listener
-     * @instance
-     */
-    cancel: function() {
-        this._recognizer.abort();
-    }
-});
+            recognizer.onresult = function(event) {
+                MM.Internal.log(Date.now() + " Listener: onresult");
+                MM.Internal.log("resultIndex: " + event.resultIndex);
+                MM.Internal.log(event.results);
+
+                var result = {
+                    final: false,
+                    transcript: ''
+                };
+                var resultIndex = event.resultIndex;
+                var results = listener._results;
+
+                for (var i = event.resultIndex; i < event.results.length; ++i) {
+                    var transcript = event.results[i][0].transcript;
+
+                    if (event.results[i].isFinal) {
+                        result.final = true;
+                        result.transcript = transcript;
+                        break;
+                    } else {
+                        result.transcript += transcript; // collapse multiple pending results into one
+                    }
+                }
+                results[resultIndex] = result;
+                MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
+            };
+            recognizer.onstart = function(event) {
+                MM.Internal.log(Date.now() + " Listener: onstart");
+
+                listener._listening = true;
+                MM.Util.testAndCallThis(listener._onStart, listener, event);
+            };
+            recognizer.onend = function(event) {
+                MM.Internal.log(Date.now() + " Listener: onend");
+
+                listener._listening = false;
+                MM.Util.testAndCallThis(listener._onEnd, listener, event);
+            };
+            recognizer.onerror = function(error) {
+                MM.Internal.log(Date.now() + " Listener: onerror - " + error.error);
+
+                MM.Util.testAndCallThis(listener._onError, listener, error);
+                // TODO(jj): do we need to restart in any instances?
+            };
+            recognizer.start();
+        },
+        /**
+         * Ends a speech recognition. One more result may be send to the onResult callback.
+         *
+         * @memberOf MM.Listener
+         * @instance
+         */
+        stop: function() {
+            this._recognizer.stop();
+        },
+        /**
+         * Cancels a speech recognition session. No further results will be sent to the onResult callback
+         *
+         * @memberOf MM.Listener
+         * @instance
+         */
+        cancel: function() {
+            this._recognizer.abort();
+        }
+    });
+
+
+    Listener.prototype._listening = false;
+    Listener.prototype._results = [];
+    Listener.prototype.continuous = false;
+    Listener.prototype.interimResults = false;
+    Object.defineProperties(Listener.prototype, {
+       listening: {
+           get: function() {
+               return this._listening;
+           }
+       },
+       results: {
+           get: function() {
+               return JSON.parse(JSON.stringify(this._results));
+           }
+       }
+    });
+    return Listener;
+})();
 
 /**
  * An overview of features supported in the browser.
@@ -3987,9 +3995,14 @@ MM.support = (function(window) {
     var localStorage = false;
     var speechRecognition = false;
 
-    support.__defineGetter__('localStorage', function() { return localStorage; });
-    support.__defineGetter__('speechRecognition', function() { return speechRecognition; });
-
+    Object.defineProperties(support, {
+        localStorage: {
+            get: function() { return localStorage; }
+        },
+        speechRecognition: {
+            get: function() { return speechRecognition; }
+        }
+    });
     try {
         speechRecognition = (function(window) {
             'use strict';
