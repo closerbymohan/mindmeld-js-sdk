@@ -224,6 +224,76 @@ function onCustomSessionEvent (payload) {
 }
 ```
 
+### Using Speech Recognition
+If you would like to use speech recognition to enable users to interact with your application with their voices
+use MM.Listener. The simplest way to enable speech recognition is to use the active session listener, which is
+preconfigured to post text entries when it receives final results. Below we illustrate how to use the active session
+listener.
+
+```javascript
+if (MM.support.speechRecognition) { // check that it is supported in the current browser
+  MM.activeSession.setListenerConfig({
+    onResult: function(result) {
+      console.log("Listener received result: " + result);
+      // Display speech
+      if (result.final) {
+        // Display speech segment as final
+      } else {
+        // Display speech segment as pending
+      }
+    },
+    onStart: function(event) {
+      // Update UI so user knows to speak
+    },
+    onEnd: function(event) {
+      // Update UI so user knows recording has ended
+    },
+    onError: function(error) {
+      // let user know something went wrong
+    }
+  });
+  MM.activeSession.listener.start();
+  // user begins speaking now
+}
+```
+
+If you would like to have more control over how text entries are posted, you can create your own MM.Listener object,
+as shown below.
+
+```javascript
+if (MM.support.speechRecognition) { // check that it is supported in the current browser
+  var myListener = new MM.Listener({
+    continuous: true, // we will continue listening until myListener.stop() is called
+    interimResults:, true // we will receive results before the API
+    onResult: function(result) {
+      console.log("Listener received result: " + result);
+
+      if (result.final) {
+        MM.activeSession.textentries.post({
+          text: result.transcript,
+          type: 'speech',
+          weight: 0.5
+        });
+        // Display speech segment as final
+      } else {
+        // Display speech segment as pending
+      }
+    },
+    onStart: function(event) {
+      // Update UI so user knows to speak
+    },
+    onEnd: function(event) {
+      // Update UI so user knows recording has ended
+    },
+    onError: function(error) {
+      // let user know something went wrong
+    }
+  });
+  myListener.start();
+  // user begins speaking now
+}
+```
+
 ## Repository Contents ([mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
 * *mindmeld-2.0.js*: Un-minified, documented JavaScript SDK
 * *mindmeld-2.0.min.js*: Minified, production ready version of mindmeld-2.0.js
