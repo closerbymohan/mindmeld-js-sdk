@@ -9,6 +9,11 @@
 
         _create: function () {
             this._initMM();
+            this._initialized = false;
+        },
+
+        initialized: function () {
+            return this._initialized;
         },
 
         _initMM: function () {
@@ -91,7 +96,56 @@
         },
 
         _onInitialized: function () {
+            this._initialized = true;
             this.options.onMMSearchInitialized();
+            var boundInputChange = this._onInputChange.bind(this);
+            this.element.on('input', boundInputChange);
+        },
+
+        _onInputChange: function () {
+            var query = this.element.val()
+            console.log('query: ' + query);
+            this.queryDocuments(query,
+                                this._onDocumentsResult,
+                                this.options.onMMSearchError);
+
+        },
+
+        queryDocuments: function (query, onQueryDocuments, onQueryError) {
+            if (this._initialized) {
+                var queryParams = {
+                    query: query,
+                    limit: 5
+                };
+                queryParams['document-ranking-factors'] = {
+                    'relevance':    1,
+                    'recency':      0,
+                    'popularity':   0,
+                    'proximity':    0,
+                    'customrank1':  0,
+                    'customrank2':  0,
+                    'customrank3':  0
+                };
+                MM.activeSession.documents.get(queryParams, onGetDocuments, onDocumentError);
+
+                function onGetDocuments () {
+                    var documents = MM.activeSession.documents.json();
+                    onQueryDocuments(documents);
+                }
+
+                function onDocumentError (error) {
+                    onQueryError('Error fetching documents: ' + error.message);
+                }
+            }
+            else {
+                onQueryError('Cannot query documents, MM search widget not initialized')
+            }
+        },
+
+        _onDocumentsResult: function (documents) {
+            $.each(documents, function (index, document) {
+                console.log(document.title)
+            });
         },
 
         _validateString: function (string, length) {
