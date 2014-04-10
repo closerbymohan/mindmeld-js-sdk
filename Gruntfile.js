@@ -10,7 +10,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         jsdoc : {
             dist: {
-                src: ['mindmeld-2.0.js', 'README.md'],
+                src: ['mindmeld.js', 'README.md'],
                 dest: 'doc/',
                 options: {
                     configure: 'docsTemplate/jaguar.conf.json',
@@ -24,15 +24,15 @@ module.exports = function (grunt) {
               src: ['./doc']
             },
             dist: {
-                src: ['./doc', 'mindmeld-2.0.min.js', 'mindmeld-js-sdk.zip']
+                src: ['./doc', 'mindmeld.min.js', 'mindmeld-js-sdk.zip']
             }
         },
         uglify: {
             dist: {
                 files: [
                     {
-                        src: 'mindmeld-2.0.js',
-                        dest: 'mindmeld-2.0.min.js'
+                        src: 'mindmeld.js',
+                        dest: 'mindmeld.min.js'
                     }
                 ],
                 options: {
@@ -43,8 +43,8 @@ module.exports = function (grunt) {
         zip: {
             dist: {
                 src: [
-                    'mindmeld-2.0.js',
-                    'mindmeld-2.0.min.js',
+                    'mindmeld.js',
+                    'mindmeld.min.js',
                     'HelloWorld.html'
                 ],
                 dest: 'mindmeld-js-sdk.zip'
@@ -52,9 +52,13 @@ module.exports = function (grunt) {
         },
         watch: {
             docs: {
-                files: ['mindmeld-2.0.js', 'docsTemplate/**', 'README.md'],
+                files: ['mindmeld.js', 'docsTemplate/**', 'README.md'],
                 tasks: ['docs']
             }
+        },
+        jshint: {
+            all: ['Gruntfile.js', 'mindmeld.js'],
+            jshintrc: true
         }
     });
 
@@ -65,6 +69,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', [
+//        'jshint',
         'clean:dist',
         'jsdoc:dist',
         'uglify:dist',

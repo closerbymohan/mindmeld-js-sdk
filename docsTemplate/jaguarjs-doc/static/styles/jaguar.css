@@ -135,7 +135,7 @@ li {
 .main h4.name span.type-signature {
   display: inline-block;
   border-radius: 3px;
-  background-color: gray;
+  background-color: lightgray;
   color: #fff;
   font-size: 0.7em;
   padding: 2px 4px;
@@ -183,11 +183,11 @@ li {
   margin-top: 30px;
   color: #779c34;
 }
-.main .description {
+.main .description, .main .class-description {
   margin-top: 10px;
   font-size: 13px;
 }
-.main .description p {
+.main .description p, .main .class-description p {
   font-size: 13px;
 }
 .main .tag-source {
