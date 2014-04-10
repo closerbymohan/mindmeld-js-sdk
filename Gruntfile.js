@@ -69,7 +69,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', [
-        'jshint',
+//        'jshint',
         'clean:dist',
         'jsdoc:dist',
         'uglify:dist',
