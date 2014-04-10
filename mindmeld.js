@@ -14,7 +14,7 @@ MM = {};
  * @private
  */
 Object.defineProperty(MM, 'version', {
-    value: '2.0.0',
+    value: '2.1.0',
     writable: false
 });
 
@@ -372,19 +372,19 @@ MM.Internal = $.extend({}, {
             var channel = updateEventConfig.channelConfig.channel;
             var channelType = updateEventConfig.channelConfig.type;
             if (updateEventConfig.subscribeAll) {
-                   switch (channelType) {
-                       case 'app':
-                           delete self.appChannelHandlers[channel];
-                           break;
+                switch (channelType) {
+                    case 'app':
+                        delete self.appChannelHandlers[channel];
+                        break;
 
-                       case 'session':
-                           delete self.sessionChannelHandlers[channel];
-                           break;
+                    case 'session':
+                        delete self.sessionChannelHandlers[channel];
+                        break;
 
-                       case 'user':
-                           delete self.userChannelHandlers[channel];
-                           break;
-                   }
+                    case 'user':
+                        delete self.userChannelHandlers[channel];
+                        break;
+                }
             }
             else {
                 if (this.namedEventHandlers[channel] !== undefined) {
@@ -711,14 +711,14 @@ $.extend(MM, {
                     // The admin user id is not returned when requesting a new token
                     // It can be found in the app object's 'ownerid' field
                     MM.get( null,
-                            function (appResponse) {
-                                var adminId = appResponse.data.ownerid;
-                                MM.setActiveUserID(adminId);
-                                MM.Util.testAndCall(onSuccess, response.data);
-                            },
-                            function (error) {
-                                MM.Util.testAndCall(onError, error);
-                            }
+                        function (appResponse) {
+                            var adminId = appResponse.data.ownerid;
+                            MM.setActiveUserID(adminId);
+                            MM.Util.testAndCall(onSuccess, response.data);
+                        },
+                        function (error) {
+                            MM.Util.testAndCall(onError, error);
+                        }
                     );
                 }
                 else {
@@ -898,12 +898,12 @@ $.extend(MM, {
     setToken: function (token, onTokenValid, onTokenInvalid) {
         MM.token = token;
         MM.get(null,
-                function onTokenSuccess () {
-                    MM.Util.testAndCall(onTokenValid);
-                },
-                function onTokenError () {
-                    MM.Util.testAndCall(onTokenInvalid);
-                }
+            function onTokenSuccess () {
+                MM.Util.testAndCall(onTokenValid);
+            },
+            function onTokenError () {
+                MM.Util.testAndCall(onTokenInvalid);
+            }
         );
     },
 
@@ -4002,16 +4002,16 @@ MM.Listener = (function () {
     Listener.prototype.continuous = false;
     Listener.prototype.interimResults = false;
     Object.defineProperties(Listener.prototype, {
-       listening: {
-           get: function() {
-               return this._listening;
-           }
-       },
-       results: {
-           get: function() {
-               return JSON.parse(JSON.stringify(this._results));
-           }
-       }
+        listening: {
+            get: function() {
+                return this._listening;
+            }
+        },
+        results: {
+            get: function() {
+                return JSON.parse(JSON.stringify(this._results));
+            }
+        }
     });
     return Listener;
 })();
