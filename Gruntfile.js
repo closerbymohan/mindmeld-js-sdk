@@ -55,6 +55,10 @@ module.exports = function (grunt) {
                 files: ['mindmeld.js', 'docsTemplate/**', 'README.md'],
                 tasks: ['docs']
             }
+        },
+        jshint: {
+            all: ['Gruntfile.js', 'mindmeld.js'],
+            jshintrc: true
         }
     });
 
@@ -65,6 +69,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build', [
+        'jshint',
         'clean:dist',
         'jsdoc:dist',
         'uglify:dist',
