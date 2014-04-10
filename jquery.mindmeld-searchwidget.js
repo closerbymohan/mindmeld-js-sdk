@@ -98,21 +98,39 @@
         _onInitialized: function () {
             this._initialized = true;
             this.options.onMMSearchInitialized();
-            var boundInputChange = this._onInputChange.bind(this);
-            this.element.on('input', boundInputChange);
-        },
+            var self = this;
+            this.element.autocomplete({
+                minLength: 2,
+                delay: 300,
+                source: function (request, response) {
 
-        _onInputChange: function () {
-            var query = this.element.val()
-            console.log('query: ' + query);
-            this.queryDocuments(query,
-                                this._onDocumentsResult,
-                                this.options.onMMSearchError);
-
+                    self.queryDocuments(request.term,
+                        function (documents) {
+                            // data is array of documents
+                            var autocompleteResults = $.map(documents, function (document) {
+                                return {
+                                    label: document.title,
+                                    document: document
+                                }
+                            });
+                            response(autocompleteResults);
+                        },
+                        function (error) {
+                            self.onMMSearchError('Error fetching documents: ' + error.message);
+                            response([]);
+                        }
+                    );
+                },
+                select: function (event, ui) {
+                    event.preventDefault();
+                    window.location.href = ui.item.document.originurl;
+                }
+            });
         },
 
         queryDocuments: function (query, onQueryDocuments, onQueryError) {
             if (this._initialized) {
+                query = this._getFuzzyQuery(query);
                 var queryParams = {
                     query: query,
                     limit: 5
@@ -142,10 +160,13 @@
             }
         },
 
-        _onDocumentsResult: function (documents) {
-            $.each(documents, function (index, document) {
-                console.log(document.title)
+        _getFuzzyQuery: function (query) {
+            var queryTerms = query.split(" ");
+            var newQuery = "";
+            $.each(queryTerms, function (index, term) {
+                newQuery += term + "* ";
             });
+            return newQuery;
         },
 
         _validateString: function (string, length) {
