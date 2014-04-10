@@ -1,6 +1,6 @@
 /**
- * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM.init} before anything
- * else. Next obtain a token via {@link MM.getToken} to start making API calls.
+ * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM#init} before anything
+ * else. Next obtain a token via {@link MM#getToken} to start making API calls.
  *
  * @namespace
  */
@@ -14,7 +14,7 @@ MM = {};
  * @private
  */
 Object.defineProperty(MM, 'version', {
-    value: '2.0.0',
+    value: '2.1.0',
     writable: false
 });
 
@@ -51,9 +51,6 @@ MM.Internal = $.extend({}, {
     setup: function () {
         MM.activeSessionId = null;
         MM.activeUserId = null;
-
-        // Check for LocalStorage support
-        MM.supportsLocalStorage = typeof(Storage) !== 'undefined';
     },
 
     /**
@@ -375,19 +372,19 @@ MM.Internal = $.extend({}, {
             var channel = updateEventConfig.channelConfig.channel;
             var channelType = updateEventConfig.channelConfig.type;
             if (updateEventConfig.subscribeAll) {
-                   switch (channelType) {
-                       case 'app':
-                           delete self.appChannelHandlers[channel];
-                           break;
+                switch (channelType) {
+                    case 'app':
+                        delete self.appChannelHandlers[channel];
+                        break;
 
-                       case 'session':
-                           delete self.sessionChannelHandlers[channel];
-                           break;
+                    case 'session':
+                        delete self.sessionChannelHandlers[channel];
+                        break;
 
-                       case 'user':
-                           delete self.userChannelHandlers[channel];
-                           break;
-                   }
+                    case 'user':
+                        delete self.userChannelHandlers[channel];
+                        break;
+                }
             }
             else {
                 if (this.namedEventHandlers[channel] !== undefined) {
@@ -454,7 +451,7 @@ MM.Internal = $.extend({}, {
                 delete self.fayeSubscriptions[channel];
             }
 
-            if(MM.config.debug){
+            if(MM.config.debug) {
                 MM.Internal.log('Cleared all event handlers on ' + channel + ' channel');
             }
         }
@@ -625,8 +622,8 @@ $.extend(MM, {
 
     /**
      * Requests a new admin or user token from the API and stores it locally. This token is automatically
-     * used for all subsequent requests to the API. If we successfully obtain a token, {@link MM.getToken}
-     * automatically calls {@link MM.setActiveUserID} with the appropriate user id
+     * used for all subsequent requests to the API. If we successfully obtain a token, {@link MM#getToken}
+     * automatically calls {@link MM#setActiveUserID} with the appropriate user id
      *
      * @param {Object} credentials credentials for obtaining an API token.
      * Please refer to [documentation here](https://developer.expectlabs.com/docs/authentication) for details
@@ -714,14 +711,14 @@ $.extend(MM, {
                     // The admin user id is not returned when requesting a new token
                     // It can be found in the app object's 'ownerid' field
                     MM.get( null,
-                            function (appResponse) {
-                                var adminId = appResponse.data.ownerid;
-                                MM.setActiveUserID(adminId);
-                                MM.Util.testAndCall(onSuccess, response.data);
-                            },
-                            function (error) {
-                                MM.Util.testAndCall(onError, error);
-                            }
+                        function (appResponse) {
+                            var adminId = appResponse.data.ownerid;
+                            MM.setActiveUserID(adminId);
+                            MM.Util.testAndCall(onSuccess, response.data);
+                        },
+                        function (error) {
+                            MM.Util.testAndCall(onError, error);
+                        }
                     );
                 }
                 else {
@@ -792,7 +789,7 @@ $.extend(MM, {
     },
 
     /**
-     * Sets the active session to a specified session id. {@link MM.setActiveSessionID} also tries to fetch the session
+     * Sets the active session to a specified session id. {@link MM#setActiveSessionID} also tries to fetch the session
      * object and clears all event handlers from the previous session. You must call setActiveSessionID before calling
      * any of the functions in the {@link MM.activeSession} namespace
      *
@@ -817,7 +814,7 @@ $.extend(MM, {
     },
 
     /**
-     * Deprecated function for setting active session id. Use {@link MM.setActiveSessionID} instead
+     * Deprecated function for setting active session id. Use {@link MM#setActiveSessionID} instead
      *
      * @memberOf MM
      * @instance
@@ -829,10 +826,10 @@ $.extend(MM, {
     },
 
     /**
-     * Sets the active user to a specified user id. {@link MM.setActiveUserID} also tries to fetch the user object
-     * and clears all event handlers from the previous user. {@link MM.setActiveUserID} is automatically called
-     * after successfully calling {@link MM.getToken}. You should only to call this method if you are using an
-     * admin token and want to impersonate other users, or if you call {@link MM.setToken} with an existing token
+     * Sets the active user to a specified user id. {@link MM#setActiveUserID} also tries to fetch the user object
+     * and clears all event handlers from the previous user. {@link MM#setActiveUserID} is automatically called
+     * after successfully calling {@link MM#getToken}. You should only to call this method if you are using an
+     * admin token and want to impersonate other users, or if you call {@link MM#setToken} with an existing token
      * and already know the corresponding user id
      *
      * @param {string} userid
@@ -862,7 +859,7 @@ $.extend(MM, {
     },
 
     /**
-     * Deprecated function for setting active user id. Use {@link MM.setActiveUserID} instead
+     * Deprecated function for setting active user id. Use {@link MM#setActiveUserID} instead
      *
      * @memberOf MM
      * @instance
@@ -874,11 +871,11 @@ $.extend(MM, {
     },
 
     /**
-     * Set the MM token directly instead of calling {@link MM.getToken}. This function also
+     * Set the MM token directly instead of calling {@link MM#getToken}. This function also
      * provides valid/invalid callbacks to determine if the given token is valid or not.
-     * Regardless of the token being valid, {@link MM.setToken} always sets the token
-     * used by MM. Unlike {@link MM.getToken}, {@link MM.setToken} does not automatically
-     * call {@link MM.setActiveUserID}
+     * Regardless of the token being valid, {@link MM#setToken} always sets the token
+     * used by MM. Unlike {@link MM#getToken}, {@link MM#setToken} does not automatically
+     * call {@link MM#setActiveUserID}
      *
      * @param {string} token token to be used by SDK
      * @param {function=} onTokenValid callback for when given token is valid
@@ -901,12 +898,12 @@ $.extend(MM, {
     setToken: function (token, onTokenValid, onTokenInvalid) {
         MM.token = token;
         MM.get(null,
-                function onTokenSuccess () {
-                    MM.Util.testAndCall(onTokenValid);
-                },
-                function onTokenError () {
-                    MM.Util.testAndCall(onTokenInvalid);
-                }
+            function onTokenSuccess () {
+                MM.Util.testAndCall(onTokenValid);
+            },
+            function onTokenError () {
+                MM.Util.testAndCall(onTokenInvalid);
+            }
         );
     },
 
@@ -1108,7 +1105,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * @private
      */
     backupData: function () {
-        if (MM.supportsLocalStorage) {
+        if (MM.support.localStorage) {
             localStorage[this.localStoragePath()] = JSON.stringify(this.result);
         }
     },
@@ -1133,7 +1130,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * @private
      */
     clearLocalData: function () {
-        if (MM.supportsLocalStorage) {
+        if (MM.support.localStorage) {
             localStorage.removeItem(this.localStoragePath());
         }
     },
@@ -1171,7 +1168,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
      * @private
      */
     restore: function (onSuccess, onFail) {
-        if (MM.supportsLocalStorage) {
+        if (MM.support.localStorage) {
             var storedData = localStorage[this.localStoragePath()];
             if (storedData) {
                 storedData = JSON.parse(storedData);
@@ -1202,7 +1199,7 @@ MM.models.Model = MM.Internal.createSubclass(Object, {
     },
 
     /**
-     * Use {@link MM.callApi} to GET, POST, or DELETE data. {@link Model.makeModelRequest} (by default) saves data returned from
+     * Use {@link MM#callApi} to GET, POST, or DELETE data. {@link Model#makeModelRequest} (by default) saves data returned from
      * GET requests to localstorage. It also records the ETag returned from the API responses. Note, this is an internal
      * function, and not needed to use the SDK
      *
@@ -1356,8 +1353,8 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
         return('');
     },
     /**
-     * Helper function returns the JSON data for the current application. You must have called {@link MM.get}
-     * first, before {@link MM.json} returns any data.
+     * Helper function returns the JSON data for the current application. You must have called {@link MM#get}
+     * first, before {@link MM#json} returns any data.
      *
      *
      * @returns {Object}
@@ -1380,7 +1377,7 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Sets the app object's onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. If the updateHandler has been set, it
-     * is automatically called when application info is fetched (e.g. {@link MM.get})
+     * is automatically called when application info is fetched (e.g. {@link MM#get})
      *
      * @param {APISuccessCallback=} updateHandler callback for when the app object updates
      * @memberOf MM
@@ -1598,7 +1595,7 @@ MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
 MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * MM.activeUser is a namespace that represents the currently active user. It can only be used after
-     * {@link MM.setActiveUserID} has been called. All API calls requiring a user's context use the activeUser's
+     * {@link MM#setActiveUserID} has been called. All API calls requiring a user's context use the activeUser's
      * userid. This namespace provides methods to subscribe to user's push events and interface to the
      * user's session list via {@link MM.activeUser.sessions}
      *
@@ -1639,7 +1636,7 @@ MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Sets the activeUser's onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. If the updateHandler has been set, it
-     * is automatically called when active user info is fetched (e.g. {@link MM.activeUser.get})
+     * is automatically called when active user info is fetched (e.g. {@link MM.activeUser#get})
      *
      * @param {APISuccessCallback=} updateHandler callback for when the activeUser object updates
      * @memberOf MM.activeUser
@@ -2456,7 +2453,7 @@ MM.models.ArticleList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession's articles' onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. Note that there are no push events for the articles
      * collection so it must be polled instead. The update handler will be called automatically when
-     * calling {@link MM.activeSession.articles.get}
+     * calling {@link MM.activeSession.articles#get}
      *
      * @param {APISuccessCallback=} updateHandler callback for when the activeSession's article list updates.
      *
@@ -2565,7 +2562,7 @@ MM.models.SessionDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession's documents' onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. Note that there are no push events for the documents
      * collection so it must be polled instead. The update handler will be called automatically when
-     * calling {@link MM.activeSession.documents.get}
+     * calling {@link MM.activeSession.documents#get}
      *
      * @param {APISuccessCallback=} updateHandler callback for when the activeSession's document list updates.
      * @memberOf MM.activeSession.documents
@@ -2693,7 +2690,7 @@ MM.models.AppDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the MM documents' onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. Note that there are no push events for the documents
      * collection so it must be polled instead. The update handler will be called automatically when
-     * calling {@link MM.documents.get}
+     * calling {@link MM.documents#get}
      *
      * @param {APISuccessCallback=} updateHandler callback for when the app's document list updates.
      * @memberOf MM.documents
@@ -3207,7 +3204,7 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
      * Sets the activeSession's activities' onUpdate handler. The onUpdate handler is called once
      * there is an update to the active session's activities list AND the latest
      * activities list is fetched successfully. If no updateHandler is passed in,
-     * {@link MM.activeSession.activities.onUpdate} unsubscribes from push events.
+     * {@link MM.activeSession.activities#onUpdate} unsubscribes from push events.
      *
      * @param {APISuccessCallback=} updateHandler callback for when the activeSession's activity list updates
      * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
@@ -3350,7 +3347,7 @@ MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
 MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * The MM.activeSession object represents the currently active session. It can only be used after
-     * {@link MM.setActiveSessionID} has been called. This object is a container for capturing a history of contextual
+     * {@link MM#setActiveSessionID} has been called. This object is a container for capturing a history of contextual
      * information for one or more users interacting with an application. The activeSession contains
      * several child object collections that can be used to upload contextual information and
      * display relevant search results to your users. The activeSession object is also used to
@@ -3361,6 +3358,64 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      */
     constructor: function () {
         MM.models.ActiveSession.superclass.constructor.apply(this, arguments);
+        var session = this;
+
+        /**
+         * A session's listener is automatically configured to post text entries with type 'speech' and weight of 0.5
+         * when it receives a final {@link ListenerResult} object. Use {@link MM.activeSession#setListenerConfig} to
+         * register callbacks. Before using a Listener, check that it is supported with {@link MM.support}.
+         *
+         * @name listener
+         * @memberOf MM.activeSession
+         * @type {MM.Listener}
+         * @instance
+         * @example
+         if (MM.support.speechRecognition) {
+             MM.activeSession.setListenerConfig({
+                 onResult: function(result) {
+                     // update UI
+                 }
+             });
+             MM.activeSession.listener.start();
+         }
+         */
+        this.listener = new MM.Listener({
+            interimResults: true,
+            onResult: function(result, resultIndex, results, event) {
+                // post a text entry for finalized results
+                if (result.final) {
+                    session.textentries.post({
+                        text: result.transcript,
+                        type: 'speech',
+                        weight: 0.5
+                    });
+                }
+                // notify handler
+                MM.Util.testAndCallThis(session._onListenerResult, session.listener, result, resultIndex, results, event);
+            },
+            onStart: function(event) {
+                MM.Util.testAndCallThis(session._onListenerStart, session.listener, event);
+            },
+            onEnd: function(event) {
+                // Add last result if it was not final
+                var results = this.results;
+                var lastResult = null;
+                if (results.length > 0) {
+                    lastResult = results[results.length - 1];
+                    if (!lastResult.final) {
+                        session.textentries.post({
+                            text: lastResult.transcript,
+                            type: 'speech',
+                            weight: 0.5
+                        });
+                    }
+                }
+                MM.Util.testAndCallThis(session._onListenerEnd, session.listener, event);
+            },
+            onError: function(error) {
+                MM.Util.testAndCallThis(session._onListenerError, session.listener, error);
+            }
+        });
         $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
     },
     localStoragePath: function () {
@@ -3392,7 +3447,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
     /**
      * Sets the activeSession's onUpdate handler. Pass null as the updateHandler parameter to
      * deregister a previously set updateHandler. If the updateHandler has been set, it
-     * is automatically called when active session info is fetched (e.g. {@link MM.activeSession.get})
+     * is automatically called when active session info is fetched (e.g. {@link MM.activeSession#get})
      *
      * @param {APISuccessCallback=} updateHandler callback for when the activeSession object updates
      * @memberOf MM.activeSession
@@ -3411,6 +3466,31 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
      */
     onUpdate: function (updateHandler) {
         this._onUpdate(updateHandler,  null, null);
+    },
+    /**
+     * Sets the listener configuration of the active session. Pass null for callback fields to remove previous callbacks.
+     * See {@link MM.Listener#setConfig} for more details.
+     *
+     * @param {ListenerConfig} config an object containing listener configuration properties
+     * @memberOf MM.activeSession
+     * @instance
+     */
+    setListenerConfig: function (config) {
+        var configProperties = {
+            onResult: '_onListenerResult',
+            onStart: '_onListenerStart',
+            onEnd: '_onListenerEnd',
+            onError: '_onListenerError'
+        };
+
+        for (var configProperty in configProperties) { // only look at safe properties
+            if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
+                this[configProperties[configProperty]] = config[configProperty];
+                delete config[configProperty]; // remove from config
+            }
+        }
+
+        this.listener.setConfig(config); // pass other configuration settings to listener
     },
     /**
      * Get information about the active session. User privileges may allow access to this object
@@ -3699,6 +3779,294 @@ MM.Util = $.extend({}, {
         }
     }
 });
+
+MM.Listener = (function () {
+    var Listener = MM.Internal.createSubclass(Object, {
+        /**
+         * An object representing the text result from the speech recognition API.
+         *
+         * @typedef  {Object}  ListenerResult
+         * @property {string}  transcript the text of the speech that was processed
+         * @property {boolean} final      indicates whether the result is final or interim
+         */
+
+        /**
+         * An object representing the configuration of a {@link MM.Listener}
+         *
+         * @typedef  {Object}  ListenerConfig
+         * @property {boolean} [continuous=false]        whether the listener should continue listening until stop() is called.
+         *                                               If false, recording will continue until the speech recognition provider
+         *                                               recognizes a sufficient pause in speech.
+         * @property {boolean} [interimResults=false]    whether the listener should provide interim results
+         * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
+         *                                               provided when creating a new {@link MM.Listener}.
+         * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
+         * @property {function} [onEnd=null]             the event handler which is called when a listening session ends.
+         * @property {function} [onError=null]           the event handler which is called when errors are received.
+         */
+
+        /**
+         * The ListenerResultCallback handles results from the Speech Recognition API. A ListenerResultCallback should at
+         * minimum handle the result parameter.
+         *
+         * @callback ListenerResultCallback
+         * @param {ListenerResult} result result object containing speech recognition result
+         * @param {number} resultIndex the index of the provided result in the results array
+         * @param {Array} results an array of {@link ListenerResult} objects received during the current speech recognition session
+         * @param {Event} event the original event received from the underlying SpeechRecognition instance
+         */
+
+        /**
+         * Constructor for Listener class
+         *
+         * @constructs MM.Listener
+         * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
+         *                         are omitted default to either null or false.
+         *
+         * @classdesc This is the class for the MindMeld speech recognition API. Before using a Listener, check that it
+         *            is supported with {@link MM.support}. Currently the known browsers which support MM.Listener are
+         *            Google Chrome for Desktop (versions 25+) and Android (versions 31+). The MM.Listener class relies
+         *            upon the speech recognition portion of the Web Speech API (https://dvcs.w3.org/hg/speech-api/raw-file/tip/webspeechapi.html)
+         *            which has not yet been implemented by all major browsers.
+         *
+         * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
+         * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
+         *                                    recent listening session. Readonly.
+         * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
+         * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
+         *
+         * @example
+         function postTextEntry(text) {
+             MM.activeSession.textentries.post({
+                 text: text,
+                 type: 'speech',
+                 weight: '0.5'
+             });
+         }
+
+         if (MM.support.speechRecognition) {
+             var myListener = new MM.Listener({
+                 continuous: true,
+                 interimResults: true,
+                 onResult: function(result) {
+                     if (result.final) {
+                         // post text entry for final results
+                         postTextEntry(result.transcript);
+
+                         // update UI to show final result
+                     } else {
+                         // update UI to show interim result
+                     }
+                 },
+                 onStart: function(event) {
+                     // update ui to show listening
+                 },
+                 onEnd: function(event) {
+                     var results = this.results;
+                     var lastResult = null;
+                     if (results.length > 0) {
+                         lastResult = results[results.length - 1];
+                     }
+
+                     if (!lastResult.final) { // wasn't final when last received onResult
+                         // post for the last result
+                         postTextEntry(lastResult.transcript);
+                         // update UI to show final result
+                     }
+                 },
+                 onError: function(event) {
+                     console.log('listener encountered error: ' + event.error);
+                     // notify user of error if applicable
+                 }
+             });
+             myListener.start();
+         }
+         */
+        constructor: function(config) {
+            this.setConfig(config);
+        },
+        /**
+         * Sets the listener object's configuration. Pass null for callback fields to deregister previous callbacks.
+         *
+         * @param {ListenerConfig} config an object containing the listener's configuration properties
+         * @memberOf MM.Listener
+         * @instance
+         */
+        setConfig: function(config) {
+            var configProperties = {
+                onResult: '_onResult',
+                onStart: '_onStart',
+                onEnd: '_onEnd',
+                onError: '_onError',
+                continuous: 'continuous',
+                interimResults: 'interimResults'
+            };
+
+            for (var configProperty in configProperties) { // only look at safe properties
+                if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
+                    this[configProperties[configProperty]] = config[configProperty];
+                }
+            }
+        },
+        /**
+         * Starts a speech recognition session. The onResult callback will begin receiving results as the user's speech
+         * is recognized.
+         *
+         * @throws When speech recognition is not supported in the browser, an error is thrown.
+         * @memberOf MM.Listener
+         * @instance
+         */
+        start: function() {
+            if (!MM.support.speechRecognition) {
+                MM.Internal.log('Speech recognition is not supported');
+                throw new Error('Speech recognition is not supported');
+            }
+            var listener = this;
+            var recognizer = this._recognizer = new SpeechRecognition();
+            recognizer.continuous = this.continuous;
+            recognizer.interimResults = this.interimResults;
+            listener._results = []; // clear previous results
+
+            // TODO: set language based on browser settings
+            // recognizer.lang = "eng-USA";
+
+            recognizer.onresult = function(event) {
+                MM.Internal.log(Date.now() + " Listener: onresult");
+                MM.Internal.log("resultIndex: " + event.resultIndex);
+                MM.Internal.log(event.results);
+
+                var result = {
+                    final: false,
+                    transcript: ''
+                };
+                var resultIndex = event.resultIndex;
+                var results = listener._results;
+
+                for (var i = event.resultIndex; i < event.results.length; ++i) {
+                    var transcript = event.results[i][0].transcript;
+
+                    if (event.results[i].isFinal) {
+                        result.final = true;
+                        result.transcript = transcript;
+                        break;
+                    } else {
+                        result.transcript += transcript; // collapse multiple pending results into one
+                    }
+                }
+                results[resultIndex] = result;
+                MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
+            };
+            recognizer.onstart = function(event) {
+                MM.Internal.log(Date.now() + " Listener: onstart");
+
+                listener._listening = true;
+                MM.Util.testAndCallThis(listener._onStart, listener, event);
+            };
+            recognizer.onend = function(event) {
+                MM.Internal.log(Date.now() + " Listener: onend");
+
+                listener._listening = false;
+                MM.Util.testAndCallThis(listener._onEnd, listener, event);
+            };
+            recognizer.onerror = function(error) {
+                MM.Internal.log(Date.now() + " Listener: onerror - " + error.error);
+
+                MM.Util.testAndCallThis(listener._onError, listener, error);
+                // TODO(jj): do we need to restart in any instances?
+            };
+            recognizer.start();
+        },
+        /**
+         * Stops the active speech recognition session. One more result may be send to the onResult callback.
+         *
+         * @memberOf MM.Listener
+         * @instance
+         */
+        stop: function() {
+            this._recognizer.stop();
+        },
+        /**
+         * Cancels the active speech recognition session. No further results will be sent to the onResult callback.
+         *
+         * @memberOf MM.Listener
+         * @instance
+         */
+        cancel: function() {
+            this._recognizer.abort();
+        }
+    });
+
+
+    Listener.prototype._listening = false;
+    Listener.prototype._results = [];
+    Listener.prototype.continuous = false;
+    Listener.prototype.interimResults = false;
+    Object.defineProperties(Listener.prototype, {
+        listening: {
+            get: function() {
+                return this._listening;
+            }
+        },
+        results: {
+            get: function() {
+                return JSON.parse(JSON.stringify(this._results));
+            }
+        }
+    });
+    return Listener;
+})();
+
+/**
+ * An overview of features supported in the browser.
+ *
+ * @memberOf MM
+ * @namespace
+ *
+ * @property {boolean} speechRecognition whether speech recognition is supported in the current browser
+ * @property {boolean} localStorage      whether local storage is supported in the current browser
+ */
+MM.support = (function(window) {
+    var support = {};
+
+    var localStorage = false;
+    var speechRecognition = false;
+
+    Object.defineProperties(support, {
+        localStorage: {
+            get: function() { return localStorage; }
+        },
+        speechRecognition: {
+            get: function() { return speechRecognition; }
+        }
+    });
+    try {
+        speechRecognition = (function(window) {
+            'use strict';
+            window = window || {};
+            var SpeechRecognition = window.webkitSpeechRecognition ||
+//                window.mozSpeechRecognition || // TODO: add these as they become supported, and update MM.Listener docs
+//                window.msSpeechRecognition ||
+//                window.oSpeechRecognition ||
+                window.SpeechRecognition;
+            window.SpeechRecognition = SpeechRecognition; // now we can use one!
+            return (typeof(SpeechRecognition) !== 'undefined');
+        })(window);
+    } catch (e) {
+        // TODO: maybe add something here?
+    }
+    try {
+        var localStorage = (function(window) {
+            'use strict';
+            window = window || {};
+            return (typeof(window.Storage) !== 'undefined');
+        })(window);
+    } catch (e) {
+        // TODO: maybe add something here?
+    }
+
+    return support;
+})(window);
+
 
 // Setup MM SDK
 MM.Internal.setup();
