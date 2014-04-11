@@ -20,7 +20,7 @@ of the following files directly from the Expect Labs site:
 
 * Un-minified latest: [mindmeld.js][latestSDKDownloadLink]
 * Minified latest: [mindmeld.min.js][latestMinifiedSDKDownloadLink]
-* Both + Hello World + Documentation: [mindmeld.zip][latestSDKZIPDownloadLink]
+* Both + Hello World + Documentation: [mindmeld-js-sdk.zip][latestSDKZIPDownloadLink]
 
 Note that if you are including the file we host here directly from your website,
 you probably shouldn't. It is not hosted on a CDN, and your page's load time may
@@ -33,7 +33,7 @@ to prevent compatibility issues in the future.
 
 * Un-minified: [mindmeld-2.1.0.js][versionedSDKDownloadLink]
 * Minified: [mindmeld-2.1.0.min.js][versionedMinifiedSDKDownloadLink]
-* Both + Hello World + Documentation: [mindmeld-2.1.0.zip][versionedSDKZIPDownloadLink]
+* Both + Hello World + Documentation: [mindmeld-js-sdk-2.1.0.zip][versionedSDKZIPDownloadLink]
 
 ### Clone git repository 
 Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
@@ -378,8 +378,8 @@ generate JSDocs
 [repoUrl]:https://github.com/expectlabs/mindmeld-js-sdk
 [latestSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.js
 [latestMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.min.js
-[latestSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.zip
+[latestSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk.zip
 [versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.1.0.js
 [versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.1.0.min.js
-[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.1.0.zip
+[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.1.0.zip
 
