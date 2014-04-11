@@ -1,5 +1,14 @@
 (function ($, MM) {
 
+    $.widget('mindmeld.mmautocomplete', $.ui.autocomplete,  {
+        _renderItem: function (ul, item) {
+            return $( "<li>" )
+                .attr( "data-value", item.value )
+                .append( $( "<a>" ).text( item.label ) )
+                .appendTo( ul );
+        }
+    });
+
     $.widget('mindmeld.searchwidget', {
 
         options: {
@@ -99,7 +108,7 @@
             this._initialized = true;
             this.options.onMMSearchInitialized();
             var self = this;
-            this.element.autocomplete({
+            this.element.mmautocomplete({
                 minLength: 2,
                 delay: 300,
                 source: function (request, response) {
@@ -115,8 +124,8 @@
                             });
                             response(autocompleteResults);
                         },
-                        function (error) {
-                            self.onMMSearchError('Error fetching documents: ' + error.message);
+                        function (errorMessage) {
+                            self.onMMSearchError(errorMessage);
                             response([]);
                         }
                     );
@@ -130,7 +139,7 @@
 
         queryDocuments: function (query, onQueryDocuments, onQueryError) {
             if (this._initialized) {
-                query = this._getFuzzyQuery(query);
+                query = this._getWildcardQuery(query);
                 var queryParams = {
                     query: query,
                     limit: 5
@@ -160,7 +169,7 @@
             }
         },
 
-        _getFuzzyQuery: function (query) {
+        _getWildcardQuery: function (query) {
             var queryTerms = query.split(" ");
             var newQuery = "";
             $.each(queryTerms, function (index, term) {
