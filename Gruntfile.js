@@ -43,6 +43,8 @@ module.exports = function (grunt) {
         zip: {
             dist: {
                 src: [
+                    'LICENSE',
+                    'docs/**',
                     'mindmeld.js',
                     'mindmeld.min.js',
                     'HelloWorld.html'
