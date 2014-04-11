@@ -11,7 +11,7 @@ module.exports = function (grunt) {
         jsdoc : {
             dist: {
                 src: ['mindmeld.js', 'README.md'],
-                dest: 'doc/',
+                dest: 'docs/',
                 options: {
                     configure: 'docsTemplate/jaguar.conf.json',
                     template: 'docsTemplate/jaguarjs-doc',
@@ -21,10 +21,10 @@ module.exports = function (grunt) {
         },
         clean: {
             localDocs: {
-              src: ['./doc']
+              src: ['./docs']
             },
             dist: {
-                src: ['./doc', 'mindmeld.min.js', 'mindmeld-js-sdk.zip']
+                src: ['./docs', 'mindmeld.min.js', 'mindmeld-js-sdk.zip']
             }
         },
         uglify: {
