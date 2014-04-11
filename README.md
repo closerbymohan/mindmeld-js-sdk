@@ -39,6 +39,7 @@ to prevent compatibility issues in the future.
 Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
 ```bash
 git clone https://github.com/expectlabs/mindmeld-js-sdk.git
+cd mindmeld-js-sdk
 git checkout master # make sure you are using the most recent stable release
 ```
 Copy either mindmeld.js or mindmeld.min.js into your project's directory.
