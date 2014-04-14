@@ -2,10 +2,32 @@
 
     $.widget('mindmeld.mmautocomplete', $.ui.autocomplete,  {
         _renderItem: function (ul, item) {
-            return $( "<li>" )
-                .attr( "data-value", item.value )
-                .append( $( "<a>" ).text( item.label ) )
-                .appendTo( ul );
+            return $('<li>', {'class': 'docListItem'})
+                .append(
+                    $('<a>')
+                        .append(
+                            $('<div>', {'class': 'docListWrapper'})
+                                .append(
+                                    $('<span>', {'class': 'docTitle', 'text': item.document.title})
+                                )
+                                .append(
+                                    $('<div>', {'class': 'docContent'})
+                                        .append(
+                                            $('<div>', {'class': 'docImg'})
+                                                .append(
+                                                    $('<img>', {'class': 'docImgFile', 'src': item.document.image.url})
+                                                )
+                                        )
+                                        .append(
+                                            $('<div>', {'class': 'docDetails'})
+                                                .append(
+                                                    $('<div>', {'class': 'textBlurb', 'text': item.document.description})
+                                                )
+                                        )
+                                )
+                        )
+             )
+            .appendTo(ul);
         }
     });
 
