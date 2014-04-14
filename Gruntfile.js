@@ -8,10 +8,11 @@ module.exports = function (grunt) {
 
     // grunt task configuration
     grunt.initConfig({
+        bower: grunt.file.readJSON( "bower.json" ),
         jsdoc : {
             dist: {
                 src: ['mindmeld.js', 'README.md'],
-                dest: 'doc/',
+                dest: 'docs/',
                 options: {
                     configure: 'docsTemplate/jaguar.conf.json',
                     template: 'docsTemplate/jaguarjs-doc',
@@ -21,10 +22,13 @@ module.exports = function (grunt) {
         },
         clean: {
             localDocs: {
-              src: ['./doc']
+              src: ['./docs']
             },
             dist: {
-                src: ['./doc', 'mindmeld.min.js', 'mindmeld-js-sdk.zip']
+                src: ['./docs', 'mindmeld.min.js', 'mindmeld-js-sdk.zip']
+            },
+            archive: {
+                src: [ '.archive-temp' ]
             }
         },
         uglify: {
@@ -43,11 +47,45 @@ module.exports = function (grunt) {
         zip: {
             dist: {
                 src: [
+                    'LICENSE',
+                    'docs/**',
                     'mindmeld.js',
                     'mindmeld.min.js',
                     'HelloWorld.html'
                 ],
                 dest: 'mindmeld-js-sdk.zip'
+            },
+            archive: {
+                cwd: '.archive-temp/',
+                src: [
+                    '.archive-temp/LICENSE',
+                    '.archive-temp/docs/**',
+                    '.archive-temp/mindmeld-<%= bower.version %>.js',
+                    '.archive-temp/mindmeld-<%= bower.version %>.min.js',
+                    '.archive-temp/HelloWorld.html'
+                ],
+                dest: 'archive/mindmeld-js-sdk-<%= bower.version %>.zip'
+            }
+        },
+        copy: {
+            archive: {
+                files: [
+                    { expand: true, src: [ 'LICENSE', 'HelloWorld.html', 'docs/**' ], dest: '.archive-temp/' },
+                    { expand: false, src: 'mindmeld.js', dest: '.archive-temp/mindmeld-<%= bower.version %>.js' },
+                    { expand: false, src: 'mindmeld.min.js', dest: '.archive-temp/mindmeld-<%= bower.version %>.min.js' },
+                    { expand: false, src: 'mindmeld.js', dest: 'archive/mindmeld-<%= bower.version %>.js' },
+                    { expand: false, src: 'mindmeld.min.js', dest: 'archive/mindmeld-<%= bower.version %>.min.js' }
+                ],
+                options: {
+                    process: function (content, srcPath) {
+                        if (srcPath === 'HelloWorld.html') {
+                            var version = grunt.config('bower.version');
+                            content = content.replace(/mindmeld\.js/,'mindmeld-' + version + '.js');
+                        }
+
+                        return content;
+                    }
+                }
             }
         },
         watch: {
@@ -75,4 +113,13 @@ module.exports = function (grunt) {
         'uglify:dist',
         'zip:dist'
     ]);
+
+    grunt.registerTask('archive', 'Creates an archived copy of the current version.', [
+        'build',
+        'copy:archive',
+        'zip:archive',
+        'clean:archive'
+    ]);
+
+//    grunt.registerTask('bump', 'Increments the version number in all the appropriate places.', []) // TODO:
 };

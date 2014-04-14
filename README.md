@@ -15,18 +15,34 @@ This is the reference document for Expect Labs' MindMeld JavaScript SDK, mindmel
 There are a few ways to get started using MindMeld JavaScript SDK
 
 ### Download from site
-The easiest way to install mindmeld.js is by downloading one of the following
-files directly from the Expect Labs site:
+The easiest way to install the latest version of mindmeld.js is by downloading one
+of the following files directly from the Expect Labs site:
 
-* Un-minified: [mindmeld.js][sdkDownloadLink]
-* Minified: [mindmeld.min.js][sdkMinifiedDownloadLink]
+* Un-minified latest: [mindmeld.js][latestSDKDownloadLink]
+* Minified latest: [mindmeld.min.js][latestMinifiedSDKDownloadLink]
+* Both + Hello World + Documentation: [mindmeld-js-sdk.zip][latestSDKZIPDownloadLink]
+
+Note that if you are including the file we host here directly from your website,
+you probably shouldn't. It is not hosted on a CDN, and your page's load time may
+take a hit. However, if you must link directly, you should use the versioned URL
+to prevent compatibility issues in the future.
+
+```html
+<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.1.0.js"></script>
+```
+
+* Un-minified: [mindmeld-2.1.0.js][versionedSDKDownloadLink]
+* Minified: [mindmeld-2.1.0.min.js][versionedMinifiedSDKDownloadLink]
+* Both + Hello World + Documentation: [mindmeld-js-sdk-2.1.0.zip][versionedSDKZIPDownloadLink]
 
 ### Clone git repository 
 Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
 ```bash
 git clone https://github.com/expectlabs/mindmeld-js-sdk.git
+cd mindmeld-js-sdk
+git checkout master # make sure you are using the most recent stable release
 ```
-Copy either mindmeld.js or mindmeld.min.js into your project's directory
+Copy either mindmeld.js or mindmeld.min.js into your project's directory.
 
 ### Install with Bower
 Bower is a popular package manager for the web. Read more about it at [bower.io](http://bower.io/)
@@ -360,5 +376,10 @@ generate JSDocs
 [apiDocsLink]:https://developer.expectlabs.com/docs
 [developerSite]:https://developer.expectlabs.com
 [repoUrl]:https://github.com/expectlabs/mindmeld-js-sdk
-[sdkDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.js
-[sdkMinifiedDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.min.js
+[latestSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.js
+[latestMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.min.js
+[latestSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk.zip
+[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.1.0.js
+[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.1.0.min.js
+[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.1.0.zip
+
