@@ -1,7 +1,19 @@
-(function ($, MM) {
+(function ($, MM, undefined) {
 
     $.widget('mindmeld.mmautocomplete', $.ui.autocomplete,  {
+        _truncateText: function (text, length, end) {
+            if(end === undefined){
+                end = '...';
+            }
+            if(text.length <= length || text.length - end.length <= length){
+                return text;
+            }
+            else{
+                return String(text).substring(0, length - end.length) + end;
+            }
+        },
         _renderItem: function (ul, item) {
+            var documentDesc = this._truncateText(item.document.description, 150);
             return $('<li>', {'class': 'docListItem'})
                 .append(
                     $('<a>')
@@ -21,7 +33,7 @@
                                         .append(
                                             $('<div>', {'class': 'docDetails'})
                                                 .append(
-                                                    $('<div>', {'class': 'textBlurb', 'text': item.document.description})
+                                                    $('<div>', {'class': 'textBlurb', 'text': documentDesc})
                                                 )
                                         )
                                 )
