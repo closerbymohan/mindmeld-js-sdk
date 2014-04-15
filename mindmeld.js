@@ -3922,19 +3922,15 @@ MM.Listener = (function () {
                 throw new Error('Speech recognition is not supported');
             }
             var listener = this;
-            var recognizer = this._recognizer = new SpeechRecognition();
+            var recognizer = this._recognizer;
+            if (typeof recognizer === 'undefined') {
+                recognizer = this._recognizer = new SpeechRecognition();
+            }
             recognizer.continuous = this.continuous;
             recognizer.interimResults = this.interimResults;
             listener._results = []; // clear previous results
 
-            // TODO: set language based on browser settings
-            // recognizer.lang = "eng-USA";
-
             recognizer.onresult = function(event) {
-                MM.Internal.log(Date.now() + " Listener: onresult");
-                MM.Internal.log("resultIndex: " + event.resultIndex);
-                MM.Internal.log(event.results);
-
                 var result = {
                     final: false,
                     transcript: ''
@@ -3957,22 +3953,15 @@ MM.Listener = (function () {
                 MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
             };
             recognizer.onstart = function(event) {
-                MM.Internal.log(Date.now() + " Listener: onstart");
-
                 listener._listening = true;
                 MM.Util.testAndCallThis(listener._onStart, listener, event);
             };
             recognizer.onend = function(event) {
-                MM.Internal.log(Date.now() + " Listener: onend");
-
                 listener._listening = false;
                 MM.Util.testAndCallThis(listener._onEnd, listener, event);
             };
             recognizer.onerror = function(error) {
-                MM.Internal.log(Date.now() + " Listener: onerror - " + error.error);
-
                 MM.Util.testAndCallThis(listener._onError, listener, error);
-                // TODO(jj): do we need to restart in any instances?
             };
             recognizer.start();
         },
