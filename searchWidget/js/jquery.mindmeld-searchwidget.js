@@ -16,7 +16,7 @@
             var documentDesc = this._truncateText(item.document.description, 150);
             return $('<li>', {'class': 'docListItem'})
                 .append(
-                    $('<a>')
+                    $('<a>', {'href': item.document.originurl})
                         .append(
                             $('<div>', {'class': 'docListWrapper'})
                                 .append(
@@ -163,10 +163,6 @@
                             response([]);
                         }
                     );
-                },
-                select: function (event, ui) {
-                    event.preventDefault();
-                    window.location.href = ui.item.document.originurl;
                 }
             });
         },

@@ -1,8 +1,4 @@
 
-ul.ui-autocomplete {
-    width: 350px;
-}
-
 li.docListItem {
     border-bottom: 1px dotted #BBD0E0;
     list-style: none;
@@ -10,19 +6,9 @@ li.docListItem {
     z-index: 5;
     background: #fff;
     opacity: 1;
-    -moz-box-shadow: inset 1px 0px 1px 0 #E0E0E0;
-    -webkit-box-shadow: inset 1px 0px 1px 0 #E0E0E0;
-    box-shadow: inset 1px 0px 1px 0 #E0E0E0;
-
-    &:first-child {
-        -moz-box-shadow: inset 1px 1px 1px 0 #E0E0E0;
-        -webkit-box-shadow: inset 1px 1px 1px 0 #E0E0E0;
-        box-shadow: inset 1px 1px 1px 0 #E0E0E0;
-    }
 
     .docListWrapper {
         min-height: 113px;
-//        cursor: pointer;
     }
 
     .docTitle {

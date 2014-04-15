@@ -2042,11 +2042,6 @@ body .ui-tooltip {
 }
 
 /* line 2, ../sass/_searchWidget.scss */
-ul.ui-autocomplete {
-  width: 350px;
-}
-
-/* line 6, ../sass/_searchWidget.scss */
 li.docListItem {
   border-bottom: 1px dotted #BBD0E0;
   list-style: none;
@@ -2054,43 +2049,34 @@ li.docListItem {
   z-index: 5;
   background: #fff;
   opacity: 1;
-  -moz-box-shadow: inset 1px 0px 1px 0 #E0E0E0;
-  -webkit-box-shadow: inset 1px 0px 1px 0 #E0E0E0;
-  box-shadow: inset 1px 0px 1px 0 #E0E0E0;
 }
-/* line 17, ../sass/_searchWidget.scss */
-li.docListItem:first-child {
-  -moz-box-shadow: inset 1px 1px 1px 0 #E0E0E0;
-  -webkit-box-shadow: inset 1px 1px 1px 0 #E0E0E0;
-  box-shadow: inset 1px 1px 1px 0 #E0E0E0;
-}
-/* line 23, ../sass/_searchWidget.scss */
+/* line 10, ../sass/_searchWidget.scss */
 li.docListItem .docListWrapper {
   min-height: 113px;
 }
-/* line 28, ../sass/_searchWidget.scss */
+/* line 14, ../sass/_searchWidget.scss */
 li.docListItem .docTitle {
   color: #005985;
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   font-size: 12px;
 }
-/* line 35, ../sass/_searchWidget.scss */
+/* line 21, ../sass/_searchWidget.scss */
 li.docListItem .docContent .docImg {
   float: left;
 }
-/* line 38, ../sass/_searchWidget.scss */
+/* line 24, ../sass/_searchWidget.scss */
 li.docListItem .docContent .docImg .docImgFile {
   width: 100px;
   max-height: 85px;
   border: 1px solid #327293;
 }
-/* line 45, ../sass/_searchWidget.scss */
+/* line 31, ../sass/_searchWidget.scss */
 li.docListItem .docContent .docDetails {
   float: right;
   width: 200px;
   margin-right: 10px;
 }
-/* line 52, ../sass/_searchWidget.scss */
+/* line 38, ../sass/_searchWidget.scss */
 li.docListItem .docContent .docDetails .date,
 li.docListItem .docContent .docDetails .textBlurb {
   color: #A7A7A7;
