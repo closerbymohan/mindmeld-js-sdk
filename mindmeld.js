@@ -1956,7 +1956,7 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the sessions returned.
      * See documentation [here](https://developer.expectlabs.com/docs/endpointUser#getUserUseridSessions) for more details
      * @param {APISuccessCallback=} onSuccess callback for when getting the session list was successful
-     * @param {APISuccessCallback=} onFail callback for when getting the session list failed
+     * @param {APIErrorCallback=} onFail callback for when getting the session list failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
@@ -1988,7 +1988,7 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      * are 'friendsonly' can be accessed by users who are in the friends collection of the session
      * organizer. Sessions that are 'public' can be accessed by all users of your application.
      * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
-     * @param {APISuccessCallback=} onFail callback for when creating new session failed
+     * @param {APIErrorCallback=} onFail callback for when creating new session failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
@@ -2013,7 +2013,7 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      *
      * @param {string} sessionid id of the session to delete
      * @param {APISuccessCallback=} onSuccess callback for when deleting object was successful
-     * @param {APISuccessCallback=} onFail callback for when deleting object failed
+     * @param {APIErrorCallback=} onFail callback for when deleting object failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
@@ -3827,7 +3827,9 @@ MM.Listener = (function () {
          *            is supported with {@link MM.support}. Currently the known browsers which support MM.Listener are
          *            Google Chrome for Desktop (versions 25+) and Android (versions 31+). The MM.Listener class relies
          *            upon the speech recognition portion of the Web Speech API (https://dvcs.w3.org/hg/speech-api/raw-file/tip/webspeechapi.html)
-         *            which has not yet been implemented by all major browsers.
+         *            which has not yet been implemented by all major browsers. Note that listening won't work when accessing
+         *            locally hosted JavaScript and HTML. Speech recognition is only supported when your JavaScript and
+         *            HTML are served from a web server.
          *
          * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
          * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
