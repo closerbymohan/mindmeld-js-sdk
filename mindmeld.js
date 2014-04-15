@@ -3827,7 +3827,9 @@ MM.Listener = (function () {
          *            is supported with {@link MM.support}. Currently the known browsers which support MM.Listener are
          *            Google Chrome for Desktop (versions 25+) and Android (versions 31+). The MM.Listener class relies
          *            upon the speech recognition portion of the Web Speech API (https://dvcs.w3.org/hg/speech-api/raw-file/tip/webspeechapi.html)
-         *            which has not yet been implemented by all major browsers.
+         *            which has not yet been implemented by all major browsers. Note that listening won't work when accessing
+         *            locally hosted JavaScript and HTML. Speech recognition is only supported when your JavaScript and
+         *            HTML are served from a web server.
          *
          * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
          * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
