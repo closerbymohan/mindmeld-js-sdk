@@ -1956,7 +1956,7 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the sessions returned.
      * See documentation [here](https://developer.expectlabs.com/docs/endpointUser#getUserUseridSessions) for more details
      * @param {APISuccessCallback=} onSuccess callback for when getting the session list was successful
-     * @param {APISuccessCallback=} onFail callback for when getting the session list failed
+     * @param {APIErrorCallback=} onFail callback for when getting the session list failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
@@ -1988,7 +1988,7 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      * are 'friendsonly' can be accessed by users who are in the friends collection of the session
      * organizer. Sessions that are 'public' can be accessed by all users of your application.
      * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
-     * @param {APISuccessCallback=} onFail callback for when creating new session failed
+     * @param {APIErrorCallback=} onFail callback for when creating new session failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
@@ -2013,7 +2013,7 @@ MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
      *
      * @param {string} sessionid id of the session to delete
      * @param {APISuccessCallback=} onSuccess callback for when deleting object was successful
-     * @param {APISuccessCallback=} onFail callback for when deleting object failed
+     * @param {APIErrorCallback=} onFail callback for when deleting object failed
      * @memberOf MM.activeUser.sessions
      * @instance
      *
