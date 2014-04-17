@@ -3384,11 +3384,16 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
             onResult: function(result, resultIndex, results, event) {
                 // post a text entry for finalized results
                 if (result.final) {
-                    session.textentries.post({
-                        text: result.transcript,
-                        type: 'speech',
-                        weight: 0.5
-                    });
+                    session.textentries.post(
+                        {
+                            text: result.transcript,
+                            type: 'speech',
+                            weight: 0.5
+                        },
+                        function onSuccess (response) {
+                            MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
+                        }
+                    );
                 }
                 // notify handler
                 MM.Util.testAndCallThis(session._onListenerResult, session.listener, result, resultIndex, results, event);
@@ -3480,7 +3485,8 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
             onResult: '_onListenerResult',
             onStart: '_onListenerStart',
             onEnd: '_onListenerEnd',
-            onError: '_onListenerError'
+            onError: '_onListenerError',
+            onTextEntryPosted: '_onTextEntryPosted'
         };
 
         for (var configProperty in configProperties) { // only look at safe properties
@@ -3803,6 +3809,8 @@ MM.Listener = (function () {
          * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
          * @property {function} [onEnd=null]             the event handler which is called when a listening session ends.
          * @property {function} [onError=null]           the event handler which is called when errors are received.
+         * @property {APISuccessCallback} [onTextEntryPosted=null] the event handler which is called when text entries are posted.
+         *                                                         Note: This is only called when using the activeSession's listener
          */
 
         /**
@@ -3900,6 +3908,7 @@ MM.Listener = (function () {
                 onStart: '_onStart',
                 onEnd: '_onEnd',
                 onError: '_onError',
+                onTextEntryPosted: '_onTextEntryPosted',
                 continuous: 'continuous',
                 interimResults: 'interimResults'
             };
