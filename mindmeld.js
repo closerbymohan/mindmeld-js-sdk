@@ -3408,11 +3408,16 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                 if (results.length > 0) {
                     lastResult = results[results.length - 1];
                     if (!lastResult.final) {
-                        session.textentries.post({
-                            text: lastResult.transcript,
-                            type: 'speech',
-                            weight: 0.5
-                        });
+                        session.textentries.post(
+                            {
+                                text: lastResult.transcript,
+                                type: 'speech',
+                                weight: 0.5
+                            },
+                            function onSuccess (response) {
+                                MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
+                            }
+                        );
                     }
                 }
                 MM.Util.testAndCallThis(session._onListenerEnd, session.listener, event);
