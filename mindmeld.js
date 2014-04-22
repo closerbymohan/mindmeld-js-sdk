@@ -3918,6 +3918,14 @@ MM.Listener = (function () {
             }
         },
         /**
+         * The time the listener last begin listening. Defaults to 0.
+         *
+         * @memberOf MM.Listener
+         * @instance
+         * @private
+         */
+        _lastStartTime: 0,
+        /**
          * Starts a speech recognition session. The onResult callback will begin receiving results as the user's speech
          * is recognized.
          *
@@ -3930,7 +3938,13 @@ MM.Listener = (function () {
                 MM.Internal.log('Speech recognition is not supported');
                 throw new Error('Speech recognition is not supported');
             }
+
             var listener = this;
+            if (Date.now() - listener._lastStartTime < 1000) {
+                // TODO(jj): should we throw an error here, or call onError?
+                return;
+            }
+
             var abortTimeout = 0;
             function setAbortTimeout() {
                 clearTimeout(abortTimeout);
@@ -3971,6 +3985,7 @@ MM.Listener = (function () {
                 };
                 recognizer.onstart = function(event) {
                     listener._listening = true;
+                    listener._lastStartTime = Date.now();
                     MM.Util.testAndCallThis(listener._onStart, listener, event);
                 };
                 recognizer.onend = function(event) {
