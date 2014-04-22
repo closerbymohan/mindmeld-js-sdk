@@ -3384,16 +3384,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
             onResult: function(result, resultIndex, results, event) {
                 // post a text entry for finalized results
                 if (result.final) {
-                    session.textentries.post(
-                        {
-                            text: result.transcript,
-                            type: 'speech',
-                            weight: 0.5
-                        },
-                        function onSuccess (response) {
-                            MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
-                        }
-                    );
+                    postListenerResult(result.transcript);
                 }
                 // notify handler
                 MM.Util.testAndCallThis(session._onListenerResult, session.listener, result, resultIndex, results, event);
@@ -3408,16 +3399,7 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                 if (results.length > 0) {
                     lastResult = results[results.length - 1];
                     if (!lastResult.final) {
-                        session.textentries.post(
-                            {
-                                text: lastResult.transcript,
-                                type: 'speech',
-                                weight: 0.5
-                            },
-                            function onSuccess (response) {
-                                MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
-                            }
-                        );
+                        postListenerResult(lastResult.transcript);
                     }
                 }
                 MM.Util.testAndCallThis(session._onListenerEnd, session.listener, event);
@@ -3426,6 +3408,17 @@ MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
                 MM.Util.testAndCallThis(session._onListenerError, session.listener, error);
             }
         });
+
+        function postListenerResult(transcript) {
+            session.textentries.post({
+                text: transcript,
+                type: 'speech',
+                weight: 0.5
+            }, function(response) {
+                MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
+            });
+        }
+
         $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
     },
     localStoragePath: function () {
@@ -3938,47 +3931,69 @@ MM.Listener = (function () {
                 throw new Error('Speech recognition is not supported');
             }
             var listener = this;
+            var abortTimeout = 0;
+            function setAbortTimeout() {
+                clearTimeout(abortTimeout);
+                abortTimeout = setTimeout(function(event) {
+                    recognizer.abort();
+                }, 2000, event); // abort if the recognition fails to call onEnd (chrome bug hack)
+            }
+
             var recognizer = this._recognizer;
             if (typeof recognizer === 'undefined') {
                 recognizer = this._recognizer = new SpeechRecognition();
+                recognizer.onresult = function(event) {
+                    var result = {
+                        final: false,
+                        transcript: ''
+                    };
+                    var resultIndex = event.resultIndex;
+                    var results = listener._results;
+
+                    for (var i = event.resultIndex; i < event.results.length; ++i) {
+                        var transcript = event.results[i][0].transcript;
+
+                        if (event.results[i].isFinal) {
+                            result.final = true;
+                            result.transcript = transcript;
+                            break;
+                        } else {
+                            result.transcript += transcript; // collapse multiple pending results into one
+                        }
+                    }
+                    results[resultIndex] = result;
+
+                    if (abortTimeout != 0) {
+                        setAbortTimeout();
+                    }
+
+                    MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
+                };
+                recognizer.onstart = function(event) {
+                    listener._listening = true;
+                    MM.Util.testAndCallThis(listener._onStart, listener, event);
+                };
+                recognizer.onend = function(event) {
+                    clearTimeout(abortTimeout);
+                    abortTimeout = 0;
+                    listener._listening = false;
+                    MM.Util.testAndCallThis(listener._onEnd, listener, event);
+                };
+                recognizer.onerror = function(event) {
+                    }
+                    MM.Util.testAndCallThis(listener._onError, listener, event);
+                };
+                recognizer.onaudioend = function(event) {
+                    if (!recognizer.continuous) {
+                        setAbortTimeout();
+                    }
+                    console.log(Date.now(), "Listener " + event.type, event);
+                }
             }
             recognizer.continuous = this.continuous;
             recognizer.interimResults = this.interimResults;
             listener._results = []; // clear previous results
 
-            recognizer.onresult = function(event) {
-                var result = {
-                    final: false,
-                    transcript: ''
-                };
-                var resultIndex = event.resultIndex;
-                var results = listener._results;
-
-                for (var i = event.resultIndex; i < event.results.length; ++i) {
-                    var transcript = event.results[i][0].transcript;
-
-                    if (event.results[i].isFinal) {
-                        result.final = true;
-                        result.transcript = transcript;
-                        break;
-                    } else {
-                        result.transcript += transcript; // collapse multiple pending results into one
-                    }
-                }
-                results[resultIndex] = result;
-                MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
-            };
-            recognizer.onstart = function(event) {
-                listener._listening = true;
-                MM.Util.testAndCallThis(listener._onStart, listener, event);
-            };
-            recognizer.onend = function(event) {
-                listener._listening = false;
-                MM.Util.testAndCallThis(listener._onEnd, listener, event);
-            };
-            recognizer.onerror = function(error) {
-                MM.Util.testAndCallThis(listener._onError, listener, error);
-            };
             recognizer.start();
         },
         /**
