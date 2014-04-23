@@ -196,7 +196,8 @@ table {
 
 input[type="search"].mm-search {
   -webkit-appearance: searchfield;
-  -moz-appearance: searchfield; }
+  -moz-appearance: searchfield;
+  width: 200px; }
 
 span.ui-helper-hidden-accessible[role="status"] {
   display: none; }
@@ -205,7 +206,8 @@ ul.ui-autocomplete {
   border: 1px solid #ddd;
   padding: 2px;
   margin: 0;
-  position: absolute; }
+  position: absolute;
+  width: 300px; }
 
 .group:after {
   content: " ";
@@ -225,7 +227,11 @@ li.docListItem {
     li.docListItem a .docListWrapper span.docTitle {
       color: #005985;
       font: 1rem Arial, "Helvetica Neue", Helvetica, sans-serif; }
+    li.docListItem a .docListWrapper p.textBlurb {
+      color: #A7A7A7;
+      font: .75rem Arial, sans-serif; }
     li.docListItem a .docListWrapper .docContentWithImage {
+      margin-top: 5px;
       display: table;
       max-width: 400px; }
       li.docListItem a .docListWrapper .docContentWithImage .docImg,
@@ -239,8 +245,12 @@ li.docListItem {
       li.docListItem a .docListWrapper .docContentWithImage .docDetails {
         width: 60%; }
         li.docListItem a .docListWrapper .docContentWithImage .docDetails .textBlurb {
-          padding-left: 10px;
-          color: #A7A7A7;
-          font: 1em Arial, sans-serif; }
+          padding-left: 10px; }
+    li.docListItem a .docListWrapper .docContentWithoutImage {
+      margin-top: 5px; }
+      li.docListItem a .docListWrapper .docContentWithoutImage p.textBlurb {
+        margin: 0;
+        text-align: left;
+        word-break: keep-all; }
 
 /*# sourceMappingURL=main.css.map */

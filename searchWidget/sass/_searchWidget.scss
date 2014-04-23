@@ -1,6 +1,7 @@
 input[type="search"].mm-search {
     -webkit-appearance: searchfield;
     -moz-appearance: searchfield;
+    width: 200px;
 }
 
 span.ui-helper-hidden-accessible[role="status"] {
@@ -12,6 +13,7 @@ ul.ui-autocomplete {
     padding: 2px;
     margin: 0;
     position: absolute;
+    width: 300px;
 }
 
 .group:after {
@@ -22,30 +24,37 @@ ul.ui-autocomplete {
 
 li.docListItem {
 
-//background: rgba(214, 247, 255, 0.67);
-     &:hover {
-        background: rgba(245, 253, 255, 0.63);
-    }
-    &:last-child {
-        border-bottom: none;
-    }
-
-
     list-style: none;
     border-bottom: 1px dotted #BBD0E0;
     padding: 10px;
+    
+
+    &:hover {
+        background: rgba(245, 253, 255, 0.63);
+    }
+
+    &:last-child {
+        border-bottom: none;
+    }
 
     a {
         text-decoration: none;
         
         .docListWrapper {
+
             span.docTitle {
                 color: #005985;
                 font: 1rem Arial, "Helvetica Neue", Helvetica, sans-serif;
 
             }
 
+            p.textBlurb {
+                color: #A7A7A7;
+                font: .75rem Arial, sans-serif;
+            }
+
             .docContentWithImage {
+                margin-top: 5px;
 
                 display: table;
                 max-width: 400px;
@@ -65,14 +74,18 @@ li.docListItem {
                     width: 60%;
                     .textBlurb {
                         padding-left: 10px;
-                        color: #A7A7A7;
-                        font: 1em Arial, sans-serif;
-
                     }
                 }
             }
-
-
+            
+            .docContentWithoutImage {
+                margin-top: 5px;
+                p.textBlurb {
+                    margin: 0;
+                    text-align: left;
+                    word-break: keep-all;
+                }
+            }
         }
     }
 }

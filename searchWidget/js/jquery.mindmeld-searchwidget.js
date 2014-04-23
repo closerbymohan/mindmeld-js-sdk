@@ -20,7 +20,7 @@
             }
 
             var itemContent;
-            if (image) {
+            if (this.options.images && image) {
                 itemContent = this._getItemContentWithImage(image, textBlurb);
             }
             else {
@@ -62,10 +62,7 @@
             textBlurb = this._truncateText(textBlurb, 300);
             return $('<div>', {class: 'docContentWithoutImage'})
                 .append(
-                    $('<div>', {class: 'docDetails fullWidth'})
-                        .append(
-                            $('<div>', {class: 'textBlurb', text: textBlurb})
-                        )
+                    $('<p>', {class: 'textBlurb', text: textBlurb})
                 );
         }
     });
@@ -73,6 +70,7 @@
     $.widget('mindmeld.searchwidget', {
 
         options: {
+            images: false,
             onMMSearchInitialized: function () {},
             onMMSearchError: function () {}
         },
@@ -190,7 +188,8 @@
                             response([]);
                         }
                     );
-                }
+                },
+                images: self.options.images
             });
         },
 
