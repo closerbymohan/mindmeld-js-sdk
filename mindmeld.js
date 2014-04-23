@@ -3995,7 +3995,6 @@ MM.Listener = (function () {
                     MM.Util.testAndCallThis(listener._onEnd, listener, event);
                 };
                 recognizer.onerror = function(event) {
-                    }
                     MM.Util.testAndCallThis(listener._onError, listener, event);
                 };
                 recognizer.onaudioend = function(event) {
