@@ -13,33 +13,60 @@
             }
         },
         _renderItem: function (ul, item) {
-            var documentDesc = this._truncateText(item.document.description, 150);
-            return $('<li>', {'class': 'docListItem'})
+            var textBlurb = item.document.description || item.document.text;
+            var image = null;
+            if (item.document.image) {
+                image = item.document.image.thumburl || item.document.image.url || null;
+            }
+
+            var itemContent;
+            if (image) {
+                itemContent = this._getItemContentWithImage(image, textBlurb);
+            }
+            else {
+                itemContent = this._getItemContentWithoutImage(textBlurb);
+            }
+            return $('<li>', {class: 'docListItem'})
                 .append(
-                    $('<a>', {'href': item.document.originurl})
+                    $('<a>', {href: item.document.originurl})
                         .append(
-                            $('<div>', {'class': 'docListWrapper'})
+                            $('<div>', {class: 'docListWrapper'})
                                 .append(
-                                    $('<span>', {'class': 'docTitle', 'text': item.document.title})
+                                    $('<span>', {class: 'docTitle', text: item.document.title})
                                 )
                                 .append(
-                                    $('<div>', {'class': 'docContent'})
-                                        .append(
-                                            $('<div>', {'class': 'docImg'})
-                                                .append(
-                                                    $('<img>', {'class': 'docImgFile', 'src': item.document.image.url})
-                                                )
-                                        )
-                                        .append(
-                                            $('<div>', {'class': 'docDetails'})
-                                                .append(
-                                                    $('<div>', {'class': 'textBlurb', 'text': documentDesc})
-                                                )
-                                        )
+                                    itemContent
                                 )
                         )
              )
             .appendTo(ul);
+        },
+
+        _getItemContentWithImage: function (imgSrc, textBlurb) {
+            textBlurb = this._truncateText(textBlurb, 150);
+            return $('<div>', {class: 'docContentWithImage'})
+                .append(
+                    $('<div>', {class: 'docImg'})
+                        .append(
+                        $('<img>', {class: 'docImgFile', src: imgSrc})
+                    )
+                )
+                .append(
+                    $('<div>', {class: 'docDetails'})
+                        .append(
+                        $('<p>', {class: 'textBlurb', text: textBlurb})
+                    )
+                );
+        },
+        _getItemContentWithoutImage: function (textBlurb) {
+            textBlurb = this._truncateText(textBlurb, 300);
+            return $('<div>', {class: 'docContentWithoutImage'})
+                .append(
+                    $('<div>', {class: 'docDetails fullWidth'})
+                        .append(
+                            $('<div>', {class: 'textBlurb', text: textBlurb})
+                        )
+                );
         }
     });
 
@@ -183,16 +210,15 @@
                     'customrank2':  0,
                     'customrank3':  0
                 };
-                MM.activeSession.documents.get(queryParams, onGetDocuments, onDocumentError);
-
-                function onGetDocuments () {
-                    var documents = MM.activeSession.documents.json();
-                    onQueryDocuments(documents);
-                }
-
-                function onDocumentError (error) {
-                    onQueryError('Error fetching documents: ' + error.message);
-                }
+                MM.activeSession.documents.get(queryParams,
+                    function () {
+                        var documents = MM.activeSession.documents.json();
+                        onQueryDocuments(documents);
+                    },
+                    function (error) {
+                        onQueryError('Error fetching documents: ' + error.message);
+                    }
+                );
             }
             else {
                 onQueryError('Cannot query documents, MM search widget not initialized')
