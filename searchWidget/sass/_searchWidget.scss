@@ -40,7 +40,8 @@ span.ui-helper-hidden-accessible[role="status"] {
         -moz-box-sizing: border-box;
 
 
-        &:hover {
+        &:hover,
+        &.focused {
             background: rgba(245, 253, 255, 0.63);
         }
 

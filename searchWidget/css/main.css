@@ -225,7 +225,7 @@ span.ui-helper-hidden-accessible[role="status"] {
   max-height: 100px;
   box-sizing: border-box;
   -moz-box-sizing: border-box; }
-  #mm-results li.docListItem:hover {
+  #mm-results li.docListItem:hover, #mm-results li.docListItem.focused {
     background: rgba(245, 253, 255, 0.63); }
   #mm-results li.docListItem:last-child {
     border-bottom: none; }
