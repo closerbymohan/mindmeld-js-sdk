@@ -235,6 +235,14 @@
                         top: top - 1 + "px"
                     });
                 },
+                select: function (event, ui) {
+                    var selectedValue = ui.item.value;
+                    // strip <em> tags
+                    selectedValue = selectedValue.replace('<em>', '');
+                    selectedValue = selectedValue.replace('</em>', '');
+                    self.element.val(selectedValue);
+                    return false;
+                },
                 images: self.options.images
             }).off('blur').on('blur', function() {
                 if(document.hasFocus()) {
