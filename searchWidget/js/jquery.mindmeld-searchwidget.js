@@ -236,6 +236,9 @@
                     });
                 },
                 select: function (event, ui) {
+                    if (!event.ctrlKey && ! event.metaKey) {
+                        window.location.href = ui.item.document.originurl;
+                    }
                     var selectedValue = self._stripEmTags(ui.item.value);
                     self.element.val(selectedValue);
                     return false;
@@ -259,10 +262,6 @@
                     return false;
                 },
                 images: self.options.images
-            }).off('blur').on('blur', function() {
-                if(document.hasFocus()) {
-                    $('ul.ui-autocomplete').hide();
-                }
             });
         },
 
