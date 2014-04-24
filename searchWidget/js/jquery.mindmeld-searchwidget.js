@@ -48,35 +48,50 @@
         },
 
         _renderItem: function (ul, item) {
-            var textBlurb = item.document.snippet ||
-                            item.document.description ||
-                            item.document.text;
-            var image = null;
-            if (item.document.image) {
-                image = item.document.image.thumburl || item.document.image.url || null;
-            }
-
-            var itemContent;
-            if (this.options.images && image) {
-                itemContent = this._getItemContentWithImage(image, textBlurb);
+            var liItem = null;
+            if (item.noResult) {
+                liItem = $('<li>', {class:'noResultItem'})
+                    .append(
+                    $('<a>')
+                        .append(
+                        $('<div>', {class:'noResultContainer'})
+                            .append(
+                            $('<span>', {class: 'noResultText'}).html('No results')
+                        )
+                    )
+                )
             }
             else {
-                itemContent = this._getItemContentWithoutImage(textBlurb);
-            }
-            return $('<li>', {class: 'docListItem'})
-                .append(
+                var textBlurb = item.document.snippet ||
+                    item.document.description ||
+                    item.document.text;
+                var image = null;
+                if (item.document.image) {
+                    image = item.document.image.thumburl || item.document.image.url || null;
+                }
+
+                var itemContent;
+                if (this.options.images && image) {
+                    itemContent = this._getItemContentWithImage(image, textBlurb);
+                }
+                else {
+                    itemContent = this._getItemContentWithoutImage(textBlurb);
+                }
+                liItem = $('<li>', {class: 'docListItem'})
+                    .append(
                     $('<a>', {href: item.document.originurl})
                         .append(
-                            $('<div>', {class: 'docListWrapper'})
-                                .append(
-                                    $('<span class="docTitle">' + item.document.title + '</span>')
-                                )
-                                .append(
-                                    itemContent
-                                )
+                        $('<div>', {class: 'docListWrapper'})
+                            .append(
+                            $('<span class="docTitle">' + item.document.title + '</span>')
                         )
-             )
-            .appendTo(ul);
+                            .append(
+                            itemContent
+                        )
+                    )
+                );
+            }
+            return liItem.appendTo(ul);
         },
 
         _getItemContentWithImage: function (imgSrc, textBlurb) {
@@ -207,19 +222,26 @@
             var self = this;
             this.element.mmautocomplete({
                 minLength: 2,
-                delay: 300,
+                delay: 100,
                 source: function (request, response) {
 
                     self.queryDocuments(request.term,
                         function (documents) {
-                            // data is array of documents
-                            var autocompleteResults = $.map(documents, function (document) {
-                                return {
-                                    label: document.title,
-                                    document: document
-                                }
-                            });
-                            response(autocompleteResults);
+                            var results = [];
+                            if (documents.length === 0) {
+                                results.push({
+                                    noResult: true
+                                });
+                            }
+                            else {
+                                results = $.map(documents, function (document) {
+                                    return {
+                                        label: document.title,
+                                        document: document
+                                    }
+                                });
+                            }
+                            response(results);
                         },
                         function (errorMessage) {
                             self.onMMSearchError(errorMessage);
@@ -236,32 +258,47 @@
                     });
                 },
                 select: function (event, ui) {
-                    if (!event.ctrlKey && ! event.metaKey) {
-                        window.location.href = ui.item.document.originurl;
+                    if (ui.item.noResult) {
+                        console.log('handle select for no result, do nothing?');
                     }
-                    var selectedValue = self._stripEmTags(ui.item.value);
-                    self.element.val(selectedValue);
+                    else {
+                        if (!event.ctrlKey && ! event.metaKey) {
+                            window.location.href = ui.item.document.originurl;
+                        }
+                        var selectedValue = self._stripEmTags(ui.item.value);
+                        self.element.val(selectedValue);
+                    }
                     return false;
+
                 },
                 focus: function (event, ui) {
-                    var menu = $(this).data('mindmeldMmautocomplete').menu.element;
+                    if (ui.item.noResult) {
+                        console.log('handle focus for no result, do nothing?');
+                    }
+                    else {
+                        var menu = $(this).data('mindmeldMmautocomplete').menu.element;
 
-                    // Remove 'focused' class from every <li>
-                    var lis = menu.find('li');
-                    lis.each(function () {
-                        $(this).removeClass('focused');
-                    });
+                        // Remove 'focused' class from every <li>
+                        var lis = menu.find('li');
+                        lis.each(function () {
+                            $(this).removeClass('focused');
+                        });
 
-                    // Add 'focused' class to focused <li>
-                    var focused = menu.find("li:has(a.ui-state-focus)");
-                    focused.addClass('focused');
+                        // Add 'focused' class to focused <li>
+                        var focused = menu.find("li:has(a.ui-state-focus)");
+                        focused.addClass('focused');
 
 
-                    var selectedValue = self._stripEmTags(ui.item.value);
-                    self.element.val(selectedValue);
+                        var selectedValue = self._stripEmTags(ui.item.value);
+                        self.element.val(selectedValue);
+                    }
                     return false;
                 },
                 images: self.options.images
+            }).off('blur').on('blur', function() {
+                if(document.hasFocus()) {
+                    $('ul.ui-autocomplete').hide();
+                }
             });
         },
 
@@ -272,6 +309,8 @@
         },
 
         queryDocuments: function (query, onQueryDocuments, onQueryError) {
+            onQueryDocuments([]);
+            return;
             if (this._initialized) {
                 query = this._getWildcardQuery(query);
                 var queryParams = {
@@ -307,7 +346,9 @@
             var queryTerms = query.split(" ");
             var newQuery = "";
             $.each(queryTerms, function (index, term) {
-                newQuery += term + "* ";
+                if (term !== '') {
+                    newQuery += term + "* ";
+                }
             });
             return newQuery;
         },

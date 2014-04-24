@@ -13,6 +13,18 @@ span.ui-helper-hidden-accessible[role="status"] {
 
 
 #mm-results {
+
+    @mixin resultLi {
+        list-style: none;
+        border-bottom: 1px dotted #BBD0E0;
+        padding: 10px;
+        z-index: 100;
+        max-height: 100px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+    }
+
+
     em {
         font-weight: bold;
         font-style: normal;
@@ -31,14 +43,7 @@ span.ui-helper-hidden-accessible[role="status"] {
 
     li.docListItem {
 
-        list-style: none;
-        border-bottom: 1px dotted #BBD0E0;
-        padding: 10px;
-        z-index: 100;
-        max-height: 100px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-
+        @include resultLi;
 
         &:hover,
         &.focused {
