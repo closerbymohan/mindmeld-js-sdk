@@ -267,8 +267,8 @@
         },
 
         _stripEmTags: function (value) {
-            value = value.replace('<em>', '');
-            value = value.replace('</em>', '');
+            value = value.replace(/<em>/g, '');
+            value = value.replace(/<\/em>/g, '');
             return value;
         },
 
