@@ -197,7 +197,11 @@ table {
 input[type="search"].mm-search {
   -webkit-appearance: searchfield;
   -moz-appearance: searchfield;
-  width: 200px; }
+  width: 300px; }
+
+em {
+  font-weight: bold;
+  font-style: normal; }
 
 span.ui-helper-hidden-accessible[role="status"] {
   display: none; }
@@ -209,15 +213,14 @@ ul.ui-autocomplete {
   position: absolute;
   width: 300px; }
 
-.group:after {
-  content: " ";
-  display: table;
-  clear: both; }
-
 li.docListItem {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;
-  padding: 10px; }
+  padding: 10px;
+  z-index: 100;
+  max-height: 100px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box; }
   li.docListItem:hover {
     background: rgba(245, 253, 255, 0.63); }
   li.docListItem:last-child {
@@ -229,28 +232,30 @@ li.docListItem {
       font: 1rem Arial, "Helvetica Neue", Helvetica, sans-serif; }
     li.docListItem a .docListWrapper p.textBlurb {
       color: #A7A7A7;
-      font: .75rem Arial, sans-serif; }
+      font: .75rem Arial, sans-serif;
+      overflow: auto; }
+      li.docListItem a .docListWrapper p.textBlurb em {
+        color: #7C7C7C; }
     li.docListItem a .docListWrapper .docContentWithImage {
       margin-top: 5px;
-      display: table;
-      max-width: 400px; }
+      display: table; }
       li.docListItem a .docListWrapper .docContentWithImage .docImg,
       li.docListItem a .docListWrapper .docContentWithImage .docDetails {
-        display: table-cell;
+        display: table-cell; }
+      li.docListItem a .docListWrapper .docContentWithImage .docDetails {
         vertical-align: middle; }
       li.docListItem a .docListWrapper .docContentWithImage .docImg {
         width: 40%; }
         li.docListItem a .docListWrapper .docContentWithImage .docImg .docImgFile {
-          width: 100%; }
-      li.docListItem a .docListWrapper .docContentWithImage .docDetails {
-        width: 60%; }
-        li.docListItem a .docListWrapper .docContentWithImage .docDetails .textBlurb {
-          padding-left: 10px; }
+          max-height: 50px; }
+      li.docListItem a .docListWrapper .docContentWithImage .docDetails .textBlurb {
+        padding-left: 10px;
+        height: 100%; }
     li.docListItem a .docListWrapper .docContentWithoutImage {
       margin-top: 5px; }
       li.docListItem a .docListWrapper .docContentWithoutImage p.textBlurb {
         margin: 0;
-        text-align: left;
-        word-break: keep-all; }
+        word-break: keep-all;
+        max-height: 60px; }
 
 /*# sourceMappingURL=main.css.map */

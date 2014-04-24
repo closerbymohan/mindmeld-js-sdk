@@ -9,11 +9,48 @@
                 return text;
             }
             else{
-                return String(text).substring(0, length - end.length) + end;
+                var emIndex = text.indexOf('<em>');
+                if (emIndex !== -1 ){ // snippet, need to truncate <em> tags carefully
+                    text = this._getTruncatedEmString(text, length - end.length) + end;
+                }
+                else {
+                    text = String(text).substring(0, length - end.length) + end;
+                }
+                return text;
             }
         },
+
+        // Attempts to return the maximum # of characters containing valid <em> tags
+        // within a maxLength
+        _getTruncatedEmString: function (string, maxLength) {
+            var emRegex = /<em>\S+<\/em>/; // match strings with <em>html tag</em>
+            var emMatches = emRegex.exec(string);
+
+            var emIndex = emMatches.index; // index of first match
+            var emString = emMatches[0]; // full string match: '<em>html tag</em>
+            var emLength = emString.length;
+            var remainingLength = maxLength - emLength;
+            var startIndex = Math.max(0, emIndex - remainingLength);
+            var beforeEmString = string.substr(startIndex, Math.min(remainingLength, emIndex)); // prepend up to maxLength number of characters before <em> tag
+            var truncated = beforeEmString + emString;
+            if (truncated.length < maxLength) { // we can get more characters!
+                remainingLength = maxLength - truncated.length;
+                var endFirstEmIndex = emIndex + emLength;
+                var nextEmIndex = string.indexOf('<em>', endFirstEmIndex);
+                if (nextEmIndex !== -1 ) {
+                    truncated += string.substr(endFirstEmIndex, Math.min(remainingLength, nextEmIndex - endFirstEmIndex));
+                }
+                else {
+                    truncated += string.substr(endFirstEmIndex, remainingLength);
+                }
+            }
+            return truncated;
+        },
+
         _renderItem: function (ul, item) {
-            var textBlurb = item.document.description || item.document.text;
+            var textBlurb = item.document.snippet ||
+                            item.document.description ||
+                            item.document.text;
             var image = null;
             if (item.document.image) {
                 image = item.document.image.thumburl || item.document.image.url || null;
@@ -32,7 +69,7 @@
                         .append(
                             $('<div>', {class: 'docListWrapper'})
                                 .append(
-                                    $('<span>', {class: 'docTitle', text: item.document.title})
+                                    $('<span class="docTitle">' + item.document.title + '</span>')
                                 )
                                 .append(
                                     itemContent
@@ -43,7 +80,7 @@
         },
 
         _getItemContentWithImage: function (imgSrc, textBlurb) {
-            textBlurb = this._truncateText(textBlurb, 150);
+            textBlurb = this._truncateText(textBlurb, 100);
             return $('<div>', {class: 'docContentWithImage'})
                 .append(
                     $('<div>', {class: 'docImg'})
@@ -54,15 +91,15 @@
                 .append(
                     $('<div>', {class: 'docDetails'})
                         .append(
-                        $('<p>', {class: 'textBlurb', text: textBlurb})
+                        $('<p class="textBlurb">' + textBlurb + '</p>')
                     )
                 );
         },
         _getItemContentWithoutImage: function (textBlurb) {
-            textBlurb = this._truncateText(textBlurb, 300);
+            textBlurb = this._truncateText(textBlurb, 130);
             return $('<div>', {class: 'docContentWithoutImage'})
                 .append(
-                    $('<p>', {class: 'textBlurb', text: textBlurb})
+                    $('<p class="textBlurb">' + textBlurb + '</p>')
                 );
         }
     });
@@ -190,6 +227,10 @@
                     );
                 },
                 images: self.options.images
+            }).off('blur').on('blur', function() {
+                if(document.hasFocus()) {
+                    $('ul.ui-autocomplete').hide();
+                }
             });
         },
 
@@ -198,6 +239,7 @@
                 query = this._getWildcardQuery(query);
                 var queryParams = {
                     query: query,
+                    highlight: 1,
                     limit: 5
                 };
                 queryParams['document-ranking-factors'] = {
