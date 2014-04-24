@@ -211,16 +211,34 @@ span.ui-helper-hidden-accessible[role="status"] {
 #mm-results ul.ui-autocomplete {
   border: 1px solid #ccc;
   border-top: none;
-  border-bottom-left-radius: 15px;
-  border-bottom-right-radius: 15px;
-  padding: 2px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding-right: 4px;
+  padding-left: 0px;
   margin: 0;
   position: absolute;
   width: 300px; }
+#mm-results li.noResultItem {
+  list-style: none;
+  border-bottom: 1px dotted #BBD0E0;
+  padding: 10px;
+  margin-left: 4px;
+  margin-top: 1px;
+  z-index: 100;
+  max-height: 100px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  background: #f0f0f0;
+  border-bottom: none;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: #b8b8b8; }
 #mm-results li.docListItem {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;
   padding: 10px;
+  margin-left: 4px;
+  margin-top: 1px;
   z-index: 100;
   max-height: 100px;
   box-sizing: border-box;

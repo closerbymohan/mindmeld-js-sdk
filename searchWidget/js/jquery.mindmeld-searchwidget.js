@@ -309,8 +309,8 @@
         },
 
         queryDocuments: function (query, onQueryDocuments, onQueryError) {
-            onQueryDocuments([]);
-            return;
+//            onQueryDocuments([]);
+//            return;
             if (this._initialized) {
                 query = this._getWildcardQuery(query);
                 var queryParams = {
