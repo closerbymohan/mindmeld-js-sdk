@@ -113,6 +113,7 @@
         },
 
         _create: function () {
+            this.element.after('<div id="mm-results"></div>');
             this._initMM();
             this._initialized = false;
         },
@@ -225,6 +226,14 @@
                             response([]);
                         }
                     );
+                },
+                appendTo: '#mm-results',
+                open: function () {
+                    var position = $('#mm-results').position();
+                    var top = position.top;
+                    $('#mm-results > ul.ui-autocomplete').css({
+                        top: top - 1 + "px"
+                    });
                 },
                 images: self.options.images
             }).off('blur').on('blur', function() {

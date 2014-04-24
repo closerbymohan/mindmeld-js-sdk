@@ -194,10 +194,13 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
-input[type="search"].mm-search {
-  -webkit-appearance: searchfield;
-  -moz-appearance: searchfield;
-  width: 300px; }
+input[type="text"].mm-search {
+  width: 310px;
+  outline: none;
+  border: 1px solid #ccc;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  padding: 7px 0px 7px 10px; }
 
 em {
   font-weight: bold;
@@ -207,7 +210,10 @@ span.ui-helper-hidden-accessible[role="status"] {
   display: none; }
 
 ul.ui-autocomplete {
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
   padding: 2px;
   margin: 0;
   position: absolute;
