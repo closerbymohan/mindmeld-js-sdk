@@ -7,100 +7,101 @@ input[type="text"].mm-search {
     padding: 7px 0px 7px 10px;
 }
 
-em {
-    font-weight: bold;
-    font-style: normal;
-}
-
 span.ui-helper-hidden-accessible[role="status"] {
     display: none;
 }
 
-ul.ui-autocomplete {
-    border: 1px solid #ccc;
-    border-top: none;
-    border-bottom-left-radius: 15px;
-    border-bottom-right-radius: 15px;
-    padding: 2px;
-    margin: 0;
-    position: absolute;
-    width: 300px;
-}
 
-
-li.docListItem {
-
-    list-style: none;
-    border-bottom: 1px dotted #BBD0E0;
-    padding: 10px;
-    z-index: 100;
-    max-height: 100px;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-
-
-    &:hover {
-        background: rgba(245, 253, 255, 0.63);
+#mm-results {
+    em {
+        font-weight: bold;
+        font-style: normal;
     }
 
-    &:last-child {
-        border-bottom: none;
+    ul.ui-autocomplete {
+        border: 1px solid #ccc;
+        border-top: none;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        padding: 2px;
+        margin: 0;
+        position: absolute;
+        width: 300px;
     }
 
-    a {
-        text-decoration: none;
+    li.docListItem {
 
-        .docListWrapper {
+        list-style: none;
+        border-bottom: 1px dotted #BBD0E0;
+        padding: 10px;
+        z-index: 100;
+        max-height: 100px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
 
-            span.docTitle {
-                color: #005985;
-                font: 1rem Arial, "Helvetica Neue", Helvetica, sans-serif;
 
-            }
+        &:hover {
+            background: rgba(245, 253, 255, 0.63);
+        }
 
-            p.textBlurb {
-                color: #A7A7A7;
-                font: .75rem Arial, sans-serif;
-                overflow: auto;
-                em {
-                    color: #7C7C7C;
-                }
-            }
+        &:last-child {
+            border-bottom: none;
+        }
 
-            .docContentWithImage {
-                margin-top: 5px;
+        a {
+            text-decoration: none;
 
-                display: table;
+            .docListWrapper {
 
-                .docImg,
-                .docDetails {
-                    display: table-cell;
-                }
+                span.docTitle {
+                    color: #005985;
+                    font: 1rem Arial, "Helvetica Neue", Helvetica, sans-serif;
 
-                .docDetails {
-                    vertical-align: middle;
                 }
 
-                .docImg {
-                    width: 40%;
-                    .docImgFile {
-                        max-height: 50px;
-                    }
-                }
-                .docDetails {
-                    .textBlurb {
-                        padding-left: 10px;
-                        height: 100%;
-                    }
-                }
-            }
-
-            .docContentWithoutImage {
-                margin-top: 5px;
                 p.textBlurb {
-                    margin: 0;
-                    word-break: keep-all;
-                    max-height: 60px;
+                    color: #A7A7A7;
+                    font: .75rem Arial, sans-serif;
+                    overflow: auto;
+                    em {
+                        color: #7C7C7C;
+                    }
+                }
+
+                .docContentWithImage {
+                    margin-top: 5px;
+
+                    display: table;
+
+                    .docImg,
+                    .docDetails {
+                        display: table-cell;
+                    }
+
+                    .docDetails {
+                        vertical-align: middle;
+                    }
+
+                    .docImg {
+                        width: 40%;
+                        .docImgFile {
+                            max-height: 50px;
+                        }
+                    }
+                    .docDetails {
+                        .textBlurb {
+                            height: 100%;
+                        }
+                    }
+                }
+
+                .docContentWithoutImage {
+                    margin-top: 5px;
+                    p.textBlurb {
+                        margin: 0;
+                        word-break: keep-all;
+                        max-height: 60px;
+                    }
                 }
             }
         }

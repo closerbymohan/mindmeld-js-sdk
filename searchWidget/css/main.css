@@ -202,14 +202,13 @@ input[type="text"].mm-search {
   border-top-right-radius: 15px;
   padding: 7px 0px 7px 10px; }
 
-em {
-  font-weight: bold;
-  font-style: normal; }
-
 span.ui-helper-hidden-accessible[role="status"] {
   display: none; }
 
-ul.ui-autocomplete {
+#mm-results em {
+  font-weight: bold;
+  font-style: normal; }
+#mm-results ul.ui-autocomplete {
   border: 1px solid #ccc;
   border-top: none;
   border-bottom-left-radius: 15px;
@@ -218,8 +217,7 @@ ul.ui-autocomplete {
   margin: 0;
   position: absolute;
   width: 300px; }
-
-li.docListItem {
+#mm-results li.docListItem {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;
   padding: 10px;
@@ -227,39 +225,38 @@ li.docListItem {
   max-height: 100px;
   box-sizing: border-box;
   -moz-box-sizing: border-box; }
-  li.docListItem:hover {
+  #mm-results li.docListItem:hover {
     background: rgba(245, 253, 255, 0.63); }
-  li.docListItem:last-child {
+  #mm-results li.docListItem:last-child {
     border-bottom: none; }
-  li.docListItem a {
+  #mm-results li.docListItem a {
     text-decoration: none; }
-    li.docListItem a .docListWrapper span.docTitle {
+    #mm-results li.docListItem a .docListWrapper span.docTitle {
       color: #005985;
       font: 1rem Arial, "Helvetica Neue", Helvetica, sans-serif; }
-    li.docListItem a .docListWrapper p.textBlurb {
+    #mm-results li.docListItem a .docListWrapper p.textBlurb {
       color: #A7A7A7;
       font: .75rem Arial, sans-serif;
       overflow: auto; }
-      li.docListItem a .docListWrapper p.textBlurb em {
+      #mm-results li.docListItem a .docListWrapper p.textBlurb em {
         color: #7C7C7C; }
-    li.docListItem a .docListWrapper .docContentWithImage {
+    #mm-results li.docListItem a .docListWrapper .docContentWithImage {
       margin-top: 5px;
       display: table; }
-      li.docListItem a .docListWrapper .docContentWithImage .docImg,
-      li.docListItem a .docListWrapper .docContentWithImage .docDetails {
+      #mm-results li.docListItem a .docListWrapper .docContentWithImage .docImg,
+      #mm-results li.docListItem a .docListWrapper .docContentWithImage .docDetails {
         display: table-cell; }
-      li.docListItem a .docListWrapper .docContentWithImage .docDetails {
+      #mm-results li.docListItem a .docListWrapper .docContentWithImage .docDetails {
         vertical-align: middle; }
-      li.docListItem a .docListWrapper .docContentWithImage .docImg {
+      #mm-results li.docListItem a .docListWrapper .docContentWithImage .docImg {
         width: 40%; }
-        li.docListItem a .docListWrapper .docContentWithImage .docImg .docImgFile {
+        #mm-results li.docListItem a .docListWrapper .docContentWithImage .docImg .docImgFile {
           max-height: 50px; }
-      li.docListItem a .docListWrapper .docContentWithImage .docDetails .textBlurb {
-        padding-left: 10px;
+      #mm-results li.docListItem a .docListWrapper .docContentWithImage .docDetails .textBlurb {
         height: 100%; }
-    li.docListItem a .docListWrapper .docContentWithoutImage {
+    #mm-results li.docListItem a .docListWrapper .docContentWithoutImage {
       margin-top: 5px; }
-      li.docListItem a .docListWrapper .docContentWithoutImage p.textBlurb {
+      #mm-results li.docListItem a .docListWrapper .docContentWithoutImage p.textBlurb {
         margin: 0;
         word-break: keep-all;
         max-height: 60px; }
