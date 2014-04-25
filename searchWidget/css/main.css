@@ -222,7 +222,8 @@ span.ui-helper-hidden-accessible[role="status"] {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;
   padding: 10px;
-  margin-left: 4px;
+  margin-left: 0px;
+  margin-right: -4px;
   margin-top: 1px;
   z-index: 100;
   max-height: 100px;
@@ -233,16 +234,23 @@ span.ui-helper-hidden-accessible[role="status"] {
   font-style: italic;
   font-size: 0.9rem;
   color: #b8b8b8; }
+  #mm-results li.noResultItem:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px; }
 #mm-results li.docListItem {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;
   padding: 10px;
-  margin-left: 4px;
+  margin-left: 0px;
+  margin-right: -4px;
   margin-top: 1px;
   z-index: 100;
   max-height: 100px;
   box-sizing: border-box;
   -moz-box-sizing: border-box; }
+  #mm-results li.docListItem:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px; }
   #mm-results li.docListItem:hover, #mm-results li.docListItem.focused {
     background: rgba(245, 253, 255, 0.63); }
   #mm-results li.docListItem:last-child {

@@ -18,12 +18,18 @@ span.ui-helper-hidden-accessible[role="status"] {
         list-style: none;
         border-bottom: 1px dotted #BBD0E0;
         padding: 10px;
-        margin-left: 4px;
+        margin-left: 0px;
+        margin-right: -4px;
         margin-top: 1px;
         z-index: 100;
         max-height: 100px;
         box-sizing: border-box;
         -moz-box-sizing: border-box;
+        
+        &:last-child {
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
     }
 
 
