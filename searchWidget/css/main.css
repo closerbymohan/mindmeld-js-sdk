@@ -207,7 +207,8 @@ span.ui-helper-hidden-accessible[role="status"] {
 
 #mm-results em {
   font-weight: bold;
-  font-style: normal; }
+  font-style: normal;
+  text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.12); }
 #mm-results ul.ui-autocomplete {
   border: 1px solid #ccc;
   border-top: none;
