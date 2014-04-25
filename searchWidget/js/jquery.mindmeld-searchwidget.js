@@ -129,6 +129,8 @@
 
         _create: function () {
             this.element.after('<div id="mm-results"></div>');
+            this.queryCache = {};
+            this.numQueriesCached = 0;
             this._initMM();
             this._initialized = false;
         },
@@ -299,34 +301,43 @@
         },
 
         queryDocuments: function (query, onQueryDocuments, onQueryError) {
-            if (this._initialized) {
-                query = this._getWildcardQuery(query);
-                var queryParams = {
-                    query: query,
-                    highlight: 1,
-                    limit: 5
-                };
-                queryParams['document-ranking-factors'] = {
-                    'relevance':    1,
-                    'recency':      0,
-                    'popularity':   0,
-                    'proximity':    0,
-                    'customrank1':  0,
-                    'customrank2':  0,
-                    'customrank3':  0
-                };
-                MM.activeSession.documents.get(queryParams,
-                    function () {
-                        var documents = MM.activeSession.documents.json();
-                        onQueryDocuments(documents);
-                    },
-                    function (error) {
-                        onQueryError('Error fetching documents: ' + error.message);
-                    }
-                );
+            var self = this;
+            if (this.queryCache[query]) {
+                onQueryDocuments(this.queryCache[query]);
             }
             else {
-                onQueryError('Cannot query documents, MM search widget not initialized')
+                if (this._initialized) {
+                    var wildcardQuery = this._getWildcardQuery(query);
+                    var queryParams = {
+                        query: wildcardQuery,
+                        highlight: 1,
+                        limit: 5
+                    };
+                    queryParams['document-ranking-factors'] = {
+                        'relevance':    1,
+                        'recency':      0,
+                        'popularity':   0,
+                        'proximity':    0,
+                        'customrank1':  0,
+                        'customrank2':  0,
+                        'customrank3':  0
+                    };
+                    MM.activeSession.documents.get(queryParams,
+                        function () {
+                            var documents = MM.activeSession.documents.json();
+                            self.numQueriesCached++;
+                            self.queryCache[query] = documents;
+                            onQueryDocuments(documents);
+                        },
+                        function (error) {
+                            onQueryError('Error fetching documents: ' + error.message);
+                        }
+                    );
+                    this._cleanQueryCache();
+                }
+                else {
+                    onQueryError('Cannot query documents, MM search widget not initialized')
+                }
             }
         },
 
@@ -339,6 +350,20 @@
                 }
             });
             return newQuery;
+        },
+
+        _cleanQueryCache: function () {
+            // queryCache size is 100
+            if (this.numQueriesCached > 100) {
+                var cachedQueries = Object.keys(this.queryCache);
+                // Randomly remove 50 items from query cache
+                for (var i = 0; i < 50; i++) {
+                    var cachedQuery = cachedQueries[i];
+                    delete this.queryCache[cachedQueries[i]];
+                    console.log('removing cached query: ' + cachedQuery);
+                }
+                this.numQueriesCached = Object.keys(this.queryCache).length;
+            }
         },
 
         _validateString: function (string, length) {
