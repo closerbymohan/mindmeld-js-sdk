@@ -54,9 +54,10 @@ span.ui-helper-hidden-accessible[role="status"] {
         @include resultLi;
         background: #f0f0f0;
         border-bottom: none;
+        font-weight: bold;
         font-style: italic;
         font-size: 0.9rem;
-        color: #b8b8b8;
+        color: darken(#b8b8b8, 15%);
     }
 
 

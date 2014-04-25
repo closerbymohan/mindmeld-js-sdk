@@ -231,9 +231,10 @@ span.ui-helper-hidden-accessible[role="status"] {
   -moz-box-sizing: border-box;
   background: #f0f0f0;
   border-bottom: none;
+  font-weight: bold;
   font-style: italic;
   font-size: 0.9rem;
-  color: #b8b8b8; }
+  color: #929292; }
   #mm-results li.noResultItem:last-child {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px; }

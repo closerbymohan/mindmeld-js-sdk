@@ -52,14 +52,14 @@
             if (item.noResult) {
                 liItem = $('<li>', {class:'noResultItem'})
                     .append(
-                    $('<a>')
-                        .append(
-                        $('<div>', {class:'noResultContainer'})
+                        $('<a>')
                             .append(
-                            $('<span>', {class: 'noResultText'}).html('No results')
-                        )
+                                $('<div>', {class:'noResultContainer'})
+                                .append(
+                                    $('<span>', {class: 'noResultText'}).html('No results')
+                                )
+                            )
                     )
-                )
             }
             else {
                 var textBlurb = item.document.snippet ||
@@ -79,17 +79,17 @@
                 }
                 liItem = $('<li>', {class: 'docListItem'})
                     .append(
-                    $('<a>', {href: item.document.originurl})
-                        .append(
-                        $('<div>', {class: 'docListWrapper'})
+                        $('<a>', {href: item.document.originurl})
                             .append(
-                            $('<span class="docTitle">' + item.document.title + '</span>')
-                        )
-                            .append(
-                            itemContent
-                        )
-                    )
-                );
+                                $('<div>', {class: 'docListWrapper'})
+                                    .append(
+                                        $('<span class="docTitle">' + item.document.title + '</span>')
+                                    )
+                                    .append(
+                                        itemContent
+                                )
+                            )
+                    );
             }
             return liItem.appendTo(ul);
         },
@@ -258,10 +258,7 @@
                     });
                 },
                 select: function (event, ui) {
-                    if (ui.item.noResult) {
-                        console.log('handle select for no result, do nothing?');
-                    }
-                    else {
+                    if (ui.item.document) {
                         if (!event.ctrlKey && ! event.metaKey) {
                             window.location.href = ui.item.document.originurl;
                         }
@@ -272,10 +269,7 @@
 
                 },
                 focus: function (event, ui) {
-                    if (ui.item.noResult) {
-                        console.log('handle focus for no result, do nothing?');
-                    }
-                    else {
+                    if (ui.item.document) {
                         var menu = $(this).data('mindmeldMmautocomplete').menu.element;
 
                         // Remove 'focused' class from every <li>
@@ -295,10 +289,6 @@
                     return false;
                 },
                 images: self.options.images
-            }).off('blur').on('blur', function() {
-                if(document.hasFocus()) {
-                    $('ul.ui-autocomplete').hide();
-                }
             });
         },
 
@@ -309,8 +299,6 @@
         },
 
         queryDocuments: function (query, onQueryDocuments, onQueryError) {
-//            onQueryDocuments([]);
-//            return;
             if (this._initialized) {
                 query = this._getWildcardQuery(query);
                 var queryParams = {
