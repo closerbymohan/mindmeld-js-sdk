@@ -2602,6 +2602,10 @@ MM.models.SessionDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * in the response.
      * @param {(string[]|string)=} params.textentryids An array of textentryid values or a single textentryid
      * value. If specified, only documents related to the specified text entries will be returned in the response
+     * @param {string=} params.query A search query string to retrieve specific
+     * objects that match the query. See the documentation on [search query
+     * syntax](https://developer.expectlabs.com/docs/customRankingFactors)
+     * for more information.
      * @param {string=} params.document-ranking-factors A JSON string containing custom factors that will be
      * used to rank the documents returned by this request. Read the section on
      * [custom ranking factors](https://developer.expectlabs.com/docs/customRankingFactors) to learn more about how you can adjust the search ranking factors to customize the document results for your application.
@@ -2616,6 +2620,22 @@ MM.models.SessionDocumentList = MM.Internal.createSubclass(MM.models.Model, {
      * contextual history time window that will be used to influence the document results. Any contextual
      * data uploaded after the end of this window will be ignored in the calculation to determine contextually
      * relevant document results. If not specified, the value defaults to the latest contextual history of the session
+     * @param {number=} params.start The index of the first object in the
+     * returned list of objects. This can be used for paging through large
+     * collections of objects.
+     * @param {number=} params.limit The maximum number of individual objects
+     * to be returned in the response. If not specified, the default is 10. The
+     * maximum allowed value is 50.
+     * @param {(number|string)=} params.since A Unix timestamp or
+     * [strtotime](http://php.net/manual/en/function.strtotime.php) date value
+     * that specifies the start of a range of time-based data. Only documents
+     * with publication date after this timestamp will be returned in the
+     * response.
+     * @param {(number|string)=} params.until A Unix timestamp or
+     * [strtotime](http://php.net/manual/en/function.strtotime.php) date value
+     * that specifies the end of a range of time-based data. Only documents
+     * with publication date before this timestamp will be returned in the
+     * response.
      * @param {APISuccessCallback=} onSuccess callback for when getting the session document list was successful
      * @param {APIErrorCallback=} onFail callback for when getting the session document list failed
      * @memberOf MM.activeSession.documents
