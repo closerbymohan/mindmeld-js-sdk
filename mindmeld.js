@@ -3822,7 +3822,11 @@ MM.Listener = (function () {
          *                                               If false, recording will continue until the speech recognition provider
          *                                               recognizes a sufficient pause in speech.
          * @property {boolean} [interimResults=false]    whether the listener should provide interim results
-         * @property {string} [language=""]              the language the listener should recognize TODO: add more about format
+         * @property {string} [lang=""]                  the {@link http://tools.ietf.org/html/bcp47|BCP 47} language code for
+         *                                               the language the listener should recognize. When set to the empty
+         *                                               string "" or unspecified, the listener attempts to use the lang code
+         *                                               specified in the root html element. A "language-not-supported" error
+         *                                               will be thrown for unsupported languages.
          * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
          *                                               provided when creating a new {@link MM.Listener}.
          * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
@@ -3863,7 +3867,11 @@ MM.Listener = (function () {
          *                                    recent listening session. Readonly.
          * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
          * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
-         * @property {string} language        the language which the listener should recognize TODO: add more about format.
+         * @property {string} lang            the {@link http://tools.ietf.org/html/bcp47|BCP 47} language code for the
+         *                                    language the listener should recognize. Defaults to the empty string "". When
+         *                                    set to the empty string, the listener attempts to use the lang code specified
+         *                                    in the root html element. A "language-not-supported" error will be thrown for
+         *                                    unsupported languages.
          *
          * @example
          function postTextEntry(text) {
@@ -3931,7 +3939,7 @@ MM.Listener = (function () {
                 onTextEntryPosted: '_onTextEntryPosted',
                 continuous: 'continuous',
                 interimResults: 'interimResults',
-                language: 'language'
+                lang: 'lang'
             };
 
             for (var configProperty in configProperties) { // only look at safe properties
@@ -4024,28 +4032,18 @@ MM.Listener = (function () {
                     if (!recognizer.continuous) {
                         setAbortTimeout();
                     }
-                    console.log(Date.now(), "Listener " + event.type, event);
                 }
             }
             recognizer.continuous = this.continuous;
             recognizer.interimResults = this.interimResults;
-            var lang = (function chooseLang() {
+            var lang = (function () {
                 var lang = '';
-                if (typeof listener.language === '') {
-                    if (typeof document !== 'undefined') {
-                        var htmlElements = document.getElementsByTagName('html');
-                        if (htmlElements.length > 0) {
-                            var htmlElement = htmlElements[0];
-                            if (typeof htmlElement.lang !== 'undefined') {
-                                lang = htmlElement.lang;
-                            }
-                        }
-                    }
-                } else {
-                    // TODO check format of language value
-                    lang = listener.language;
+                if (listener.lang !== '') {
+                    lang = listener.lang;
+                } else if (typeof document !== 'undefined' && document.documentElement !== null && document.documentElement.lang !== '') {
+                    // attempt to retrieve from html element
+                    lang = document.documentElement.lang;
                 }
-
                 return lang;
             })();
             recognizer.lang = lang;
@@ -4077,7 +4075,7 @@ MM.Listener = (function () {
     Listener.prototype._listening = false;
     Listener.prototype._results = [];
     Listener.prototype.continuous = false;
-    Listener.prototype.language = "";
+    Listener.prototype.lang = "";
     Listener.prototype.interimResults = false;
     Object.defineProperties(Listener.prototype, {
         listening: {
