@@ -3822,13 +3822,14 @@ MM.Listener = (function () {
          *                                               If false, recording will continue until the speech recognition provider
          *                                               recognizes a sufficient pause in speech.
          * @property {boolean} [interimResults=false]    whether the listener should provide interim results
-         * @property {string} [lang=""]                  the language or language-region [BCP 47](http://tools.ietf.org/html/bcp47)
-         *                                               language code for the language the listener should recognize (e.g.
-         *                                               'en-US', 'de-DE'). When set to the empty string "" or unspecified,
-         *                                               the listener attempts to use the lang attribute of the root html
-         *                                               element. A "language-not-supported" error will be thrown for unsupported
-         *                                               languages. No official list of supported languages exists.  There is however,
-         *                                               a good unofficial list in this question on
+         * @property {string} [lang=""]                  the 'Simple language sub tag' or 'Language-Region tag' of the [BCP 47](http://tools.ietf.org/html/bcp47)
+         *                                               code for the language the listener should recognize (e.g. 'ko' for Korean,
+         *                                               'en-US' for American English, and 'de-DE' for German). When set to the empty
+         *                                               string "" or unspecified, the listener attempts to use the lang attribute
+         *                                               of the root html element (document.documentElement.lang). A "language-not-supported"
+         *                                               error will be thrown for unsupported languages. Language support depends on
+         *                                               the browser. For Chrome, no official list of supported languages exists.
+         *                                               There is however, a good unofficial list in this question on
          *                                               [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
          * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
          *                                               provided when creating a new {@link MM.Listener}.
@@ -3870,13 +3871,15 @@ MM.Listener = (function () {
          *                                    recent listening session. Readonly.
          * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
          * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
-         * @property {string} lang            the language or language-region [BCP 47](http://tools.ietf.org/html/bcp47)
-         *                                    language code for the language the listener should recognize (e.g. 'en-US',
-         *                                    'de-DE'). When set to the empty string "" or unspecified, the listener attempts
-         *                                    to use the lang attribute of the root html element. A "language-not-supported"
-         *                                    error will be thrown for unsupported languages. No official list of supported
-         *                                    languages exists. There is however, a good unofficial list in this question on
-         *                                    [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
+         * @property {string} lang            the 'Simple language sub tag' or 'Language-Region tag' of the [BCP 47](http://tools.ietf.org/html/bcp47)
+         *                                    code for the language the listener should recognize (e.g. 'ko' for Korean, 'en-US'
+         *                                    for American English, and 'de-DE' for German) When set to the empty string "" or
+         *                                    unspecified, the listener attempts to use the lang attribute of the root html
+         *                                    element (document.documentElement.lang). A "language-not-supported" error will
+         *                                    be thrown for unsupported languages. Language support depends on the browser. For
+         *                                    Chrome, no official list of supported languages exists. There is however, a good
+         *                                    unofficial list in this question on
+         *                                    [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).the language or language-region [BCP 47](http://tools.ietf.org/html/bcp47)
          *
          * @example
          function postTextEntry(text) {
@@ -3891,6 +3894,7 @@ MM.Listener = (function () {
              var myListener = new MM.Listener({
                  continuous: true,
                  interimResults: true,
+                 lang: 'es-ES' // listen for European Spanish
                  onResult: function(result) {
                      if (result.final) {
                          // post text entry for final results
