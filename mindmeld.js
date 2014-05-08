@@ -3827,7 +3827,9 @@ MM.Listener = (function () {
          *                                               'en-US', 'de-DE'). When set to the empty string "" or unspecified,
          *                                               the listener attempts to use the lang attribute of the root html
          *                                               element. A "language-not-supported" error will be thrown for unsupported
-         *                                               languages.
+         *                                               languages. No official list of supported languages exists.  There is however,
+         *                                               a good unofficial list in this question on
+         *                                               [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
          * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
          *                                               provided when creating a new {@link MM.Listener}.
          * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
@@ -3872,7 +3874,9 @@ MM.Listener = (function () {
          *                                    language code for the language the listener should recognize (e.g. 'en-US',
          *                                    'de-DE'). When set to the empty string "" or unspecified, the listener attempts
          *                                    to use the lang attribute of the root html element. A "language-not-supported"
-         *                                    error will be thrown for unsupported languages.
+         *                                    error will be thrown for unsupported languages. No official list of supported
+         *                                    languages exists. There is however, a good unofficial list in this question on
+         *                                    [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
          *
          * @example
          function postTextEntry(text) {
