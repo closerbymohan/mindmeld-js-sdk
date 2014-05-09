@@ -3822,15 +3822,6 @@ MM.Listener = (function () {
          *                                               If false, recording will continue until the speech recognition provider
          *                                               recognizes a sufficient pause in speech.
          * @property {boolean} [interimResults=false]    whether the listener should provide interim results
-         * @property {string} [lang=""]                  the 'Simple language sub tag' or 'Language-Region tag' of the [BCP 47](http://tools.ietf.org/html/bcp47)
-         *                                               code for the language the listener should recognize (e.g. 'ko' for Korean,
-         *                                               'en-US' for American English, and 'de-DE' for German). When set to the empty
-         *                                               string "" or unspecified, the listener attempts to use the lang attribute
-         *                                               of the root html element (document.documentElement.lang). A "language-not-supported"
-         *                                               error will be thrown for unsupported languages. Language support depends on
-         *                                               the browser. For Chrome, no official list of supported languages exists.
-         *                                               There is however, a good unofficial list in this question on
-         *                                               [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
          * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
          *                                               provided when creating a new {@link MM.Listener}.
          * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
@@ -3871,15 +3862,6 @@ MM.Listener = (function () {
          *                                    recent listening session. Readonly.
          * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
          * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
-         * @property {string} lang            the 'Simple language sub tag' or 'Language-Region tag' of the [BCP 47](http://tools.ietf.org/html/bcp47)
-         *                                    code for the language the listener should recognize (e.g. 'ko' for Korean, 'en-US'
-         *                                    for American English, and 'de-DE' for German) When set to the empty string "" or
-         *                                    unspecified, the listener attempts to use the lang attribute of the root html
-         *                                    element (document.documentElement.lang). A "language-not-supported" error will
-         *                                    be thrown for unsupported languages. Language support depends on the browser. For
-         *                                    Chrome, no official list of supported languages exists. There is however, a good
-         *                                    unofficial list in this question on
-         *                                    [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).the language or language-region [BCP 47](http://tools.ietf.org/html/bcp47)
          *
          * @example
          function postTextEntry(text) {
@@ -3894,7 +3876,6 @@ MM.Listener = (function () {
              var myListener = new MM.Listener({
                  continuous: true,
                  interimResults: true,
-                 lang: 'es-ES' // listen for European Spanish
                  onResult: function(result) {
                      if (result.final) {
                          // post text entry for final results
@@ -3947,8 +3928,7 @@ MM.Listener = (function () {
                 onError: '_onError',
                 onTextEntryPosted: '_onTextEntryPosted',
                 continuous: 'continuous',
-                interimResults: 'interimResults',
-                lang: 'lang'
+                interimResults: 'interimResults'
             };
 
             for (var configProperty in configProperties) { // only look at safe properties
@@ -4041,21 +4021,11 @@ MM.Listener = (function () {
                     if (!recognizer.continuous) {
                         setAbortTimeout();
                     }
+                    console.log(Date.now(), "Listener " + event.type, event);
                 }
             }
             recognizer.continuous = this.continuous;
             recognizer.interimResults = this.interimResults;
-            var lang = (function () {
-                var language = '';
-                if (listener.lang !== '') {
-                    language = listener.lang;
-                } else if (typeof document !== 'undefined' && document.documentElement !== null && document.documentElement.lang !== '') {
-                    // attempt to retrieve from html element
-                    language = document.documentElement.lang;
-                }
-                return language;
-            })();
-            recognizer.lang = lang;
             listener._results = []; // clear previous results
 
             recognizer.start();
@@ -4084,7 +4054,6 @@ MM.Listener = (function () {
     Listener.prototype._listening = false;
     Listener.prototype._results = [];
     Listener.prototype.continuous = false;
-    Listener.prototype.lang = "";
     Listener.prototype.interimResults = false;
     Object.defineProperties(Listener.prototype, {
         listening: {
