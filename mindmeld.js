@@ -3873,13 +3873,13 @@ MM.Listener = (function () {
          * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
          * @property {string} lang            the 'Simple language sub tag' or 'Language-Region tag' of the [BCP 47](http://tools.ietf.org/html/bcp47)
          *                                    code for the language the listener should recognize (e.g. 'ko' for Korean, 'en-US'
-         *                                    for American English, and 'de-DE' for German) When set to the empty string "" or
+         *                                    for American English, and 'de-DE' for German). When set to the empty string "" or
          *                                    unspecified, the listener attempts to use the lang attribute of the root html
          *                                    element (document.documentElement.lang). A "language-not-supported" error will
          *                                    be thrown for unsupported languages. Language support depends on the browser. For
          *                                    Chrome, no official list of supported languages exists. There is however, a good
          *                                    unofficial list in this question on
-         *                                    [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).the language or language-region [BCP 47](http://tools.ietf.org/html/bcp47)
+         *                                    [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
          *
          * @example
          function postTextEntry(text) {
