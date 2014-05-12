@@ -102,6 +102,10 @@ span.ui-helper-hidden-accessible[role="status"] {
                 span.docTitle {
                     color: #005985;
                     font-size: .9rem;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    display: block;
                 }
 
                 p.textBlurb {

@@ -266,7 +266,11 @@ span.ui-helper-hidden-accessible[role="status"] {
     border-bottom: none; }
   #mm-results li.docListItem a .docListWrapper span.docTitle {
     color: #005985;
-    font-size: .9rem; }
+    font-size: .9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block; }
   #mm-results li.docListItem a .docListWrapper p.textBlurb {
     color: #A7A7A7;
     font-size: 0.75rem;
