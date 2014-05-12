@@ -128,7 +128,7 @@
         },
 
         _create: function () {
-            this.element.after('<div id="mm-results"></div>');
+            $('<div id="mm-results" style="position: absolute;"></div>').appendTo('body');
             this.queryCache = {};
             this.numQueriesCached = 0;
             this._initMM();
@@ -253,11 +253,24 @@
                 },
                 appendTo: '#mm-results',
                 open: function () {
-                    var position = $('#mm-results').position();
-                    var top = position.top;
-                    $('#mm-results > ul.ui-autocomplete').css({
-                        top: top - 1 + "px"
-                    });
+                    var searchFieldPosition = self.element.offset();
+                    var searchFieldHeight = self.element.outerHeight();
+                    var searchFieldWidth = self.element.outerWidth();
+                    console.log(searchFieldPosition, searchFieldHeight, searchFieldWidth);
+
+                    var insetLength = 10;
+                    var resultsWidth = searchFieldWidth - insetLength;
+                    var resultsTop = searchFieldPosition.top + searchFieldHeight - 1;
+                    var resultsLeft = searchFieldPosition.left + insetLength / 2;
+                    $('#mm-results > ul.ui-autocomplete')
+                        .css( {
+                            width: resultsWidth + 'px'
+                        })
+                        .offset({
+                            top: resultsTop,
+                            left: resultsLeft
+                        });
+
                 },
                 select: function (event, ui) {
                     if (ui.item.document) {
@@ -349,7 +362,8 @@
                     newQuery += term + "* ";
                 }
             });
-            return newQuery;
+            var fieldsQuery = "title:(" + newQuery + ") description:(" + newQuery + ") text:(" + newQuery +")";
+            return fieldsQuery;
         },
 
         _cleanQueryCache: function () {
