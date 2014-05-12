@@ -95,7 +95,7 @@
         },
 
         _getItemContentWithImage: function (imgSrc, textBlurb) {
-            textBlurb = this._truncateText(textBlurb, 100);
+            textBlurb = this._truncateText(textBlurb, 75);
             return $('<div>', {class: 'docContentWithImage'})
                 .append(
                     $('<div>', {class: 'docImg'})
