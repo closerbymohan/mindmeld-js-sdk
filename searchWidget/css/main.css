@@ -213,7 +213,8 @@ span.ui-helper-hidden-accessible[role="status"] {
   margin: 0;
   position: absolute;
   box-sizing: border-box;
-  background: white; }
+  background: white;
+  box-shadow: 0px 4px 7px 0px rgba(0, 0, 0, 0.75); }
 #mm-results li.noResultItem {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;
