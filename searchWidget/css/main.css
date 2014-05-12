@@ -217,7 +217,7 @@ span.ui-helper-hidden-accessible[role="status"] {
 #mm-results li.noResultItem {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;
-  padding: 10px;
+  padding: 5px;
   margin-left: 0px;
   margin-right: -4px;
   margin-top: 0px;
@@ -236,7 +236,7 @@ span.ui-helper-hidden-accessible[role="status"] {
 #mm-results li.docListItem {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;
-  padding: 10px;
+  padding: 5px;
   margin-left: 0px;
   margin-right: -4px;
   margin-top: 0px;
@@ -253,15 +253,16 @@ span.ui-helper-hidden-accessible[role="status"] {
     border-bottom: none; }
   #mm-results li.docListItem a .docListWrapper span.docTitle {
     color: #005985;
-    font-size: 1rem; }
+    font-size: .9rem; }
   #mm-results li.docListItem a .docListWrapper p.textBlurb {
     color: #A7A7A7;
     font-size: 0.75rem;
-    overflow: auto; }
+    overflow: auto;
+    line-height: 1.1; }
     #mm-results li.docListItem a .docListWrapper p.textBlurb em {
       color: #7C7C7C; }
   #mm-results li.docListItem a .docListWrapper .docContentWithImage {
-    margin-top: 5px;
+    margin-top: 3px;
     display: table; }
     #mm-results li.docListItem a .docListWrapper .docContentWithImage .docImg,
     #mm-results li.docListItem a .docListWrapper .docContentWithImage .docDetails {
@@ -276,7 +277,7 @@ span.ui-helper-hidden-accessible[role="status"] {
       height: 100%;
       padding-left: 5px; }
   #mm-results li.docListItem a .docListWrapper .docContentWithoutImage {
-    margin-top: 5px; }
+    margin-top: 3px; }
     #mm-results li.docListItem a .docListWrapper .docContentWithoutImage p.textBlurb {
       margin: 0;
       word-break: keep-all;

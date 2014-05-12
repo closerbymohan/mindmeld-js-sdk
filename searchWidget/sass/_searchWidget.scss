@@ -16,7 +16,7 @@ span.ui-helper-hidden-accessible[role="status"] {
     @mixin resultLi {
         list-style: none;
         border-bottom: 1px dotted #BBD0E0;
-        padding: 10px;
+        padding: 5px;
         margin-left: 0px;
         margin-right: -4px;
         margin-top: 0px;
@@ -77,20 +77,21 @@ span.ui-helper-hidden-accessible[role="status"] {
 
                 span.docTitle {
                     color: #005985;
-                    font-size: 1rem;
+                    font-size: .9rem;
                 }
 
                 p.textBlurb {
                     color: #A7A7A7;
                     font-size: 0.75rem;
                     overflow: auto;
+                    line-height: 1.1;
                     em {
                         color: #7C7C7C;
                     }
                 }
 
                 .docContentWithImage {
-                    margin-top: 5px;
+                    margin-top: 3px;
 
                     display: table;
 
@@ -118,7 +119,7 @@ span.ui-helper-hidden-accessible[role="status"] {
                 }
 
                 .docContentWithoutImage {
-                    margin-top: 5px;
+                    margin-top: 3px;
                     p.textBlurb {
                         margin: 0;
                         word-break: keep-all;

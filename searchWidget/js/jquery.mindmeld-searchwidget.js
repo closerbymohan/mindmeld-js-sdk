@@ -304,6 +304,10 @@
                     return false;
                 },
                 images: self.options.images
+            }).off('blur').on('blur', function() {
+                if(document.hasFocus()) {
+                    $('ul.ui-autocomplete').hide();
+                }
             });
         },
 
