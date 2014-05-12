@@ -252,8 +252,14 @@ span.ui-helper-hidden-accessible[role="status"] {
   #mm-results li.docListItem a {
     text-decoration: none; }
   #mm-results li.docListItem:hover, #mm-results li.docListItem.focused {
-    background: rgba(113, 189, 238, 0.46);
-    box-shadow: inset 0 0 0.75em 2px rgba(24, 131, 200, 0.46); }
+    background: rgba(15, 132, 207, 0.65);
+    box-shadow: inset 0 0 0.75em 2px rgba(10, 87, 136, 0.65); }
+    #mm-results li.docListItem:hover a .docListWrapper span.docTitle, #mm-results li.docListItem.focused a .docListWrapper span.docTitle {
+      color: #F9F7F1; }
+    #mm-results li.docListItem:hover a .docListWrapper p.textBlurb, #mm-results li.docListItem.focused a .docListWrapper p.textBlurb {
+      color: #5A4747; }
+      #mm-results li.docListItem:hover a .docListWrapper p.textBlurb em, #mm-results li.docListItem.focused a .docListWrapper p.textBlurb em {
+        color: #281818; }
   #mm-results li.docListItem:last-child {
     border-bottom: none; }
   #mm-results li.docListItem a .docListWrapper span.docTitle {

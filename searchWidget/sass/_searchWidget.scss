@@ -11,7 +11,7 @@ span.ui-helper-hidden-accessible[role="status"] {
 
 #mm-results {
     
-    $focused-color: rgba(113, 189, 238, 0.46);
+    $focused-color: rgba(15, 132, 207, 0.65);
 
     @mixin resultLi {
         list-style: none;
@@ -73,7 +73,21 @@ span.ui-helper-hidden-accessible[role="status"] {
         &:hover,
         &.focused {
             background: $focused-color;
-            box-shadow: inset 0 0 .75em 2px darken($focused-color, 25%);
+            box-shadow: inset 0 0 .75em 2px darken($focused-color, 15%);
+            a {
+                .docListWrapper {
+                    span.docTitle {
+                        color: #F9F7F1;
+                    }
+                    
+                    p.textBlurb {
+                        color: #5A4747;
+                        em {
+                            color: #281818;
+                        }
+                    }
+                }
+            }
         }
 
         &:last-child {
