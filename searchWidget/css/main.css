@@ -197,7 +197,8 @@ table {
 input[type="text"].mm-search {
   outline: none;
   border: 1px solid #ccc;
-  padding: 7px 0px 7px 15px; }
+  padding: 7px 0px 7px 15px;
+  font-weight: 300; }
 
 span.ui-helper-hidden-accessible[role="status"] {
   display: none; }
