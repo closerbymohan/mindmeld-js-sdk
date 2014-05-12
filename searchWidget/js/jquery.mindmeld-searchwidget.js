@@ -256,7 +256,6 @@
                     var searchFieldPosition = self.element.offset();
                     var searchFieldHeight = self.element.outerHeight();
                     var searchFieldWidth = self.element.outerWidth();
-                    console.log(searchFieldPosition, searchFieldHeight, searchFieldWidth);
 
                     var insetLength = 10;
                     var resultsWidth = searchFieldWidth - insetLength;
@@ -296,18 +295,10 @@
                         // Add 'focused' class to focused <li>
                         var focused = menu.find("li:has(a.ui-state-focus)");
                         focused.addClass('focused');
-
-
-                        var selectedValue = self._stripEmTags(ui.item.value);
-                        self.element.val(selectedValue);
                     }
                     return false;
                 },
                 images: self.options.images
-            }).off('blur').on('blur', function() {
-                if(document.hasFocus()) {
-                    $('ul.ui-autocomplete').hide();
-                }
             });
         },
 
