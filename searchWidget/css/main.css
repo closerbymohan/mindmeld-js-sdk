@@ -233,6 +233,11 @@ span.ui-helper-hidden-accessible[role="status"] {
   color: #929292; }
   #mm-results li.noResultItem a {
     text-decoration: none; }
+  #mm-results li.noResultItem a {
+    text-decoration: none;
+    color: #929292; }
+    #mm-results li.noResultItem a:hover {
+      cursor: default; }
 #mm-results li.docListItem {
   list-style: none;
   border-bottom: 1px dotted #BBD0E0;

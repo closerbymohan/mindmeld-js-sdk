@@ -55,6 +55,14 @@ span.ui-helper-hidden-accessible[role="status"] {
         font-style: italic;
         font-size: 0.9rem;
         color: darken(#b8b8b8, 15%);
+        a {
+            text-decoration: none;
+            color: #929292;
+            
+            &:hover {
+                cursor: default;
+            }
+        }
     }
 
 
