@@ -20,4 +20,4 @@ sandbox/
 # Search Widget
 .sass-cache/
 searchWidget/.sass-cache
-searchWidget/css/main.css.map
+searchWidget/css/*.map
