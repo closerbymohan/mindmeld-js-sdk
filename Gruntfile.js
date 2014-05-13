@@ -157,7 +157,8 @@ module.exports = function (grunt) {
         'clean:dist',
         'jsdoc:dist',
         'uglify:dist',
-        'zip:dist'
+        'zip:dist',
+        'buildSearchWidget'
     ]);
 
     grunt.registerTask('archive', 'Creates an archived copy of the current version.', [
