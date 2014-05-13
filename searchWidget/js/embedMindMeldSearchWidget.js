@@ -1,2 +1,0 @@
-var MMSearchWidget = window.MMSearchWidget || {};
-
