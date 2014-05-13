@@ -43,8 +43,8 @@ module.exports = function (grunt) {
             searchWidget: {
                 files: [
                     {
-                        src: 'searchWidget/js/jquery.mindmeld-searchwidget.js',
-                        dest: 'searchWidget/js/jquery.mindmeld-searchwidget.min.js'
+                        src: 'searchWidget/js/src/jquery.mindmeld-searchwidget.js',
+                        dest: 'searchWidget/dist/jquery.mindmeld-searchwidget.min.js'
                     }
                 ],
                 options: {
@@ -103,7 +103,7 @@ module.exports = function (grunt) {
             },
             searchWidgetCSS: {
                 files: ['searchWidget/sass/*.scss'],
-                tasks: ['compileSearchWidgetCSS']
+                tasks: ['sass:searchWidget']
             }
         },
         jshint: {
@@ -113,27 +113,39 @@ module.exports = function (grunt) {
         concat: {
             searchWidget: {
                 src: [
-                    'searchWidget/js/vendor.js',
-                    'searchWidget/js/searchWidgetIntro.js',
+                    'searchWidget/js/util/vendor.js',
+                    'searchWidget/js/util/searchWidgetIntro.js',
                     'mindmeld.min.js',
-                    'searchWidget/js/jquery.mindmeld-searchwidget.min.js',
-                    'searchWidget/js/searchWidgetOutro.js'
+                    'searchWidget/dist/jquery.mindmeld-searchwidget.min.js',
+                    'searchWidget/js/util/searchWidgetOutro.js'
                 ],
-                dest: 'searchWidget/js/mindmeldSearchWidget.js'
+                dest: 'searchWidget/dist/mindmeldSearchWidget.js'
             }
         },
         sass: {
             searchWidget: {
+                options: {
+                    sourcemap: true
+                },
                 files: {
-                    'searchWidget/css/mindmeldSearchWidget.css': 'searchWidget/sass/main.scss'
+                    'searchWidget/css/main.css': 'searchWidget/sass/main.scss'
                 }
             }
         },
         cssmin: {
             searchWidget: {
                 files: {
-                    'searchWidget/css/mindmeldSearchWidget.css': ['searchWidget/css/mindmeldSearchWidget.css']
+                    'searchWidget/dist/mindmeldSearchWidget.min.css': ['searchWidget/css/main.css']
                 }
+            }
+        },
+        symlink: {
+            searchWidget: {
+                options: {
+                    overwrite: true
+                },
+                src: 'searchWidget/js/src/jquery.mindmeld-searchwidget.js',
+                dest: 'searchWidget/dist/jquery.mindmeld-searchwidget.js'
             }
         }
     });
@@ -160,16 +172,12 @@ module.exports = function (grunt) {
     ]);
 
 
-    // Search Widget Grunt Tasks
-    grunt.registerTask('compileSearchWidgetCSS', [
-        'sass:searchWidget',
-        'cssmin:searchWidget'
-    ]);
-
     grunt.registerTask('buildSearchWidget', [
+        'symlink:searchWidget',
         'uglify:searchWidget',
         'concat:searchWidget',
-        'compileSearchWidgetCSS'
+        'sass:searchWidget',
+        'cssmin:searchWidget'
     ]);
 
 //    grunt.registerTask('bump', 'Increments the version number in all the appropriate places.', []) // TODO:
