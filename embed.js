@@ -19,8 +19,8 @@ EL.loadStyle = function (path) {
 };
 
 if (EL.searchWidget) {
-    EL.loadJS(EL.rootURL + 'searchWidget/dist/mindmeldSearchWidget.js', function () {
+    EL.loadJS(EL.rootURL + 'searchWidget/mindmeldSearchWidget.js', function () {
         EL.$jq('#mm-search').searchwidget(EL.searchWidget.options);
     });
-    EL.loadStyle(EL.rootURL + 'searchWidget/dist/mindmeldSearchWidget.min.css');
+    EL.loadStyle(EL.rootURL + 'searchWidget/mindmeldSearchWidget.min.css');
 }
