@@ -43,7 +43,7 @@ module.exports = function (grunt) {
             searchWidget: {
                 files: [
                     {
-                        src: 'searchWidget/js/src/jquery.mindmeld-searchwidget.js',
+                        src: 'searchWidget/js/jquery.mindmeld-searchwidget.js',
                         dest: 'searchWidget/dist/jquery.mindmeld-searchwidget.min.js'
                     }
                 ],
@@ -116,7 +116,7 @@ module.exports = function (grunt) {
                     footer: '}(EL.$jq));'
                 },
                 src: [
-                    'searchWidget/js/util/vendor.js',
+                    'searchWidget/js/vendor.js',
                     'mindmeld.min.js',
                     'searchWidget/dist/jquery.mindmeld-searchwidget.min.js',
                 ],
@@ -145,7 +145,7 @@ module.exports = function (grunt) {
                 options: {
                     overwrite: true
                 },
-                src: 'searchWidget/js/src/jquery.mindmeld-searchwidget.js',
+                src: 'searchWidget/js/jquery.mindmeld-searchwidget.js',
                 dest: 'searchWidget/dist/jquery.mindmeld-searchwidget.js'
             }
         }

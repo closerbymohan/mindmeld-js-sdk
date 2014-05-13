@@ -1,1 +1,1 @@
-../js/src/jquery.mindmeld-searchwidget.js
+../js/jquery.mindmeld-searchwidget.js
