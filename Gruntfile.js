@@ -112,12 +112,13 @@ module.exports = function (grunt) {
         },
         concat: {
             searchWidget: {
+                options: {
+                    footer: '}(EL.$jq));'
+                },
                 src: [
                     'searchWidget/js/util/vendor.js',
-                    'searchWidget/js/util/searchWidgetIntro.js',
                     'mindmeld.min.js',
                     'searchWidget/dist/jquery.mindmeld-searchwidget.min.js',
-                    'searchWidget/js/util/searchWidgetOutro.js'
                 ],
                 dest: 'searchWidget/dist/mindmeldSearchWidget.js'
             }

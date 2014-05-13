@@ -11,3 +11,4 @@
 }(window));
 EL = EL || {};
 EL.$jq = jQuery.noConflict(true);
+( function ($) {
