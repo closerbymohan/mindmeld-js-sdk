@@ -94,6 +94,10 @@ module.exports = function (grunt) {
                         return content;
                     }
                 }
+            },
+            searchWidget: {
+                src: 'searchWidget/js/jquery.mindmeld-searchwidget.js',
+                dest: 'searchWidget/dist/jquery.mindmeld-searchwidget.js'
             }
         },
         watch: {
@@ -139,15 +143,6 @@ module.exports = function (grunt) {
                     'searchWidget/dist/mindmeldSearchWidget.min.css': ['searchWidget/css/main.css']
                 }
             }
-        },
-        symlink: {
-            searchWidget: {
-                options: {
-                    overwrite: true
-                },
-                src: 'searchWidget/js/jquery.mindmeld-searchwidget.js',
-                dest: 'searchWidget/dist/jquery.mindmeld-searchwidget.js'
-            }
         }
     });
 
@@ -174,7 +169,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('buildSearchWidget', [
-        'symlink:searchWidget',
+        'copy:searchWidget',
         'uglify:searchWidget',
         'concat:searchWidget',
         'sass:searchWidget',
