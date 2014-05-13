@@ -1,1 +1,1 @@
-}(window.$eljq));
+}(EL.$jq));
