@@ -169,7 +169,7 @@ module.exports = function (grunt) {
     ]);
 
 
-    grunt.registerTask('buildSearchWidget', [
+    grunt.registerTask('buildSearchWidget', 'Builds the MindMeld search widget into searchWidget/dist', [
         'copy:searchWidget',
         'uglify:searchWidget',
         'concat:searchWidget',
