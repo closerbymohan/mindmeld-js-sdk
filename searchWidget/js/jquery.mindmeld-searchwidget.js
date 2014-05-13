@@ -276,8 +276,7 @@
                         if (!event.ctrlKey && ! event.metaKey) {
                             window.location.href = ui.item.document.originurl;
                         }
-                        var selectedValue = self._stripEmTags(ui.item.value);
-                        self.element.val(selectedValue);
+                        self.element.val('');
                     }
                     return false;
 

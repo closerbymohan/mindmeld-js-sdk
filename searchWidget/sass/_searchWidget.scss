@@ -46,7 +46,7 @@ span.ui-helper-hidden-accessible[role="status"] {
         position: absolute;
         box-sizing: border-box;
         background: white;
-        box-shadow: 0px 4px 7px 0px rgba(0,0,0,0.75);
+        box-shadow: 0 4px 2px -2px rgba(0,0,0,0.75);
     }
 
     li.noResultItem {
@@ -83,9 +83,9 @@ span.ui-helper-hidden-accessible[role="status"] {
                     }
                     
                     p.textBlurb {
-                        color: #5A4747;
+                        color: #D1D1D1;
                         em {
-                            color: #281818;
+                            color: #737070;
                         }
                     }
                 }
