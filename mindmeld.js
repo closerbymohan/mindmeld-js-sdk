@@ -4,7 +4,7 @@
  *
  * @namespace
  */
-MM = {};
+var MM = MM || {};
 
 /**
  * MindMeld SDK Version

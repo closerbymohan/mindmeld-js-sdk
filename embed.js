@@ -1,7 +1,8 @@
-var EL = EL || {};
-EL.rootURL = EL.rootURL || 'https://developer.expectlabs.com/public/sdks/';
+var MM = MM || {};
+MM.__bootstrap = MM.__bootstrap || {};
+MM.__bootstrap.rootURL = MM.__bootstrap.rootURL || 'https://developer.expectlabs.com/public/sdks/';
 
-EL.loadJS = function (path, callback) {
+MM.__bootstrap.loadJS = function (path, callback) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
@@ -10,7 +11,7 @@ EL.loadJS = function (path, callback) {
     script.addEventListener('load', callback, false);
 };
 
-EL.loadStyle = function (path) {
+MM.__bootstrap.loadStyle = function (path) {
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
@@ -18,9 +19,9 @@ EL.loadStyle = function (path) {
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(link);
 };
 
-if (EL.searchWidget) {
-    EL.loadJS(EL.rootURL + 'searchWidget/mindmeldSearchWidget.js', function () {
-        EL.$jq('#mm-search').searchwidget(EL.searchWidget.options);
+if (MM.__bootstrap.searchWidget) {
+    MM.__bootstrap.loadJS(MM.__bootstrap.rootURL + 'searchWidget/mindmeldSearchWidget.js', function () {
+        MM.__bootstrap.$jq('#mm-search').searchwidget(MM.__bootstrap.searchWidget.options);
     });
-    EL.loadStyle(EL.rootURL + 'searchWidget/mindmeldSearchWidget.min.css');
+    MM.__bootstrap.loadStyle(MM.__bootstrap.rootURL + 'searchWidget/mindmeldSearchWidget.min.css');
 }

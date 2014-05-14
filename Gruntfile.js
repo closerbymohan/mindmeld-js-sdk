@@ -117,7 +117,7 @@ module.exports = function (grunt) {
         concat: {
             searchWidget: {
                 options: {
-                    footer: '}(EL.$jq));'
+                    footer: '}(MM.__bootstrap.$jq));'
                 },
                 src: [
                     'searchWidget/js/vendor.js',
