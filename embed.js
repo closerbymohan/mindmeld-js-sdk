@@ -1,4 +1,4 @@
-EL = EL || {};
+var EL = EL || {};
 EL.rootURL = EL.rootURL || 'https://developer.expectlabs.com/public/sdks/';
 
 EL.loadJS = function (path, callback) {
