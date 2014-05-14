@@ -14,7 +14,7 @@ var MM = MM || {};
  * @private
  */
 Object.defineProperty(MM, 'version', {
-    value: '2.2.0',
+    value: '2.3.0',
     writable: false
 });
 
