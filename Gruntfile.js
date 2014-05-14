@@ -26,6 +26,9 @@ module.exports = function (grunt) {
             },
             archive: {
                 src: [ '.archive-temp' ]
+            },
+            searchWidget: {
+                src: ['searchWidget/dist/*']
             }
         },
         uglify: {
@@ -170,6 +173,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('buildSearchWidget', 'Builds the MindMeld search widget into searchWidget/dist', [
+        'clean:searchWidget',
         'copy:searchWidget',
         'uglify:searchWidget',
         'concat:searchWidget',
