@@ -674,7 +674,7 @@ $.extend(MM, {
         var headers = {'X-MindMeld-Appid': MM.config.appid}; // included on every token request
         var isAdminToken = false;
         var params = null;
-        if (credentials.facebook) { // User token
+        if (credentials.facebook || credentials.anonymous) { // User token
             params = {
                 credentials: credentials
             };
