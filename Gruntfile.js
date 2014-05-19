@@ -3,9 +3,6 @@ module.exports = function (grunt) {
     // Inspects package.json and calls loadNpmTasks for each devDependency
     require('load-grunt-tasks')(grunt);
 
-    // Monitor grunt execution times
-    require('time-grunt')(grunt);
-
     // grunt task configuration
     grunt.initConfig({
         bower: grunt.file.readJSON( "bower.json" ),
@@ -29,6 +26,9 @@ module.exports = function (grunt) {
             },
             archive: {
                 src: [ '.archive-temp' ]
+            },
+            searchWidget: {
+                src: ['searchWidget/dist/*']
             }
         },
         uglify: {
@@ -37,6 +37,17 @@ module.exports = function (grunt) {
                     {
                         src: 'mindmeld.js',
                         dest: 'mindmeld.min.js'
+                    }
+                ],
+                options: {
+                    mangle: true
+                }
+            },
+            searchWidget: {
+                files: [
+                    {
+                        src: 'searchWidget/js/jquery.mindmeld-searchwidget.js',
+                        dest: 'searchWidget/dist/jquery.mindmeld-searchwidget.min.js'
                     }
                 ],
                 options: {
@@ -86,17 +97,55 @@ module.exports = function (grunt) {
                         return content;
                     }
                 }
+            },
+            searchWidget: {
+                src: 'searchWidget/js/jquery.mindmeld-searchwidget.js',
+                dest: 'searchWidget/dist/jquery.mindmeld-searchwidget.js'
             }
         },
         watch: {
             docs: {
                 files: ['mindmeld.js', 'docsTemplate/**', 'README.md'],
                 tasks: ['docs']
+            },
+            searchWidgetCSS: {
+                files: ['searchWidget/sass/*.scss'],
+                tasks: ['sass:searchWidget']
             }
         },
         jshint: {
             all: ['Gruntfile.js', 'mindmeld.js'],
             jshintrc: true
+        },
+        concat: {
+            searchWidget: {
+                options: {
+                    footer: '}(MM.__bootstrap.$jq));'
+                },
+                src: [
+                    'searchWidget/js/vendor.js',
+                    'mindmeld.min.js',
+                    'searchWidget/dist/jquery.mindmeld-searchwidget.min.js',
+                ],
+                dest: 'searchWidget/dist/mindmeldSearchWidget.js'
+            }
+        },
+        sass: {
+            searchWidget: {
+                options: {
+                    sourcemap: true
+                },
+                files: {
+                    'searchWidget/css/main.css': 'searchWidget/sass/main.scss'
+                }
+            }
+        },
+        cssmin: {
+            searchWidget: {
+                files: {
+                    'searchWidget/dist/mindmeldSearchWidget.min.css': ['searchWidget/css/main.css']
+                }
+            }
         }
     });
 
@@ -111,7 +160,8 @@ module.exports = function (grunt) {
         'clean:dist',
         'jsdoc:dist',
         'uglify:dist',
-        'zip:dist'
+        'zip:dist',
+        'buildSearchWidget'
     ]);
 
     grunt.registerTask('archive', 'Creates an archived copy of the current version.', [
@@ -119,6 +169,16 @@ module.exports = function (grunt) {
         'copy:archive',
         'zip:archive',
         'clean:archive'
+    ]);
+
+
+    grunt.registerTask('buildSearchWidget', 'Builds the MindMeld search widget into searchWidget/dist', [
+        'clean:searchWidget',
+        'copy:searchWidget',
+        'uglify:searchWidget',
+        'concat:searchWidget',
+        'sass:searchWidget',
+        'cssmin:searchWidget'
     ]);
 
 //    grunt.registerTask('bump', 'Increments the version number in all the appropriate places.', []) // TODO:

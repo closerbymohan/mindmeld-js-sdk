@@ -18,4 +18,6 @@ mindmeld-js-sdk.iml
 sandbox/
 
 # Search Widget
+.sass-cache/
 searchWidget/.sass-cache
+searchWidget/css/*.map
