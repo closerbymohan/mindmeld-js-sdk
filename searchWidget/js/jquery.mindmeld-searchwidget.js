@@ -144,17 +144,6 @@
                 this.options.onMMSearchError('Please supply a valid appid');
                 return;
             }
-
-            if (! this._validateString(this.options.token, 40)) {
-                this.options.onMMSearchError('Please supply a valid token');
-                return;
-            }
-
-            if (! this._validateString(this.options.userid)) {
-                this.options.onMMSearchError('Please supply a valid userid');
-                return;
-            }
-
             var self = this;
             var config = {
                 appid: this.options.appid,
@@ -163,24 +152,21 @@
             MM.init(config);
 
             function onMMInit () {
-                MM.setToken(self.options.token, onTokenValid, onTokenInvalid);
-
-                function onTokenValid () {
-                    // Set the active user ID
-                    MM.setActiveUserID(self.options.userid, onIDValid, onIDInvalid);
-
-                    function onIDValid () {
+                MM.getToken(
+                    {
+                        anonymous: {
+                            userid: 'MMSearchWidgetUserID',
+                            name: 'MMSearchWidgetUser',
+                            domain: window.location.hostname
+                        }
+                    },
+                    function onGetToken () {
                         self._getOrSetSession();
+                    },
+                    function onTokenError () {
+                        self.options.onMMSearchError('Supplied token is invalid');
                     }
-
-                    function onIDInvalid () {
-                        self.options.onMMSearchError('Supplied userid is invalid');
-                    }
-                }
-
-                function onTokenInvalid () {
-                    self.options.onMMSearchError('Supplied token is invalid');
-                }
+                );
             }
         },
 
