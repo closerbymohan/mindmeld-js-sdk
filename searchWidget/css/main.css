@@ -274,7 +274,7 @@ span.ui-helper-hidden-accessible[role="status"] {
   #mm-results li.docListItem a .docListWrapper p.textBlurb {
     color: #A7A7A7;
     font-size: 0.75rem;
-    overflow: auto;
+    overflow: hidden;
     line-height: 1.1; }
     #mm-results li.docListItem a .docListWrapper p.textBlurb em {
       color: #7C7C7C; }
