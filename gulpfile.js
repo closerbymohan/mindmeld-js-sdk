@@ -47,18 +47,20 @@ gulp.task('setVersion', function () {
 
 // Copy mindmeld.js and mindmeld.min.js to archive/ directory
 gulp.task('archiveJS', ['setVersion', 'compressMM'], function () {
-    gulp.src('mindmeld.js')
-        .pipe(rename(versionedMindMeldName))
-        .pipe(gulp.dest(archiveDirectory));
+    return es.merge(
+        gulp.src('mindmeld.js')
+            .pipe(rename(versionedMindMeldName))
+            .pipe(gulp.dest(archiveDirectory)),
 
-    gulp.src('mindmeld.min.js')
-        .pipe(rename(versionedMinifiedMindMeldName))
-        .pipe(gulp.dest(archiveDirectory));
+        gulp.src('mindmeld.min.js')
+            .pipe(rename(versionedMinifiedMindMeldName))
+            .pipe(gulp.dest(archiveDirectory))
+    );
 });
 
 // Creates archive of SDK at current version
 gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
-    es.merge(
+    return es.merge(
         gulp.src([
             'LICENSE',
             'docs/**'
