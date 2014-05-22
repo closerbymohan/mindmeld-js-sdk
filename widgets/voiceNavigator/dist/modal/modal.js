@@ -8127,7 +8127,7 @@ MM.Internal.setup();
         self.$mm_button.hide();
         self.$mm_pulser.hide();
         self.$input.hide();
-        var $text_input = $('<li>', {'class':'text-input'})
+        var $text_input = $('<li>', {'class':'text-input'});
         var $form = $('<form>');
         var $input = $('<input>', {
                        type: "text",
@@ -8513,7 +8513,7 @@ MM.Internal.setup();
       });
       $card.attr('data-document-id', doc.documentid);
 
-      if (self.config.cardStyle === 'custom') {
+      if (self.config.cardLayout === 'custom') {
         var html = window.parent.MM.voiceNavigator.getCardHTML(doc);
         $card.html(html);
       } else {

@@ -124,6 +124,12 @@
                 }
 
             };
+        },
+
+        convertToAbsolutePath : function(href) {
+            var anchor = document.createElement("a");
+            anchor.href = href;
+            return (anchor.protocol+"//"+anchor.host+anchor.pathname+anchor.search+anchor.hash);
         }
     };
 
@@ -139,11 +145,17 @@
                     typeof MM.voiceNavigator !== 'undefined' &&
                     typeof MM.voiceNavigator.options !== 'undefined') {
 
-                    if (typeof MM.voiceNavigator.options.cardStyle === 'function') {
-                        MM.voiceNavigator.getCardHTML = MM.voiceNavigator.options.cardStyle;
-                        MM.voiceNavigator.options.cardStyle = 'custom'; //
-                    } else if (typeof MM.voiceNavigator.options.cardStyle === 'undefined') {
-                        MM.voiceNavigator.options.cardStyle = 'default';
+                    // parse card layout
+                    if (typeof MM.voiceNavigator.options.cardLayout === 'function') {
+                        MM.voiceNavigator.getCardHTML = MM.voiceNavigator.options.cardLayout;
+                        MM.voiceNavigator.options.cardLayout = 'custom'; //
+                    } else if (typeof MM.voiceNavigator.options.cardLayout === 'undefined') {
+                        MM.voiceNavigator.options.cardLayout = 'default';
+                    }
+
+                    // parse custom css
+                    if (typeof MM.voiceNavigator.options.customCSSPath !== 'undefined') {
+                        MM.voiceNavigator.options.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.options.customCSSPath);
                     }
 
                     iframe.setAttribute('mm-voice-navigator-options', JSON.stringify(MM.voiceNavigator.options));
@@ -154,6 +166,14 @@
                 MMVoice.el(iframe).on('load', function() {
                     MMVoice.postMessage('open');
                     MMVoice.iframe_loaded = true;
+
+                    if (typeof MM.voiceNavigator.options.customCSSPath !== 'undefined') {
+                        var cssLink = document.createElement('link');
+                        cssLink.href = MM.voiceNavigator.options.customCSSPath;
+                        cssLink.rel = 'stylesheet';
+                        cssLink.type = 'text/css';
+                        frames['mindmeld-iframe'].document.head.appendChild(cssLink);
+                    }
                 });
 
                 MMVoice.$mm.el().appendChild(iframe);

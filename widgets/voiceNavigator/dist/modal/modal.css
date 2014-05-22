@@ -735,7 +735,8 @@ body #mm-button .mm-longhold {
 body #mm-button .mm-longhold .on {
   display: none;
 }
-body #mm-button a:hover + .mm-longhold {
+body #mm-button a:hover +,
+body #mm-button .mm-longhold {
   color: #aaa;
 }
 body.results #mm-button .mm-longhold {
@@ -1611,61 +1612,6 @@ body #mindmeld-parent.results {
   line-height: 1.5em;
   margin: 10px 15px;
   color: #888;
-}
-#results #cards a.card .metadata-row {
-  margin: 0;
-  display: block;
-  padding: 0 15px;
-}
-#results #cards a.card .metadata-row p.clear-fix {
-  clear: both;
-}
-#results #cards a.card .metadata-row p {
-  margin: 2px 0;
-}
-#results #cards a.card .metadata-row p span.rt-icon {
-  display: inline-block;
-  vertical-align: sub;
-  background: transparent url("./icons-v2.png") no-repeat -312px -160px;
-}
-#results #cards a.card .metadata-row p span.rt-icon.tiny {
-  height: 16px;
-  width: 16px;
-}
-#results #cards a.card .metadata-row p span.tiny.fresh {
-  background-position: -256px -144px;
-}
-#results #cards a.card .metadata-row p span.tiny.rotten {
-  background-position: -272px -144px;
-}
-#results #cards a.card .metadata-row p span.rt-icon.small {
-  height: 24px;
-  width: 24px;
-}
-#results #cards a.card .metadata-row p span.small.fresh {
-  background-position: -288px -48px;
-}
-#results #cards a.card .metadata-row p span.small.rotten {
-  background-position: -288px -96px;
-}
-#results #cards a.card .metadata-row p span.rt-rating {
-  display: inline-block;
-}
-#results #cards a.card .metadata-row p.align-left {
-  float: left;
-  text-align: left;
-}
-#results #cards a.card .metadata-row p.align-right {
-  float: right;
-  text-align: right;
-}
-#results #cards a.card .metadata-row p.placeholder {
-  font-size: 10px;
-  font-style: italic;
-  color: #aaa;
-}
-#results #cards a.card .metadata-row:first-of-type {
-  margin-top: 5px;
 }
 #results #cards a.card .source {
   display: block;
