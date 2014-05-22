@@ -243,12 +243,12 @@ gulp.task('voiceNavModalJS_dev', function() {
 });
 
 gulp.task('voiceNavModalOther', function() {
-    var html = gulp.src(voiceNavigatorPath + 'modal.jade')
+    var html = gulp.src(voiceNavigatorPath + 'templates/modal.jade')
         .pipe(jade())
         .pipe(gulp.dest(voiceNavBuildLocation + 'modal'))
         .pipe(connect.reload());
 
-    var audio = gulp.src(voiceNavigatorPath + 'done.wav')
+    var audio = gulp.src(voiceNavigatorPath + 'audio/done.wav')
         .pipe(gulp.dest(voiceNavBuildLocation + 'modal'));
 
     var img = gulp.src(voiceNavPaths.modal_img)
