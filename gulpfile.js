@@ -317,5 +317,5 @@ gulp.task('buildVoiceNavigator', [
 // --------------------------------------------------------------------- //
 
 // General Tasks
-gulp.task('build', ['buildSDK', 'buildSearchWidget']);
+gulp.task('build', ['buildSDK', 'buildSearchWidget', 'buildVoiceNavigator']);
 gulp.task('default', ['build']);
