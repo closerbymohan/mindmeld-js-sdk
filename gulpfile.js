@@ -172,7 +172,7 @@ var voiceNavPaths = {
 
 /* Shared functions */
 function concatAndMinify(target, type, minify, stream) {
-    var stream = stream
+    stream = stream
         .pipe(concat(target + '.' + type))
         .pipe(gulp.dest(voiceNavBuildLocation + target))
         .pipe(rename(target + '.min.' + type));
@@ -202,7 +202,7 @@ gulp.task('voiceNavWidgetCSS', function() {
 
 gulp.task('voiceNavWidgetJS', ['voiceNavWidgetTemplate'], function() {
     var stream = gulp.src(voiceNavPaths.voiceNavWidgetJS)
-        .pipe(fileinclude('@@'))
+        .pipe(fileinclude('@@'));
 
     return concatAndMinify('widget', 'js', true, stream);
 });
@@ -216,7 +216,7 @@ gulp.task('voiceNavWidgetCSS_dev', function() {
 
 gulp.task('voiceNavWidgetJS_dev', ['voiceNavWidgetTemplate'], function() {
     var stream = gulp.src(voiceNavPaths.voiceNavWidgetJS)
-        .pipe(fileinclude('@@'))
+        .pipe(fileinclude('@@'));
 
     return concatAndMinify('widget', 'js', false, stream);
 });

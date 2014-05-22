@@ -142,8 +142,8 @@ body
       .on
         display none
     a:hover +
-      .mm-longhold
-        color #AAA
+    .mm-longhold
+      color #AAA
 
   &.results #mm-button .mm-longhold
     transition opacity 0.3s linear 0.3s /* Delay the appearance */
@@ -305,262 +305,220 @@ body
     transform scale(1)
 
 #mindmeld
-    background-color #f9f9f9
-    border-radius 10px
+  background-color #f9f9f9
+  border-radius 10px
+  overflow hidden
+  position absolute
+  height 105px
+  left 50%
+  transition height 0.3s ease-out
+  .results &
+    height 100%
+
+#history-button
+  z-index 1000
+  display none
+  position absolute
+  text-decoration none
+  right 20px
+  top 6px
+  height 70px
+  text-align center
+  font-size 0.9em
+  image './history.png' 31px 28px
+  background-repeat no-repeat
+  background-position top center
+  padding-top 33px
+  font-size 11px
+  width 78px
+  margin-top 9px
+  opacity 0.5
+  color #797979
+  &:hover
+    opacity 1
+    text-decoration none
+
+#history-wrapper
+  height 0
+  position absolute
+  left 0
+  top 0
+  width 100%
+#history
+  position relative
+  background-color #fff
+  box-shadow 0 -5px 5px 6px rgba(0,0,0,0.25)
+  z-index 100
+  position absolute
+  height 863px
+  bottom 0
+  transform translateY(105px)
+  .results &
+    transform translateY(140px)
+  left 0
+  width 100%
+  transition all 0.3s ease-out
+
+  #history-data
+    max-height 350px
+    max-height 100%
+    bottom 0
+    width 100%
     overflow hidden
     position absolute
-    height 105px
-    left 50%
-    transition height 0.3s ease-out
-    .results &
-      height 100%
 
-  #history-button
-    z-index 1000
-    display none
-    position absolute
-    text-decoration none
-    right 20px
-    top 6px
-    height 70px
-    text-align center
-    font-size 0.9em
-    image './history.png' 31px 28px
-    background-repeat no-repeat
-    background-position top center
-    padding-top 33px
-    font-size 11px
-    width 78px
-    margin-top 9px
-    opacity 0.5
-    color #797979
-    &:hover
-      opacity 1
-      text-decoration none
-
-  #history-wrapper
-    height 0
-    position absolute
-    left 0
-    top 0
-    width 100%
-  #history
-    position relative
-    background-color #fff
-    box-shadow 0 -5px 5px 6px rgba(0,0,0,0.25)
-    z-index 100
-    position absolute
-    height 863px
-    bottom 0
-    transform translateY(105px)
-    .results &
-      transform translateY(140px)
-    left 0
-    width 100%
-    transition all 0.3s ease-out
-
-    #history-data
-      max-height 350px
-      max-height 100%
-      bottom 0
-      width 100%
-      overflow hidden
-      position absolute
-
-      ul
-        list-style none
-        margin 0
-        margin-top 70px
-        padding 0
-        li
-          opacity 0.5
-          overflow hidden
-          text-align center
-          padding 0 0 20px
-          font-size 20px
-          max-width 950px
-          margin auto
-          color #333
-          /*color #CCC*/
-          min-height 50px
-          transition opacity 0.3s ease-out
-          a
-            color #777
-            background-color #eee
-            padding 1px 6px
-            display inline-block
-            border 1px solid #ddd
-            border-radius 5px
-            &:hover
-              background-color #ddd
-              color #555
-            &.selected
-              box-shadow 0 0 0 1px rgba(0,0,0,0.2) inset
-              background-color #ddd
-
-          &.hide
-            min-height 0
-          &.on
-            opacity 1.0
-            .pending
-              opacity 0.5
-            .mm-prompt
-              color #CCC
-              &.mm-prompt-error
-                color rgb(162, 74, 74)
-              span
-                opacity 0
-              for i in (1..50)
-                span:nth-child({i})
-                  animation zoomin 0.2s ease-out (0.04s * i) forwards
-          &.text-input
-            padding 0 30px 30px
-            input
-              border 1px solid #bbb
-              border-radius 5px
-              padding 5px
-              width 100%
-              text-align center
-              box-shadow 2px 2px 1px rgba(0,0,0,0.1) inset
-              &:focus
-                outline 0 none
-                border 1px solid #888
-
-    &.open
-      transition all 0.8s ease-out
-      #history-data
-        overflow auto
-        ul li
-          opacity 1.0
-
-  #results
-    padding-top 140px
-    height 510px
-    overflow auto
-    #tags
-      padding 10px
-      text-align center
-      border-bottom 1px solid #ddd
-      background-color #eee
-      a
-        color #888
-        border 1px solid #ccc
-        padding 2px 8px
-        display inline-block
-        background-color #fff
-        margin 2px 4px
-        &:hover
-          text-decoration none
-          color #555
-          border 1px solid #999
-      .selected
-        font-weight bold
-        background-color #ddf
-
-    #cards
-      height 1px
-      padding 10px
-      background-color #f9f9f9
-      background #f3f3f3
-      border 1px solid #fff
-      &.loading
-        opacity 0.3
-      a.card
-        text-decoration none
-        display block
-        width 218px
-        background-color #fff
-        border-radius 7px
-        margin 10px
-        padding 15px 0px 5px
-        box-shadow 0 0 6px rgba(0,0,0,0.2)
-        &:hover
-          box-shadow 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920
-          text-decoration none
-          h2
-            color darken(#636363, 55%)
-
-        h2
-          color #636363
-          font-size 15px
-          font-family 'Open Sans', sans-serif
-          margin 0 15px
-        p.image
-          width 100%
-          text-align center
-          margin 0
-          &.notloaded
-            height 100px
-            background-color #eee
-            overflow hidden
-            img
-              opacity 0
-          img
-            width 100%
-        img
-          max-width 100%
-        p:not(.image)
-          font-size 11px
-          line-height 1.5em
-          margin 10px 15px
-          color #888
-
-        .metadata-row
-          margin 0
-          display block
-          padding: 0 15px
-          p.clear-fix
-            clear both
-          p
-            margin 2px 0
-            span.rt-icon
-              display inline-block
-              vertical-align sub
-
-              background transparent url(./icons-v2.png) no-repeat -312px -160px
-            span.rt-icon.tiny
-              height 16px
-              width 16px
-            span.tiny.fresh
-              background-position -256px -144px
-            span.tiny.rotten
-              background-position -272px -144px
-            span.rt-icon.small
-              height 24px
-              width 24px
-            span.small.fresh
-              background-position -288px -48px
-            span.small.rotten
-              background-position -288px -96px
-            span.rt-rating
-              display inline-block
-          p.align-left
-            float left
-            text-align left
-          p.align-right
-            float right
-            text-align right
-          p.placeholder
-            font-size 10px
-            font-style italic
-            color #aaa
-        .metadata-row:first-of-type
-          margin-top 5px
-
-        .source
-          display block
-          font-size 11px
-          color #999
-          padding 15px 15px 0
-          img
-            margin-right 10px
-
-      .no-results
+    ul
+      list-style none
+      margin 0
+      margin-top 70px
+      padding 0
+      li
+        opacity 0.5
+        overflow hidden
         text-align center
-        margin-top 40px
-        font-size 30px
-        font-style italic
-        color #aaa
+        padding 0 0 20px
+        font-size 20px
+        max-width 950px
+        margin auto
+        color #333
+        /*color #CCC*/
+        min-height 50px
+        transition opacity 0.3s ease-out
+        a
+          color #777
+          background-color #eee
+          padding 1px 6px
+          display inline-block
+          border 1px solid #ddd
+          border-radius 5px
+          &:hover
+            background-color #ddd
+            color #555
+          &.selected
+            box-shadow 0 0 0 1px rgba(0,0,0,0.2) inset
+            background-color #ddd
+
+        &.hide
+          min-height 0
+        &.on
+          opacity 1.0
+          .pending
+            opacity 0.5
+          .mm-prompt
+            color #CCC
+            &.mm-prompt-error
+              color rgb(162, 74, 74)
+            span
+              opacity 0
+            for i in (1..50)
+              span:nth-child({i})
+                animation zoomin 0.2s ease-out (0.04s * i) forwards
+        &.text-input
+          padding 0 30px 30px
+          input
+            border 1px solid #bbb
+            border-radius 5px
+            padding 5px
+            width 100%
+            text-align center
+            box-shadow 2px 2px 1px rgba(0,0,0,0.1) inset
+            &:focus
+              outline 0 none
+              border 1px solid #888
+
+  &.open
+    transition all 0.8s ease-out
+    #history-data
+      overflow auto
+      ul li
+        opacity 1.0
+
+#results
+  padding-top 140px
+  height 510px
+  overflow auto
+  #tags
+    padding 10px
+    text-align center
+    border-bottom 1px solid #ddd
+    background-color #eee
+    a
+      color #888
+      border 1px solid #ccc
+      padding 2px 8px
+      display inline-block
+      background-color #fff
+      margin 2px 4px
+      &:hover
+        text-decoration none
+        color #555
+        border 1px solid #999
+    .selected
+      font-weight bold
+      background-color #ddf
+
+  #cards
+    height 1px
+    padding 10px
+    background-color #f9f9f9
+    background #f3f3f3
+    border 1px solid #fff
+    &.loading
+      opacity 0.3
+    a.card
+      text-decoration none
+      display block
+      width 218px
+      background-color #fff
+      border-radius 7px
+      margin 10px
+      padding 15px 0px 5px
+      box-shadow 0 0 6px rgba(0,0,0,0.2)
+      &:hover
+        box-shadow 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920
+        text-decoration none
+        h2
+          color darken(#636363, 55%)
+
+      h2
+        color #636363
+        font-size 15px
+        font-family 'Open Sans', sans-serif
+        margin 0 15px
+      p.image
+        width 100%
+        text-align center
+        margin 0
+        &.notloaded
+          height 100px
+          background-color #eee
+          overflow hidden
+          img
+            opacity 0
+        img
+          width 100%
+      img
+        max-width 100%
+      p:not(.image)
+        font-size 11px
+        line-height 1.5em
+        margin 10px 15px
+        color #888
+
+      .source
+        display block
+        font-size 11px
+        color #999
+        padding 15px 15px 0
+        img
+          margin-right 10px
+
+    .no-results
+      text-align center
+      margin-top 40px
+      font-size 30px
+      font-style italic
+      color #aaa
 
 
 /* Isotope */
