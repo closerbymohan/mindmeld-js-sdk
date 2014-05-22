@@ -16,6 +16,7 @@
             "site_name": "Expect Labs - MindMeld"
         },
         "meta": {
+            "title": "mindmeld-js-sdk Reference Docs",
             "description": "Expect Labs mindmeld-js-sdk Documentation",
             "keyword": "Expect Labs, JavaScript, MindMeld, SDK"
         }
