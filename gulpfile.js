@@ -186,13 +186,6 @@ function concatAndMinify(target, type, minify, stream) {
         .pipe(connect.reload());
 }
 /* Widget Tasks */
-gulp.task('voiceNavWidgetTemplate', function () {
-    return gulp.src(voiceNavigatorPath + 'widget.jade')
-        .pipe(jade({client: true}))
-        .pipe(concat('widget.template.js'))
-        .pipe(gulp.dest(voiceNavBuildLocation));
-});
-
 gulp.task('voiceNavWidgetCSS', function() {
     var stream = gulp.src(voiceNavPaths.voiceNavWidgetCSS)
         .pipe(stylus({errors: true, use: [nib()]}));
@@ -200,7 +193,7 @@ gulp.task('voiceNavWidgetCSS', function() {
     return concatAndMinify('widget', 'css', true, stream);
 });
 
-gulp.task('voiceNavWidgetJS', ['voiceNavWidgetTemplate'], function() {
+gulp.task('voiceNavWidgetJS', function() {
     var stream = gulp.src(voiceNavPaths.voiceNavWidgetJS)
         .pipe(fileinclude('@@'));
 
@@ -214,7 +207,7 @@ gulp.task('voiceNavWidgetCSS_dev', function() {
     return concatAndMinify('widget', 'css', false, stream);
 });
 
-gulp.task('voiceNavWidgetJS_dev', ['voiceNavWidgetTemplate'], function() {
+gulp.task('voiceNavWidgetJS_dev', function() {
     var stream = gulp.src(voiceNavPaths.voiceNavWidgetJS)
         .pipe(fileinclude('@@'));
 
