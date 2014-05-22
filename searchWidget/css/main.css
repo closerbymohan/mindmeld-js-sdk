@@ -1,19 +1,7 @@
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-nav,
-section,
-summary {
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section, summary {
   display: block; }
 
-audio,
-canvas,
-video {
+audio, canvas, video {
   display: inline-block; }
 
 audio:not([controls]) {
@@ -24,16 +12,12 @@ audio:not([controls]) {
   display: none; }
 
 html {
-  background: white;
-  color: black;
+  background: #fff;
+  color: #000;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%; }
 
-html,
-button,
-input,
-select,
-textarea {
+html, button, input, select, textarea {
   font-family: sans-serif; }
 
 body {
@@ -73,8 +57,7 @@ h6 {
 abbr[title] {
   border-bottom: 1px dotted; }
 
-b,
-strong {
+b, strong {
   font-weight: bold; }
 
 dfn {
@@ -84,10 +67,7 @@ mark {
   background: #ff0;
   color: #000; }
 
-code,
-kbd,
-pre,
-samp {
+code, kbd, pre, samp {
   font-family: monospace, serif;
   font-size: 1em; }
 
@@ -99,16 +79,14 @@ pre {
 q {
   quotes: "\201C" "\201D" "\2018" "\2019"; }
 
-q:before,
-q:after {
+q:before, q:after {
   content: '';
   content: none; }
 
 small {
   font-size: 80%; }
 
-sub,
-sup {
+sub, sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
@@ -119,6 +97,7 @@ sup {
 
 sub {
   bottom: -0.25em; }
+
 
 img {
   border: 0; }
@@ -139,36 +118,26 @@ legend {
   padding: 0;
   white-space: normal; }
 
-button,
-input,
-select,
-textarea {
+button, input, select, textarea {
   font-family: inherit;
   font-size: 100%;
   margin: 0;
   vertical-align: baseline; }
 
-button,
-input {
+button, input {
   line-height: normal; }
 
-button,
-select {
+button, select {
   text-transform: none; }
 
-button,
-html input[type="button"],
-input[type="reset"],
-input[type="submit"] {
+button, html input[type="button"], input[type="reset"], input[type="submit"] {
   -webkit-appearance: button;
   cursor: pointer; }
 
-button[disabled],
-input[disabled] {
+button[disabled], input[disabled] {
   cursor: default; }
 
-input[type="checkbox"],
-input[type="radio"] {
+input[type="checkbox"], input[type="radio"] {
   box-sizing: border-box;
   padding: 0; }
 
@@ -178,8 +147,7 @@ input[type="search"] {
   -webkit-box-sizing: content-box;
   box-sizing: content-box; }
 
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration {
   -webkit-appearance: none; }
 
 button::-moz-focus-inner, input::-moz-focus-inner {
@@ -255,7 +223,7 @@ span.ui-helper-hidden-accessible[role="status"] {
     text-decoration: none; }
   #mm-results li.docListItem:hover, #mm-results li.docListItem.focused {
     background: rgba(15, 132, 207, 0.65);
-    box-shadow: inset 0 0 0.75em 2px rgba(10, 87, 136, 0.65); }
+    box-shadow: inset 0 0 0.75em 2px rgba(9, 87, 135, 0.65); }
     #mm-results li.docListItem:hover a .docListWrapper span.docTitle, #mm-results li.docListItem.focused a .docListWrapper span.docTitle {
       color: #F9F7F1; }
     #mm-results li.docListItem:hover a .docListWrapper p.textBlurb, #mm-results li.docListItem.focused a .docListWrapper p.textBlurb {
@@ -266,7 +234,7 @@ span.ui-helper-hidden-accessible[role="status"] {
     border-bottom: none; }
   #mm-results li.docListItem a .docListWrapper span.docTitle {
     color: #005985;
-    font-size: .9rem;
+    font-size: 0.9rem;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -274,15 +242,14 @@ span.ui-helper-hidden-accessible[role="status"] {
   #mm-results li.docListItem a .docListWrapper p.textBlurb {
     color: #A7A7A7;
     font-size: 0.75rem;
-    overflow: auto;
+    overflow: hidden;
     line-height: 1.1; }
     #mm-results li.docListItem a .docListWrapper p.textBlurb em {
       color: #7C7C7C; }
   #mm-results li.docListItem a .docListWrapper .docContentWithImage {
     margin-top: 7px;
     display: table; }
-    #mm-results li.docListItem a .docListWrapper .docContentWithImage .docImg,
-    #mm-results li.docListItem a .docListWrapper .docContentWithImage .docDetails {
+    #mm-results li.docListItem a .docListWrapper .docContentWithImage .docImg, #mm-results li.docListItem a .docListWrapper .docContentWithImage .docDetails {
       display: table-cell; }
     #mm-results li.docListItem a .docListWrapper .docContentWithImage .docDetails {
       vertical-align: middle; }
@@ -299,5 +266,3 @@ span.ui-helper-hidden-accessible[role="status"] {
       margin: 0;
       word-break: keep-all;
       max-height: 60px; }
-
-/*# sourceMappingURL=main.css.map */

@@ -1,4 +1,4 @@
-var MM = MM || {};
+var MM = window.MM || {};
 MM.__bootstrap = MM.__bootstrap || {};
 MM.__bootstrap.rootURL = MM.__bootstrap.rootURL || 'https://developer.expectlabs.com/public/sdks/';
 
