@@ -29,7 +29,7 @@ gulp.task('uglifyMM', function () {
 
 // Moves generated JS Doc, mindmeld.js, mindmeld.min.js and
 // HelloWorld page into mindmeld-js-sdk.zip
-gulp.task('buildSDK', ['grunt-docs', 'uglifyMM'], function () {
+gulp.task('buildSDK', ['grunt-buildJSDocs', 'uglifyMM'], function () {
     return gulp.src([
         'LICENSE',
         'docs/**',
