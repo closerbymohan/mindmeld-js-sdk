@@ -10,6 +10,14 @@ var es = require('event-stream');
 var replace = require('gulp-replace');
 var fs = require('fs');
 
+// Voice navigator dependencies
+var nib = require('nib');
+var stylus = require('gulp-stylus');
+var jade = require('gulp-jade');
+var connect = require('gulp-connect');
+var fileinclude = require('gulp-file-include');
+var jshint = require('gulp-jshint');
+
 var baseDirOption = {base: './'};
 var archiveDirectory = './archive/';
 
@@ -129,6 +137,188 @@ gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
         .pipe(rename('mindmeldSearchWidget.min.css'))
         .pipe(gulp.dest('searchWidget/dist'));
 });
+// --------------------------------------------------------------------- //
+
+// -------------------------- Voice Navigator -------------------------- //
+
+var voiceNavigatorPath = 'widgets/voiceNavigator/';
+var buildLocation = voiceNavigatorPath + 'dist/';
+
+var voiceNavPaths = {
+    'widget_css' : [
+        voiceNavigatorPath + 'css/widget.styl'
+    ],
+    'widget_js' : [
+        voiceNavigatorPath + 'js/widget.js'
+    ],
+    'modal_css' : [
+        voiceNavigatorPath + 'css/vendor/normalize.styl',
+        voiceNavigatorPath + 'css/modal.styl'
+    ],
+    'modal_js' : [
+        voiceNavigatorPath + 'js/vendor/jquery-1.10.1.min.js',
+        voiceNavigatorPath + 'js/vendor/isotope.pkgd.min.js',
+        voiceNavigatorPath + 'js/vendor/jquery.slimscroll.min.js',
+        voiceNavigatorPath + 'js/vendor/imagesloaded.pkgd.js',
+        voiceNavigatorPath + 'js/vendor/jquery.cookie-1.4.0.js',
+        voiceNavigatorPath + 'js/vendor/mindmeld-2.3.0.js',
+        voiceNavigatorPath + 'js/entityHighlighting.js',
+        voiceNavigatorPath + 'js/modal.js'
+    ],
+    'modal_img' : [
+        voiceNavigatorPath + 'img/modal/*'
+    ]
+};
+
+/* Shared functions */
+function concatAndMinify(target, type, minify, stream) {
+    var stream = stream
+        .pipe(concat(target + '.' + type))
+        .pipe(gulp.dest(buildLocation + target))
+        .pipe(rename(target + '.min.' + type));
+    if (minify) {
+        stream = stream
+            .pipe(type === 'css' ? minifyCSS() : uglify());
+    }
+    return stream
+        .pipe(gulp.dest(buildLocation + target))
+
+        .pipe(connect.reload());
+}
+/* Widget Tasks */
+gulp.task('widget_template', function () {
+    return gulp.src(voiceNavigatorPath + 'widget.jade')
+        .pipe(jade({client: true}))
+        .pipe(concat('widget.template.js'))
+        .pipe(gulp.dest(buildLocation));
+});
+
+gulp.task('widget_css', function() {
+    var stream = gulp.src(voiceNavPaths.widget_css)
+        .pipe(stylus({errors: true, use: [nib()]}));
+
+    return concatAndMinify('widget', 'css', true, stream);
+});
+
+gulp.task('widget_js', ['widget_template'], function() {
+    var stream = gulp.src(voiceNavPaths.widget_js)
+        .pipe(fileinclude('@@'))
+
+    return concatAndMinify('widget', 'js', true, stream);
+});
+
+gulp.task('widget_css_dev', function() {
+    var stream = gulp.src(voiceNavPaths.widget_css)
+        .pipe(stylus({errors: true, use: [nib()]}));
+
+    return concatAndMinify('widget', 'css', false, stream);
+});
+
+gulp.task('widget_js_dev', ['widget_template'], function() {
+    var stream = gulp.src(voiceNavPaths.widget_js)
+        .pipe(fileinclude('@@'))
+
+    return concatAndMinify('widget', 'js', false, stream);
+});
+
+/* Modal Tasks */
+
+gulp.task('modal_css', function() {
+    var stream = gulp.src(voiceNavPaths.modal_css)
+        .pipe(stylus({errors: true, use: [nib()]}));
+    return concatAndMinify('modal', 'css', true, stream);
+});
+
+gulp.task('modal_js', function() {
+    var stream = gulp.src(voiceNavPaths.modal_js);
+
+    return concatAndMinify('modal', 'js', true, stream);
+});
+
+gulp.task('modal_css_dev', function() {
+    var stream = gulp.src(voiceNavPaths.modal_css)
+        .pipe(stylus({errors: true, use: [nib()]}));
+    return concatAndMinify('modal', 'css', false, stream);
+});
+
+gulp.task('modal_js_dev', function() {
+    var stream = gulp.src(voiceNavPaths.modal_js);
+
+    return concatAndMinify('modal', 'js', false, stream);
+});
+
+gulp.task('modal_other', function() {
+    var html = gulp.src(voiceNavigatorPath + 'modal.jade')
+        .pipe(jade())
+        .pipe(gulp.dest(buildLocation + 'modal'))
+        .pipe(connect.reload());
+
+    var audio = gulp.src(voiceNavigatorPath + 'done.wav')
+        .pipe(gulp.dest(buildLocation + 'modal'));
+
+    var img = gulp.src(voiceNavPaths.modal_img)
+        .pipe(gulp.dest(buildLocation + 'modal'));
+
+    return es.merge(html, audio, img);
+});
+
+/* Handle all the watching of files */
+
+gulp.task('watch', ['buildVoiceNavigator'], function() {
+    gulp.watch(voiceNavPaths.modal_js, ['modal_js']);
+    gulp.watch(voiceNavPaths.modal_css, ['modal_css']);
+
+    gulp.watch(([voiceNavigatorPath + './widget.jade']).concat(voiceNavPaths.widget_js), ['widget_js']);
+    gulp.watch(voiceNavPaths.widget_css, ['widget_css']);
+
+    gulp.watch([voiceNavigatorPath + './modal.jade', voiceNavigatorPath + './done.wav'], ['modal_other']);
+    gulp.watch(voiceNavPaths.modal_img, ['modal_other']);
+});
+
+// Doesn't minify code
+gulp.task('watch_dev', ['devVoiceNav'], function() {
+    gulp.watch(voiceNavPaths.modal_js, ['modal_js_dev']);
+    gulp.watch(voiceNavPaths.modal_css, ['modal_css_dev']);
+
+    gulp.watch(([voiceNavigatorPath + './widget.jade']).concat(voiceNavPaths.widget_js), ['widget_js_dev']);
+    gulp.watch(voiceNavPaths.widget_css, ['widget_css_dev']);
+
+    gulp.watch([voiceNavigatorPath + './modal.jade', voiceNavigatorPath + './done.wav'], ['modal_other']);
+    gulp.watch(voiceNavPaths.modal_img, ['modal_other']);
+});
+
+gulp.task('serve', ['watch'], function() {
+    connect.server();
+});
+gulp.task('serve_dev', ['watch_dev'], function() {
+    connect.server();
+});
+
+gulp.task('livereload', ['watch'], function() {
+    connect.server({
+        'livereload': true
+    });
+});
+
+gulp.task('lint', function() {
+    return gulp.src([voiceNavigatorPath + 'js/*.js'])
+        .pipe(jshint())
+        .pipe(jshint.reporter('buildVoiceNavigator'));
+});
+
+// Doesn't minify code
+gulp.task('devVoiceNav', [
+    'widget_css_dev', 'widget_js_dev',
+    'modal_css_dev', 'modal_js_dev', 'modal_other'
+]);
+
+
+// The default task (called when you run `gulp` from cli)
+gulp.task('buildVoiceNavigator', [
+    'widget_css', 'widget_js',
+    'modal_css', 'modal_js', 'modal_other'
+]);
+
 // --------------------------------------------------------------------- //
 
 // General Tasks
