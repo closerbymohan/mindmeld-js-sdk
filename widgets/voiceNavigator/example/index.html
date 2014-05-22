@@ -11,7 +11,7 @@
     <title>MindMeld Voice Demo</title>
     <meta content='Voice nav' name='description'>
     <meta content='width=device-width' name='viewport'>
-    <link rel="stylesheet" href="./dist/widget/widget.css" type="text/css">
+    <link rel="stylesheet" href="../dist/widget/widget.css" type="text/css">
 
     <style type="text/css">
       body {
@@ -32,33 +32,41 @@
 
     </div>
     <script>
+        var MM = window.MM || {};
+        MM.__bootstrap = MM.__bootstrap || {};
+        MM.__bootstrap.rootURL = 'http://localhost:8000/sandbox/sdks/';
+        var VOICE_NAV_APPS = {
+            'west-dev-d': {
+                movieGenius: '2befc7c6ea69d12c0a34acb30c7152027cc37c78',
+                techNews: '9a6721de8eabe1c378cc6e26468b9cff4a952dbd',
+                recipeAssistant: 'b3acdcf114048e7e689503cb3a76cc8916f7b80d'
+            },
+            'west-dev-e': {
+                movieGenius: 'ad666f13daeb5c36f6f2c3a11ec8b5d3d01467a0',
+                techNews: '0bb356bc9b8507c5110174cd0a59d09dc5e19b89',
+                recipeAssistant: '86c8eaaa345fe3c35527d8fe0d724cacff8411ff'
+            },
+            'west-prod-a': {
+                movieGenius: 'f8587c112dbecc5d7d42d2c81cac6a0fc0671743',
+                techNews: '53b2d92f34d89e1df16897cd7e1be5e23d990b79',
+                recipeAssistant: '5e87d2fc46afcec7dd6680e675e92c61d60a67c3'
+            }
+        };
+        var DEMO_ENVIRONMENT = 'west-dev-e';
+    </script>
+    <script>
+        var MM = window.MM || {};
+        MM.__bootstrap = MM.__bootstrap || {};
+        MM.__bootstrap.rootURL = MM.__bootstrap.rootURL || 'https://developer.expectlabs.com/public/sdks/';
+        MM.voiceNavigator = MM.voiceNavigator || {};
+        MM.voiceNavigator.options = {
+            appID: VOICE_NAV_APPS[DEMO_ENVIRONMENT]['movieGenius'],
+            cardLayout: rottenTomatoesCard,
+            customCSSPath: './css/movieCards.css',
 
-      /** CHANGE THE VALUE BELOW TO CHOOSE WHICH TIER TO USE */
-      var environmentKey = 'staging';
-      /** CHANGE THE VALUE ABOVE TO CHOOSE WHICH TIER TO USE */
-
-      var environmentVariables = {
-        dev: {
-          appID: '6501c34aa68d1cc78229e5ea31a20d2f5b02725c', // Suvda's RT Apr 29 in dev
-          cleanUrl: 'https://api-west-dev-d.expectlabs.com/',
-          fayeClientUrl: 'https://push-west-dev-d.expectlabs.com:443/faye'
-        },
-        staging: {
-          appID: 'c17c83236fa87f37d7930b6d69ea69c5d2d5eed0', // Simon's 'RT Apr 29' on staging
-          cleanUrl: 'https://api-west-dev-e.expectlabs.com/',
-          fayeClientUrl: 'https://push-west-dev-e.expectlabs.com:443/faye'
-        }
-      };
-      if (typeof environmentVariables[environmentKey] === 'undefined') {
-        environmentKey = 'staging';
-      }
-
-      // Example snippet to specify voice nav options
-      var MM = window.MM || {};
-      MM.voiceNavigator = MM.voiceNavigator || {};
-      MM.voiceNavigator.options = environmentVariables[environmentKey];
-
-      MM.voiceNavigator.options.cardStyle = rottenTomatoesCard;
+            cleanUrl: 'https://api-' + DEMO_ENVIRONMENT + '.expectlabs.com/',
+            fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye'
+        };
 
       function rottenTomatoesCard(doc) {
         var html = '';
@@ -178,7 +186,7 @@
         return html;
       }
     </script>
-    <script src="./dist/widget/widget.js"></script>
+    <script src="../dist/widget/widget.js"></script>
     <script>
         // Auto open modal
 //        window.MM.voiceNavigator.showModal();
