@@ -2,8 +2,10 @@ var gulp = require('gulp');
 require('gulp-grunt')(gulp); // Load Grunt tasks for jsdoc until gulp-jsdoc becomes more legit
 var clean = require('gulp-clean');
 var uglify = require('gulp-uglify');
+var sass = require('gulp-sass');
+var minifyCSS = require('gulp-minify-css');
+var concat = require('gulp-concat-util');
 var rename = require('gulp-rename');
-var concat = require('gulp-concat');
 var zip = require('gulp-zip');
 var es = require('event-stream');
 var replace = require('gulp-replace');
@@ -34,6 +36,39 @@ gulp.task('cleanZip', function () {
     return gulp.src('mindmeld-js-sdk.zip', {read: false})
         .pipe(clean());
 });
+
+
+gulp.task('searchWidgetSass', function () {
+    return gulp.src('searchWidget/sass/main.scss')
+        .pipe(sass())
+        .pipe(gulp.dest('searchWidget/css'));
+});
+
+gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
+    return gulp.src('searchWidget/css/main.css')
+        .pipe(minifyCSS())
+        .pipe(rename('mindmeldSearchWidget.min.css'))
+        .pipe(gulp.dest('searchWidget/dist'));
+});
+
+gulp.task('searchWidgetJS', ['compressMM', 'compressSearchWidget'], function () {
+    return es.merge(
+        gulp.src('searchWidget/js/jquery.mindmeld-searchwidget.js',
+            {base: 'searchWidget/js'}),
+
+        gulp.src([
+            'searchWidget/js/vendor.js',
+            'mindmeld.min.js',
+            'searchWidget/dist/jquery.mindmeld-searchwidget.min.js'
+        ], baseDirOption)
+            .pipe(concat('mindmeldSearchWidget.js'))
+            .pipe(concat.footer('}(MM.__bootstrap.$jq));'))
+    )
+        .pipe(gulp.dest('searchWidget/dist'));
+});
+
+gulp.task('buildSearchWidget', ['searchWidgetCSSMin', 'searchWidgetJS']);
+
 
 // Parses bower.json for current version and sets file names
 // for mindmeld-<version>.js and mindmeld-<version>.min.js
@@ -83,6 +118,13 @@ gulp.task('compressMM', ['cleanCompressed'], function () {
        .pipe(uglify(), {mangle:true})
        .pipe(rename('mindmeld.min.js'))
        .pipe(gulp.dest('./'));
+});
+
+gulp.task('compressSearchWidget', function () {
+    return gulp.src('searchWidget/js/jquery.mindmeld-searchwidget.js')
+        .pipe(uglify(), {mangle: true})
+        .pipe(rename('jquery.mindmeld-searchwidget.min.js'))
+        .pipe(gulp.dest('searchWidget/dist'))
 });
 
 gulp.task('zipSDK', ['grunt-docs', 'compressMM', 'cleanZip'], function () {
