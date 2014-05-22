@@ -163,7 +163,7 @@ var voiceNavPaths = {
         voiceNavigatorPath + 'js/vendor/jquery.slimscroll.min.js',
         voiceNavigatorPath + 'js/vendor/imagesloaded.pkgd.js',
         voiceNavigatorPath + 'js/vendor/jquery.cookie-1.4.0.js',
-        voiceNavigatorPath + 'js/vendor/mindmeld-2.3.0.js',
+        'mindmeld.js',
         voiceNavigatorPath + 'js/entityHighlighting.js',
         voiceNavigatorPath + 'js/modal.js'
     ],
