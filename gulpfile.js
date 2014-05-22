@@ -145,17 +145,17 @@ var voiceNavigatorPath = 'widgets/voiceNavigator/';
 var buildLocation = voiceNavigatorPath + 'dist/';
 
 var voiceNavPaths = {
-    'widget_css' : [
+    'voiceNavWidgetCSS' : [
         voiceNavigatorPath + 'css/widget.styl'
     ],
-    'widget_js' : [
+    'voiceNavWidgetJS' : [
         voiceNavigatorPath + 'js/widget.js'
     ],
-    'modal_css' : [
+    'voiceNavModalCSS' : [
         voiceNavigatorPath + 'css/vendor/normalize.styl',
         voiceNavigatorPath + 'css/modal.styl'
     ],
-    'modal_js' : [
+    'voiceNavModalJS' : [
         voiceNavigatorPath + 'js/vendor/jquery-1.10.1.min.js',
         voiceNavigatorPath + 'js/vendor/isotope.pkgd.min.js',
         voiceNavigatorPath + 'js/vendor/jquery.slimscroll.min.js',
@@ -186,36 +186,36 @@ function concatAndMinify(target, type, minify, stream) {
         .pipe(connect.reload());
 }
 /* Widget Tasks */
-gulp.task('widget_template', function () {
+gulp.task('voiceNavWidgetTemplate', function () {
     return gulp.src(voiceNavigatorPath + 'widget.jade')
         .pipe(jade({client: true}))
         .pipe(concat('widget.template.js'))
         .pipe(gulp.dest(buildLocation));
 });
 
-gulp.task('widget_css', function() {
-    var stream = gulp.src(voiceNavPaths.widget_css)
+gulp.task('voiceNavWidgetCSS', function() {
+    var stream = gulp.src(voiceNavPaths.voiceNavWidgetCSS)
         .pipe(stylus({errors: true, use: [nib()]}));
 
     return concatAndMinify('widget', 'css', true, stream);
 });
 
-gulp.task('widget_js', ['widget_template'], function() {
-    var stream = gulp.src(voiceNavPaths.widget_js)
+gulp.task('voiceNavWidgetJS', ['voiceNavWidgetTemplate'], function() {
+    var stream = gulp.src(voiceNavPaths.voiceNavWidgetJS)
         .pipe(fileinclude('@@'))
 
     return concatAndMinify('widget', 'js', true, stream);
 });
 
-gulp.task('widget_css_dev', function() {
-    var stream = gulp.src(voiceNavPaths.widget_css)
+gulp.task('voiceNavWidgetCSS_dev', function() {
+    var stream = gulp.src(voiceNavPaths.voiceNavWidgetCSS)
         .pipe(stylus({errors: true, use: [nib()]}));
 
     return concatAndMinify('widget', 'css', false, stream);
 });
 
-gulp.task('widget_js_dev', ['widget_template'], function() {
-    var stream = gulp.src(voiceNavPaths.widget_js)
+gulp.task('voiceNavWidgetJS_dev', ['voiceNavWidgetTemplate'], function() {
+    var stream = gulp.src(voiceNavPaths.voiceNavWidgetJS)
         .pipe(fileinclude('@@'))
 
     return concatAndMinify('widget', 'js', false, stream);
@@ -223,31 +223,31 @@ gulp.task('widget_js_dev', ['widget_template'], function() {
 
 /* Modal Tasks */
 
-gulp.task('modal_css', function() {
-    var stream = gulp.src(voiceNavPaths.modal_css)
+gulp.task('voiceNavModalCSS', function() {
+    var stream = gulp.src(voiceNavPaths.voiceNavModalCSS)
         .pipe(stylus({errors: true, use: [nib()]}));
     return concatAndMinify('modal', 'css', true, stream);
 });
 
-gulp.task('modal_js', function() {
-    var stream = gulp.src(voiceNavPaths.modal_js);
+gulp.task('voiceNavModalJS', function() {
+    var stream = gulp.src(voiceNavPaths.voiceNavModalJS);
 
     return concatAndMinify('modal', 'js', true, stream);
 });
 
-gulp.task('modal_css_dev', function() {
-    var stream = gulp.src(voiceNavPaths.modal_css)
+gulp.task('voiceNavModalCSS_dev', function() {
+    var stream = gulp.src(voiceNavPaths.voiceNavModalCSS)
         .pipe(stylus({errors: true, use: [nib()]}));
     return concatAndMinify('modal', 'css', false, stream);
 });
 
-gulp.task('modal_js_dev', function() {
-    var stream = gulp.src(voiceNavPaths.modal_js);
+gulp.task('voiceNavModalJS_dev', function() {
+    var stream = gulp.src(voiceNavPaths.voiceNavModalJS);
 
     return concatAndMinify('modal', 'js', false, stream);
 });
 
-gulp.task('modal_other', function() {
+gulp.task('voiceNavModalOther', function() {
     var html = gulp.src(voiceNavigatorPath + 'modal.jade')
         .pipe(jade())
         .pipe(gulp.dest(buildLocation + 'modal'))
@@ -264,43 +264,43 @@ gulp.task('modal_other', function() {
 
 /* Handle all the watching of files */
 
-gulp.task('watch', ['buildVoiceNavigator'], function() {
-    gulp.watch(voiceNavPaths.modal_js, ['modal_js']);
-    gulp.watch(voiceNavPaths.modal_css, ['modal_css']);
+gulp.task('watchVoiceNav', ['buildVoiceNavigator'], function() {
+    gulp.watch(voiceNavPaths.voiceNavModalJS, ['voiceNavModalJS']);
+    gulp.watch(voiceNavPaths.voiceNavModalCSS, ['voiceNavModalCSS']);
 
-    gulp.watch(([voiceNavigatorPath + './widget.jade']).concat(voiceNavPaths.widget_js), ['widget_js']);
-    gulp.watch(voiceNavPaths.widget_css, ['widget_css']);
+    gulp.watch(([voiceNavigatorPath + './widget.jade']).concat(voiceNavPaths.voiceNavWidgetJS), ['voiceNavWidgetJS']);
+    gulp.watch(voiceNavPaths.voiceNavWidgetCSS, ['voiceNavWidgetCSS']);
 
-    gulp.watch([voiceNavigatorPath + './modal.jade', voiceNavigatorPath + './done.wav'], ['modal_other']);
-    gulp.watch(voiceNavPaths.modal_img, ['modal_other']);
+    gulp.watch([voiceNavigatorPath + './modal.jade', voiceNavigatorPath + './done.wav'], ['voiceNavModalOther']);
+    gulp.watch(voiceNavPaths.modal_img, ['voiceNavModalOther']);
 });
 
 // Doesn't minify code
-gulp.task('watch_dev', ['devVoiceNav'], function() {
-    gulp.watch(voiceNavPaths.modal_js, ['modal_js_dev']);
-    gulp.watch(voiceNavPaths.modal_css, ['modal_css_dev']);
+gulp.task('watchVoiceNav_dev', ['devVoiceNav'], function() {
+    gulp.watch(voiceNavPaths.voiceNavModalJS, ['voiceNavModalJS_dev']);
+    gulp.watch(voiceNavPaths.voiceNavModalCSS, ['voiceNavModalCSS_dev']);
 
-    gulp.watch(([voiceNavigatorPath + './widget.jade']).concat(voiceNavPaths.widget_js), ['widget_js_dev']);
-    gulp.watch(voiceNavPaths.widget_css, ['widget_css_dev']);
+    gulp.watch(([voiceNavigatorPath + './widget.jade']).concat(voiceNavPaths.voiceNavWidgetJS), ['voiceNavWidgetJS_dev']);
+    gulp.watch(voiceNavPaths.voiceNavWidgetCSS, ['voiceNavWidgetCSS_dev']);
 
-    gulp.watch([voiceNavigatorPath + './modal.jade', voiceNavigatorPath + './done.wav'], ['modal_other']);
-    gulp.watch(voiceNavPaths.modal_img, ['modal_other']);
+    gulp.watch([voiceNavigatorPath + './modal.jade', voiceNavigatorPath + './done.wav'], ['voiceNavModalOther']);
+    gulp.watch(voiceNavPaths.modal_img, ['voiceNavModalOther']);
 });
 
-gulp.task('serve', ['watch'], function() {
+gulp.task('serve', ['watchVoiceNav'], function() {
     connect.server();
 });
-gulp.task('serve_dev', ['watch_dev'], function() {
+gulp.task('serve_dev', ['watchVoiceNav_dev'], function() {
     connect.server();
 });
 
-gulp.task('livereload', ['watch'], function() {
+gulp.task('livereload', ['watchVoiceNav'], function() {
     connect.server({
         'livereload': true
     });
 });
 
-gulp.task('lint', function() {
+gulp.task('voiceNavLint', function() {
     return gulp.src([voiceNavigatorPath + 'js/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('buildVoiceNavigator'));
@@ -308,15 +308,15 @@ gulp.task('lint', function() {
 
 // Doesn't minify code
 gulp.task('devVoiceNav', [
-    'widget_css_dev', 'widget_js_dev',
-    'modal_css_dev', 'modal_js_dev', 'modal_other'
+    'voiceNavWidgetCSS_dev', 'voiceNavWidgetJS_dev',
+    'voiceNavModalCSS_dev', 'voiceNavModalJS_dev', 'voiceNavModalOther'
 ]);
 
 
 // The default task (called when you run `gulp` from cli)
 gulp.task('buildVoiceNavigator', [
-    'widget_css', 'widget_js',
-    'modal_css', 'modal_js', 'modal_other'
+    'voiceNavWidgetCSS', 'voiceNavWidgetJS',
+    'voiceNavModalCSS', 'voiceNavModalJS', 'voiceNavModalOther'
 ]);
 
 // --------------------------------------------------------------------- //
