@@ -142,7 +142,7 @@ gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
 // -------------------------- Voice Navigator -------------------------- //
 
 var voiceNavigatorPath = 'widgets/voiceNavigator/';
-var buildLocation = voiceNavigatorPath + 'dist/';
+var voiceNavBuildLocation = voiceNavigatorPath + 'dist/';
 
 var voiceNavPaths = {
     'voiceNavWidgetCSS' : [
@@ -174,14 +174,14 @@ var voiceNavPaths = {
 function concatAndMinify(target, type, minify, stream) {
     var stream = stream
         .pipe(concat(target + '.' + type))
-        .pipe(gulp.dest(buildLocation + target))
+        .pipe(gulp.dest(voiceNavBuildLocation + target))
         .pipe(rename(target + '.min.' + type));
     if (minify) {
         stream = stream
             .pipe(type === 'css' ? minifyCSS() : uglify());
     }
     return stream
-        .pipe(gulp.dest(buildLocation + target))
+        .pipe(gulp.dest(voiceNavBuildLocation + target))
 
         .pipe(connect.reload());
 }
@@ -190,7 +190,7 @@ gulp.task('voiceNavWidgetTemplate', function () {
     return gulp.src(voiceNavigatorPath + 'widget.jade')
         .pipe(jade({client: true}))
         .pipe(concat('widget.template.js'))
-        .pipe(gulp.dest(buildLocation));
+        .pipe(gulp.dest(voiceNavBuildLocation));
 });
 
 gulp.task('voiceNavWidgetCSS', function() {
@@ -250,14 +250,14 @@ gulp.task('voiceNavModalJS_dev', function() {
 gulp.task('voiceNavModalOther', function() {
     var html = gulp.src(voiceNavigatorPath + 'modal.jade')
         .pipe(jade())
-        .pipe(gulp.dest(buildLocation + 'modal'))
+        .pipe(gulp.dest(voiceNavBuildLocation + 'modal'))
         .pipe(connect.reload());
 
     var audio = gulp.src(voiceNavigatorPath + 'done.wav')
-        .pipe(gulp.dest(buildLocation + 'modal'));
+        .pipe(gulp.dest(voiceNavBuildLocation + 'modal'));
 
     var img = gulp.src(voiceNavPaths.modal_img)
-        .pipe(gulp.dest(buildLocation + 'modal'));
+        .pipe(gulp.dest(voiceNavBuildLocation + 'modal'));
 
     return es.merge(html, audio, img);
 });
