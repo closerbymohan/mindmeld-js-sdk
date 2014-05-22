@@ -95,47 +95,49 @@ gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
 
 
 // ------------------------ Search Widget Tasks ------------------------ //
+var searchWidgetLocation = 'widgets/searchWidget/';
+
 gulp.task('buildSearchWidget', ['searchWidgetCSSMin', 'searchWidgetJS']);
 
 // Generates standalone search widget + copies search widget, minified search widget
 // and standalone widget into searchWidget/dist/
 gulp.task('searchWidgetJS', ['uglifyMM', 'uglifySearchWidget'], function () {
     return es.merge(
-        gulp.src('searchWidget/js/jquery.mindmeld-searchwidget.js',
-            {base: 'searchWidget/js'}),
+        gulp.src(searchWidgetLocation + '/js/jquery.mindmeld-searchwidget.js',
+            {base: searchWidgetLocation + 'js'}),
 
         gulp.src([
-            'searchWidget/js/vendor.js',
+            searchWidgetLocation + 'js/vendor.js',
             'mindmeld.min.js',
-            'searchWidget/dist/jquery.mindmeld-searchwidget.min.js'
+            searchWidgetLocation + 'dist/jquery.mindmeld-searchwidget.min.js'
         ], baseDirOption)
             .pipe(concat('mindmeldSearchWidget.js'))
             .pipe(concat.footer('}(MM.__bootstrap.$jq));'))
     )
-        .pipe(gulp.dest('searchWidget/dist'));
+        .pipe(gulp.dest(searchWidgetLocation + 'dist'));
 });
 
 // Uglifies search widget
 gulp.task('uglifySearchWidget', function () {
-    return gulp.src('searchWidget/js/jquery.mindmeld-searchwidget.js')
+    return gulp.src(searchWidgetLocation + 'js/jquery.mindmeld-searchwidget.js')
         .pipe(uglify(), {mangle: true})
         .pipe(rename('jquery.mindmeld-searchwidget.min.js'))
-        .pipe(gulp.dest('searchWidget/dist'))
+        .pipe(gulp.dest(searchWidgetLocation + 'dist'))
 });
 
 // Compiles search widget's SASS into CSS
 gulp.task('searchWidgetSass', function () {
-    return gulp.src('searchWidget/sass/main.scss')
+    return gulp.src(searchWidgetLocation + 'sass/main.scss')
         .pipe(sass())
-        .pipe(gulp.dest('searchWidget/css'));
+        .pipe(gulp.dest(searchWidgetLocation + 'css'));
 });
 
 // Minifies search widget's CSS and copies into searchWidget/dist
 gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
-    return gulp.src('searchWidget/css/main.css')
+    return gulp.src(searchWidgetLocation + 'css/main.css')
         .pipe(minifyCSS())
         .pipe(rename('mindmeldSearchWidget.min.css'))
-        .pipe(gulp.dest('searchWidget/dist'));
+        .pipe(gulp.dest(searchWidgetLocation + 'dist'));
 });
 // --------------------------------------------------------------------- //
 
