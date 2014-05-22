@@ -25,3 +25,8 @@ if (MM.__bootstrap.searchWidget) {
     });
     MM.__bootstrap.loadStyle(MM.__bootstrap.rootURL + 'searchWidget/mindmeldSearchWidget.min.css');
 }
+
+if (MM.voiceNavigator && MM.voiceNavigator.options) {
+    MM.__bootstrap.loadJS(MM.__bootstrap.rootURL + 'voiceNavigator/widget/widget.min.js');
+    MM.__bootstrap.loadStyle(MM.__bootstrap.rootURL + 'voiceNavigator/widget/widget.min.css');
+}

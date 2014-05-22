@@ -1,6 +1,8 @@
 ;(function() {
   var MM = window.MM || {};
   MM.voiceNavigator = MM.voiceNavigator || {};
+  MM.__bootstrap = MM.__bootstrap || {};
+  MM.__bootstrap.rootURL = MM.__bootstrap.rootURL || 'https://developer.expectlabs.com/public/sdks/';
 
   var MMVoice = {
     $mm : false,
@@ -132,7 +134,7 @@
         iframe.setAttribute('frameBorder', '0');
         iframe.setAttribute('id', 'mindmeld-iframe');
         iframe.setAttribute('allowtransparency', 'true');
-        iframe.setAttribute('src', './dist/modal/modal.html'); // TODO: This should be *not* this
+        iframe.setAttribute('src', MM.__bootstrap.rootURL + 'voiceNavigator/modal/modal.html');
         if (typeof MM !== 'undefined' &&
           typeof MM.voiceNavigator !== 'undefined' &&
             typeof MM.voiceNavigator.options !== 'undefined') {
