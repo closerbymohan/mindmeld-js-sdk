@@ -172,7 +172,7 @@
                         cssLink.href = MM.voiceNavigator.options.customCSSPath;
                         cssLink.rel = 'stylesheet';
                         cssLink.type = 'text/css';
-                        frames['mindmeld-iframe'].document.head.appendChild(cssLink);
+                        frames['mindmeld-iframe'].contentWindow.document.head.appendChild(cssLink);
                     }
                 });
 
