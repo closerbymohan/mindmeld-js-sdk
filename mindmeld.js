@@ -14,7 +14,7 @@ var MM = window.MM || {};
  * @private
  */
 Object.defineProperty(MM, 'version', {
-    value: '2.3.0',
+    value: '2.3.1',
     writable: false
 });
 
