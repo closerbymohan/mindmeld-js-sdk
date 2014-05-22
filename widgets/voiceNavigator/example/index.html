@@ -33,8 +33,8 @@
     </div>
     <script>
         var MM = window.MM || {};
-        MM.__bootstrap = MM.__bootstrap || {};
-        MM.__bootstrap.rootURL = 'http://localhost:8000/sandbox/sdks/';
+        MM.loader = MM.loader || {};
+        MM.loader.rootURL = 'http://localhost:8000/sandbox/sdks/';
         var VOICE_NAV_APPS = {
             'west-dev-d': {
                 movieGenius: '2befc7c6ea69d12c0a34acb30c7152027cc37c78',
@@ -56,8 +56,8 @@
     </script>
     <script>
         var MM = window.MM || {};
-        MM.__bootstrap = MM.__bootstrap || {};
-        MM.__bootstrap.rootURL = MM.__bootstrap.rootURL || 'https://developer.expectlabs.com/public/sdks/';
+        MM.loader = MM.loader || {};
+        MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
         MM.voiceNavigator = MM.voiceNavigator || {};
         MM.voiceNavigator.options = {
             appID: VOICE_NAV_APPS[DEMO_ENVIRONMENT]['movieGenius'],

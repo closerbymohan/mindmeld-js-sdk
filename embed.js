@@ -1,8 +1,8 @@
 var MM = window.MM || {};
-MM.__bootstrap = MM.__bootstrap || {};
-MM.__bootstrap.rootURL = MM.__bootstrap.rootURL || 'https://developer.expectlabs.com/public/sdks/';
+MM.loader = MM.loader || {};
+MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
 
-MM.__bootstrap.loadJS = function (path, callback) {
+MM.loader.loadJS = function (path, callback) {
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.async = true;
@@ -11,7 +11,7 @@ MM.__bootstrap.loadJS = function (path, callback) {
     script.addEventListener('load', callback, false);
 };
 
-MM.__bootstrap.loadStyle = function (path) {
+MM.loader.loadStyle = function (path) {
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
@@ -19,14 +19,14 @@ MM.__bootstrap.loadStyle = function (path) {
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(link);
 };
 
-if (MM.__bootstrap.searchWidget) {
-    MM.__bootstrap.loadJS(MM.__bootstrap.rootURL + 'searchWidget/mindmeldSearchWidget.js', function () {
-        MM.__bootstrap.$jq('#mm-search').searchwidget(MM.__bootstrap.searchWidget.options);
+if (MM.loader.searchWidget) {
+    MM.loader.loadJS(MM.loader.rootURL + 'searchWidget/mindmeldSearchWidget.js', function () {
+        MM.loader.$jq('#mm-search').searchwidget(MM.loader.searchWidget.options);
     });
-    MM.__bootstrap.loadStyle(MM.__bootstrap.rootURL + 'searchWidget/mindmeldSearchWidget.min.css');
+    MM.loader.loadStyle(MM.loader.rootURL + 'searchWidget/mindmeldSearchWidget.min.css');
 }
 
 if (MM.voiceNavigator && MM.voiceNavigator.options) {
-    MM.__bootstrap.loadJS(MM.__bootstrap.rootURL + 'voiceNavigator/widget/widget.min.js');
-    MM.__bootstrap.loadStyle(MM.__bootstrap.rootURL + 'voiceNavigator/widget/widget.min.css');
+    MM.loader.loadJS(MM.loader.rootURL + 'voiceNavigator/widget/widget.min.js');
+    MM.loader.loadStyle(MM.loader.rootURL + 'voiceNavigator/widget/widget.min.css');
 }

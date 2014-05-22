@@ -10,6 +10,6 @@
 
 }(window));
 var MM = window.MM || {};
-MM.__bootstrap = MM.__bootstrap || {};
-MM.__bootstrap.$jq = jQuery.noConflict(true);
+MM.loader = MM.loader || {};
+MM.loader.$jq = jQuery.noConflict(true);
 ( function ($) {

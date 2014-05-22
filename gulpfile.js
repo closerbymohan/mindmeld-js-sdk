@@ -112,7 +112,7 @@ gulp.task('searchWidgetJS', ['uglifyMM', 'uglifySearchWidget'], function () {
             searchWidgetLocation + 'dist/jquery.mindmeld-searchwidget.min.js'
         ], baseDirOption)
             .pipe(concat('mindmeldSearchWidget.js'))
-            .pipe(concat.footer('}(MM.__bootstrap.$jq));'))
+            .pipe(concat.footer('}(MM.loader.$jq));'))
     )
         .pipe(gulp.dest(searchWidgetLocation + 'dist'));
 });
