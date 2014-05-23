@@ -148,9 +148,9 @@ gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
 
 var voiceNavigatorGulpfilePath = './widgets/voiceNavigator/gulpfile.js';
 
-gulp.task('build:voice-navigator', function () {
-    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
-        .pipe( chug() );
+gulp.task('buildVoiceNavigator', function () {
+    return gulp.src( './widgets/voiceNavigator/gulpfile.js', { read: false } )
+        .pipe( chug({ tasks: ['build'] }) );
 });
 
 gulp.task('watch:voice-navigator', function () {
@@ -171,7 +171,7 @@ gulp.task('serve:voice-navigator:nomin', function () {
 // --------------------------------------------------------------------- //
 
 // General Tasks
-gulp.task('build', ['buildSDK', 'buildSearchWidget', 'build:voice-navigator']);
+gulp.task('build', ['buildSDK', 'buildSearchWidget', 'buildVoiceNavigator']);
 gulp.task('default', ['build']);
 
 // Task to show list of tasks
