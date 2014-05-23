@@ -78,11 +78,11 @@ gulp.task('setVersion', function () {
 // Copy mindmeld.js and mindmeld.min.js to archive/ directory
 gulp.task('archiveJS', ['setVersion', 'uglifyMM'], function () {
     return es.merge(
-        gulp.src('mindmeld.js')
+        gulp.src(distMMDirectory + 'mindmeld.js', {base: distMMDirectory})
             .pipe(rename(versionedMindMeldName))
             .pipe(gulp.dest(archiveDirectory)),
 
-        gulp.src('mindmeld.min.js')
+        gulp.src(distMMDirectory + 'mindmeld.min.js', {base: distMMDirectory})
             .pipe(rename(versionedMinifiedMindMeldName))
             .pipe(gulp.dest(archiveDirectory))
     );
