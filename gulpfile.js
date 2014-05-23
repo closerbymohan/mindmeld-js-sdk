@@ -146,7 +146,7 @@ gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
 
 // -------------------------- Voice Navigator -------------------------- //
 
-var voiceNavigatorGulpfilePath = './widgets/voiceNavigator/gulpfile.js';
+var voiceNavigatorGulpfilePath = './tasks/voiceNavigator.js';
 
 gulp.task('buildVoiceNavigator', function () {
     return gulp.src( voiceNavigatorGulpfilePath, { read: false } )

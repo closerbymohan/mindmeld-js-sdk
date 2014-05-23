@@ -15,10 +15,9 @@ var connect = require('gulp-connect');
 var fileinclude = require('gulp-file-include');
 var jshint = require('gulp-jshint');
 
-//var voiceNavigator.path = 'widgets/voiceNavigator/';
-var voiceNavigator  = (function(){
+var voiceNavigator  = (function() {
     var object = {};
-    object.path = './';
+    object.path = '../widgets/voiceNavigator';
     object.buildLocation = object.path + 'dist/';
     object.paths = {
         'build:widget:css' : [
@@ -175,21 +174,29 @@ gulp.task('watch:no-min', ['build:no-min'], function() {
 });
 
 gulp.task('serve', ['watch'], function() {
-    connect.server();
+    connect.server({
+        root: '../',
+        livereload: false
+    });
 });
 gulp.task('serve:no-min', ['watch:no-min'], function() {
-    connect.server();
+    connect.server({
+        root: '../',
+        livereload: false
+    });
 });
 
 gulp.task('serve:livereload', ['watch'], function() {
     connect.server({
-        'livereload': true
+        root: '../',
+        livereload: true
     });
 });
 
 gulp.task('serve:livereload:no-min', ['watch:no-min'], function() {
     connect.server({
-        'livereload': true
+        root: '../',
+        livereload: true
     });
 });
 
