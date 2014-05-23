@@ -149,7 +149,7 @@ gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
 var voiceNavigatorGulpfilePath = './widgets/voiceNavigator/gulpfile.js';
 
 gulp.task('buildVoiceNavigator', function () {
-    return gulp.src( './widgets/voiceNavigator/gulpfile.js', { read: false } )
+    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug({ tasks: ['build'] }) );
 });
 
@@ -163,9 +163,9 @@ gulp.task('serve:voice-navigator', function () {
         .pipe( chug({ tasks: ['serve'] }) );
 });
 
-gulp.task('serve:voice-navigator:nomin', function () {
+gulp.task('serve:voice-navigator:no-min', function () {
     return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
-        .pipe( chug({ tasks: ['serve:nomin'] }) );
+        .pipe( chug({ tasks: ['serve:no-min'] }) );
 });
 
 // --------------------------------------------------------------------- //

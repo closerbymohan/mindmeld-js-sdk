@@ -1,6 +1,5 @@
 var gulp = require('gulp');
 
-var util = require('gulp-util');
 var uglify = require('gulp-uglify');
 var minifyCSS = require('gulp-minify-css');
 var concat = require('gulp-concat-util');
@@ -90,14 +89,14 @@ gulp.task('build:widget:js', function() {
     return concatAndMinify('widget', 'js', true, stream);
 });
 
-gulp.task('build:widget:css:nomin', function() {
+gulp.task('build:widget:css:no-min', function() {
     var stream = gulp.src(voiceNavigator.paths['build:widget:css'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
 
     return concatAndMinify('widget', 'css', false, stream);
 });
 
-gulp.task('build:widget:js:nomin', function() {
+gulp.task('build:widget:js:no-min', function() {
     var stream = gulp.src(voiceNavigator.paths['build:widget:js']);
 
     return concatAndMinify('widget', 'js', false, stream);
@@ -117,13 +116,13 @@ gulp.task('build:modal:js', function() {
     return concatAndMinify('modal', 'js', true, stream);
 });
 
-gulp.task('build:modal:css:nomin', function() {
+gulp.task('build:modal:css:no-min', function() {
     var stream = gulp.src(voiceNavigator.paths['build:modal:css'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
     return concatAndMinify('modal', 'css', false, stream);
 });
 
-gulp.task('build:modal:js:nomin', function() {
+gulp.task('build:modal:js:no-min', function() {
     var stream = gulp.src(voiceNavigator.paths['build:modal:js']);
 
     return concatAndMinify('modal', 'js', false, stream);
@@ -156,12 +155,12 @@ gulp.task('watch', ['build'], function() {
     ];
 
     for (var i = 0; i < watchLocations.length; i++) {
-        gulp.watch(voiceNavigator.paths[watchLocations[i]], watchLocations[i]);
+        gulp.watch(voiceNavigator.paths[watchLocations[i]], [ watchLocations[i] ]);
     }
 });
 
 // Doesn't minify code
-gulp.task('watch:nomin', ['build:nomin'], function() {
+gulp.task('watch:no-min', ['build:no-min'], function() {
     var watchLocations = [
         'build:modal:js',
         'build:modal:css',
@@ -170,15 +169,15 @@ gulp.task('watch:nomin', ['build:nomin'], function() {
     ];
 
     for (var i = 0; i < watchLocations.length; i++) {
-        gulp.watch(voiceNavigator.paths[watchLocations[i]], watchLocations[i] + ':nomin');
+        gulp.watch(voiceNavigator.paths[watchLocations[i]], [ watchLocations[i] + ':no-min' ]);
     }
-    gulp.watch(voiceNavigator.paths['build:widget:other'], 'build:widget:other');
+    gulp.watch(voiceNavigator.paths['build:widget:other'], [ 'build:widget:other' ]);
 });
 
 gulp.task('serve', ['watch'], function() {
     connect.server();
 });
-gulp.task('serve:nomin', ['watch:nomin'], function() {
+gulp.task('serve:no-min', ['watch:no-min'], function() {
     connect.server();
 });
 
@@ -188,7 +187,7 @@ gulp.task('serve:livereload', ['watch'], function() {
     });
 });
 
-gulp.task('serve:livereload:nomin', ['watch:nomin'], function() {
+gulp.task('serve:livereload:no-min', ['watch:no-min'], function() {
     connect.server({
         'livereload': true
     });
@@ -201,9 +200,9 @@ gulp.task('lint', function() {
 });
 
 // Doesn't minify code
-gulp.task('build:nomin', [
-    'build:widget:css:nomin', 'build:widget:js:nomin',
-    'build:modal:css:nomin', 'build:modal:js:nomin', 'build:modal:other'
+gulp.task('build:no-min', [
+    'build:widget:css:no-min', 'build:widget:js:no-min',
+    'build:modal:css:no-min', 'build:modal:js:no-min', 'build:modal:other'
 ]);
 
 
@@ -212,11 +211,6 @@ gulp.task('build', [
     'build:widget:css', 'build:widget:js',
     'build:modal:css', 'build:modal:js', 'build:modal:other'
 ]);
-
-gulp.task('test', function() {
-    util.log('Hello from Voice Navigator\'s gulpfile');
-    return null;
-});
 
 // Task to show list of tasks
 gulp.task('tasks', taskListing);
