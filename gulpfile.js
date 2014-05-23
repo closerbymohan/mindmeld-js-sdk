@@ -19,6 +19,8 @@ var fileinclude = require('gulp-file-include');
 var jshint = require('gulp-jshint');
 
 var distDirectory = 'dist/';
+var srcDirectory = 'src/';
+var exampleDirectory = 'example/';
 var baseDirOption = {base: './'};
 var archiveDirectory = './archive/';
 
@@ -29,7 +31,8 @@ var versionedMinifiedMindMeldName = '';
 
 // -------------------------- Mindmeld.js Tasks -------------------------- //
 var distMMDirectory = distDirectory + 'sdk/';
-var srcMMDirectory = 'src/sdk/';
+var srcMMDirectory = srcDirectory + 'sdk/';
+
 gulp.task('buildMM', function () {
     gulp.src([
         srcMMDirectory + 'vendor/faye.js',
@@ -51,16 +54,15 @@ gulp.task('uglifyMM', ['buildMM'], function () {
 
 // Moves generated JS Doc, mindmeld.js, mindmeld.min.js and
 // HelloWorld page into mindmeld-js-sdk.zip
-gulp.task('buildSDK', ['grunt-buildJSDocs', 'uglifyMM'], function () {
-    return gulp.src([
-        'LICENSE',
-        'docs/**',
-        'mindmeld.js',
-        'mindmeld.min.js',
-        'HelloWorld.html'
-    ], baseDirOption)
+gulp.task('zipSDK', ['grunt-buildJSDocs', 'uglifyMM'], function () {
+    return es.merge(
+        gulp.src('LICENSE'),
+        gulp.src(distDirectory + 'docs/**', {base: distDirectory}),
+        gulp.src(distMMDirectory + '*.js', {base: distMMDirectory}),
+        gulp.src(exampleDirectory + 'sdk/HelloWorld.html', {base: exampleDirectory + 'sdk/'})
+    )
         .pipe(zip('mindmeld-js-sdk.zip'))
-        .pipe(gulp.dest('./'));
+        .pipe(gulp.dest(distMMDirectory));
 });
 
 // Parses bower.json for current version and sets file names
@@ -109,6 +111,8 @@ gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
 gulp.task('watchMM', ['buildMM'], function () {
     gulp.watch(srcMMDirectory + '**/*.js', ['uglifyMM']);
 });
+
+gulp.task('buildSDK', ['zipSDK']);
 // ----------------------------------------------------------------------- //
 
 
