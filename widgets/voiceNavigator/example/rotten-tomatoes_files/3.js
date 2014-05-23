@@ -1,0 +1,1 @@
+Krux.ns._default.kxjsonp_userData({"status": "304", "body": {"code": "kdnt", "geo": {"dma": "807", "region": "ca", "domain": "comcast.net", "zip": "94102", "country": "us"}}})

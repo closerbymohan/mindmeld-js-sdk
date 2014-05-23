@@ -1,0 +1,553 @@
+@import nib
+
+baseZ = 100000
+buttonBGColor = #ca6b37
+
+*, *:before, *:after
+  box-sizing border-box
+
+.table
+  display table
+  width 100%
+.tr
+  display table-row
+.td
+  display table-cell
+  vertical-align top
+
+a
+  text-decoration none
+
+html, body
+  height 100%
+  min-height 100%
+
+#mindmeld
+  background-color purple
+  for i in (1...8)
+    el-width = ((218px + 20) * i) + 20 + 2
+    // ((card width + 20 padding) * i) + outer padding + border
+    el-max-width = el-width + 15
+    el-media = "all and (min-width: " + el-max-width + ")"
+    @media el-media
+      width el-width
+      margin-left el-width * -0.5
+
+body
+  background none transparent
+  font-family "Helvetica Neue",Helvetica,Arial,sans-serif
+  font-size 14px
+  line-height 1.428571429
+  color #333
+  padding 60px
+  overflow hidden
+
+  #mm-button
+    position absolute
+    z-index (baseZ + 100)
+    left 50%
+    margin-left -42px
+    top -40px
+    background-color #fff
+    border-radius 100px
+    width 84px
+    height 84px
+    padding 4px
+    transition box-shadow 0.3s ease-out
+    &.shadow
+      box-shadow 0 0 0 1px rgba(0,0,0,0.1)
+
+    .mm-button-slider
+      position relative
+      transition transform 0.2s ease-out
+      width 75px
+    a
+      width 76px
+      height 76px
+      background-color buttonBGColor
+      transition box-shadow 0.2s ease-out
+      box-shadow 0 0 0 1px rgba(0,0,0,0.3) inset, 0 0 5px rgba(255,255,255,0.5) inset
+      border 0 none
+      border-radius 100px
+      display block
+      padding-top 17px
+      position relative
+      cursor pointer
+      &:hover
+        background-color darken(buttonBGColor, 10%)
+      #icon-microphone, #icon-mute, #icon-lock
+        display block
+        z-index (baseZ + 10)
+        position relative
+        position absolute
+        top 16px
+        transition opacity 0.3s ease-out, transform 0.3s ease-out
+        opacity 1
+        transform scale(1)
+        svg
+          fill #fff
+          width 76px
+          height 41px
+      #icon-lock
+        margin-top 2px
+        pointer-events none
+        opacity 0
+        transform scale(0.5)
+        svg
+          height 36px
+      #icon-mute
+        display none
+      &:hover
+        text-decoration none
+
+    &.status-pending
+      a, a:hover, a:active, a:focus
+        background #AAA
+        cursor default
+      #icon-microphone
+        display none
+      #icon-mute
+        display block
+
+    &.status-listening
+      a, a:hover, a:active, a:focus
+        box-shadow 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset
+      #icon-mute
+        display none
+      &.lock
+        #icon-microphone
+          opacity 0
+          transform scale(0.5)
+        #icon-lock
+          opacity 1
+          transform scale(1)
+    a:active
+      background linear-gradient( #8e4b26, buttonBGColor)
+
+    &.status-listening
+      .mm-pattern
+        transform scale(1.25)
+    .mm-longhold
+      color #ccc
+      position absolute
+      bottom -16px
+      width 110px
+      text-align center
+      left 50%
+      margin-left -55px
+      font-size 13px
+      font-family font-family "Helvetica Neue",Helvetica,Arial,sans-serif
+      opacity 0
+      pointer-events none
+      .on
+        display none
+    a:hover +
+    .mm-longhold
+      color #AAA
+
+  &.results #mm-button .mm-longhold
+    transition opacity 0.3s linear 0.3s /* Delay the appearance */
+    opacity 1
+
+  &.hashistory #mm-button .mm-longhold
+    transition opacity 0.3s linear
+    opacity 0
+    color rgba(255,255,255,0.8)
+    padding 0
+    bottom 51px
+    text-align left
+    left auto
+    right -120px
+
+  &.hashistory #mm-button-icon:hover + .mm-longhold
+    opacity 1
+
+  #mm-button.status-listening #mm-button-icon + .mm-longhold
+    opacity 0
+
+  #mm-button.lock.status-listening .mm-longhold
+    opacity 1
+    .off
+      display none
+    .on
+      display block
+
+  #mm-pulser
+    transition 0.15s ease-out
+    width 84px
+    height 84px
+    position absolute
+    border-radius 100px
+    top -1px
+    left -1px
+    transform scale(0.9)
+    background-color rgba(255,255,255,0.2)
+    top -40px
+    left 50%
+    margin-left -42px
+
+
+  #mindmeld-overlay
+    background-color rgba(0,0,0,0.7)
+    width 100%
+    height 100%
+    position absolute
+    top 0
+    left 0
+
+  #mindmeld-parent
+    height 100%
+    position relative
+    opacity 0
+    transform translateY(120px)
+    transition 0.3s ease-out
+    &.open
+      opacity 1
+      transform translateY(80px)
+    &.results
+      transform translateY(0)
+
+#mindmeld-alert
+  position absolute
+  background-color #fff
+  border 1px solid #bbb
+  border-radius 5px
+  background #ffffff
+  position fixed
+  top 20px
+  right 20px
+  z-index (baseZ + 1000)
+  width 270px
+  height 84px
+  pointer-events none
+  opacity 0
+  transition 0.3s ease-out
+  transform-origin 90% 0
+  transform scale(0.4)
+  .mm-mic
+    width 55px
+    background-color #9c9c9c
+    height 55px
+    margin-top 25px
+    border-radius 100px
+    text-align center
+    color #fff
+    padding-top 5px
+    font-size 29px
+    border 3px solid #fff
+    box-shadow 0 0 0 5px #9c9c9c
+    margin-bottom 15px
+    animation mm-pulse 0.7s infinite
+    float left
+    margin 13px 16px
+    #icon-alert-microphone
+      margin-top 3px
+      fill #fff
+      width 26px
+  .mm-p
+    font-family Helvetica, Arial, sans-serif
+    color #333
+    margin 20px 10px
+    font-size 13px
+    margin 24px 10px 25px 95px
+    a
+      color rgb(190, 190, 190)
+      text-decoration none
+      margin-top 4px
+      display block
+      &:hover
+        color rgb(162, 162, 162)
+  p
+    text-align left
+    color #333
+    margin 0
+  &.on
+    opacity 1
+    transform scale(1)
+    pointer-events auto
+    transition-delay 0.4s
+
+  &:after, &:before
+    bottom 100%
+    right 27px
+    border solid transparent
+    content " "
+    height 0
+    width 0
+    position absolute
+    pointer-events none
+  &:after
+    border-color rgba(255, 255, 255, 0)
+    border-bottom-color #ffffff
+    border-width 15px
+    margin-left -15px
+  &:before
+    border-color rgba(238, 238, 238, 0)
+    border-bottom-color #bbb
+    right 26px
+    border-width 16px
+    margin-left -16px
+
+
+
+@keyframes mm-pulse
+  0%
+    box-shadow 0 0 0 5px rgba(0,0,0,.5)
+  100%
+    box-shadow 0 0 0 12px rgba(0,0,0,0)
+
+@keyframes pulsate
+  0%
+    transform scale(1)
+  50%
+    transform scale(0.4)
+  100%
+    transform scale(1)
+
+#mindmeld
+  background-color #f9f9f9
+  border-radius 10px
+  overflow hidden
+  position absolute
+  height 105px
+  left 50%
+  transition height 0.3s ease-out
+  .results &
+    height 100%
+
+#history-button
+  z-index 1000
+  display none
+  position absolute
+  text-decoration none
+  right 20px
+  top 6px
+  height 70px
+  text-align center
+  font-size 0.9em
+  image './history.png' 31px 28px
+  background-repeat no-repeat
+  background-position top center
+  padding-top 33px
+  font-size 11px
+  width 78px
+  margin-top 9px
+  opacity 0.5
+  color #797979
+  &:hover
+    opacity 1
+    text-decoration none
+
+#history-wrapper
+  height 0
+  position absolute
+  left 0
+  top 0
+  width 100%
+#history
+  position relative
+  background-color #fff
+  box-shadow 0 -5px 5px 6px rgba(0,0,0,0.25)
+  z-index 100
+  position absolute
+  height 863px
+  bottom 0
+  transform translateY(105px)
+  .results &
+    transform translateY(140px)
+  left 0
+  width 100%
+  transition all 0.3s ease-out
+
+  #history-data
+    max-height 350px
+    max-height 100%
+    bottom 0
+    width 100%
+    overflow hidden
+    position absolute
+
+    ul
+      list-style none
+      margin 0
+      margin-top 70px
+      padding 0
+      li
+        opacity 0.5
+        overflow hidden
+        text-align center
+        padding 0 0 20px
+        font-size 20px
+        max-width 950px
+        margin auto
+        color #333
+        /*color #CCC*/
+        min-height 50px
+        transition opacity 0.3s ease-out
+        a
+          color #777
+          background-color #eee
+          padding 1px 6px
+          display inline-block
+          border 1px solid #ddd
+          border-radius 5px
+          &:hover
+            background-color #ddd
+            color #555
+          &.selected
+            box-shadow 0 0 0 1px rgba(0,0,0,0.2) inset
+            background-color #ddd
+
+        &.hide
+          min-height 0
+        &.on
+          opacity 1.0
+          .pending
+            opacity 0.5
+          .mm-prompt
+            color #CCC
+            &.mm-prompt-error
+              color rgb(162, 74, 74)
+            span
+              opacity 0
+            for i in (1..50)
+              span:nth-child({i})
+                animation zoomin 0.2s ease-out (0.04s * i) forwards
+        &.text-input
+          padding 0 30px 30px
+          input
+            border 1px solid #bbb
+            border-radius 5px
+            padding 5px
+            width 100%
+            text-align center
+            box-shadow 2px 2px 1px rgba(0,0,0,0.1) inset
+            &:focus
+              outline 0 none
+              border 1px solid #888
+
+  &.open
+    transition all 0.8s ease-out
+    #history-data
+      overflow auto
+      ul li
+        opacity 1.0
+
+#results
+  padding-top 140px
+  height 510px
+  overflow auto
+  #tags
+    padding 10px
+    text-align center
+    border-bottom 1px solid #ddd
+    background-color #eee
+    a
+      color #888
+      border 1px solid #ccc
+      padding 2px 8px
+      display inline-block
+      background-color #fff
+      margin 2px 4px
+      &:hover
+        text-decoration none
+        color #555
+        border 1px solid #999
+    .selected
+      font-weight bold
+      background-color #ddf
+
+  #cards
+    height 1px
+    padding 10px
+    background-color #f9f9f9
+    background #f3f3f3
+    border 1px solid #fff
+    &.loading
+      opacity 0.3
+    a.card
+      text-decoration none
+      display block
+      width 218px
+      background-color #fff
+      border-radius 7px
+      margin 10px
+      padding 15px 0px 5px
+      box-shadow 0 0 6px rgba(0,0,0,0.2)
+      &:hover
+        box-shadow 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920
+        text-decoration none
+        h2
+          color darken(#636363, 55%)
+
+      h2
+        color #636363
+        font-size 15px
+        font-family 'Open Sans', sans-serif
+        margin 0 15px
+      p.image
+        width 100%
+        text-align center
+        margin 0
+        &.notloaded
+          height 100px
+          background-color #eee
+          overflow hidden
+          img
+            opacity 0
+        img
+          width 100%
+      img
+        max-width 100%
+      p:not(.image)
+        font-size 11px
+        line-height 1.5em
+        margin 10px 15px
+        color #888
+
+      .source
+        display block
+        font-size 11px
+        color #999
+        padding 15px 15px 0
+        img
+          margin-right 10px
+
+    .no-results
+      text-align center
+      margin-top 40px
+      font-size 30px
+      font-style italic
+      color #aaa
+
+
+/* Isotope */
+.isotope.no-transition,
+.isotope.no-transition .isotope-item,
+.isotope .isotope-item.no-transition
+  transition-duration 0s
+
+@keyframes zoomin
+  0%
+    opacity 0
+    transform scale(2)
+  100%
+    opacity 1
+    transform scale(1)
+
+.editable
+  background-color #eee
+  height 36px
+  box-shadow 0 0
+  border 0 none
+  margin auto
+  max-width 950px
+  display block
+  text-align center
+  margin-bottom 20px
+  font-size 20px
+  color #333
+  padding 0
+  outline 0 none
+  width 100%
+  resize none
