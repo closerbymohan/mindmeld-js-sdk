@@ -9,6 +9,7 @@
     "grunt": "~0.4.1",
     "grunt-contrib-clean": "^0.5.0",
     "grunt-jsdoc": "^0.5.4",
+    "load-grunt-tasks": "^0.4.0",
     "gulp": "^3.6.2",
     "gulp-concat-util": "^0.2.2",
     "gulp-grunt": "^0.4.1",
@@ -18,7 +19,12 @@
     "gulp-sass": "^0.7.1",
     "gulp-uglify": "^0.3.0",
     "gulp-zip": "^0.3.4",
-    "load-grunt-tasks": "^0.4.0"
+    "gulp-jshint": "^1.6.1",
+    "gulp-connect": "^2.0.5",
+    "gulp-file-include": "^0.3.0",
+    "gulp-jade": "^0.5.0",
+    "gulp-stylus": "^1.0.0",
+    "nib": "^1.0.2"
   },
   "repository": {
     "type": "git",
