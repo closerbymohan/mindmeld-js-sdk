@@ -28,7 +28,7 @@ var versionedMindMeldName = '';
 var versionedMinifiedMindMeldName = '';
 
 // -------------------------- Mindmeld.js Tasks -------------------------- //
-var distMMDirectory = distDirectory + 'sdk';
+var distMMDirectory = distDirectory + 'sdk/';
 var srcMMDirectory = 'src/sdk/';
 gulp.task('buildMM', function () {
     gulp.src([
@@ -39,16 +39,14 @@ gulp.task('buildMM', function () {
         .pipe(gulp.dest(distMMDirectory));
 });
 
-gulp.task('watchMM', ['buildMM'], function () {
-    gulp.watch(srcMMDirectory + '**/*.js', ['buildMM']);
-});
+
 
 // Uglifies mindmeld.js into mindmeld.min.js
-gulp.task('uglifyMM', function () {
-    return gulp.src('mindmeld.js')
+gulp.task('uglifyMM', ['buildMM'], function () {
+    return gulp.src(distMMDirectory + 'mindmeld.js')
         .pipe(uglify(), {mangle:true})
         .pipe(rename('mindmeld.min.js'))
-        .pipe(gulp.dest('./'));
+        .pipe(gulp.dest(distMMDirectory));
 });
 
 // Moves generated JS Doc, mindmeld.js, mindmeld.min.js and
@@ -106,6 +104,10 @@ gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
     )
         .pipe(zip(archiveDirectory + 'mindmeld-js-sdk-' + bowerVersion + '.zip'))
         .pipe(gulp.dest('./'));
+});
+
+gulp.task('watchMM', ['buildMM'], function () {
+    gulp.watch(srcMMDirectory + '**/*.js', ['uglifyMM']);
 });
 // ----------------------------------------------------------------------- //
 

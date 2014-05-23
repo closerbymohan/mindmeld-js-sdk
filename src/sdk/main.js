@@ -4158,7 +4158,6 @@ var MM = ( function ($, Faye) {
 
     // Setup MM SDK
     MM.Internal.setup();
-    console.log('sup');
     return MM;
 
 }(jQuery, Faye));
