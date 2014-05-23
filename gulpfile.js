@@ -165,6 +165,17 @@ gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
         .pipe(rename('mindmeldSearchWidget.min.css'))
         .pipe(gulp.dest(distSearchWidgetDir));
 });
+
+// Watches search widget SASS files
+gulp.task('watchSearchWidgetStyle', ['searchWidgetCSSMin'], function () {
+   gulp.watch(srcSearchWidgetDir + 'sass/**', ['searchWidgetCSSMin']);
+});
+
+// Watches search widget JS files
+gulp.task('watchSearchWidgetJS', ['searchWidgetJS'], function () {
+   gulp.watch(srcSearchWidgetDir + 'js/**', ['searchWidgetJS']);
+});
+
 // --------------------------------------------------------------------- //
 
 // -------------------------- Voice Navigator -------------------------- //
