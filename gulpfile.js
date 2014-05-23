@@ -18,6 +18,7 @@ var connect = require('gulp-connect');
 var fileinclude = require('gulp-file-include');
 var jshint = require('gulp-jshint');
 
+var distDirectory = 'dist/';
 var baseDirOption = {base: './'};
 var archiveDirectory = './archive/';
 
@@ -27,6 +28,21 @@ var versionedMindMeldName = '';
 var versionedMinifiedMindMeldName = '';
 
 // -------------------------- Mindmeld.js Tasks -------------------------- //
+var distMMDirectory = distDirectory + 'sdk';
+var srcMMDirectory = 'src/sdk/';
+gulp.task('buildMM', function () {
+    gulp.src([
+        srcMMDirectory + 'vendor/faye.js',
+        srcMMDirectory + 'main.js'
+    ])
+        .pipe(concat('mindmeld.js'))
+        .pipe(gulp.dest(distMMDirectory));
+});
+
+gulp.task('watchMM', ['buildMM'], function () {
+    gulp.watch(srcMMDirectory + '**/*.js', ['buildMM']);
+});
+
 // Uglifies mindmeld.js into mindmeld.min.js
 gulp.task('uglifyMM', function () {
     return gulp.src('mindmeld.js')
