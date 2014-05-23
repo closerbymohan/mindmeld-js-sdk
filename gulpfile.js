@@ -8,6 +8,7 @@ var rename = require('gulp-rename');
 var zip = require('gulp-zip');
 var es = require('event-stream');
 var replace = require('gulp-replace');
+var symlink = require('gulp-symlink');
 var fs = require('fs');
 
 // Voice navigator dependencies
@@ -106,11 +107,16 @@ gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
         .pipe(gulp.dest('./'));
 });
 
+gulp.task('distLoader', function () {
+   return gulp.src(srcDirectory + 'loaders/embed.js')
+       .pipe(symlink(distDirectory + '/loaders/'));
+});
+
 gulp.task('watchMM', ['buildMM'], function () {
     gulp.watch(srcMMDirectory + '**/*.js', ['uglifyMM']);
 });
 
-gulp.task('buildSDK', ['zipSDK']);
+gulp.task('buildSDK', ['zipSDK', 'distLoader']);
 // ----------------------------------------------------------------------- //
 
 
