@@ -91,18 +91,16 @@ gulp.task('archiveJS', ['setVersion', 'uglifyMM'], function () {
 // Creates archive of SDK at current version
 gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
     return es.merge(
-        gulp.src([
-            'LICENSE',
-            'docs/**'
-        ], baseDirOption),
+        gulp.src('LICENSE', baseDirOption),
+
+        gulp.src(distDirectory + 'docs/**', {base: distDirectory}),
 
         gulp.src([
                 archiveDirectory + versionedMindMeldName,
                 archiveDirectory + versionedMinifiedMindMeldName
         ], {base: archiveDirectory}),
 
-        gulp.src('HelloWorld.html')
-            .pipe(replace(/mindmeld\.js/, versionedMindMeldName))
+        gulp.src(exampleDirectory + 'sdk/HelloWorld.html', {base: exampleDirectory + 'sdk/'})
     )
         .pipe(zip(archiveDirectory + 'mindmeld-js-sdk-' + bowerVersion + '.zip'))
         .pipe(gulp.dest('./'));
