@@ -146,24 +146,25 @@ gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
 
 // -------------------------- Voice Navigator -------------------------- //
 
+var voiceNavigatorGulpfilePath = './widgets/voiceNavigator/gulpfile.js';
 
 gulp.task('build:voice-navigator', function () {
-    return gulp.src( './widgets/voiceNavigator/gulpfile.js', { read: false } )
+    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug() );
 });
 
 gulp.task('watch:voice-navigator', function () {
-    return gulp.src( './widgets/voiceNavigator/gulpfile.js', { read: false } )
+    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug({ tasks: ['watch'] }) );
 });
 
 gulp.task('serve:voice-navigator', function () {
-    return gulp.src( './widgets/voiceNavigator/gulpfile.js', { read: false } )
+    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug({ tasks: ['serve'] }) );
 });
 
 gulp.task('serve:voice-navigator:nomin', function () {
-    return gulp.src( './widgets/voiceNavigator/gulpfile.js', { read: false } )
+    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug({ tasks: ['serve:nomin'] }) );
 });
 

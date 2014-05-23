@@ -222,4 +222,3 @@ gulp.task('test', function() {
 gulp.task('tasks', taskListing);
 
 gulp.task('default', ['build']);
->>>>>>> Stashed changes
