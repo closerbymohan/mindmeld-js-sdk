@@ -121,49 +121,49 @@ gulp.task('buildSDK', ['zipSDK', 'distLoader']);
 
 
 // ------------------------ Search Widget Tasks ------------------------ //
-var searchWidgetLocation = 'widgets/searchWidget/';
+var srcSearchWidgetDir = 'src/widgets/searchWidget/';
+var distSearchWidgetDir = 'dist/widgets/searchWidget/';
 
 gulp.task('buildSearchWidget', ['searchWidgetCSSMin', 'searchWidgetJS']);
 
-// Generates standalone search widget + copies search widget, minified search widget
-// and standalone widget into searchWidget/dist/
+// Generates standalone search widget into dist/widgets/searchWidget
 gulp.task('searchWidgetJS', ['uglifyMM', 'uglifySearchWidget'], function () {
-    return es.merge(
-        gulp.src(searchWidgetLocation + '/js/jquery.mindmeld-searchwidget.js',
-            {base: searchWidgetLocation + 'js'}),
-
-        gulp.src([
-            searchWidgetLocation + 'js/vendor.js',
-            'mindmeld.min.js',
-            searchWidgetLocation + 'dist/jquery.mindmeld-searchwidget.min.js'
-        ], baseDirOption)
-            .pipe(concat('mindmeldSearchWidget.js'))
-            .pipe(concat.footer('}(MM.loader.$jq));'))
-    )
-        .pipe(gulp.dest(searchWidgetLocation + 'dist'));
+    return gulp.src([
+            srcSearchWidgetDir + 'js/util/vendorHeader.js',
+            srcSearchWidgetDir + 'js/vendor/jquery.min.js',
+            srcSearchWidgetDir + 'js/vendor/jquery-ui-autocomplete.min.js',
+            srcSearchWidgetDir + 'js/util/vendorFooter.js',
+            srcSearchWidgetDir + 'js/util/mmHeader.js',
+            distMMDirectory + 'mindmeld.min.js',
+            distSearchWidgetDir + 'jquery.mindmeld-searchwidget.min.js',
+            srcSearchWidgetDir + 'js/util/mmFooter.js'
+    ])
+        .pipe(concat('mindmeldSearchWidget.js'))
+        .pipe(gulp.dest(distSearchWidgetDir));
 });
 
 // Uglifies search widget
 gulp.task('uglifySearchWidget', function () {
-    return gulp.src(searchWidgetLocation + 'js/jquery.mindmeld-searchwidget.js')
+    return gulp.src(srcSearchWidgetDir + 'js/jquery.mindmeld-searchwidget.js')
         .pipe(uglify(), {mangle: true})
         .pipe(rename('jquery.mindmeld-searchwidget.min.js'))
-        .pipe(gulp.dest(searchWidgetLocation + 'dist'))
+        .pipe(gulp.dest(distSearchWidgetDir))
 });
 
 // Compiles search widget's SASS into CSS
 gulp.task('searchWidgetSass', function () {
-    return gulp.src(searchWidgetLocation + 'sass/main.scss')
+    return gulp.src(srcSearchWidgetDir + 'sass/main.scss')
         .pipe(sass())
-        .pipe(gulp.dest(searchWidgetLocation + 'css'));
+        .pipe(rename('mindmeldSearchWidget.css'))
+        .pipe(gulp.dest(distSearchWidgetDir));
 });
 
-// Minifies search widget's CSS and copies into searchWidget/dist
+// Minifies search widget's CSS
 gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
-    return gulp.src(searchWidgetLocation + 'css/main.css')
+    return gulp.src(distSearchWidgetDir + 'mindmeldSearchWidget.css')
         .pipe(minifyCSS())
         .pipe(rename('mindmeldSearchWidget.min.css'))
-        .pipe(gulp.dest(searchWidgetLocation + 'dist'));
+        .pipe(gulp.dest(distSearchWidgetDir));
 });
 // --------------------------------------------------------------------- //
 
