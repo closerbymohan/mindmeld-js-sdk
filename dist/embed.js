@@ -20,13 +20,13 @@ MM.loader.loadStyle = function (path) {
 };
 
 if (MM.loader.searchWidget) {
-    MM.loader.loadJS(MM.loader.rootURL + 'searchWidget/mindmeldSearchWidget.js', function () {
+    MM.loader.loadJS(MM.loader.rootURL + 'widgets/searchWidget/mindmeldSearchWidget.js', function () {
         MM.loader.$jq('#mm-search').searchwidget(MM.loader.searchWidget.options);
     });
-    MM.loader.loadStyle(MM.loader.rootURL + 'searchWidget/mindmeldSearchWidget.min.css');
+    MM.loader.loadStyle(MM.loader.rootURL + 'widgets/searchWidget/mindmeldSearchWidget.min.css');
 }
 
 if (MM.voiceNavigator && MM.voiceNavigator.options) {
-    MM.loader.loadJS(MM.loader.rootURL + 'voiceNavigator/widget/widget.min.js');
-    MM.loader.loadStyle(MM.loader.rootURL + 'voiceNavigator/widget/widget.min.css');
+    MM.loader.loadJS(MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.min.js');
+    MM.loader.loadStyle(MM.loader.rootURL + 'widets/voiceNavigator/widget/widget.min.css');
 }
