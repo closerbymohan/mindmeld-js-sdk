@@ -96,7 +96,7 @@ gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
 
 // Copies embed script to dist directory
 gulp.task('distLoader', function () {
-    return gulp.src(srcDirectory + 'loaders/embed.js')
+    return gulp.src(srcDirectory + 'embed.js')
         .pipe(gulp.dest(distDirectory));
 });
 
