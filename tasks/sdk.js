@@ -35,7 +35,6 @@ gulp.task('buildMM', function () {
 
 // Uglifies mindmeld.js into mindmeld.min.js
 gulp.task('uglifyMM', ['buildMM'], function () {
-    console.log('dist dir name: ' + distMMDirectory);
     return gulp.src(distMMDirectory + 'mindmeld.js')
         .pipe(uglify(), {mangle:true})
         .pipe(rename('mindmeld.min.js'))
