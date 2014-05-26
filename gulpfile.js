@@ -4,15 +4,6 @@ require('gulp-grunt')(gulp); // Load Grunt tasks for jsdoc until gulp-jsdoc beco
 var chug = require('gulp-chug');
 var taskListing = require('gulp-task-listing');
 
-// Voice navigator dependencies
-var nib = require('nib');
-var stylus = require('gulp-stylus');
-var jade = require('gulp-jade');
-var connect = require('gulp-connect');
-var fileinclude = require('gulp-file-include');
-var jshint = require('gulp-jshint');
-
-
 // -------------------------- Mindmeld.js Tasks -------------------------- //
 var sdkGulpfilePath = './tasks/sdk.js';
 

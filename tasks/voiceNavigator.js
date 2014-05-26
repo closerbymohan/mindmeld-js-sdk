@@ -6,6 +6,7 @@ var concat = require('gulp-concat-util');
 var rename = require('gulp-rename');
 var es = require('event-stream');
 var taskListing = require('gulp-task-listing');
+var chug = require('gulp-chug');
 
 var nib = require('nib');
 var stylus = require('gulp-stylus');
@@ -17,42 +18,44 @@ var jshint = require('gulp-jshint');
 
 var voiceNavigator  = (function() {
     var object = {};
-    object.path = '../widgets/voiceNavigator/';
-    object.buildLocation = object.path + 'dist/';
+    var rootDirectory = '../';
+    var sourceVoiceNav = rootDirectory + 'src/widgets/voiceNavigator/';
+    object.distVoiceNav = rootDirectory + 'dist/widgets/voiceNavigator/';
+    object.sdkGulpfilePath = rootDirectory + 'tasks/sdk.js';
     object.paths = {
         'build:widget:css' : [
-            object.path + 'css/widget.styl'
+                sourceVoiceNav + 'css/widget.styl'
         ],
         'build:widget:js' : [
-            object.path + 'js/widget.js'
+                sourceVoiceNav + 'js/widget.js'
         ],
         'build:modal:css' : [
-            object.path + 'css/vendor/normalize.styl',
-            object.path + 'css/modal.styl'
+                sourceVoiceNav + 'css/vendor/normalize.styl',
+                sourceVoiceNav + 'css/modal.styl'
         ],
         'build:modal:js' : [
-            object.path + 'js/vendor/jquery-1.10.1.min.js',
-            object.path + 'js/vendor/isotope.pkgd.min.js',
-            object.path + 'js/vendor/jquery.slimscroll.min.js',
-            object.path + 'js/vendor/imagesloaded.pkgd.js',
-            object.path + 'js/vendor/jquery.cookie-1.4.0.js',
-            object.path + '../../mindmeld.js',
-            object.path + 'js/entityHighlighting.js',
-            object.path + 'js/modal.js'
+                sourceVoiceNav + 'js/vendor/jquery-1.10.1.min.js',
+                sourceVoiceNav + 'js/vendor/isotope.pkgd.min.js',
+                sourceVoiceNav + 'js/vendor/jquery.slimscroll.min.js',
+                sourceVoiceNav + 'js/vendor/imagesloaded.pkgd.js',
+                sourceVoiceNav + 'js/vendor/jquery.cookie-1.4.0.js',
+                rootDirectory + 'dist/sdk/mindmeld.js',
+                sourceVoiceNav + 'js/entityHighlighting.js',
+                sourceVoiceNav + 'js/modal.js'
         ],
         'build:modal:img' : [
-            object.path + 'img/modal/*'
+                sourceVoiceNav + 'img/modal/*'
         ],
         'build:modal:html' : [
-            object.path + 'templates/modal.jade'
+                sourceVoiceNav + 'templates/modal.jade'
         ],
         'build:modal:audio' : [
-            object.path + 'audio/*'
+                sourceVoiceNav + 'audio/*'
         ]
     };
     object.paths['build:modal:other'] = object.paths['build:modal:img']
         .concat(object.paths['build:modal:html'],
-                object.paths['build:modal:audio']);
+        object.paths['build:modal:audio']);
 
     return object;
 })();
@@ -61,14 +64,14 @@ var voiceNavigator  = (function() {
 function concatAndMinify(target, type, minify, stream) {
     stream = stream
         .pipe(concat(target + '.' + type))
-        .pipe(gulp.dest(voiceNavigator.buildLocation + target))
+        .pipe(gulp.dest(voiceNavigator.distVoiceNav + target))
         .pipe(rename(target + '.min.' + type));
     if (minify) {
         stream = stream
             .pipe(type === 'css' ? minifyCSS() : uglify());
     }
     return stream
-        .pipe(gulp.dest(voiceNavigator.buildLocation + target))
+        .pipe(gulp.dest(voiceNavigator.distVoiceNav + target))
 
         .pipe(connect.reload());
 }
@@ -109,13 +112,13 @@ gulp.task('build:modal:css', function() {
     return concatAndMinify('modal', 'css', true, stream);
 });
 
-gulp.task('build:modal:js', function() {
+gulp.task('build:modal:js', ['buildMM'], function() {
     var stream = gulp.src(voiceNavigator.paths['build:modal:js']);
 
     return concatAndMinify('modal', 'js', true, stream);
 });
 
-gulp.task('build:modal:css:no-min', function() {
+gulp.task('build:modal:css:no-min', ['buildMM'], function() {
     var stream = gulp.src(voiceNavigator.paths['build:modal:css'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
     return concatAndMinify('modal', 'css', false, stream);
@@ -130,14 +133,14 @@ gulp.task('build:modal:js:no-min', function() {
 gulp.task('build:modal:other', function() {
     var html = gulp.src(voiceNavigator.paths['build:modal:html'])
         .pipe(jade())
-        .pipe(gulp.dest(voiceNavigator.buildLocation + 'modal'))
+        .pipe(gulp.dest(voiceNavigator.distVoiceNav + 'modal'))
         .pipe(connect.reload());
 
     var audio = gulp.src(voiceNavigator.paths['build:modal:audio'])
-        .pipe(gulp.dest(voiceNavigator.buildLocation + 'modal'));
+        .pipe(gulp.dest(voiceNavigator.distVoiceNav + 'modal'));
 
     var img = gulp.src(voiceNavigator.paths['build:modal:img'])
-        .pipe(gulp.dest(voiceNavigator.buildLocation + 'modal'));
+        .pipe(gulp.dest(voiceNavigator.distVoiceNav + 'modal'));
 
     return es.merge(html, audio, img);
 });
@@ -204,6 +207,11 @@ gulp.task('lint', function() {
     return gulp.src([voiceNavigator.path + 'js/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('build'));
+});
+
+gulp.task('buildMM', function () {
+    return gulp.src(voiceNavigator.sdkGulpfilePath, {read: false})
+        .pipe(chug({tasks: ['buildMM']}));
 });
 
 // Doesn't minify code
