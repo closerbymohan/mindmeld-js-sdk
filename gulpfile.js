@@ -22,104 +22,25 @@ var connect = require('gulp-connect');
 var fileinclude = require('gulp-file-include');
 var jshint = require('gulp-jshint');
 
-var distDirectory = 'dist/';
-var srcDirectory = 'src/';
-var exampleDirectory = 'example/';
-var baseDirOption = {base: './'};
-var archiveDirectory = './archive/';
-
-// Bower version used to version files
-var bowerVersion = '';
-var versionedMindMeldName = '';
-var versionedMinifiedMindMeldName = '';
 
 // -------------------------- Mindmeld.js Tasks -------------------------- //
-var distMMDirectory = distDirectory + 'sdk/';
-var srcMMDirectory = srcDirectory + 'sdk/';
+var sdkGulpfilePath = './tasks/sdk.js';
 
-gulp.task('buildMM', function () {
-    gulp.src([
-        srcMMDirectory + 'vendor/faye.js',
-        srcMMDirectory + 'main.js'
-    ])
-        .pipe(concat('mindmeld.js'))
-        .pipe(gulp.dest(distMMDirectory));
+gulp.task('buildSDK', function () {
+   return gulp.src(sdkGulpfilePath, {read: false})
+       .pipe(chug());
 });
 
-
-
-// Uglifies mindmeld.js into mindmeld.min.js
-gulp.task('uglifyMM', ['buildMM'], function () {
-    return gulp.src(distMMDirectory + 'mindmeld.js')
-        .pipe(uglify(), {mangle:true})
-        .pipe(rename('mindmeld.min.js'))
-        .pipe(gulp.dest(distMMDirectory));
+gulp.task('archiveSDK', function () {
+   return gulp.src(sdkGulpfilePath, {read: false})
+       .pipe(chug({tasks: ['archiveSDK']}));
 });
 
-// Moves generated JS Doc, mindmeld.js, mindmeld.min.js and
-// HelloWorld page into mindmeld-js-sdk.zip
-gulp.task('zipSDK', ['grunt-buildJSDocs', 'uglifyMM'], function () {
-    return es.merge(
-        gulp.src('LICENSE'),
-        gulp.src(distDirectory + 'docs/**', {base: distDirectory}),
-        gulp.src(distMMDirectory + '*.js', {base: distMMDirectory}),
-        gulp.src(exampleDirectory + 'sdk/HelloWorld.html', {base: exampleDirectory + 'sdk/'})
-    )
-        .pipe(zip('mindmeld-js-sdk.zip'))
-        .pipe(gulp.dest(distMMDirectory));
+gulp.task('uglifyMM', function () {
+    return gulp.src(sdkGulpfilePath, {read: false})
+        .pipe(chug({tasks: ['uglifyMM']}));
 });
 
-// Parses bower.json for current version and sets file names
-// for mindmeld-<version>.js and mindmeld-<version>.min.js
-gulp.task('setVersion', function () {
-    var bowerPath = './bower.json';
-    var bowerData = JSON.parse(fs.readFileSync(bowerPath, 'utf-8'));
-    bowerVersion = bowerData.version;
-    versionedMindMeldName = 'mindmeld-' + bowerVersion + '.js';
-    versionedMinifiedMindMeldName = 'mindmeld-' + bowerVersion + '.min.js';
-});
-
-// Copy mindmeld.js and mindmeld.min.js to archive/ directory
-gulp.task('archiveJS', ['setVersion', 'uglifyMM'], function () {
-    return es.merge(
-        gulp.src(distMMDirectory + 'mindmeld.js', {base: distMMDirectory})
-            .pipe(rename(versionedMindMeldName))
-            .pipe(gulp.dest(archiveDirectory)),
-
-        gulp.src(distMMDirectory + 'mindmeld.min.js', {base: distMMDirectory})
-            .pipe(rename(versionedMinifiedMindMeldName))
-            .pipe(gulp.dest(archiveDirectory))
-    );
-});
-
-// Creates archive of SDK at current version
-gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
-    return es.merge(
-        gulp.src('LICENSE', baseDirOption),
-
-        gulp.src(distDirectory + 'docs/**', {base: distDirectory}),
-
-        gulp.src([
-                archiveDirectory + versionedMindMeldName,
-                archiveDirectory + versionedMinifiedMindMeldName
-        ], {base: archiveDirectory}),
-
-        gulp.src(exampleDirectory + 'sdk/HelloWorld.html', {base: exampleDirectory + 'sdk/'})
-    )
-        .pipe(zip(archiveDirectory + 'mindmeld-js-sdk-' + bowerVersion + '.zip'))
-        .pipe(gulp.dest('./'));
-});
-
-gulp.task('distLoader', function () {
-   return gulp.src(srcDirectory + 'loaders/embed.js')
-       .pipe(symlink(distDirectory + '/loaders/'));
-});
-
-gulp.task('watchMM', ['buildMM'], function () {
-    gulp.watch(srcMMDirectory + '**/*.js', ['uglifyMM']);
-});
-
-gulp.task('buildSDK', ['zipSDK', 'distLoader']);
 // ----------------------------------------------------------------------- //
 
 
