@@ -22,7 +22,6 @@
     "gulp-replace": "^0.3.0",
     "gulp-sass": "^0.7.1",
     "gulp-stylus": "^1.0.0",
-    "gulp-symlink": "^1.0.3",
     "gulp-task-listing": "^0.3.0",
     "gulp-uglify": "^0.3.0",
     "gulp-zip": "^0.3.4",
