@@ -17,7 +17,7 @@ var jshint = require('gulp-jshint');
 
 var voiceNavigator  = (function() {
     var object = {};
-    object.path = '../widgets/voiceNavigator';
+    object.path = '../widgets/voiceNavigator/';
     object.buildLocation = object.path + 'dist/';
     object.paths = {
         'build:widget:css' : [
