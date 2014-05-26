@@ -11,7 +11,7 @@
     <title>MindMeld Voice Demo</title>
     <meta content='Voice nav' name='description'>
     <meta content='width=device-width' name='viewport'>
-    <link rel="stylesheet" href="../dist/widget/widget.css" type="text/css">
+    <link rel="stylesheet" href="../../../dist/widgets/voiceNavigator/widget/widget.css" type="text/css">
 
     <style type="text/css">
       body {
@@ -34,7 +34,7 @@
     <script>
         var MM = window.MM || {};
         MM.loader = MM.loader || {};
-        MM.loader.rootURL = 'http://localhost:8000/sandbox/sdks/';
+        MM.loader.rootURL = 'http://' + window.location.host + '/dist/';
         var VOICE_NAV_APPS = {
             'west-dev-d': {
                 movieGenius: '2befc7c6ea69d12c0a34acb30c7152027cc37c78',
@@ -186,7 +186,7 @@
         return html;
       }
     </script>
-    <script src="../dist/widget/widget.js"></script>
+    <script src="../../../dist/widgets/voiceNavigator/widget/widget.js"></script>
     <script>
         // Auto open modal
 //        window.MM.voiceNavigator.showModal();

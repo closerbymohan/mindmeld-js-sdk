@@ -140,7 +140,7 @@
                 iframe.setAttribute('frameBorder', '0');
                 iframe.setAttribute('id', 'mindmeld-iframe');
                 iframe.setAttribute('allowtransparency', 'true');
-                iframe.setAttribute('src', MM.loader.rootURL + 'voiceNavigator/modal/modal.html');
+                iframe.setAttribute('src', MM.loader.rootURL + 'widgets/voiceNavigator/modal/modal.html');
                 if (typeof MM !== 'undefined' &&
                     typeof MM.voiceNavigator !== 'undefined' &&
                     typeof MM.voiceNavigator.options !== 'undefined') {
