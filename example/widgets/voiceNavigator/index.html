@@ -61,9 +61,21 @@
         MM.voiceNavigator = MM.voiceNavigator || {};
         MM.voiceNavigator.options = {
             appID: VOICE_NAV_APPS[DEMO_ENVIRONMENT]['movieGenius'],
+///*
             cardLayout: rottenTomatoesCard,
             customCSSPath: './css/movieCards.css',
-
+/*/ Comment out the cardLayout field if you would like to use card fields
+            cardFields: [{
+                key: 'director',
+                label: 'Director',
+                placeholder: 'Unknown'
+            }, {
+                key: 'pubdate',
+                label: 'Release Date',
+                placeholder: 'Unknown',
+                format: 'date'
+            }],
+//*/
             cleanUrl: 'https://api-' + DEMO_ENVIRONMENT + '.expectlabs.com/',
             fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye'
         };
