@@ -685,6 +685,25 @@ body #mm-button.status-listening a:focus {
   -ms-animation: mm-color 1.5s infinite;
   animation: mm-color 1.5s infinite;
 }
+body #mm-button.status-listening .bubbles {
+  position: absolute;
+  -webkit-animation: mm-bubbles 7.5s linear infinite;
+  -moz-animation: mm-bubbles 7.5s linear infinite;
+  -o-animation: mm-bubbles 7.5s linear infinite;
+  -ms-animation: mm-bubbles 7.5s linear infinite;
+  animation: mm-bubbles 7.5s linear infinite;
+  background-image: url("./button_bg.png"), url("./button_bg.png");
+  background-position: 0 0, 30px -150px;
+  -webkit-background-size: 100px auto;
+  -moz-background-size: 100px auto;
+  background-size: 100px auto;
+  top: 8px;
+  left: 8px;
+  -webkit-border-radius: 100px;
+  border-radius: 100px;
+  width: 60px;
+  height: 60px;
+}
 body #mm-button.status-listening #icon-mute {
   display: none;
 }
@@ -1855,6 +1874,50 @@ body #mindmeld-parent.results {
   }
   100% {
     background-color: #ca6b37;
+  }
+}
+@-moz-keyframes mm-bubbles {
+  0% {
+    background-position: 0 0, 30px -150px;
+  }
+  50% {
+    background-position: 0 -150px, 30px 0;
+  }
+  100% {
+    background-position: 0 0, 30px -150px;
+  }
+}
+@-webkit-keyframes mm-bubbles {
+  0% {
+    background-position: 0 0, 30px -150px;
+  }
+  50% {
+    background-position: 0 -150px, 30px 0;
+  }
+  100% {
+    background-position: 0 0, 30px -150px;
+  }
+}
+@-o-keyframes mm-bubbles {
+  0% {
+    background-position: 0 0, 30px -150px;
+  }
+  50% {
+    background-position: 0 -150px, 30px 0;
+  }
+  100% {
+    background-position: 0 0, 30px -150px;
+  }
+}
+@keyframes mm-bubbles {
+  0% {
+    background-position: 0 0, 30px -150px;
+  }
+  50% {
+    background-position: 0 -150px, 30px 0;
+  }
+  100% {
+    background-position: 0 0, 30px -150px;
   }
 }
 @-moz-keyframes zoomin {
