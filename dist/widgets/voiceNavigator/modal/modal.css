@@ -817,6 +817,7 @@ body #mindmeld-overlay {
   position: absolute;
   top: 0;
   left: 0;
+  cursor: pointer;
 }
 body #mindmeld-parent {
   height: 100%;
@@ -997,6 +998,7 @@ body #mindmeld-parent.results {
   position: absolute;
   text-decoration: none;
   right: 20px;
+  left: 20px;
   top: 6px;
   height: 70px;
   text-align: center;
@@ -1026,6 +1028,23 @@ body #mindmeld-parent.results {
   -ms-filter: none;
   filter: none;
   text-decoration: none;
+}
+#close {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10000;
+  display: block;
+  font-size: 26px;
+  line-height: 16px;
+  text-align: center;
+  color: #aaa;
+  padding: 5 ps;
+}
+#close:hover {
+  color: #555;
 }
 #history-wrapper {
   height: 0;
