@@ -8581,8 +8581,52 @@ var MM = ( function ($, Faye) {
           'html': description
         }));
 
-      }
+        // fields
+        if (typeof self.config.cardFields !== 'undefined') {
+          function getFormattedString(format, value) {
+            switch (format) {
+              case 'date':
+                var date = new Date(value * 1000);
+                return (date.getMonth() + 1) + '/' + date.getDay() + '/' + date.getFullYear();
+              default:
+                return value.substr(0, 100) + (value.length > 100 ? "&hellip;" : "");
+            }
+          }
 
+          var cardFields = self.config.cardFields;
+          $.each(cardFields, function(k2, field) {
+            var value = doc[field.key] || field.placeholder;
+            if (typeof value !== 'undefined' && value !== '') {
+              // If a label is specified, add a label
+              if (typeof field.label !== 'undefined' && field.label !== '') {
+                var $label = $('<span>', {
+                  class: 'label',
+                  html: field.label
+                });
+              }
+              // If we aren't using the placeholder,
+              var $value = $('<span>', {
+                class: 'value',
+              });
+              // if we aren't using placeholder, format the string
+              if (value !== field.placeholder) {
+                value = getFormattedString(field.format, value);
+              } else {
+                $value.addClass('placeholder'); // other wise add placeholder class
+              }
+              $value.text(value);
+              var $field = $('<p>', {
+                class: 'mm-doc-field'
+              });
+              if (typeof field.class !== 'undefined' && field.class !== '') {
+                $field.addClass(field.class);
+              }
+              $field.append($label).append($value);
+              $card.append($field);
+            }
+          });
+        }
+      }
       return $card;
     },
 

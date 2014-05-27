@@ -1656,6 +1656,14 @@ body #mindmeld-parent.results {
   margin: 10px 15px;
   color: #888;
 }
+#results #cards a.card p.mm-doc-field {
+  margin: 2px inherit;
+}
+#results #cards a.card p.mm-doc-field .label {
+  color: #888;
+  margin-right: 4px;
+  font-size: smaller;
+}
 #results #cards a.card .source {
   display: block;
   font-size: 11px;
