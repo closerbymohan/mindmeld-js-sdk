@@ -112,6 +112,18 @@ body
     &.status-listening
       a, a:hover, a:active, a:focus
         box-shadow 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset
+        animation mm-color 1.5s infinite
+      .bubbles
+        position absolute
+        animation mm-bubbles 7.5s linear infinite
+        background-image url(./button_bg.png), url(./button_bg.png)
+        background-position 0 0, 30px -150px
+        background-size 100px auto
+        top 8px
+        left 8px
+        border-radius 100px
+        width 60px
+        height 60px
       #icon-mute
         display none
       &.lock
@@ -194,6 +206,7 @@ body
     position absolute
     top 0
     left 0
+    cursor pointer
 
   #mindmeld-parent
     height 100%
@@ -321,6 +334,7 @@ body
   position absolute
   text-decoration none
   right 20px
+  left 20px
   top 6px
   height 70px
   text-align center
@@ -337,6 +351,22 @@ body
   &:hover
     opacity 1
     text-decoration none
+
+#close
+  width 30px
+  height 30px
+  position absolute
+  top 10px
+  right 10px
+  z-index 10000
+  display block
+  font-size 26px
+  line-height 16px
+  text-align center
+  color #AAA
+  padding 5ps
+  &:hover
+    color #555
 
 #history-wrapper
   height 0
@@ -533,6 +563,22 @@ body
 .isotope.no-transition .isotope-item,
 .isotope .isotope-item.no-transition
   transition-duration 0s
+
+@keyframes mm-color
+  0%
+    background-color #ca6b37
+  50%
+    background-color darken(#ca6b37, 15%)
+  100%
+    background-color #ca6b37
+
+@keyframes mm-bubbles
+  0%
+    background-position: 0 0, 30px -150px;
+  50%
+    background-position: 0 -150px, 30px 0;
+  100%
+    background-position: 0 0, 30px -150px;
 
 @keyframes zoomin
   0%

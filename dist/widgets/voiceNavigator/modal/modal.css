@@ -679,6 +679,30 @@ body #mm-button.status-listening a:active,
 body #mm-button.status-listening a:focus {
   -webkit-box-shadow: 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset;
   box-shadow: 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset;
+  -webkit-animation: mm-color 1.5s infinite;
+  -moz-animation: mm-color 1.5s infinite;
+  -o-animation: mm-color 1.5s infinite;
+  -ms-animation: mm-color 1.5s infinite;
+  animation: mm-color 1.5s infinite;
+}
+body #mm-button.status-listening .bubbles {
+  position: absolute;
+  -webkit-animation: mm-bubbles 7.5s linear infinite;
+  -moz-animation: mm-bubbles 7.5s linear infinite;
+  -o-animation: mm-bubbles 7.5s linear infinite;
+  -ms-animation: mm-bubbles 7.5s linear infinite;
+  animation: mm-bubbles 7.5s linear infinite;
+  background-image: url("./button_bg.png"), url("./button_bg.png");
+  background-position: 0 0, 30px -150px;
+  -webkit-background-size: 100px auto;
+  -moz-background-size: 100px auto;
+  background-size: 100px auto;
+  top: 8px;
+  left: 8px;
+  -webkit-border-radius: 100px;
+  border-radius: 100px;
+  width: 60px;
+  height: 60px;
 }
 body #mm-button.status-listening #icon-mute {
   display: none;
@@ -817,6 +841,7 @@ body #mindmeld-overlay {
   position: absolute;
   top: 0;
   left: 0;
+  cursor: pointer;
 }
 body #mindmeld-parent {
   height: 100%;
@@ -997,6 +1022,7 @@ body #mindmeld-parent.results {
   position: absolute;
   text-decoration: none;
   right: 20px;
+  left: 20px;
   top: 6px;
   height: 70px;
   text-align: center;
@@ -1026,6 +1052,23 @@ body #mindmeld-parent.results {
   -ms-filter: none;
   filter: none;
   text-decoration: none;
+}
+#close {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10000;
+  display: block;
+  font-size: 26px;
+  line-height: 16px;
+  text-align: center;
+  color: #aaa;
+  padding: 5 ps;
+}
+#close:hover {
+  color: #555;
 }
 #history-wrapper {
   height: 0;
@@ -1787,6 +1830,94 @@ body #mindmeld-parent.results {
     -o-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
+  }
+}
+@-moz-keyframes mm-color {
+  0% {
+    background-color: #ca6b37;
+  }
+  50% {
+    background-color: #ad5b2e;
+  }
+  100% {
+    background-color: #ca6b37;
+  }
+}
+@-webkit-keyframes mm-color {
+  0% {
+    background-color: #ca6b37;
+  }
+  50% {
+    background-color: #ad5b2e;
+  }
+  100% {
+    background-color: #ca6b37;
+  }
+}
+@-o-keyframes mm-color {
+  0% {
+    background-color: #ca6b37;
+  }
+  50% {
+    background-color: #ad5b2e;
+  }
+  100% {
+    background-color: #ca6b37;
+  }
+}
+@keyframes mm-color {
+  0% {
+    background-color: #ca6b37;
+  }
+  50% {
+    background-color: #ad5b2e;
+  }
+  100% {
+    background-color: #ca6b37;
+  }
+}
+@-moz-keyframes mm-bubbles {
+  0% {
+    background-position: 0 0, 30px -150px;
+  }
+  50% {
+    background-position: 0 -150px, 30px 0;
+  }
+  100% {
+    background-position: 0 0, 30px -150px;
+  }
+}
+@-webkit-keyframes mm-bubbles {
+  0% {
+    background-position: 0 0, 30px -150px;
+  }
+  50% {
+    background-position: 0 -150px, 30px 0;
+  }
+  100% {
+    background-position: 0 0, 30px -150px;
+  }
+}
+@-o-keyframes mm-bubbles {
+  0% {
+    background-position: 0 0, 30px -150px;
+  }
+  50% {
+    background-position: 0 -150px, 30px 0;
+  }
+  100% {
+    background-position: 0 0, 30px -150px;
+  }
+}
+@keyframes mm-bubbles {
+  0% {
+    background-position: 0 0, 30px -150px;
+  }
+  50% {
+    background-position: 0 -150px, 30px 0;
+  }
+  100% {
+    background-position: 0 0, 30px -150px;
   }
 }
 @-moz-keyframes zoomin {

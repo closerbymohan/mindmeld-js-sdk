@@ -8000,6 +8000,7 @@ var MM = ( function ($, Faye) {
     $cards : $(),
     $mm : $(),
     $mm_parent : $(),
+    $mm_close : $(),
     $mm_button : $(),
     $mm_button_icon : $(),
     $mm_pulser : $(),
@@ -8042,6 +8043,7 @@ var MM = ( function ($, Faye) {
       this.$window = $(window);
       this.$mm = $('#mindmeld');
       this.$mm_button = $('#mm-button');
+      this.$mm_close = $('#close, #mindmeld-overlay');
       this.$mm_pulser = $('#mm-pulser');
       this.$mm_button_icon = $('#mm-button-icon');
       this.$mm_parent = $('#mindmeld-parent');
@@ -8195,8 +8197,27 @@ var MM = ( function ($, Faye) {
         button_status.just_locked = false;
       });
 
+      self.$mm_close.click(function(e) {
+        e.preventDefault();
+        self.close();
+      });
+
       this.is_init = true;
 
+    },
+
+
+    close : function() {
+      var self = this;
+
+      self.stopListening();
+      self.$mm_parent.removeClass('open results');
+      self.$body.removeClass('results');
+      self.is_results = false;
+      self.results_length = 0;
+      setTimeout(function() {
+        self.postMessage('close');
+      }, 500);
     },
 
     _do_on_voice_ready : function(fn) {
@@ -8237,6 +8258,14 @@ var MM = ( function ($, Faye) {
       var self = this;
       var scale = ((volume / 100) * 0.5) + 1.4;
       self.$mm_pulser.css('transform', 'scale(' + scale + ')');
+    },
+
+    postMessage : function(action, data) {
+      parent.postMessage({
+        action: action,
+        source: 'mindmeld',
+        data: data
+      }, "*");
     },
 
     _historyHeight : function(scrollHeight) {
