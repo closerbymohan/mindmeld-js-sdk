@@ -28,5 +28,5 @@ if (MM.loader.searchWidget) {
 
 if (MM.voiceNavigator && MM.voiceNavigator.options) {
     MM.loader.loadJS(MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.min.js');
-    MM.loader.loadStyle(MM.loader.rootURL + 'widets/voiceNavigator/widget/widget.min.css');
+    MM.loader.loadStyle(MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.min.css');
 }
