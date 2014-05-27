@@ -8126,22 +8126,29 @@ var MM = ( function ($, Faye) {
         }
       });
 
-      if(!MM.support.speechRecognition) {
+      if(true || !MM.support.speechRecognition) {
         self.$mm_button.hide();
         self.$mm_pulser.hide();
         self.$input.hide();
+
+        self.$body.addClass('no-speech');
+
         var $text_input = $('<li>', {'class':'text-input'});
         var $form = $('<form>');
         var $input = $('<input>', {
                        type: "text",
                        class: "search",
                        placeholder: "Search query"});
+        var $button = $('<button>', {
+                       html: "&nbsp;<span></span>",
+                       type: "submit", });
 
         $form.submit(function(e) {
           e.preventDefault();
           var recording = $input.val();
 
           $input.val("").focus();
+          $input.attr("placeholder", recording);
           self.appendHistory({transcript: recording});
 
           // Submit!
@@ -8156,6 +8163,7 @@ var MM = ( function ($, Faye) {
 
         $text_input.append($form);
         $form.append($input);
+        $form.append($button);
         self.$historyList.append($text_input);
 
         $input.focus();
@@ -8230,7 +8238,7 @@ var MM = ( function ($, Faye) {
     },
 
     listen : function(lock) {
-      if(!MM.support.speechRecognition) return;
+      if(true || !MM.support.speechRecognition) return;
 
       var self = this;
       var statusIsPending = (self.status === 'pending');
