@@ -679,6 +679,11 @@ body #mm-button.status-listening a:active,
 body #mm-button.status-listening a:focus {
   -webkit-box-shadow: 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset;
   box-shadow: 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset;
+  -webkit-animation: mm-color 1.5s infinite;
+  -moz-animation: mm-color 1.5s infinite;
+  -o-animation: mm-color 1.5s infinite;
+  -ms-animation: mm-color 1.5s infinite;
+  animation: mm-color 1.5s infinite;
 }
 body #mm-button.status-listening #icon-mute {
   display: none;
@@ -1806,6 +1811,50 @@ body #mindmeld-parent.results {
     -o-transform: scale(1);
     -ms-transform: scale(1);
     transform: scale(1);
+  }
+}
+@-moz-keyframes mm-color {
+  0% {
+    background-color: #ca6b37;
+  }
+  50% {
+    background-color: #ad5b2e;
+  }
+  100% {
+    background-color: #ca6b37;
+  }
+}
+@-webkit-keyframes mm-color {
+  0% {
+    background-color: #ca6b37;
+  }
+  50% {
+    background-color: #ad5b2e;
+  }
+  100% {
+    background-color: #ca6b37;
+  }
+}
+@-o-keyframes mm-color {
+  0% {
+    background-color: #ca6b37;
+  }
+  50% {
+    background-color: #ad5b2e;
+  }
+  100% {
+    background-color: #ca6b37;
+  }
+}
+@keyframes mm-color {
+  0% {
+    background-color: #ca6b37;
+  }
+  50% {
+    background-color: #ad5b2e;
+  }
+  100% {
+    background-color: #ca6b37;
   }
 }
 @-moz-keyframes zoomin {

@@ -112,6 +112,7 @@ body
     &.status-listening
       a, a:hover, a:active, a:focus
         box-shadow 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset
+        animation mm-color 1.5s infinite
       #icon-mute
         display none
       &.lock
@@ -544,6 +545,14 @@ body
 .isotope.no-transition .isotope-item,
 .isotope .isotope-item.no-transition
   transition-duration 0s
+
+@keyframes mm-color
+  0%
+    background-color #ca6b37
+  50%
+    background-color darken(#ca6b37, 15%)
+  100%
+    background-color #ca6b37
 
 @keyframes zoomin
   0%
