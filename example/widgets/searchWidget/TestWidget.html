@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>Autocomplete Search Widget Test Page</title>
+        <style>
+            html body {
+                height: 100%;
+                padding: 50px;
+            }
+
+
+        </style>
+    </head>
+
+
+    <body>
+        <!--MM Search Widget-->
+
+        <div class="container">
+            <div id="content" class="row">
+                <div class="sidebarContainer large-3 columns">
+                    <input type="text" id="mm-search" class="mm-search" placeholder="search">
+                </div>
+                <div class="mainContent large-9 columns">
+                    <h3>Content</h3>
+                </div>
+            </div>
+        </div>
+
+        <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.2.2/css/foundation.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../dist/widgets/searchWidget/mindmeldSearchWidget.css">
+
+        <script src="../../../src/widgets/searchWidget/js/vendor/jquery.min.js"></script>
+        <script src="../../../src/widgets/searchWidget/js/vendor/jquery-ui-autocomplete.min.js"></script>
+        <script src="../../../dist/sdk/mindmeld.js"></script>
+        <script src="../../../src/widgets/searchWidget/js/jquery.mindmeld-searchwidget.js"></script>
+
+        <!--Uncomment script tag below and comment script tags above when testing standalone widget -->
+        <!--<script src="../../../dist/widgets/searchWidget/mindmeldSearchWidget.js"></script>-->
+
+        <script type="text/javascript">
+            var options = {
+                appid: 'f38fa5965f016a1d4886d538f25ac35c14b4bdc2',
+                images: false,
+                onMMSearchInitialized: function () {
+                    console.log('mindmeld search widget ready!');
+                },
+                onMMSearchError: function (errorMessage) {
+                    console.log('error initializing search widget: ' + errorMessage);
+                }
+            };
+            $('#mm-search').searchwidget(options);
+//            MM.loader.$jq('#mm-search').searchwidget(options); For use when using standalone search widget
+        </script>
+    </body>
+</html>

@@ -2559,7 +2559,7 @@ var MM = ( function ($, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.3.2',
+        value: '2.3.3',
         writable: false
     });
 
@@ -6702,4 +6702,4 @@ var MM = ( function ($, Faye) {
     MM.Internal.setup();
     return MM;
 
-}(jQuery, Faye));
+}($, Faye));
