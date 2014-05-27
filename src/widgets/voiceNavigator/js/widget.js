@@ -36,11 +36,11 @@
             self.set_initialized();
 
             // Wait for messages
-            self.el(window).on('message', function(e) {
+            self.el(window).on('message', function(event) {
                 if (event.data.source != 'mindmeld') {
                     return;
                 }
-                if(e.data.action == 'close') {
+                if(event.data.action == 'close') {
                     MMVoice.$mm.removeClass('on');
                 }
             });

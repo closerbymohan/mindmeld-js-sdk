@@ -8126,7 +8126,13 @@ var MM = ( function ($, Faye) {
         }
       });
 
-      if(true || !MM.support.speechRecognition) {
+      // Close the modal
+      self.$mm_close.click(function(e) {
+        e.preventDefault();
+        self.close();
+      });
+
+      if(!MM.support.speechRecognition) {
         self.$mm_button.hide();
         self.$mm_pulser.hide();
         self.$input.hide();
@@ -8205,11 +8211,6 @@ var MM = ( function ($, Faye) {
         button_status.just_locked = false;
       });
 
-      self.$mm_close.click(function(e) {
-        e.preventDefault();
-        self.close();
-      });
-
       this.is_init = true;
 
     },
@@ -8238,7 +8239,7 @@ var MM = ( function ($, Faye) {
     },
 
     listen : function(lock) {
-      if(true || !MM.support.speechRecognition) return;
+      if(!MM.support.speechRecognition) return;
 
       var self = this;
       var statusIsPending = (self.status === 'pending');
@@ -8412,9 +8413,10 @@ var MM = ( function ($, Faye) {
     },
 
     stopListening : function() {
-      this.is_locked = false;
-
-      MM.activeSession.listener.cancel();
+      if(MM.support.speechRecognition) {
+        MM.activeSession.listener.cancel();
+        this.is_locked = false;
+      }
       this._updateUI();
     },
 

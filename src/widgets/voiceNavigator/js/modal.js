@@ -169,6 +169,12 @@
         }
       });
 
+      // Close the modal
+      self.$mm_close.click(function(e) {
+        e.preventDefault();
+        self.close();
+      });
+
       if(!MM.support.speechRecognition) {
         self.$mm_button.hide();
         self.$mm_pulser.hide();
@@ -246,11 +252,6 @@
         }
 
         button_status.just_locked = false;
-      });
-
-      self.$mm_close.click(function(e) {
-        e.preventDefault();
-        self.close();
       });
 
       this.is_init = true;
@@ -455,9 +456,10 @@
     },
 
     stopListening : function() {
-      this.is_locked = false;
-
-      MM.activeSession.listener.cancel();
+      if(MM.support.speechRecognition) {
+        MM.activeSession.listener.cancel();
+        this.is_locked = false;
+      }
       this._updateUI();
     },
 
