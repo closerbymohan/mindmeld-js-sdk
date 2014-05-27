@@ -8,18 +8,18 @@ module.exports = function (grunt) {
     grunt.initConfig({
         jsdoc : {
             dist: {
-                src: ['mindmeld.js', 'README.md'],
-                dest: 'docs/',
+                src: ['src/sdk/main.js', 'README.md'],
+                dest: 'dist/docs/',
                 options: {
-                    configure: 'docsTemplate/jaguar.conf.json',
-                    template: 'docsTemplate/jaguarjs-doc',
+                    configure: 'src/docsTemplate/jaguar.conf.json',
+                    template: 'src/docsTemplate/jaguarjs-doc',
                     private: false
                 }
             }
         },
         clean: {
             localDocs: {
-                src: ['./docs']
+                src: ['dist/docs']
             }
         }
     });

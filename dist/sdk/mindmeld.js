@@ -6702,4 +6702,4 @@ var MM = ( function ($, Faye) {
     MM.Internal.setup();
     return MM;
 
-}(jQuery, Faye));
+}($, Faye));
