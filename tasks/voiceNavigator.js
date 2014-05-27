@@ -118,13 +118,13 @@ gulp.task('build:modal:js', ['buildMM'], function() {
     return concatAndMinify('modal', 'js', true, stream);
 });
 
-gulp.task('build:modal:css:no-min', ['buildMM'], function() {
+gulp.task('build:modal:css:no-min', function() {
     var stream = gulp.src(voiceNavigator.paths['build:modal:css'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
     return concatAndMinify('modal', 'css', false, stream);
 });
 
-gulp.task('build:modal:js:no-min', function() {
+gulp.task('build:modal:js:no-min', ['buildMM'], function() {
     var stream = gulp.src(voiceNavigator.paths['build:modal:js']);
 
     return concatAndMinify('modal', 'js', false, stream);
