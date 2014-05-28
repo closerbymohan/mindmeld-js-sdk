@@ -140,13 +140,14 @@
         },
 
         _initMM: function () {
-            if (! this._validateString(this.options.appid, 40)) {
+            var appid = this.options.appid || MM.appid;
+            if (! this._validateString(appid, 40)) {
                 this.options.onMMSearchError('Please supply a valid appid');
                 return;
             }
             var self = this;
             var config = {
-                appid: this.options.appid,
+                appid: appid,
                 onInit: onMMInit
             };
             MM.init(config);
