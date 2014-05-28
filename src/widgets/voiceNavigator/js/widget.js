@@ -152,33 +152,41 @@
                 iframe.setAttribute('allowtransparency', 'true');
                 iframe.setAttribute('src', MM.loader.rootURL + 'widgets/voiceNavigator/modal/modal.html');
                 if (typeof MM !== 'undefined' &&
-                    typeof MM.voiceNavigator !== 'undefined' &&
-                    typeof MM.voiceNavigator.options !== 'undefined') {
+                    typeof MM.widgets !== 'undefined' &&
+                    typeof MM.widgets.config !== 'undefined') {
+                    // Move config to voice nav config
+                    MM.voiceNavigator.config = MM.widgets.config.voice;
+                    MM.voiceNavigator.config.appID = MM.widgets.config.appID;
+                    if (typeof MM.widgets.config.cleanUrl !== 'undefined') {
+                        MM.voiceNavigator.config.cleanUrl = MM.widgets.config.cleanUrl;
+                    }
+                    if (typeof MM.widgets.config.fayeClientUrl !== 'undefined') {
+                        MM.voiceNavigator.config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
+                    }
 
                     // parse card layout
-                    if (typeof MM.voiceNavigator.options.cardLayout === 'function') {
+                    if (typeof MM.voiceNavigator.config.cardLayout === 'function') {
                         MM.voiceNavigator.getCardHTML = MM.voiceNavigator.options.cardLayout;
-                        MM.voiceNavigator.options.cardLayout = 'custom'; //
+                        MM.voiceNavigator.config.cardLayout = 'custom'; //
                     } else if (typeof MM.voiceNavigator.options.cardLayout === 'undefined') {
-                        MM.voiceNavigator.options.cardLayout = 'default';
+                        MM.voiceNavigator.config.cardLayout = 'default';
                     }
 
                     // parse custom css
-                    if (typeof MM.voiceNavigator.options.customCSSPath !== 'undefined') {
-                        MM.voiceNavigator.options.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.options.customCSSPath);
+                    if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
+                        MM.voiceNavigator.config.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSPath);
                     }
-
                 }
 
                 MMVoice.$mm_iframe = MMVoice.el(iframe);
 
                 MMVoice.el(iframe).on('load', function() {
-                    MMVoice.postMessage('open', MM.voiceNavigator.options);
+                    MMVoice.postMessage('open', MM.voiceNavigator.config);
                     MMVoice.iframe_loaded = true;
 
-                    if (typeof MM.voiceNavigator.options.customCSSPath !== 'undefined') {
+                    if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
                         var cssLink = document.createElement('link');
-                        cssLink.href = MM.voiceNavigator.options.customCSSPath;
+                        cssLink.href = MM.voiceNavigator.config.customCSSPath;
                         cssLink.rel = 'stylesheet';
                         cssLink.type = 'text/css';
                         frames['mindmeld-iframe'].contentWindow.document.head.appendChild(cssLink);
@@ -188,7 +196,7 @@
                 MMVoice.$mm.el().appendChild(iframe);
             }
             else {
-                MMVoice.postMessage('open', MM.voiceNavigator.options);
+                MMVoice.postMessage('open', MM.voiceNavigator.config);
             }
             MMVoice.$mm.addClass('on');
         }
