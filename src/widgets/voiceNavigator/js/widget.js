@@ -34,6 +34,16 @@
                 this.el($inits[i]).click(clickHandler);
             }
             self.set_initialized();
+
+            // Wait for messages
+            self.el(window).on('message', function(event) {
+                if (event.data.source != 'mindmeld') {
+                    return;
+                }
+                if(event.data.action == 'close') {
+                    MMVoice.$mm.removeClass('on');
+                }
+            });
         },
 
         set_initialized: function () {

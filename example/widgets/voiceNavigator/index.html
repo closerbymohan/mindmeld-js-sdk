@@ -15,9 +15,10 @@
 
     <style type="text/css">
       body {
-        background-image: url(./img/rottentomatoes-bg.png);
-        background-size: cover;
+        background-image: url(./img/rottentomatoes-bg.png), url(./img/rottentomatoes-cloud.png);
         background-position: top center;
+        background-repeat: no-repeat;
+        background-color: #a9d5f7;
       }
 
       html, body {
@@ -61,9 +62,21 @@
         MM.voiceNavigator = MM.voiceNavigator || {};
         MM.voiceNavigator.options = {
             appID: VOICE_NAV_APPS[DEMO_ENVIRONMENT]['movieGenius'],
+///*
             cardLayout: rottenTomatoesCard,
             customCSSPath: './css/movieCards.css',
-
+/*/// Comment out the cardLayout field if you would like to use card fields
+            cardFields: [{
+                key: 'director',
+                label: 'Director',
+                placeholder: 'Unknown'
+            }, {
+                key: 'pubdate',
+                label: 'Release Date',
+                placeholder: 'Unknown',
+                format: 'date'
+            }],
+//*/
             cleanUrl: 'https://api-' + DEMO_ENVIRONMENT + '.expectlabs.com/',
             fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye'
         };

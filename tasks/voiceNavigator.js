@@ -47,7 +47,7 @@ var voiceNavigator  = (function() {
                 sourceVoiceNav + 'img/modal/*'
         ],
         'build:modal:html' : [
-                sourceVoiceNav + 'templates/modal.jade'
+                sourceVoiceNav + 'html/modal.jade'
         ],
         'build:modal:audio' : [
                 sourceVoiceNav + 'audio/*'

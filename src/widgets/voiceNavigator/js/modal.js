@@ -43,6 +43,7 @@
     $cards : $(),
     $mm : $(),
     $mm_parent : $(),
+    $mm_close : $(),
     $mm_button : $(),
     $mm_button_icon : $(),
     $mm_pulser : $(),
@@ -85,6 +86,7 @@
       this.$window = $(window);
       this.$mm = $('#mindmeld');
       this.$mm_button = $('#mm-button');
+      this.$mm_close = $('#close, #mindmeld-overlay');
       this.$mm_pulser = $('#mm-pulser');
       this.$mm_button_icon = $('#mm-button-icon');
       this.$mm_parent = $('#mindmeld-parent');
@@ -167,22 +169,35 @@
         }
       });
 
+      // Close the modal
+      self.$mm_close.click(function(e) {
+        e.preventDefault();
+        self.close();
+      });
+
       if(!MM.support.speechRecognition) {
         self.$mm_button.hide();
         self.$mm_pulser.hide();
         self.$input.hide();
+
+        self.$body.addClass('no-speech');
+
         var $text_input = $('<li>', {'class':'text-input'});
         var $form = $('<form>');
         var $input = $('<input>', {
                        type: "text",
                        class: "search",
                        placeholder: "Search query"});
+        var $button = $('<button>', {
+                       html: "&nbsp;<span></span>",
+                       type: "submit", });
 
         $form.submit(function(e) {
           e.preventDefault();
           var recording = $input.val();
 
           $input.val("").focus();
+          $input.attr("placeholder", recording);
           self.appendHistory({transcript: recording});
 
           // Submit!
@@ -197,6 +212,7 @@
 
         $text_input.append($form);
         $form.append($input);
+        $form.append($button);
         self.$historyList.append($text_input);
 
         $input.focus();
@@ -242,6 +258,20 @@
 
     },
 
+
+    close : function() {
+      var self = this;
+
+      self.stopListening();
+      self.$mm_parent.removeClass('open results');
+      self.$body.removeClass('results');
+      self.is_results = false;
+      self.results_length = 0;
+      setTimeout(function() {
+        self.postMessage('close');
+      }, 500);
+    },
+
     _do_on_voice_ready : function(fn) {
       var self = this;
       if(self.is_voice_ready) {
@@ -280,6 +310,14 @@
       var self = this;
       var scale = ((volume / 100) * 0.5) + 1.4;
       self.$mm_pulser.css('transform', 'scale(' + scale + ')');
+    },
+
+    postMessage : function(action, data) {
+      parent.postMessage({
+        action: action,
+        source: 'mindmeld',
+        data: data
+      }, "*");
     },
 
     _historyHeight : function(scrollHeight) {
@@ -418,9 +456,10 @@
     },
 
     stopListening : function() {
-      this.is_locked = false;
-
-      MM.activeSession.listener.cancel();
+      if(MM.support.speechRecognition) {
+        MM.activeSession.listener.cancel();
+        this.is_locked = false;
+      }
       this._updateUI();
     },
 
@@ -595,8 +634,52 @@
           'html': description
         }));
 
-      }
+        // fields
+        if (typeof self.config.cardFields !== 'undefined') {
+          function getFormattedString(format, value) {
+            switch (format) {
+              case 'date':
+                var date = new Date(value * 1000);
+                return (date.getMonth() + 1) + '/' + date.getDay() + '/' + date.getFullYear();
+              default:
+                return value.substr(0, 100) + (value.length > 100 ? "&hellip;" : "");
+            }
+          }
 
+          var cardFields = self.config.cardFields;
+          $.each(cardFields, function(k2, field) {
+            var value = doc[field.key] || field.placeholder;
+            if (typeof value !== 'undefined' && value !== '') {
+              // If a label is specified, add a label
+              if (typeof field.label !== 'undefined' && field.label !== '') {
+                var $label = $('<span>', {
+                  class: 'label',
+                  html: field.label
+                });
+              }
+              // If we aren't using the placeholder,
+              var $value = $('<span>', {
+                class: 'value',
+              });
+              // if we aren't using placeholder, format the string
+              if (value !== field.placeholder) {
+                value = getFormattedString(field.format, value);
+              } else {
+                $value.addClass('placeholder'); // other wise add placeholder class
+              }
+              $value.text(value);
+              var $field = $('<p>', {
+                class: 'mm-doc-field'
+              });
+              if (typeof field.class !== 'undefined' && field.class !== '') {
+                $field.addClass(field.class);
+              }
+              $field.append($label).append($value);
+              $card.append($field);
+            }
+          });
+        }
+      }
       return $card;
     },
 
