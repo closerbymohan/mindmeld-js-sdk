@@ -161,7 +161,9 @@
           return;
         }
 
-        if(action == 'open') {
+        if (action === 'open') {
+          self.config = event.data.data;
+          self.onConfig();
           self.$mm_parent.addClass('open');
           self._do_on_voice_ready(function() {
             MMVoice.listen(false);
@@ -175,7 +177,7 @@
         self.close();
       });
 
-      if(!MM.support.speechRecognition) {
+      if (!MM.support.speechRecognition) {
         self.$mm_button.hide();
         self.$mm_pulser.hide();
         self.$input.hide();
@@ -185,12 +187,14 @@
         var $text_input = $('<li>', {'class':'text-input'});
         var $form = $('<form>');
         var $input = $('<input>', {
-                       type: "text",
-                       class: "search",
-                       placeholder: "Search query"});
+            type: "text",
+            class: "search",
+            placeholder: "Search query"
+        });
         var $button = $('<button>', {
-                       html: "&nbsp;<span></span>",
-                       type: "submit", });
+            html: "&nbsp;<span></span>",
+            type: "submit"
+        });
 
         $form.submit(function(e) {
           e.preventDefault();
@@ -601,7 +605,8 @@
         $card.html(html);
       } else {
         var $title = $('<h2>', {
-          'html': doc.title
+          class: 'title',
+          html: doc.title
         });
         $card.append($title);
 
@@ -615,11 +620,11 @@
         }
         if (imageURL) {
           var $image = $('<p>', {
-            class: 'image notloaded'
+            class: 'image not-loaded'
           });
 
           $image.append($('<img>', {
-            'src': imageURL
+            src: imageURL
           }));
           $card.append($image);
         }
@@ -631,7 +636,7 @@
           description = "No description";
         }
         $card.append($('<p>', {
-          'html': description
+          html: description
         }));
 
         // fields
@@ -730,7 +735,7 @@
         self.$cards.isotope(self._isotope_config);
         self.$cards.removeClass('loading');
         self.$cards.imagesLoaded(function() {
-          $('.notloaded').removeClass('notloaded');
+          $('.not-loaded').removeClass('not-loaded');
           setTimeout(function() {
             self.$cards.isotope(self._isotope_config);
           }, 10);
@@ -746,7 +751,7 @@
         self.$cards.isotope( 'updateSortData' ).isotope(self._isotope_config);
         self.$cards.removeClass('loading');
         self.$cards.imagesLoaded(function() {
-          $('.notloaded').removeClass('notloaded');
+          $('.not-loaded').removeClass('not-loaded');
           setTimeout(function() {
             self.$cards.isotope(self._isotope_config);
           }, 10);
@@ -757,7 +762,7 @@
       if ($('.card:not(.removed)', this.$cards).length === 0) {
         this.$cards.append($('<div>', {
           class: 'no-results',
-          text: 'No results'
+          html: 'No results'
         }));
       }
 
@@ -798,7 +803,7 @@
       text = text.split('');
       var $el_parent = $('<div>', {'class': parentClass});
       for(var i=0; i < text.length; i++) {
-        $el_parent.append($('<span>', {text: text[i]}));
+        $el_parent.append($('<span>', { text: text[i] }));
       }
       $el.append($el_parent);
     },
@@ -1164,19 +1169,13 @@
         self.update_text();
       }
 
-    },
+    }
 
   };
 
-  $(function() {
+  MMVoice.onConfig = function() {
 
-    // Load options from iframe attribute
-    var voiceNavOptions = window.frameElement.getAttribute('mm-voice-navigator-options');
-    try {
-      voiceNavOptions = MMVoice.config = JSON.parse(voiceNavOptions);
-    } catch (e) {
-      UTIL.log('Error parsing voice navigator configuration');
-    }
+    var voiceNavOptions = MMVoice.config;
 
     var MM_USER_ID_PREFIX = 'vnu';
     var MM_USER_NAME = 'Voice Navigator User';
@@ -1316,7 +1315,9 @@
     function setupSessionListener() {
       MM.activeSession.setListenerConfig(MMVoice._listenerConfig);
     }
+  };
 
+  $(function () {
     MMVoice.init();
   });
 

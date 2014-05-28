@@ -39,22 +39,24 @@ gulp.task('buildSearchWidget', function () {
 
 var voiceNavigatorGulpfilePath = './tasks/voiceNavigator.js';
 
-gulp.task('buildVoiceNavigator', function () {
+gulp.task('buildVoiceNavigator', [ 'build.voice-navigator' ]);
+gulp.task('build.voice-navigator', function () {
+
     return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug({ tasks: ['build'] }) );
 });
 
-gulp.task('watch:voice-navigator', function () {
+gulp.task('watch.voice-navigator', function () {
     return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug({ tasks: ['watch'] }) );
 });
 
-gulp.task('serve:voice-navigator', function () {
+gulp.task('serve.voice-navigator', function () {
     return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug({ tasks: ['serve'] }) );
 });
 
-gulp.task('serve:voice-navigator:no-min', function () {
+gulp.task('serve.voice-navigator.no-min', function () {
     return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
         .pipe( chug({ tasks: ['serve:no-min'] }) );
 });

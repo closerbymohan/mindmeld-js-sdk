@@ -145,7 +145,7 @@
 
     MM.voiceNavigator.showModal = function () {
         if (MMVoice.is_init) {
-            if(! MMVoice.$mm_iframe) {
+            if (!MMVoice.$mm_iframe) {
                 var iframe = document.createElement('iframe');
                 iframe.setAttribute('frameBorder', '0');
                 iframe.setAttribute('id', 'mindmeld-iframe');
@@ -168,13 +168,12 @@
                         MM.voiceNavigator.options.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.options.customCSSPath);
                     }
 
-                    iframe.setAttribute('mm-voice-navigator-options', JSON.stringify(MM.voiceNavigator.options));
                 }
 
                 MMVoice.$mm_iframe = MMVoice.el(iframe);
 
                 MMVoice.el(iframe).on('load', function() {
-                    MMVoice.postMessage('open');
+                    MMVoice.postMessage('open', MM.voiceNavigator.options);
                     MMVoice.iframe_loaded = true;
 
                     if (typeof MM.voiceNavigator.options.customCSSPath !== 'undefined') {
@@ -189,7 +188,7 @@
                 MMVoice.$mm.el().appendChild(iframe);
             }
             else {
-                MMVoice.postMessage('open');
+                MMVoice.postMessage('open', MM.voiceNavigator.options);
             }
             MMVoice.$mm.addClass('on');
         }
