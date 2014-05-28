@@ -137,9 +137,9 @@
         },
 
         convertToAbsolutePath : function(href) {
-            var anchor = document.createElement("a");
+            var anchor = document.createElement('a');
             anchor.href = href;
-            return (anchor.protocol+"//"+anchor.host+anchor.pathname+anchor.search+anchor.hash);
+            return (anchor.protocol + '//' + anchor.host + anchor.pathname + anchor.search + anchor.hash);
         }
     };
 
