@@ -40,17 +40,19 @@
         <!--<script src="../../../dist/widgets/searchWidget/mindmeldSearchWidget.js"></script>-->
 
         <script type="text/javascript">
-            var options = {
+            MM.widgets = MM.widgets || {};
+            MM.widgets.config = {
                 appid: 'f38fa5965f016a1d4886d538f25ac35c14b4bdc2',
-                images: false,
-                onMMSearchInitialized: function () {
-                    console.log('mindmeld search widget ready!');
-                },
-                onMMSearchError: function (errorMessage) {
-                    console.log('error initializing search widget: ' + errorMessage);
+                search: {
+                    onMMSearchInitialized: function () {
+                        console.log('mindmeld search widget ready!');
+                    },
+                    onMMSearchError: function (errorMessage) {
+                        console.log('error initializing search widget: ' + errorMessage);
+                    }
                 }
             };
-            $('#mm-search').searchwidget(options);
+            $('#mm-search').searchwidget();
 //            MM.loader.$jq('#mm-search').searchwidget(options); For use when using standalone search widget
         </script>
     </body>

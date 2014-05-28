@@ -67,7 +67,10 @@ gulp.task('watchSearchWidgetStyle', ['searchWidgetCSSMin'], function () {
 
 // Watches search widget JS files
 gulp.task('watchSearchWidgetJS', ['searchWidgetJS'], function () {
-    gulp.watch(srcSearchWidgetDir + 'js/**', ['searchWidgetJS']);
+    gulp.watch([
+            srcSearchWidgetDir + 'js/**',
+            srcDirectory + 'sdk/main.js',
+    ], ['searchWidgetJS']);
 });
 
 // Uglifies mindmle.js for inclusion

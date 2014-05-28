@@ -139,35 +139,55 @@
             return this._initialized;
         },
 
-        _initMM: function () {
-            var appid = this.options.appid || MM.appid;
-            if (! this._validateString(appid, 40)) {
-                this.options.onMMSearchError('Please supply a valid appid');
-                return;
+        /**
+         * Updates this.options with config from MM.widgets.config.search
+         * @private
+         */
+        _setWidgetOptions: function () {
+            for (var widgetOption in MM.widgets.config.search) {
+                this.options[widgetOption] = MM.widgets.config.search[widgetOption];
             }
-            var self = this;
-            var config = {
-                appid: appid,
-                onInit: onMMInit
-            };
-            MM.init(config);
+        },
 
-            function onMMInit () {
-                MM.getToken(
-                    {
-                        anonymous: {
-                            userid: 'MMSearchWidgetUserID',
-                            name: 'MMSearchWidgetUser',
-                            domain: window.location.hostname
+        _validateConfig: function () {
+            return (! $.isEmptyObject(MM.widgets) && ! ($.isEmptyObject(MM.widgets.config)));
+        },
+
+        _initMM: function () {
+            if (this._validateConfig()) {
+                this._setWidgetOptions();
+                var appid = MM.widgets.config.appid;
+                if (! this._validateString(appid, 40)) {
+                    this.options.onMMSearchError('Please supply a valid appid');
+                    return;
+                }
+                var self = this;
+                var config = {
+                    appid: appid,
+                    onInit: onMMInit
+                };
+                MM.init(config);
+
+                function onMMInit () {
+                    MM.getToken(
+                        {
+                            anonymous: {
+                                userid: 'MMSearchWidgetUserID',
+                                name: 'MMSearchWidgetUser',
+                                domain: window.location.hostname
+                            }
+                        },
+                        function onGetToken () {
+                            self._getOrSetSession();
+                        },
+                        function onTokenError () {
+                            self.options.onMMSearchError('Supplied token is invalid');
                         }
-                    },
-                    function onGetToken () {
-                        self._getOrSetSession();
-                    },
-                    function onTokenError () {
-                        self.options.onMMSearchError('Supplied token is invalid');
-                    }
-                );
+                    );
+                }
+            }
+            else {
+                console.log('Invalid search widget config');
             }
         },
 
