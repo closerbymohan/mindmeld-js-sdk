@@ -35,7 +35,7 @@
     <script>
         var MM = window.MM || {};
         MM.loader = MM.loader || {};
-        MM.loader.rootURL = 'http://' + window.location.host + '/dist/';
+        MM.loader.rootURL = '//' + window.location.host + '/dist/';
         var VOICE_NAV_APPS = {
             'west-dev-d': {
                 movieGenius: '2befc7c6ea69d12c0a34acb30c7152027cc37c78',
@@ -59,26 +59,29 @@
         var MM = window.MM || {};
         MM.loader = MM.loader || {};
         MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
-        MM.voiceNavigator = MM.voiceNavigator || {};
-        MM.voiceNavigator.options = {
+        MM.widgets = MM.widgets || {};
+        MM.widgets.config = {
             appID: VOICE_NAV_APPS[DEMO_ENVIRONMENT]['movieGenius'],
-///*
-            cardLayout: rottenTomatoesCard,
-            customCSSPath: './css/movieCards.css',
-/*/// Comment out the cardLayout field if you would like to use card fields
-            cardFields: [{
-                key: 'director',
-                label: 'Director',
-                placeholder: 'Unknown'
-            }, {
-                key: 'pubdate',
-                label: 'Release Date',
-                placeholder: 'Unknown',
-                format: 'date'
-            }],
-//*/
             cleanUrl: 'https://api-' + DEMO_ENVIRONMENT + '.expectlabs.com/',
-            fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye'
+            fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye',
+            voice: {
+//*
+                cardLayout: rottenTomatoesCard,
+                customCSSPath: './css/movieCards.css'
+/*/// Comment out the cardLayout field `if you would like to use card fields
+                cardFields: [{
+                    key: 'director',
+                    label: 'Director',
+                    placeholder: 'Unknown'
+                }
+                    , {
+                    key: 'pubdate',
+                    label: 'Release Date',
+                    placeholder: 'Unknown',
+                    format: 'date'
+                }]
+             //*/
+            }
         };
 
       function rottenTomatoesCard(doc) {
@@ -103,7 +106,7 @@
           }
         }
         if (imageURL) {
-          html += '<p class="image notloaded"><img src="' + imageURL + '"></p>';
+          html += '<p class="image not-loaded"><img src="' + imageURL + '"></p>';
         }
 
         function getElementForKey(key, alignment) {
