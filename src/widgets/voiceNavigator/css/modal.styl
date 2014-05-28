@@ -2,6 +2,7 @@
 
 baseZ = 100000
 buttonBGColor = #ca6b37
+mobile = "only screen and (min-device-width : 320px) and (max-device-width : 480px)"
 
 *, *:before, *:after
   box-sizing border-box
@@ -41,6 +42,9 @@ body
   color #333
   padding 60px
   overflow hidden
+
+  @media mobile
+    padding 50px 0 0
 
   #mm-button
     position absolute
@@ -327,6 +331,11 @@ body
   transition height 0.3s ease-out
   .results &
     height 100%
+  @media mobile
+    width 100%
+    left auto
+    margin-left 0
+    border-radius 0
 
 #history-button
   z-index 1000
@@ -348,6 +357,10 @@ body
   margin-top 9px
   opacity 0.5
   color #797979
+  @media mobile
+    background none
+    height auto
+    padding-top 0
   .no-speech &
     top 15px
     left 30px
@@ -516,6 +529,8 @@ body
     padding-top 107px
   height 510px
   overflow auto
+  .slimScrollDiv
+    background-color #f3f3f3
   #tags
     padding 10px
     text-align center
@@ -541,7 +556,9 @@ body
     padding 10px
     background-color #f9f9f9
     background #f3f3f3
-    border 1px solid #fff
+    @media mobile
+      width 259px
+      margin auto
     &.loading
       opacity 0.3
     a.card

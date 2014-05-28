@@ -557,6 +557,11 @@ body {
   padding: 60px;
   overflow: hidden;
 }
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  body {
+    padding: 50px 0 0;
+  }
+}
 body #mm-button {
   position: absolute;
   z-index: 100100;
@@ -1016,6 +1021,15 @@ body #mindmeld-parent.results {
 .results #mindmeld {
   height: 100%;
 }
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  #mindmeld {
+    width: 100%;
+    left: auto;
+    margin-left: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+  }
+}
 #history-button {
   z-index: 1000;
   display: none;
@@ -1045,6 +1059,13 @@ body #mindmeld-parent.results {
     -webkit-background-size: 31px 28px;
     -moz-background-size: 31px 28px;
     background-size: 31px 28px;
+  }
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  #history-button {
+    background: none;
+    height: auto;
+    padding-top: 0;
   }
 }
 .no-speech #history-button {
@@ -1665,6 +1686,9 @@ body #mindmeld-parent.results {
 .no-speech #results {
   padding-top: 107px;
 }
+#results .slimScrollDiv {
+  background-color: #f3f3f3;
+}
 #results #tags {
   padding: 10px;
   text-align: center;
@@ -1693,7 +1717,12 @@ body #mindmeld-parent.results {
   padding: 10px;
   background-color: #f9f9f9;
   background: #f3f3f3;
-  border: 1px solid #fff;
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  #results #cards {
+    width: 259px;
+    margin: auto;
+  }
 }
 #results #cards.loading {
   opacity: 0.3;
