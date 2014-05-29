@@ -319,13 +319,17 @@
                     function onKeyPress (event) {
                         if (event.which === 13) {
                             var currentQuery = self.element.val();
-                            if (MM.voiceNavigator) {
-                                MM.voiceNavigator.showModal(currentQuery);
-                            }
+                            self._openVoiceNavigator(currentQuery);
                         }
                     }
                 );
             }
+        },
+
+        _openVoiceNavigator: function (query) {
+            MM.loader.widgetLoaded('voice', function () {
+                MM.voiceNavigator.showModal(query);
+            });
         },
 
         _stripEmTags: function (value) {
@@ -370,7 +374,7 @@
                     this._cleanQueryCache();
                 }
                 else {
-                    onQueryError('Cannot query documents, MM search widget not initialized')
+                    onQueryError('Cannot query documents, MM search widget not initialized');
                 }
             }
         },
