@@ -7651,7 +7651,9 @@ var MM = ( function ($, Faye) {
              * @instance
              */
             stop: function() {
-                this._recognizer.stop();
+                if (this._recognizer) {
+                    this._recognizer.stop();
+                }
             },
             /**
              * Cancels the active speech recognition session. No further results will be sent to the onResult callback.
@@ -7660,7 +7662,9 @@ var MM = ( function ($, Faye) {
              * @instance
              */
             cancel: function() {
-                this._recognizer.abort();
+                if (this._recognizer) {
+                    this._recognizer.abort();
+                }
             }
         });
 
@@ -8122,9 +8126,11 @@ var MM = ( function ($, Faye) {
                     self.config = event.data.data;
                     self.onConfig();
                     self.$mm_parent.addClass('open');
-                    self._do_on_voice_ready(function() {
-                        MMVoice.listen(false);
-                    });
+                    if (self.config.startQuery === null) {
+                        self._do_on_voice_ready(function() {
+                            MMVoice.listen(false);
+                        });
+                    }
                 }
             });
 
@@ -8855,7 +8861,7 @@ var MM = ( function ($, Faye) {
             var selectedEntityIDs = Object.keys(MMVoice.selectedEntityMap);
             if (selectedEntityIDs.length > 0) {
                 requestKey = JSON.stringify(selectedEntityIDs);
-                queryParams.entityids = requestKey;
+//                queryParams.entityids = requestKey;
             } else {
                 queryParams.textentryids = JSON.stringify(self._currentTextEntries);
             }
@@ -8937,6 +8943,7 @@ var MM = ( function ($, Faye) {
             self._currentTextEntries.push(textEntryID);
             delete self._documentsCache['default'];
             self.selectedEntityMap = {};
+            MMVoice.getDocuments();
         },
 
         _listenerConfig : {
@@ -9246,6 +9253,10 @@ var MM = ( function ($, Faye) {
         function subscribeToTextEntries() {
             function onSuccess(result) {
                 UTIL.log("Subscribed to text entries!");
+                // Optionally submit start query
+                if (voiceNavOptions.startQuery !== null) {
+                    MMVoice.submitText(voiceNavOptions.startQuery);
+                }
             }
             function onError() {
                 UTIL.log("Error subscribing to text entries:  (Type " + error.code +
@@ -9266,7 +9277,6 @@ var MM = ( function ($, Faye) {
             MM.activeSession.entities.onUpdate(function(result) {
                 UTIL.log('Received entities update');
                 MMVoice.setEntities(result.data);
-                MMVoice.getDocuments();
             }, onSuccess, onError);
         }
 

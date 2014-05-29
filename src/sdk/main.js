@@ -4070,7 +4070,9 @@ var MM = ( function ($, Faye) {
              * @instance
              */
             stop: function() {
-                this._recognizer.stop();
+                if (this._recognizer) {
+                    this._recognizer.stop();
+                }
             },
             /**
              * Cancels the active speech recognition session. No further results will be sent to the onResult callback.
@@ -4079,7 +4081,9 @@ var MM = ( function ($, Faye) {
              * @instance
              */
             cancel: function() {
-                this._recognizer.abort();
+                if (this._recognizer) {
+                    this._recognizer.abort();
+                }
             }
         });
 

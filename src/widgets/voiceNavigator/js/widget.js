@@ -143,7 +143,7 @@
         }
     };
 
-    MM.voiceNavigator.showModal = function () {
+    MM.voiceNavigator.showModal = function (query) {
         if (MMVoice.is_init) {
             if (!MMVoice.$mm_iframe) {
                 var iframe = document.createElement('iframe');
@@ -187,6 +187,14 @@
                             sessionID: MM.activeSessionId
                         };
                     }
+
+                    // If defined, pass a starting query
+                    if (query !== undefined && query !== '') {
+                        MM.voiceNavigator.config.startQuery = query;
+                    }
+                    else {
+                        MM.voiceNavigator.config.startQuery = null;
+                    }
                 }
 
                 MMVoice.$mm_iframe = MMVoice.el(iframe);
@@ -213,7 +221,7 @@
         }
         else {
             // Set on_init() callback to open modal
-            MMVoice.on_init = MM.voiceNavigator.showModal;
+            MMVoice.on_init = function () { MM.voiceNavigator.showModal(query);};
         }
 
     };

@@ -172,7 +172,7 @@ gulp.task('watch.no-min', ['build.no-min'], function() {
     for (var i = 0; i < watchLocations.length; i++) {
         gulp.watch(voiceNavigator.paths[watchLocations[i]], [ watchLocations[i] + '.no-min' ]);
     }
-    gulp.watch(voiceNavigator.paths['build.widget.other'], [ 'build.widget.other' ]);
+    gulp.watch(voiceNavigator.paths['build.modal.html'], [ 'build.modal.other' ]);
 });
 
 gulp.task('serve', ['watch'], function() {

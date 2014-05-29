@@ -318,8 +318,9 @@
                 this.element.keypress(
                     function onKeyPress (event) {
                         if (event.which === 13) {
+                            var currentQuery = self.element.val();
                             if (MM.voiceNavigator) {
-                                MM.voiceNavigator.showModal();
+                                MM.voiceNavigator.showModal(currentQuery);
                             }
                         }
                     }
