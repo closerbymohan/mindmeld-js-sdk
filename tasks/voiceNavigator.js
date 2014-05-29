@@ -39,6 +39,7 @@ var voiceNavigator  = (function() {
                 sourceVoiceNav + 'js/vendor/jquery.slimscroll.min.js',
                 sourceVoiceNav + 'js/vendor/imagesloaded.pkgd.js',
                 sourceVoiceNav + 'js/vendor/jquery.cookie-1.4.0.js',
+                sourceVoiceNav + 'js/vendor/lodash.compat.min.js',
                 rootDirectory + 'dist/sdk/mindmeld.js',
                 sourceVoiceNav + 'js/entityHighlighting.js',
                 sourceVoiceNav + 'js/modal.js'

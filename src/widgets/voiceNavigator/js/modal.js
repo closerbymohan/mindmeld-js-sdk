@@ -601,7 +601,7 @@
             $card.attr('data-document-id', doc.documentid);
 
             if (self.config.cardLayout === 'custom') {
-                var html = window.parent.MM.voiceNavigator.getCardHTML(doc);
+                var html = self.cardTemplate(doc);
                 $card.html(html);
             } else {
                 var $title = $('<h2>', {
@@ -636,7 +636,8 @@
                     description = "No description";
                 }
                 $card.append($('<p>', {
-                    html: description
+                    html: description,
+                    class: 'description'
                 }));
 
                 // fields
@@ -1176,6 +1177,10 @@
     MMVoice.onConfig = function() {
 
         var voiceNavOptions = MMVoice.config;
+
+        if (MMVoice.config.cardLayout === 'custom') {
+            MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+        }
 
         var MM_USER_ID_PREFIX = 'vnu';
         var MM_USER_NAME = 'Voice Navigator User';
