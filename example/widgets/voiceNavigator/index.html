@@ -32,36 +32,12 @@
       <a class='mm-voice-nav-init' href='#' id='toggle' style='position: absolute; top: 0; right: 0; color: red; padding: 5px 11px;'>Open Modal!</a>
 
     </div>
-    <script>
-        var MM = window.MM || {};
-        MM.loader = MM.loader || {};
-        MM.loader.rootURL = '//' + window.location.host + '/dist/';
-        var VOICE_NAV_APPS = {
-            'west-dev-d': {
-                movieGenius: '2befc7c6ea69d12c0a34acb30c7152027cc37c78',
-                techNews: '9a6721de8eabe1c378cc6e26468b9cff4a952dbd',
-                recipeAssistant: 'b3acdcf114048e7e689503cb3a76cc8916f7b80d'
-            },
-            'west-dev-e': {
-                movieGenius: 'ad666f13daeb5c36f6f2c3a11ec8b5d3d01467a0',
-                techNews: '0bb356bc9b8507c5110174cd0a59d09dc5e19b89',
-                recipeAssistant: '86c8eaaa345fe3c35527d8fe0d724cacff8411ff'
-            },
-            'west-prod-a': {
-                movieGenius: 'f8587c112dbecc5d7d42d2c81cac6a0fc0671743',
-                techNews: '53b2d92f34d89e1df16897cd7e1be5e23d990b79',
-                recipeAssistant: '5e87d2fc46afcec7dd6680e675e92c61d60a67c3'
-            }
-        };
-        var DEMO_ENVIRONMENT = 'west-dev-e';
-    </script>
 
-    <script id="card-template" type="text/x-lodash-template">
+    <script id="card-template" type="text/template">
         <h2 class="title"><%= title %></h2>
-        <% if (typeof description !== 'undefined') {
-            var desc = description.substr(0, 150) + (description.length > 150 ? "&hellip;" : "");
-        } else {
-            desc = "No description";
+        <% var desc = 'No Description';
+        if (typeof description !== 'undefined') {
+            desc = description.substr(0, 150) + (description.length > 150 ? "&hellip;" : "");
         } %>
         <p class="description"><%= desc %></p>
         <% if (typeof image !== 'undefined' && image.url !== '') { %>
@@ -107,14 +83,37 @@
                 %>
                 (<%= Math.floor(value) + scale %> reviews)
             </p>
-
-
             <% } else { %>
             <p class="align-right review-count placeholder">No reviews</p>
             <% } %>
             <p class="clear-fix"></p>
         </div>
     </script>
+
+    <script>
+        var MM = window.MM || {};
+        MM.loader = MM.loader || {};
+        MM.loader.rootURL = '//' + window.location.host + '/dist/';
+        var VOICE_NAV_APPS = {
+            'west-dev-d': {
+                movieGenius: '2befc7c6ea69d12c0a34acb30c7152027cc37c78',
+                techNews: '9a6721de8eabe1c378cc6e26468b9cff4a952dbd',
+                recipeAssistant: 'b3acdcf114048e7e689503cb3a76cc8916f7b80d'
+            },
+            'west-dev-e': {
+                movieGenius: 'ad666f13daeb5c36f6f2c3a11ec8b5d3d01467a0',
+                techNews: '0bb356bc9b8507c5110174cd0a59d09dc5e19b89',
+                recipeAssistant: '86c8eaaa345fe3c35527d8fe0d724cacff8411ff'
+            },
+            'west-prod-a': {
+                movieGenius: 'f8587c112dbecc5d7d42d2c81cac6a0fc0671743',
+                techNews: '53b2d92f34d89e1df16897cd7e1be5e23d990b79',
+                recipeAssistant: '5e87d2fc46afcec7dd6680e675e92c61d60a67c3'
+            }
+        };
+        var DEMO_ENVIRONMENT = 'west-dev-e';
+    </script>
+
     <script>
         var MM = window.MM || {};
         MM.loader = MM.loader || {};
@@ -127,7 +126,7 @@
             voice: {
 //*
                 cardTemplate: window['card-template'].innerHTML,
-                customCSSPath: './css/movieCards.css'
+                customCSSPath: './css/movieGenius.css'
 /*/// Comment out the cardLayout field `if you would like to use card fields
                 cardFields: [{
                     key: 'director',
