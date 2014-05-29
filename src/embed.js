@@ -36,6 +36,10 @@ var MM = window.MM || {};
      */
     MM.loader.widgetLoaders = {
         search: function () {
+            if (MM.loader.widgets.indexOf('voice') !== -1) {
+                MM.widgets.config.search = MM.widgets.config.search || {};
+                MM.widgets.config.search.voiceNavigatorEnabled = true;
+            }
             loadJS(MM.loader.rootURL + 'widgets/searchWidget/mindmeldSearchWidget.js',
                 function onSearchWidgetLoad () {
                     MM.loader.$jq('#mm-search').searchwidget();

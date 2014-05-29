@@ -155,7 +155,7 @@
                     typeof MM.widgets !== 'undefined' &&
                     typeof MM.widgets.config !== 'undefined') {
                     // Move config to voice nav config
-                    MM.voiceNavigator.config = MM.widgets.config.voice;
+                    MM.voiceNavigator.config = MM.widgets.config.voice || {};
                     MM.voiceNavigator.config.appID = MM.widgets.config.appID;
                     if (typeof MM.widgets.config.cleanUrl !== 'undefined') {
                         MM.voiceNavigator.config.cleanUrl = MM.widgets.config.cleanUrl;
@@ -166,9 +166,9 @@
 
                     // parse card layout
                     if (typeof MM.voiceNavigator.config.cardLayout === 'function') {
-                        MM.voiceNavigator.getCardHTML = MM.voiceNavigator.options.cardLayout;
+                        MM.voiceNavigator.getCardHTML = MM.voiceNavigator.config.cardLayout;
                         MM.voiceNavigator.config.cardLayout = 'custom'; //
-                    } else if (typeof MM.voiceNavigator.options.cardLayout === 'undefined') {
+                    } else if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
                         MM.voiceNavigator.config.cardLayout = 'default';
                     }
 

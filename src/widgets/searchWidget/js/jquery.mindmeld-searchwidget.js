@@ -123,6 +123,7 @@
 
         options: {
             images: false,
+            voiceNavigatorEnabled: false,
             onMMSearchInitialized: function () {},
             onMMSearchError: function () {}
         },
@@ -156,16 +157,22 @@
         _initMM: function () {
             if (this._validateConfig()) {
                 this._setWidgetOptions();
-                var appid = MM.widgets.config.appid;
-                if (! this._validateString(appid, 40)) {
+                var appID = MM.widgets.config.appID;
+                if (! this._validateString(appID, 40)) {
                     this.options.onMMSearchError('Please supply a valid appid');
                     return;
                 }
                 var self = this;
                 var config = {
-                    appid: appid,
+                    appid: appID,
                     onInit: onMMInit
                 };
+                if (typeof self.options.cleanUrl !== 'undefined') {
+                    config.cleanUrl = self.options.cleanUrl;
+                }
+                if (typeof self.options.fayeClientUrl !== 'undefined') {
+                    config.fayeClientUrl = self.options.fayeClientUrl;
+                }
                 MM.init(config);
 
                 function onMMInit () {
@@ -306,6 +313,18 @@
                 },
                 images: self.options.images
             });
+
+            if (this.options.voiceNavigatorEnabled) {
+                this.element.keypress(
+                    function onKeyPress (event) {
+                        if (event.which === 13) {
+                            if (MM.voiceNavigator) {
+                                MM.voiceNavigator.showModal();
+                            }
+                        }
+                    }
+                );
+            }
         },
 
         _stripEmTags: function (value) {
