@@ -573,22 +573,23 @@ body
       &:hover
         box-shadow 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920
         text-decoration none
-        h2
+        .title
           color darken(#636363, 55%)
 
-      h2
+      .title
         color #636363
         font-size 15px
         font-family 'Open Sans', sans-serif
         margin 0 15px
+
       p.image
         width 100%
         text-align center
-        margin 0
+        margin 5px 0
         &.not-loaded
           height 100px
-          background-color #eee
           overflow hidden
+          background #ddd url(/dist/widgets/voiceNavigator/modal/spinner.gif)  no-repeat center
           img
             opacity 0
         img

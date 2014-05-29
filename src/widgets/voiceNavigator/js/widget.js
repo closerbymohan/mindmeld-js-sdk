@@ -165,10 +165,10 @@
                     }
 
                     // parse card layout
-                    if (typeof MM.voiceNavigator.config.cardLayout === 'function') {
-                        MM.voiceNavigator.getCardHTML = MM.voiceNavigator.config.cardLayout;
-                        MM.voiceNavigator.config.cardLayout = 'custom'; //
-                    } else if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
+                    if (typeof MM.voiceNavigator.config.cardTemplate !== 'undefined') {
+                        MM.voiceNavigator.config.cardLayout = 'custom';
+                    }
+                    if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
                         MM.voiceNavigator.config.cardLayout = 'default';
                     }
 

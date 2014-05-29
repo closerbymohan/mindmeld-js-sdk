@@ -1746,10 +1746,10 @@ body #mindmeld-parent.results {
   box-shadow: 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920;
   text-decoration: none;
 }
-#results #cards a.card:hover h2 {
+#results #cards a.card:hover .title {
   color: #2d2d2d;
 }
-#results #cards a.card h2 {
+#results #cards a.card .title {
   color: #636363;
   font-size: 15px;
   font-family: 'Open Sans', sans-serif;
@@ -1758,12 +1758,12 @@ body #mindmeld-parent.results {
 #results #cards a.card p.image {
   width: 100%;
   text-align: center;
-  margin: 0;
+  margin: 5px 0;
 }
 #results #cards a.card p.image.not-loaded {
   height: 100px;
-  background-color: #eee;
   overflow: hidden;
+  background: #ddd url("/dist/widgets/voiceNavigator/modal/spinner.gif") no-repeat center;
 }
 #results #cards a.card p.image.not-loaded img {
   opacity: 0;
