@@ -191,6 +191,13 @@
                         cssLink.type = 'text/css';
                         frames['mindmeld-iframe'].contentWindow.document.head.appendChild(cssLink);
                     }
+
+                    if (typeof MM.voiceNavigator.config.customCSS !== 'undefined') {
+                        var cssStyle = document.createElement('style');
+                        cssStyle.type = 'text/css';
+                        cssStyle.innerText = MM.voiceNavigator.config.customCSS;
+                        frames['mindmeld-iframe'].contentWindow.document.head.appendChild(cssStyle);
+                    }
                 });
 
                 MMVoice.$mm.el().appendChild(iframe);
