@@ -1183,12 +1183,8 @@
 
         var MM_CONFIG = {
             appid: voiceNavOptions.appID,
-            onInit: function() {
-                UTIL.log("Hello from MindMeld!");
-                getToken();
-            }
+            onInit: onMMInit
         };
-
         if (typeof voiceNavOptions.cleanUrl !== 'undefined') {
             MM_CONFIG.cleanUrl = voiceNavOptions.cleanUrl;
         }
@@ -1196,6 +1192,19 @@
             MM_CONFIG.fayeClientUrl = voiceNavOptions.fayeClientUrl;
         }
         MM.init(MM_CONFIG);
+
+        function onMMInit () {
+            if (voiceNavOptions.mmCredentials) {
+                // No need to fetch token, user, or create session
+                MM.setToken(voiceNavOptions.mmCredentials.token);
+                MM.setActiveUserID(voiceNavOptions.mmCredentials.userID);
+                MM.setActiveSessionID(voiceNavOptions.mmCredentials.sessionID);
+                onSessionStart();
+            }
+            else {
+                getToken();
+            }
+        }
 
         function guid() {
             return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -1225,15 +1234,6 @@
 
             var userID = getUserID();
             MM.getToken({
-                /* Anon. user auth is not in prod, so use simple there
-                 // simple user auth
-                 appsecret: voiceNavOptions.appSecret,
-                 simple: {
-                 userid: userID,
-                 name: MM_USER_NAME
-                 }
-                 //*/
-                // anonymous user auth
                 anonymous: {
                     userid: userID,
                     name: MM_USER_NAME,
@@ -1271,18 +1271,19 @@
         }
 
         function setSession(sessionID) {
-            function onSuccess(result) {
-                subscribeToTextEntries();
-                subscribeToEntities();
-                setupSessionListener();
-                MMVoice.is_voice_ready = true;
-                MMVoice._updateUI();
-            }
             function onError (error) {
                 UTIL.log("Error setting session:  (Type " + error.code +
                     " - " + error.type + "): " + error.message);
             }
-            MM.setActiveSessionID(sessionID, onSuccess, onError);
+            MM.setActiveSessionID(sessionID, onSessionStart, onError);
+        }
+
+        function onSessionStart () {
+            subscribeToTextEntries();
+            subscribeToEntities();
+            setupSessionListener();
+            MMVoice.is_voice_ready = true;
+            MMVoice._updateUI();
         }
 
         function subscribeToTextEntries() {

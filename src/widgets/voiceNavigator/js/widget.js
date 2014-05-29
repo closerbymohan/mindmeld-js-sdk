@@ -176,6 +176,17 @@
                     if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
                         MM.voiceNavigator.config.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSPath);
                     }
+
+                    // Pass token, user ID, and session ID if they are set already
+                    if (typeof MM.token !== 'undefined' &&
+                        typeof MM.activeUserId !== 'undefined' && MM.activeUserId !== null &&
+                        typeof MM.activeSessionId !== 'undefined' && MM.activeSessionId !== null) {
+                        MM.voiceNavigator.config.mmCredentials = {
+                            token: MM.token,
+                            userID: MM.activeUserId,
+                            sessionID: MM.activeSessionId
+                        };
+                    }
                 }
 
                 MMVoice.$mm_iframe = MMVoice.el(iframe);
