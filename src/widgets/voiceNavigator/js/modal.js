@@ -900,7 +900,7 @@
             var selectedEntityIDs = Object.keys(MMVoice.selectedEntityMap);
             if (selectedEntityIDs.length > 0) {
                 requestKey = JSON.stringify(selectedEntityIDs);
-//                queryParams.entityids = requestKey;
+                queryParams.entityids = requestKey;
             } else {
                 queryParams.textentryids = JSON.stringify(self._currentTextEntries);
             }
