@@ -1191,7 +1191,7 @@
             initialText = 'Enable the microphone...';
         }
         else {
-            initialText = 'Loading...'
+            initialText = voiceNavOptions.startQuery;
         }
         $('#initialText').text(initialText);
 
