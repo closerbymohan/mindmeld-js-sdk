@@ -167,11 +167,11 @@
                     appid: appID,
                     onInit: onMMInit
                 };
-                if (typeof self.options.cleanUrl !== 'undefined') {
-                    config.cleanUrl = self.options.cleanUrl;
+                if (MM.widgets.config.cleanUrl !== undefined) {
+                    config.cleanUrl = MM.widgets.config.cleanUrl;
                 }
-                if (typeof self.options.fayeClientUrl !== 'undefined') {
-                    config.fayeClientUrl = self.options.fayeClientUrl;
+                if (MM.widgets.config.fayeClientUrl !== undefined) {
+                    config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
                 }
                 MM.init(config);
 
@@ -327,9 +327,14 @@
         },
 
         _openVoiceNavigator: function (query) {
-            MM.loader.widgetLoaded('voice', function () {
+            if (MM.voiceNavigator !== undefined) {
                 MM.voiceNavigator.showModal(query);
-            });
+            }
+            else {
+                MM.loader.widgetLoaded('voice', function () {
+                    MM.voiceNavigator.showModal(query);
+                });
+            }
         },
 
         _stripEmTags: function (value) {
@@ -380,15 +385,19 @@
         },
 
         _getWildcardQuery: function (query) {
-            var queryTerms = query.split(" ");
-            var newQuery = "";
-            $.each(queryTerms, function (index, term) {
-                if (term !== '') {
-                    newQuery += term + "* ";
-                }
-            });
-            var fieldsQuery = "title:(" + newQuery + ") description:(" + newQuery + ") text:(" + newQuery +")";
-            return fieldsQuery;
+            var queryTerms = query.split(' ');
+            var newQuery = '';
+            if (queryTerms.length > 0 && query.slice(-1) !== ' ') {
+                var lastQueryTermIndex = queryTerms.length - 1;
+                queryTerms[lastQueryTermIndex] += '*';
+                $.each(queryTerms, function (index, term) {
+                   newQuery += term + ' ';
+                });
+            }
+            else {
+                newQuery = query;
+            }
+            return newQuery;
         },
 
         _cleanQueryCache: function () {

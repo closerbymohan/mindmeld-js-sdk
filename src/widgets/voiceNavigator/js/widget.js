@@ -215,6 +215,13 @@
                 MMVoice.$mm.el().appendChild(iframe);
             }
             else {
+                // If defined, pass a starting query
+                if (query !== undefined && query !== '') {
+                    MM.voiceNavigator.config.startQuery = query;
+                }
+                else {
+                    MM.voiceNavigator.config.startQuery = null;
+                }
                 MMVoice.postMessage('open', MM.voiceNavigator.config);
             }
             MMVoice.$mm.addClass('on');
