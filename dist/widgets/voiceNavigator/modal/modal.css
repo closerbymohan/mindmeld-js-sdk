@@ -1763,7 +1763,7 @@ body #mindmeld-parent.results {
 #results #cards a.card p.image.not-loaded {
   height: 100px;
   overflow: hidden;
-  background: #ddd url("/dist/widgets/voiceNavigator/modal/spinner.gif") no-repeat center;
+  background: #ddd url("./spinner.gif") no-repeat center;
 }
 #results #cards a.card p.image.not-loaded img {
   opacity: 0;

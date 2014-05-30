@@ -7,6 +7,7 @@ var rename = require('gulp-rename');
 var es = require('event-stream');
 var taskListing = require('gulp-task-listing');
 var chug = require('gulp-chug');
+var replace = require('gulp-replace');
 
 var nib = require('nib');
 var stylus = require('gulp-stylus');
@@ -55,8 +56,7 @@ var voiceNavigator  = (function() {
         ]
     };
     object.paths['build.modal.other'] = object.paths['build.modal.img']
-        .concat(object.paths['build.modal.html'],
-        object.paths['build.modal.audio']);
+        .concat(object.paths['build.modal.audio']);
 
     return object;
 })();
@@ -67,9 +67,21 @@ function concatAndMinify(target, type, minify, stream) {
         .pipe(concat(target + '.' + type))
         .pipe(gulp.dest(voiceNavigator.distVoiceNav + target))
         .pipe(rename(target + '.min.' + type));
+    if (target === 'widget' && type === 'js') {
+        stream = stream.pipe(replace(/modal\.html/, 'modal.min.html'));
+    }
     if (minify) {
         stream = stream
-            .pipe(type === 'css' ? minifyCSS() : uglify());
+            .pipe((function(type) {
+                switch (type) {
+                    case 'js':
+                        return uglify();
+                    case 'css':
+                        return minifyCSS();
+                    case 'html':
+                        return replace(/modal\.(css|js)/g, 'modal.min.$1');
+                }
+            })(type));
     }
     return stream
         .pipe(gulp.dest(voiceNavigator.distVoiceNav + target))
@@ -119,30 +131,40 @@ gulp.task('build.modal.js', ['buildMM'], function() {
     return concatAndMinify('modal', 'js', true, stream);
 });
 
-gulp.task('build.modal.css.no-min', function() {
+gulp.task('build.modal.html', function() {
+    var stream = gulp.src(voiceNavigator.paths['build.modal.html'])
+        .pipe(jade());
+
+    return concatAndMinify('modal', 'html', true, stream);
+});
+
+gulp.task('build.modal.css.no-min', ['buildMM'], function() {
     var stream = gulp.src(voiceNavigator.paths['build.modal.css'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
     return concatAndMinify('modal', 'css', false, stream);
 });
 
-gulp.task('build.modal.js.no-min', ['buildMM'], function() {
+gulp.task('build.modal.js.no-min', function() {
     var stream = gulp.src(voiceNavigator.paths['build.modal.js']);
+
     return concatAndMinify('modal', 'js', false, stream);
 });
 
-gulp.task('build.modal.other', function() {
-    var html = gulp.src(voiceNavigator.paths['build.modal.html'])
-        .pipe(jade())
-        .pipe(gulp.dest(voiceNavigator.distVoiceNav + 'modal'))
-        .pipe(connect.reload());
+gulp.task('build.modal.html.no-min', function() {
+    var stream = gulp.src(voiceNavigator.paths['build.modal.html'])
+        .pipe(jade());
 
+    return concatAndMinify('modal', 'html', false, stream);
+});
+
+gulp.task('build.modal.other', function() {
     var audio = gulp.src(voiceNavigator.paths['build.modal.audio'])
         .pipe(gulp.dest(voiceNavigator.distVoiceNav + 'modal'));
 
     var img = gulp.src(voiceNavigator.paths['build.modal.img'])
         .pipe(gulp.dest(voiceNavigator.distVoiceNav + 'modal'));
 
-    return es.merge(html, audio, img);
+    return es.merge(audio, img);
 });
 
 /* Handle all the watching of files */
@@ -151,9 +173,10 @@ gulp.task('watch', ['build'], function() {
     var watchLocations = [
         'build.modal.js',
         'build.modal.css',
+        'build.modal.html',
+        'build.modal.other',
         'build.widget.js',
-        'build.widget.css',
-        'build.widget.other'
+        'build.widget.css'
     ];
 
     for (var i = 0; i < watchLocations.length; i++) {
@@ -166,6 +189,7 @@ gulp.task('watch.no-min', ['build.no-min'], function() {
     var watchLocations = [
         'build.modal.js',
         'build.modal.css',
+        'build.modal.html',
         'build.widget.js',
         'build.widget.css'
     ];
@@ -173,7 +197,7 @@ gulp.task('watch.no-min', ['build.no-min'], function() {
     for (var i = 0; i < watchLocations.length; i++) {
         gulp.watch(voiceNavigator.paths[watchLocations[i]], [ watchLocations[i] + '.no-min' ]);
     }
-    gulp.watch(voiceNavigator.paths['build.modal.html'], [ 'build.modal.other' ]);
+    gulp.watch(voiceNavigator.paths['build.modal.other'], [ 'build.modal.other' ]);
 });
 
 gulp.task('serve', ['watch'], function() {
@@ -221,14 +245,14 @@ gulp.task('buildMM', function () {
 // Doesn't minify code
 gulp.task('build.no-min', [
     'build.widget.css.no-min', 'build.widget.js.no-min',
-    'build.modal.css.no-min', 'build.modal.js.no-min', 'build.modal.other'
+    'build.modal.css.no-min', 'build.modal.js.no-min', 'build.modal.html.no-min', 'build.modal.other'
 ]);
 
 
 // The default task (called when you run `gulp` from cli)
 gulp.task('build', [
     'build.widget.css', 'build.widget.js',
-    'build.modal.css', 'build.modal.js', 'build.modal.other'
+    'build.modal.css', 'build.modal.js', 'build.modal.html', 'build.modal.other'
 ]);
 
 // Task to show list of tasks
