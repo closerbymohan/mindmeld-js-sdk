@@ -8546,6 +8546,10 @@ var MM = ( function ($, Faye) {
                     return; // ignore long entities
                 }
 
+                if (self._currentTextEntries.indexOf(entity.textentryid) === -1) {
+                    return; // ignore entities from past text entries
+                }
+
                 var textEntry = self._textEntryMap[entity.textentryid];
                 if (typeof textEntry !== 'undefined') {
                     textEntry.entityIDs.push(entity.entityid);
@@ -9200,6 +9204,7 @@ var MM = ( function ($, Faye) {
     };
 
     MMVoice.onConfig = function() {
+        MMVoice._currentTextEntries = [];
 
         var voiceNavOptions = MMVoice.config;
 

@@ -17,7 +17,7141 @@ MM.loader = MM.loader || {};
 MM.loader.$jq = jQuery.noConflict(true);
 ( function ($) {
 
-var Faye=function(){"use strict";var Faye={VERSION:"1.0.1",BAYEUX_VERSION:"1.0",ID_LENGTH:160,JSONP_CALLBACK:"jsonpcallback",CONNECTION_TYPES:["long-polling","cross-origin-long-polling","callback-polling","websocket","eventsource","in-process"],MANDATORY_CONNECTION_TYPES:["long-polling","callback-polling","in-process"],ENV:"undefined"!=typeof window?window:global,extend:function(e,t,n){if(!t)return e;for(var s in t)t.hasOwnProperty(s)&&(e.hasOwnProperty(s)&&n===!1||e[s]!==t[s]&&(e[s]=t[s]));return e},random:function(e){return e=e||this.ID_LENGTH,csprng(e,36)},clientIdFromMessages:function(e){var t=this.filter([].concat(e),function(e){return"/meta/connect"===e.channel});return t[0]&&t[0].clientId},copyObject:function(e){var t,n,s;if(e instanceof Array){for(t=[],n=e.length;n--;)t[n]=Faye.copyObject(e[n]);return t}if("object"==typeof e){t=null===e?null:{};for(s in e)t[s]=Faye.copyObject(e[s]);return t}return e},commonElement:function(e,t){for(var n=0,s=e.length;s>n;n++)if(-1!==this.indexOf(t,e[n]))return e[n];return null},indexOf:function(e,t){if(e.indexOf)return e.indexOf(t);for(var n=0,s=e.length;s>n;n++)if(e[n]===t)return n;return-1},map:function(e,t,n){if(e.map)return e.map(t,n);var s=[];if(e instanceof Array)for(var i=0,r=e.length;r>i;i++)s.push(t.call(n||null,e[i],i));else for(var o in e)e.hasOwnProperty(o)&&s.push(t.call(n||null,o,e[o]));return s},filter:function(e,t,n){if(e.filter)return e.filter(t,n);for(var s=[],i=0,r=e.length;r>i;i++)t.call(n||null,e[i],i)&&s.push(e[i]);return s},asyncEach:function(e,t,n,s){var i=e.length,r=-1,o=0,a=!1,c=function(){return o-=1,r+=1,r===i?n&&n.call(s):void t(e[r],u)},l=function(){if(!a){for(a=!0;o>0;)c();a=!1}},u=function(){o+=1,l()};u()},toJSON:function(e){return this.stringify?this.stringify(e,function(e,t){return this[e]instanceof Array?this[e]:t}):JSON.stringify(e)}};return"undefined"!=typeof module?module.exports=Faye:"undefined"!=typeof window&&(window.Faye=Faye),Faye.Class=function(e,t){"function"!=typeof e&&(t=e,e=Object);var n=function(){return this.initialize?this.initialize.apply(this,arguments)||this:this},s=function(){};return s.prototype=e.prototype,n.prototype=new s,Faye.extend(n.prototype,t),n},function(){function e(e,t){if(e.indexOf)return e.indexOf(t);for(var n=0;n<e.length;n++)if(t===e[n])return n;return-1}var t=Faye.EventEmitter=function(){},n="function"==typeof Array.isArray?Array.isArray:function(e){return"[object Array]"===Object.prototype.toString.call(e)};t.prototype.emit=function(e){if("error"===e&&(!this._events||!this._events.error||n(this._events.error)&&!this._events.error.length))throw arguments[1]instanceof Error?arguments[1]:new Error("Uncaught, unspecified 'error' event.");if(!this._events)return!1;var t=this._events[e];if(!t)return!1;if("function"==typeof t){switch(arguments.length){case 1:t.call(this);break;case 2:t.call(this,arguments[1]);break;case 3:t.call(this,arguments[1],arguments[2]);break;default:var s=Array.prototype.slice.call(arguments,1);t.apply(this,s)}return!0}if(n(t)){for(var s=Array.prototype.slice.call(arguments,1),i=t.slice(),r=0,o=i.length;o>r;r++)i[r].apply(this,s);return!0}return!1},t.prototype.addListener=function(e,t){if("function"!=typeof t)throw new Error("addListener only takes instances of Function");return this._events||(this._events={}),this.emit("newListener",e,t),this._events[e]?n(this._events[e])?this._events[e].push(t):this._events[e]=[this._events[e],t]:this._events[e]=t,this},t.prototype.on=t.prototype.addListener,t.prototype.once=function(e,t){var n=this;return n.on(e,function s(){n.removeListener(e,s),t.apply(this,arguments)}),this},t.prototype.removeListener=function(t,s){if("function"!=typeof s)throw new Error("removeListener only takes instances of Function");if(!this._events||!this._events[t])return this;var i=this._events[t];if(n(i)){var r=e(i,s);if(0>r)return this;i.splice(r,1),0==i.length&&delete this._events[t]}else this._events[t]===s&&delete this._events[t];return this},t.prototype.removeAllListeners=function(e){return 0===arguments.length?(this._events={},this):(e&&this._events&&this._events[e]&&(this._events[e]=null),this)},t.prototype.listeners=function(e){return this._events||(this._events={}),this._events[e]||(this._events[e]=[]),n(this._events[e])||(this._events[e]=[this._events[e]]),this._events[e]}}(),Faye.Namespace=Faye.Class({initialize:function(){this._used={}},exists:function(e){return this._used.hasOwnProperty(e)},generate:function(){for(var e=Faye.random();this._used.hasOwnProperty(e);)e=Faye.random();return this._used[e]=e},release:function(e){delete this._used[e]}}),function(){var e,t=setTimeout;e="function"==typeof setImmediate?function(e){setImmediate(e)}:"object"==typeof process&&process.nextTick?function(e){process.nextTick(e)}:function(e){t(e,0)};var n=0,s=1,i=2,r=function(e){return e},o=function(e){throw e},a=function(e){if(this._state=n,this._callbacks=[],this._errbacks=[],"function"==typeof e){var t=this;e(function(e){f(t,e)},function(e){d(t,e)})}};a.prototype.then=function(e,t){var n={},s=this;return n.promise=new a(function(i,r){n.fulfill=i,n.reject=r,c(s,e,n),l(s,t,n)}),n.promise};var c=function(e,t,i){"function"!=typeof t&&(t=r);var o=function(e){u(t,e,i)};e._state===n?e._callbacks.push(o):e._state===s&&o(e._value)},l=function(e,t,s){"function"!=typeof t&&(t=o);var r=function(e){u(t,e,s)};e._state===n?e._errbacks.push(r):e._state===i&&r(e._reason)},u=function(t,n,s){e(function(){h(t,n,s)})},h=function(e,t,n){var s,i,o,a=!1;try{if(s=e(t),i=typeof s,o=null!==s&&("function"===i||"object"===i)&&s.then,s===n.promise)return n.reject(new TypeError("Recursive promise chain detected"));if("function"!=typeof o)return n.fulfill(s);o.call(s,function(e){a||(a=!0,h(r,e,n))},function(e){a||(a=!0,n.reject(e))})}catch(c){if(a)return;a=!0,n.reject(c)}},f=a.fulfill=a.resolve=function(e,t){if(e._state===n){e._state=s,e._value=t,e._errbacks=[];for(var i,r=e._callbacks;i=r.shift();)i(t)}},d=a.reject=function(e,t){if(e._state===n){e._state=i,e._reason=t,e._callbacks=[];for(var s,r=e._errbacks;s=r.shift();)s(t)}};a.defer=e,a.deferred=a.pending=function(){var e={};return e.promise=new a(function(t,n){e.fulfill=e.resolve=t,e.reject=n}),e},a.fulfilled=a.resolved=function(e){return new a(function(t){t(e)})},a.rejected=function(e){return new a(function(t,n){n(e)})},"undefined"==typeof Faye?module.exports=a:Faye.Promise=a}(),Faye.Set=Faye.Class({initialize:function(){this._index={}},add:function(e){var t=void 0!==e.id?e.id:e;return this._index.hasOwnProperty(t)?!1:(this._index[t]=e,!0)},forEach:function(e,t){for(var n in this._index)this._index.hasOwnProperty(n)&&e.call(t,this._index[n])},isEmpty:function(){for(var e in this._index)if(this._index.hasOwnProperty(e))return!1;return!0},member:function(e){for(var t in this._index)if(this._index[t]===e)return!0;return!1},remove:function(e){var t=void 0!==e.id?e.id:e,n=this._index[t];return delete this._index[t],n},toArray:function(){var e=[];return this.forEach(function(t){e.push(t)}),e}}),Faye.URI={isURI:function(e){return e&&e.protocol&&e.host&&e.path},isSameOrigin:function(e){var t=Faye.ENV.location;return e.protocol===t.protocol&&e.hostname===t.hostname&&e.port===t.port},parse:function(e){if("string"!=typeof e)return e;var t,n,s,i,r,o,a={},c=function(t,n){e=e.replace(n,function(e){return a[t]=e,""}),a[t]=a[t]||""};for(c("protocol",/^[a-z]+\:/i),c("host",/^\/\/[^\/\?#]+/),/^\//.test(e)||a.host||(e=Faye.ENV.location.pathname.replace(/[^\/]*$/,"")+e),c("pathname",/^[^\?#]*/),c("search",/^\?[^#]*/),c("hash",/^#.*/),a.protocol=a.protocol||Faye.ENV.location.protocol,a.host?(a.host=a.host.substr(2),t=a.host.split(":"),a.hostname=t[0],a.port=t[1]||""):(a.host=Faye.ENV.location.host,a.hostname=Faye.ENV.location.hostname,a.port=Faye.ENV.location.port),a.pathname=a.pathname||"/",a.path=a.pathname+a.search,n=a.search.replace(/^\?/,""),s=n?n.split("&"):[],o={},i=0,r=s.length;r>i;i++)t=s[i].split("="),o[decodeURIComponent(t[0]||"")]=decodeURIComponent(t[1]||"");return a.query=o,a.href=this.stringify(a),a},stringify:function(e){var t=e.protocol+"//"+e.hostname;return e.port&&(t+=":"+e.port),t+=e.pathname+this.queryString(e.query)+(e.hash||"")},queryString:function(e){var t=[];for(var n in e)e.hasOwnProperty(n)&&t.push(encodeURIComponent(n)+"="+encodeURIComponent(e[n]));return 0===t.length?"":"?"+t.join("&")}},Faye.Error=Faye.Class({initialize:function(e,t,n){this.code=e,this.params=Array.prototype.slice.call(t),this.message=n},toString:function(){return this.code+":"+this.params.join(",")+":"+this.message}}),Faye.Error.parse=function(e){if(e=e||"",!Faye.Grammar.ERROR.test(e))return new this(null,[],e);var t=e.split(":"),n=parseInt(t[0]),s=t[1].split(","),e=t[2];return new this(n,s,e)},Faye.Error.versionMismatch=function(){return new this(300,arguments,"Version mismatch").toString()},Faye.Error.conntypeMismatch=function(){return new this(301,arguments,"Connection types not supported").toString()},Faye.Error.extMismatch=function(){return new this(302,arguments,"Extension mismatch").toString()},Faye.Error.badRequest=function(){return new this(400,arguments,"Bad request").toString()},Faye.Error.clientUnknown=function(){return new this(401,arguments,"Unknown client").toString()},Faye.Error.parameterMissing=function(){return new this(402,arguments,"Missing required parameter").toString()},Faye.Error.channelForbidden=function(){return new this(403,arguments,"Forbidden channel").toString()},Faye.Error.channelUnknown=function(){return new this(404,arguments,"Unknown channel").toString()},Faye.Error.channelInvalid=function(){return new this(405,arguments,"Invalid channel").toString()},Faye.Error.extUnknown=function(){return new this(406,arguments,"Unknown extension").toString()},Faye.Error.publishFailed=function(){return new this(407,arguments,"Failed to publish").toString()},Faye.Error.serverError=function(){return new this(500,arguments,"Internal server error").toString()},Faye.Deferrable={then:function(e,t){var n=this;return this._promise||(this._promise=new Faye.Promise(function(e,t){n._fulfill=e,n._reject=t})),0===arguments.length?this._promise:this._promise.then(e,t)},callback:function(e,t){return this.then(function(n){e.call(t,n)})},errback:function(e,t){return this.then(null,function(n){e.call(t,n)})},timeout:function(e,t){this.then();var n=this;this._timer=Faye.ENV.setTimeout(function(){n._reject(t)},1e3*e)},setDeferredStatus:function(e,t){this._timer&&Faye.ENV.clearTimeout(this._timer);this.then();"succeeded"===e?this._fulfill(t):"failed"===e?this._reject(t):delete this._promise}},Faye.Publisher={countListeners:function(e){return this.listeners(e).length},bind:function(e,t,n){var s=Array.prototype.slice,i=function(){t.apply(n,s.call(arguments))};return this._listeners=this._listeners||[],this._listeners.push([e,t,n,i]),this.on(e,i)},unbind:function(e,t,n){this._listeners=this._listeners||[];for(var s,i=this._listeners.length;i--;)s=this._listeners[i],s[0]===e&&(!t||s[1]===t&&s[2]===n)&&(this._listeners.splice(i,1),this.removeListener(e,s[3]))}},Faye.extend(Faye.Publisher,Faye.EventEmitter.prototype),Faye.Publisher.trigger=Faye.Publisher.emit,Faye.Timeouts={addTimeout:function(e,t,n,s){if(this._timeouts=this._timeouts||{},!this._timeouts.hasOwnProperty(e)){var i=this;this._timeouts[e]=Faye.ENV.setTimeout(function(){delete i._timeouts[e],n.call(s)},1e3*t)}},removeTimeout:function(e){this._timeouts=this._timeouts||{};var t=this._timeouts[e];t&&(clearTimeout(t),delete this._timeouts[e])},removeAllTimeouts:function(){this._timeouts=this._timeouts||{};for(var e in this._timeouts)this.removeTimeout(e)}},Faye.Logging={LOG_LEVELS:{fatal:4,error:3,warn:2,info:1,debug:0},writeLog:function(e,t){if(Faye.logger){var e=Array.prototype.slice.apply(e),n="[Faye",s=this.className,i=e.shift().replace(/\?/g,function(){try{return Faye.toJSON(e.shift())}catch(t){return"[Object]"}});for(var r in Faye)s||"function"==typeof Faye[r]&&this instanceof Faye[r]&&(s=r);s&&(n+="."+s),n+="] ","function"==typeof Faye.logger[t]?Faye.logger[t](n+i):"function"==typeof Faye.logger&&Faye.logger(n+i)}}},function(){for(var e in Faye.Logging.LOG_LEVELS)(function(e){Faye.Logging[e]=function(){this.writeLog(arguments,e)}})(e,Faye.Logging.LOG_LEVELS[e])}(),Faye.Grammar={CHANNEL_NAME:/^\/(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)))+(\/(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)))+)*$/,CHANNEL_PATTERN:/^(\/(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)))+)*\/\*{1,2}$/,ERROR:/^([0-9][0-9][0-9]:(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)| |\/|\*|\.))*(,(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)| |\/|\*|\.))*)*:(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)| |\/|\*|\.))*|[0-9][0-9][0-9]::(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)| |\/|\*|\.))*)$/,VERSION:/^([0-9])+(\.(([a-z]|[A-Z])|[0-9])(((([a-z]|[A-Z])|[0-9])|\-|\_))*)*$/},Faye.Extensible={addExtension:function(e){this._extensions=this._extensions||[],this._extensions.push(e),e.added&&e.added(this)},removeExtension:function(e){if(this._extensions)for(var t=this._extensions.length;t--;)this._extensions[t]===e&&(this._extensions.splice(t,1),e.removed&&e.removed(this))},pipeThroughExtensions:function(e,t,n,s,i){if(this.debug("Passing through ? extensions: ?",e,t),!this._extensions)return s.call(i,t);var r=this._extensions.slice(),o=function(t){if(!t)return s.call(i,t);var a=r.shift();if(!a)return s.call(i,t);var c=a[e];return c?void(c.length>=3?a[e](t,n,o):a[e](t,o)):o(t)};o(t)}},Faye.extend(Faye.Extensible,Faye.Logging),Faye.Channel=Faye.Class({initialize:function(e){this.id=this.name=e},push:function(e){this.trigger("message",e)},isUnused:function(){return 0===this.countListeners("message")}}),Faye.extend(Faye.Channel.prototype,Faye.Publisher),Faye.extend(Faye.Channel,{HANDSHAKE:"/meta/handshake",CONNECT:"/meta/connect",SUBSCRIBE:"/meta/subscribe",UNSUBSCRIBE:"/meta/unsubscribe",DISCONNECT:"/meta/disconnect",META:"meta",SERVICE:"service",expand:function(e){var t=this.parse(e),n=["/**",e],s=t.slice();s[s.length-1]="*",n.push(this.unparse(s));for(var i=1,r=t.length;r>i;i++)s=t.slice(0,i),s.push("**"),n.push(this.unparse(s));return n},isValid:function(e){return Faye.Grammar.CHANNEL_NAME.test(e)||Faye.Grammar.CHANNEL_PATTERN.test(e)},parse:function(e){return this.isValid(e)?e.split("/").slice(1):null},unparse:function(e){return"/"+e.join("/")},isMeta:function(e){var t=this.parse(e);return t?t[0]===this.META:null},isService:function(e){var t=this.parse(e);return t?t[0]===this.SERVICE:null},isSubscribable:function(e){return this.isValid(e)?!this.isMeta(e)&&!this.isService(e):null},Set:Faye.Class({initialize:function(){this._channels={}},getKeys:function(){var e=[];for(var t in this._channels)e.push(t);return e},remove:function(e){delete this._channels[e]},hasSubscription:function(e){return this._channels.hasOwnProperty(e)},subscribe:function(e,t,n){if(t)for(var s,i=0,r=e.length;r>i;i++){s=e[i];var o=this._channels[s]=this._channels[s]||new Faye.Channel(s);o.bind("message",t,n)}},unsubscribe:function(e,t,n){var s=this._channels[e];return s?(s.unbind("message",t,n),s.isUnused()?(this.remove(e),!0):!1):!1},distributeMessage:function(e){for(var t=Faye.Channel.expand(e.channel),n=0,s=t.length;s>n;n++){var i=this._channels[t[n]];i&&i.trigger("message",e.data)}}})}),Faye.Envelope=Faye.Class({initialize:function(e,t){this.id=e.id,this.message=e,void 0!==t&&this.timeout(t/1e3,!1)}}),Faye.extend(Faye.Envelope.prototype,Faye.Deferrable),Faye.Publication=Faye.Class(Faye.Deferrable),Faye.Subscription=Faye.Class({initialize:function(e,t,n,s){this._client=e,this._channels=t,this._callback=n,this._context=s,this._cancelled=!1},cancel:function(){this._cancelled||(this._client.unsubscribe(this._channels,this._callback,this._context),this._cancelled=!0)},unsubscribe:function(){this.cancel()}}),Faye.extend(Faye.Subscription.prototype,Faye.Deferrable),Faye.Client=Faye.Class({UNCONNECTED:1,CONNECTING:2,CONNECTED:3,DISCONNECTED:4,HANDSHAKE:"handshake",RETRY:"retry",NONE:"none",CONNECTION_TIMEOUT:60,DEFAULT_RETRY:5,MAX_REQUEST_SIZE:2048,DEFAULT_ENDPOINT:"/bayeux",INTERVAL:0,initialize:function(e,t){this.info("New client created for ?",e),this._options=t||{},this.endpoint=Faye.URI.parse(e||this.DEFAULT_ENDPOINT),this.endpoints=this._options.endpoints||{},this.transports={},this.cookies=Faye.CookieJar&&new Faye.CookieJar,this.headers={},this.ca=this._options.ca,this._disabled=[],this._retry=this._options.retry||this.DEFAULT_RETRY;for(var n in this.endpoints)this.endpoints[n]=Faye.URI.parse(this.endpoints[n]);this.maxRequestSize=this.MAX_REQUEST_SIZE,this._state=this.UNCONNECTED,this._channels=new Faye.Channel.Set,this._messageId=0,this._responseCallbacks={},this._advice={reconnect:this.RETRY,interval:1e3*(this._options.interval||this.INTERVAL),timeout:1e3*(this._options.timeout||this.CONNECTION_TIMEOUT)},Faye.Event&&void 0!==Faye.ENV.onbeforeunload&&Faye.Event.on(Faye.ENV,"beforeunload",function(){Faye.indexOf(this._disabled,"autodisconnect")<0&&this.disconnect()},this)},disable:function(e){this._disabled.push(e)},setHeader:function(e,t){this.headers[e]=t},handshake:function(e,t){if(this._advice.reconnect!==this.NONE&&this._state===this.UNCONNECTED){this._state=this.CONNECTING;var n=this;this.info("Initiating handshake with ?",Faye.URI.stringify(this.endpoint)),this._selectTransport(Faye.MANDATORY_CONNECTION_TYPES),this._send({channel:Faye.Channel.HANDSHAKE,version:Faye.BAYEUX_VERSION,supportedConnectionTypes:[this._transport.connectionType]},function(s){s.successful?(this._state=this.CONNECTED,this._clientId=s.clientId,this._selectTransport(s.supportedConnectionTypes),this.info("Handshake successful: ?",this._clientId),this.subscribe(this._channels.getKeys(),!0),e&&Faye.Promise.defer(function(){e.call(t)})):(this.info("Handshake unsuccessful"),Faye.ENV.setTimeout(function(){n.handshake(e,t)},this._advice.interval),this._state=this.UNCONNECTED)},this)}},connect:function(e,t){if(this._advice.reconnect!==this.NONE&&this._state!==this.DISCONNECTED){if(this._state===this.UNCONNECTED)return this.handshake(function(){this.connect(e,t)},this);this.callback(e,t),this._state===this.CONNECTED&&(this.info("Calling deferred actions for ?",this._clientId),this.setDeferredStatus("succeeded"),this.setDeferredStatus("unknown"),this._connectRequest||(this._connectRequest=!0,this.info("Initiating connection for ?",this._clientId),this._send({channel:Faye.Channel.CONNECT,clientId:this._clientId,connectionType:this._transport.connectionType},this._cycleConnection,this)))}},disconnect:function(){this._state===this.CONNECTED&&(this._state=this.DISCONNECTED,this.info("Disconnecting ?",this._clientId),this._send({channel:Faye.Channel.DISCONNECT,clientId:this._clientId},function(e){e.successful&&(this._transport.close(),delete this._transport)},this),this.info("Clearing channel listeners for ?",this._clientId),this._channels=new Faye.Channel.Set)},subscribe:function(e,t,n){if(e instanceof Array)return Faye.map(e,function(e){return this.subscribe(e,t,n)},this);var s=new Faye.Subscription(this,e,t,n),i=t===!0,r=this._channels.hasSubscription(e);return r&&!i?(this._channels.subscribe([e],t,n),s.setDeferredStatus("succeeded"),s):(this.connect(function(){this.info("Client ? attempting to subscribe to ?",this._clientId,e),i||this._channels.subscribe([e],t,n),this._send({channel:Faye.Channel.SUBSCRIBE,clientId:this._clientId,subscription:e},function(i){if(!i.successful)return s.setDeferredStatus("failed",Faye.Error.parse(i.error)),this._channels.unsubscribe(e,t,n);var r=[].concat(i.subscription);this.info("Subscription acknowledged for ? to ?",this._clientId,r),s.setDeferredStatus("succeeded")},this)},this),s)},unsubscribe:function(e,t,n){if(e instanceof Array)return Faye.map(e,function(e){return this.unsubscribe(e,t,n)},this);var s=this._channels.unsubscribe(e,t,n);s&&this.connect(function(){this.info("Client ? attempting to unsubscribe from ?",this._clientId,e),this._send({channel:Faye.Channel.UNSUBSCRIBE,clientId:this._clientId,subscription:e},function(e){if(e.successful){var t=[].concat(e.subscription);this.info("Unsubscription acknowledged for ? from ?",this._clientId,t)}},this)},this)},publish:function(e,t){var n=new Faye.Publication;return this.connect(function(){this.info("Client ? queueing published message to ?: ?",this._clientId,e,t),this._send({channel:e,data:t,clientId:this._clientId},function(e){e.successful?n.setDeferredStatus("succeeded"):n.setDeferredStatus("failed",Faye.Error.parse(e.error))},this)},this),n},receiveMessage:function(e){var t,n=e.id;void 0!==e.successful&&(t=this._responseCallbacks[n],delete this._responseCallbacks[n]),this.pipeThroughExtensions("incoming",e,null,function(e){e&&(e.advice&&this._handleAdvice(e.advice),this._deliverMessage(e),t&&t[0].call(t[1],e))},this),this._transportUp!==!0&&(this._transportUp=!0,this.trigger("transport:up"))},messageError:function(e,t){for(var n,s,i=this._retry,r=this,o=0,a=e.length;a>o;o++)s=e[o],n=s.id,t?this._transportSend(s):Faye.ENV.setTimeout(function(){r._transportSend(s)},1e3*i);t||this._transportUp===!1||(this._transportUp=!1,this.trigger("transport:down"))},_selectTransport:function(e){Faye.Transport.get(this,e,this._disabled,function(e){this.debug("Selected ? transport for ?",e.connectionType,Faye.URI.stringify(e.endpoint)),e!==this._transport&&(this._transport&&this._transport.close(),this._transport=e)},this)},_send:function(e,t,n){this._transport&&(e.id=e.id||this._generateMessageId(),this.pipeThroughExtensions("outgoing",e,null,function(e){e&&(t&&(this._responseCallbacks[e.id]=[t,n]),this._transportSend(e))},this))},_transportSend:function(e){if(this._transport){var t=1.2*(this._advice.timeout||1e3*this._retry),n=new Faye.Envelope(e,t);n.errback(function(t){this.messageError([e],t)},this),this._transport.send(n)}},_generateMessageId:function(){return this._messageId+=1,this._messageId>=Math.pow(2,32)&&(this._messageId=0),this._messageId.toString(36)},_handleAdvice:function(e){Faye.extend(this._advice,e),this._advice.reconnect===this.HANDSHAKE&&this._state!==this.DISCONNECTED&&(this._state=this.UNCONNECTED,this._clientId=null,this._cycleConnection())},_deliverMessage:function(e){e.channel&&void 0!==e.data&&(this.info("Client ? calling listeners for ? with ?",this._clientId,e.channel,e.data),this._channels.distributeMessage(e))},_cycleConnection:function(){this._connectRequest&&(this._connectRequest=null,this.info("Closed connection for ?",this._clientId));var e=this;Faye.ENV.setTimeout(function(){e.connect()},this._advice.interval)}}),Faye.extend(Faye.Client.prototype,Faye.Deferrable),Faye.extend(Faye.Client.prototype,Faye.Publisher),Faye.extend(Faye.Client.prototype,Faye.Logging),Faye.extend(Faye.Client.prototype,Faye.Extensible),Faye.Transport=Faye.extend(Faye.Class({MAX_DELAY:0,batching:!0,initialize:function(e,t){this._client=e,this.endpoint=t,this._outbox=[]},close:function(){},encode:function(){return""},send:function(e){var t=e.message;return this.debug("Client ? sending message to ?: ?",this._client._clientId,Faye.URI.stringify(this.endpoint),t),this.batching?(this._outbox.push(e),t.channel===Faye.Channel.HANDSHAKE?this.addTimeout("publish",.01,this.flush,this):(t.channel===Faye.Channel.CONNECT&&(this._connectMessage=t),this.flushLargeBatch(),void this.addTimeout("publish",this.MAX_DELAY,this.flush,this))):this.request([e])},flush:function(){this.removeTimeout("publish"),this._outbox.length>1&&this._connectMessage&&(this._connectMessage.advice={timeout:0}),this.request(this._outbox),this._connectMessage=null,this._outbox=[]},flushLargeBatch:function(){var e=this.encode(this._outbox);if(!(e.length<this._client.maxRequestSize)){var t=this._outbox.pop();this.flush(),t&&this._outbox.push(t)}},receive:function(e,t){for(var n=e.length;n--;)e[n].setDeferredStatus("succeeded");t=[].concat(t),this.debug("Client ? received from ?: ?",this._client._clientId,Faye.URI.stringify(this.endpoint),t);for(var s=0,n=t.length;n>s;s++)this._client.receiveMessage(t[s])},handleError:function(e,t){for(var n=e.length;n--;)e[n].setDeferredStatus("failed",t)},_getCookies:function(){var e=this._client.cookies;return e?e.getCookies({domain:this.endpoint.hostname,path:this.endpoint.path,secure:"https:"===this.endpoint.protocol}).toValueString():""},_storeCookies:function(e){if(e&&this._client.cookies){e=[].concat(e);for(var t,n=0,s=e.length;s>n;n++)t=this._client.cookies.setCookie(e[n]),t=t[0]||t,t.domain=t.domain||this.endpoint.hostname}}}),{get:function(e,t,n,s,i){var r=e.endpoint;Faye.asyncEach(this._transports,function(o,a){var c=o[0],l=o[1],u=e.endpoints[c]||r;return Faye.indexOf(n,c)>=0?a():Faye.indexOf(t,c)<0?(l.isUsable(e,u,function(){}),a()):void l.isUsable(e,u,function(t){if(!t)return a();var n=l.hasOwnProperty("create")?l.create(e,u):new l(e,u);s.call(i,n)})},function(){throw new Error("Could not find a usable connection type for "+Faye.URI.stringify(r))})},register:function(e,t){this._transports.push([e,t]),t.prototype.connectionType=e},_transports:[]}),Faye.extend(Faye.Transport.prototype,Faye.Logging),Faye.extend(Faye.Transport.prototype,Faye.Timeouts),Faye.Event={_registry:[],on:function(e,t,n,s){var i=function(){n.call(s)};e.addEventListener?e.addEventListener(t,i,!1):e.attachEvent("on"+t,i),this._registry.push({_element:e,_type:t,_callback:n,_context:s,_handler:i})},detach:function(e,t,n,s){for(var i,r=this._registry.length;r--;)i=this._registry[r],e&&e!==i._element||t&&t!==i._type||n&&n!==i._callback||s&&s!==i._context||(i._element.removeEventListener?i._element.removeEventListener(i._type,i._handler,!1):i._element.detachEvent("on"+i._type,i._handler),this._registry.splice(r,1),i=null)}},void 0!==Faye.ENV.onunload&&Faye.Event.on(Faye.ENV,"unload",Faye.Event.detach,Faye.Event),"object"!=typeof JSON&&(JSON={}),function(){function f(e){return 10>e?"0"+e:e}function quote(e){return escapable.lastIndex=0,escapable.test(e)?'"'+e.replace(escapable,function(e){var t=meta[e];return"string"==typeof t?t:"\\u"+("0000"+e.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+e+'"'}function str(e,t){var n,s,i,r,o,a=gap,c=t[e];switch(c&&"object"==typeof c&&"function"==typeof c.toJSON&&(c=c.toJSON(e)),"function"==typeof rep&&(c=rep.call(t,e,c)),typeof c){case"string":return quote(c);case"number":return isFinite(c)?String(c):"null";case"boolean":case"null":return String(c);case"object":if(!c)return"null";if(gap+=indent,o=[],"[object Array]"===Object.prototype.toString.apply(c)){for(r=c.length,n=0;r>n;n+=1)o[n]=str(n,c)||"null";return i=0===o.length?"[]":gap?"[\n"+gap+o.join(",\n"+gap)+"\n"+a+"]":"["+o.join(",")+"]",gap=a,i}if(rep&&"object"==typeof rep)for(r=rep.length,n=0;r>n;n+=1)"string"==typeof rep[n]&&(s=rep[n],i=str(s,c),i&&o.push(quote(s)+(gap?": ":":")+i));else for(s in c)Object.prototype.hasOwnProperty.call(c,s)&&(i=str(s,c),i&&o.push(quote(s)+(gap?": ":":")+i));return i=0===o.length?"{}":gap?"{\n"+gap+o.join(",\n"+gap)+"\n"+a+"}":"{"+o.join(",")+"}",gap=a,i}}"function"!=typeof Date.prototype.toJSON&&(Date.prototype.toJSON=function(){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+f(this.getUTCMonth()+1)+"-"+f(this.getUTCDate())+"T"+f(this.getUTCHours())+":"+f(this.getUTCMinutes())+":"+f(this.getUTCSeconds())+"Z":null},String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(){return this.valueOf()});var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={"\b":"\\b","	":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},rep;Faye.stringify=function(e,t,n){var s;if(gap="",indent="","number"==typeof n)for(s=0;n>s;s+=1)indent+=" ";else"string"==typeof n&&(indent=n);if(rep=t,t&&"function"!=typeof t&&("object"!=typeof t||"number"!=typeof t.length))throw new Error("JSON.stringify");return str("",{"":e})},"function"!=typeof JSON.stringify&&(JSON.stringify=Faye.stringify),"function"!=typeof JSON.parse&&(JSON.parse=function(text,reviver){function walk(e,t){var n,s,i=e[t];if(i&&"object"==typeof i)for(n in i)Object.prototype.hasOwnProperty.call(i,n)&&(s=walk(i,n),void 0!==s?i[n]=s:delete i[n]);return reviver.call(e,t,i)}var j;if(text=String(text),cx.lastIndex=0,cx.test(text)&&(text=text.replace(cx,function(e){return"\\u"+("0000"+e.charCodeAt(0).toString(16)).slice(-4)})),/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return j=eval("("+text+")"),"function"==typeof reviver?walk({"":j},""):j;throw new SyntaxError("JSON.parse")})}(),Faye.Transport.WebSocket=Faye.extend(Faye.Class(Faye.Transport,{UNCONNECTED:1,CONNECTING:2,CONNECTED:3,batching:!1,isUsable:function(e,t){this.callback(function(){e.call(t,!0)}),this.errback(function(){e.call(t,!1)}),this.connect()},request:function(e){this._pending=this._pending||new Faye.Set;for(var t=0,n=e.length;n>t;t++)this._pending.add(e[t]);this.callback(function(t){if(t){var n=Faye.map(e,function(e){return e.message});t.send(Faye.toJSON(n))}},this),this.connect()},connect:function(){if(!Faye.Transport.WebSocket._unloaded&&(this._state=this._state||this.UNCONNECTED,this._state===this.UNCONNECTED)){this._state=this.CONNECTING;var e=this._createSocket();if(!e)return this.setDeferredStatus("failed");var t=this;e.onopen=function(){e.headers&&t._storeCookies(e.headers["set-cookie"]),t._socket=e,t._state=t.CONNECTED,t._everConnected=!0,t._ping(),t.setDeferredStatus("succeeded",e)};var n=!1;e.onclose=e.onerror=function(){if(!n){n=!0;var s=t._state===t.CONNECTED;e.onopen=e.onclose=e.onerror=e.onmessage=null,delete t._socket,t._state=t.UNCONNECTED,t.removeTimeout("ping"),t.setDeferredStatus("unknown");var i=t._pending?t._pending.toArray():[];delete t._pending,s?t.handleError(i,!0):t._everConnected?t.handleError(i):t.setDeferredStatus("failed")}},e.onmessage=function(e){var n,s=JSON.parse(e.data),i=[];if(s){s=[].concat(s);for(var r=0,o=s.length;o>r;r++)void 0!==s[r].successful&&(n=t._pending.remove(s[r]),n&&i.push(n));t.receive(i,s)}}}},close:function(){this._socket&&this._socket.close()},_createSocket:function(){var e=Faye.Transport.WebSocket.getSocketUrl(this.endpoint),t={headers:Faye.copyObject(this._client.headers),ca:this._client.ca};return t.headers.Cookie=this._getCookies(),Faye.WebSocket?new Faye.WebSocket.Client(e,[],t):Faye.ENV.MozWebSocket?new MozWebSocket(e):Faye.ENV.WebSocket?new WebSocket(e):void 0},_ping:function(){this._socket&&(this._socket.send("[]"),this.addTimeout("ping",this._client._advice.timeout/2e3,this._ping,this))}}),{PROTOCOLS:{"http:":"ws:","https:":"wss:"},create:function(e,t){var n=e.transports.websocket=e.transports.websocket||{};return n[t.href]=n[t.href]||new this(e,t),n[t.href]},getSocketUrl:function(e){return e=Faye.copyObject(e),e.protocol=this.PROTOCOLS[e.protocol],Faye.URI.stringify(e)},isUsable:function(e,t,n,s){this.create(e,t).isUsable(n,s)}}),Faye.extend(Faye.Transport.WebSocket.prototype,Faye.Deferrable),Faye.Transport.register("websocket",Faye.Transport.WebSocket),Faye.Event&&Faye.Event.on(Faye.ENV,"beforeunload",function(){Faye.Transport.WebSocket._unloaded=!0}),Faye.Transport.EventSource=Faye.extend(Faye.Class(Faye.Transport,{initialize:function(e,t){if(Faye.Transport.prototype.initialize.call(this,e,t),!Faye.ENV.EventSource)return this.setDeferredStatus("failed");this._xhr=new Faye.Transport.XHR(e,t),t=Faye.copyObject(t),t.pathname+="/"+e._clientId;var n=new EventSource(Faye.URI.stringify(t)),s=this;n.onopen=function(){s._everConnected=!0,s.setDeferredStatus("succeeded")},n.onerror=function(){s._everConnected?s._client.messageError([]):(s.setDeferredStatus("failed"),n.close())},n.onmessage=function(e){s.receive([],JSON.parse(e.data))},this._socket=n},close:function(){this._socket&&(this._socket.onopen=this._socket.onerror=this._socket.onmessage=null,this._socket.close(),delete this._socket)},isUsable:function(e,t){this.callback(function(){e.call(t,!0)
-}),this.errback(function(){e.call(t,!1)})},encode:function(e){return this._xhr.encode(e)},request:function(e){this._xhr.request(e)}}),{isUsable:function(e,t,n,s){var i=e._clientId;return i?void Faye.Transport.XHR.isUsable(e,t,function(i){return i?void this.create(e,t).isUsable(n,s):n.call(s,!1)},this):n.call(s,!1)},create:function(e,t){var n=e.transports.eventsource=e.transports.eventsource||{},s=e._clientId;t=Faye.copyObject(t),t.pathname+="/"+(s||"");var i=Faye.URI.stringify(t);return n[i]=n[i]||new this(e,t),n[i]}}),Faye.extend(Faye.Transport.EventSource.prototype,Faye.Deferrable),Faye.Transport.register("eventsource",Faye.Transport.EventSource),Faye.Transport.XHR=Faye.extend(Faye.Class(Faye.Transport,{encode:function(e){var t=Faye.map(e,function(e){return e.message});return Faye.toJSON(t)},request:function(e){var t=this.endpoint.path,n=Faye.ENV.ActiveXObject?new ActiveXObject("Microsoft.XMLHTTP"):new XMLHttpRequest,s=this;n.open("POST",t,!0),n.setRequestHeader("Content-Type","application/json"),n.setRequestHeader("Pragma","no-cache"),n.setRequestHeader("X-Requested-With","XMLHttpRequest");var i=this._client.headers;for(var r in i)i.hasOwnProperty(r)&&n.setRequestHeader(r,i[r]);var o=function(){n.abort()};Faye.Event.on(Faye.ENV,"beforeunload",o),n.onreadystatechange=function(){if(n&&4===n.readyState){var t=null,i=n.status,r=n.responseText,a=i>=200&&300>i||304===i||1223===i;if(Faye.Event.detach(Faye.ENV,"beforeunload",o),n.onreadystatechange=function(){},n=null,!a)return s.handleError(e);try{t=JSON.parse(r)}catch(c){}t?s.receive(e,t):s.handleError(e)}},n.send(this.encode(e))}}),{isUsable:function(e,t,n,s){n.call(s,Faye.URI.isSameOrigin(t))}}),Faye.Transport.register("long-polling",Faye.Transport.XHR),Faye.Transport.CORS=Faye.extend(Faye.Class(Faye.Transport,{encode:function(e){var t=Faye.map(e,function(e){return e.message});return"message="+encodeURIComponent(Faye.toJSON(t))},request:function(e){var t,n=Faye.ENV.XDomainRequest?XDomainRequest:XMLHttpRequest,s=new n,i=this._client.headers,r=this;if(s.open("POST",Faye.URI.stringify(this.endpoint),!0),s.setRequestHeader){s.setRequestHeader("Pragma","no-cache");for(t in i)i.hasOwnProperty(t)&&s.setRequestHeader(t,i[t])}var o=function(){return s?(s.onload=s.onerror=s.ontimeout=s.onprogress=null,void(s=null)):!1};s.onload=function(){var t=null;try{t=JSON.parse(s.responseText)}catch(n){}o(),t?r.receive(e,t):r.handleError(e)},s.onerror=s.ontimeout=function(){o(),r.handleError(e)},s.onprogress=function(){},s.send(this.encode(e))}}),{isUsable:function(e,t,n,s){if(Faye.URI.isSameOrigin(t))return n.call(s,!1);if(Faye.ENV.XDomainRequest)return n.call(s,t.protocol===Faye.ENV.location.protocol);if(Faye.ENV.XMLHttpRequest){var i=new Faye.ENV.XMLHttpRequest;return n.call(s,void 0!==i.withCredentials)}return n.call(s,!1)}}),Faye.Transport.register("cross-origin-long-polling",Faye.Transport.CORS),Faye.Transport.JSONP=Faye.extend(Faye.Class(Faye.Transport,{encode:function(e){var t=Faye.map(e,function(e){return e.message}),n=Faye.copyObject(this.endpoint);return n.query.message=Faye.toJSON(t),n.query.jsonp="__jsonp"+Faye.Transport.JSONP._cbCount+"__",Faye.URI.stringify(n)},request:function(e){var t=Faye.map(e,function(e){return e.message}),n=document.getElementsByTagName("head")[0],s=document.createElement("script"),i=Faye.Transport.JSONP.getCallbackName(),r=Faye.copyObject(this.endpoint),o=this;r.query.message=Faye.toJSON(t),r.query.jsonp=i,Faye.ENV[i]=function(t){if(!Faye.ENV[i])return!1;Faye.ENV[i]=void 0;try{delete Faye.ENV[i]}catch(n){}s.parentNode.removeChild(s),o.receive(e,t)},s.type="text/javascript",s.src=Faye.URI.stringify(r),n.appendChild(s)}}),{_cbCount:0,getCallbackName:function(){return this._cbCount+=1,"__jsonp"+this._cbCount+"__"},isUsable:function(e,t,n,s){n.call(s,!0)}}),Faye.Transport.register("callback-polling",Faye.Transport.JSONP),Faye}(),MM=function(e,t){var n=window.MM||{};return Object.defineProperty(n,"version",{value:"2.3.3",writable:!1}),n.config={cleanUrl:"https://mindmeldv2.expectlabs.com/",fayeClientUrl:"https://push-west-prod-a.expectlabs.com:443/faye"},n.Internal=e.extend({},{setup:function(){n.activeSessionId=null,n.activeUserId=null},onReady:function(){n.Internal.initializeModels(),n.Internal.EventHandler.init(n.config.fayeClientUrl),n.Util.testAndCall(n.config.onInit)},initializeModels:function(){e.extend(n,new n.models.App),n.documents=new n.models.AppDocumentList,n.activeUser=new n.models.ActiveUser,n.activeUser.sessions=new n.models.SessionList,n.activeSession=new n.models.ActiveSession,n.activeSession.textentries=new n.models.TextEntryList,n.activeSession.entities=new n.models.EntityList,n.activeSession.articles=new n.models.ArticleList,n.activeSession.documents=new n.models.SessionDocumentList,n.activeSession.activities=new n.models.ActivityList,n.activeSession.liveusers=new n.models.LiveUserList,n.activeSession.invitedusers=new n.models.InvitedUserList},clearUserData:function(){n.activeUser.clearAllData(),n.activeUser.sessions.clearAllData()},clearSessionData:function(){n.activeSession.clearAllData(),n.activeSession.textentries.clearAllData(),n.activeSession.entities.clearAllData(),n.activeSession.articles.clearAllData(),n.activeSession.documents.clearAllData(),n.activeSession.activities.clearAllData(),n.activeSession.liveusers.clearAllData(),n.activeSession.invitedusers.clearAllData()},override:function(t,n){e.extend(t.prototype,n)},createSubclass:function(e,t){var s,i=Object.prototype.constructor,r=t.constructor,o=function(){},a=e.prototype;return o.prototype=a,s=r.prototype=new o,s.constructor=r,r.superclass=a,a.constructor==i&&(a.constructor=e),s.superclass=s.supr=function(){return a},s.proto=s,n.Internal.override(r,t),r},log:function(e){window.console&&window.console.log(e)},EventHandler:{fayeClient:null,fayeSubscriptions:{},namedEventHandlers:{},appChannelHandlers:{},userChannelHandlers:{},sessionChannelHandlers:{},init:function(e){this.fayeClient=new t.Client(e,{timeout:120});var s={outgoing:function(e,t){return"/meta/subscribe"!==e.channel?t(e):(e.ext||(e.ext={}),e.ext.authToken=n.token,void t(e))}};this.fayeClient.addExtension(s)},subscribe:function(e,t,s){var i=n.Internal.EventHandler,r=e.channelConfig.channel,o=e.channelConfig.type,a=!0;if(void 0===this.fayeSubscriptions[r]){a=!1;var c=function(e){switch(void 0!==i.namedEventHandlers[r]&&n.Util.testAndCall(i.namedEventHandlers[r][e.event],e.payload),o){case"app":n.Util.testAndCall(i.appChannelHandlers[r],e);break;case"session":n.Util.testAndCall(i.sessionChannelHandlers[r],e);break;case"user":n.Util.testAndCall(i.userChannelHandlers[r],e)}},l=i.fayeClient.subscribe(r,c);i.fayeSubscriptions[r]=l,l.then(function(){n.config.debug&&n.Internal.log("SUCCESSFULLY CONNECTED TO CHANNEL: "+e.channel),n.Util.testAndCall(t)},function(t){n.Internal.log("COULD NOT CONNECT TO CHANNEL: "+e.channel+". Error: "+t.message),n.Util.testAndCall(s,t)})}a&&n.Util.testAndCall(t,r);var u=e.handler;if(e.subscribeAll)switch(o){case"app":i.appChannelHandlers[r]=u;break;case"session":i.sessionChannelHandlers[r]=u;break;case"user":i.userChannelHandlers[r]=u}else void 0===i.namedEventHandlers[r]&&(i.namedEventHandlers[r]={}),i.namedEventHandlers[r][e.name]=u},unsubscribe:function(t){var s=n.Internal.EventHandler,i=t.channelConfig.channel,r=t.channelConfig.type;if(t.subscribeAll)switch(r){case"app":delete s.appChannelHandlers[i];break;case"session":delete s.sessionChannelHandlers[i];break;case"user":delete s.userChannelHandlers[i]}else void 0!==this.namedEventHandlers[i]&&(delete s.namedEventHandlers[i][t.name],e.isEmptyObject(s.namedEventHandlers[i])&&delete s.namedEventHandlers[i]);var o=!1,a=void 0!==s.namedEventHandlers[i];if(!a)switch(r){case"app":o=void 0===s.appChannelHandlers[i];break;case"session":o=void 0===s.sessionChannelHandlers[i];break;case"user":o=void 0===s.userChannelHandlers[i]}if(o){var c=s.fayeSubscriptions[i];c&&(c.cancel(),delete this.fayeSubscriptions[i])}},clearAllEventsForChannel:function(e,t){var s=n.Internal.EventHandler;switch(delete s.namedEventHandlers[e],t){case"app":delete s.appChannelHandlers[e];break;case"session":delete s.sessionChannelHandlers[e];break;case"user":delete s.userChannelHandlers[e]}var i=s.fayeSubscriptions[e];i&&(i.cancel(),delete s.fayeSubscriptions[e]),n.config.debug&&n.Internal.log("Cleared all event handlers on "+e+" channel")}},customEventHandlers:{_publish:function(e,t){var n={name:e,payload:t},s=this.path()+"/events";this.makeModelRequest("POST",s,n)},_subscribe:function(e,t,s,i){var r={name:e,handler:t,subscribeAll:!1};r.channelConfig=this.getChannelConfig(),n.Internal.EventHandler.subscribe(r,s,i)},_unsubscribe:function(e){var t={name:e,subscribeAll:!1};t.channelConfig=this.getChannelConfig(),n.Internal.EventHandler.unsubscribe(t)},_subscribeAll:function(e,t,s){var i={subscribeAll:!0,handler:e};i.channelConfig=this.getChannelConfig(),n.Internal.EventHandler.subscribe(i,t,s)},_unsubscribeAll:function(){var e={subscribeAll:!0};e.channelConfig=this.getChannelConfig(),n.Internal.EventHandler.unsubscribe(e)}}}),e.extend(n,{init:function(t){var s=n.config;n.config=e.extend({},s,t),e(document).ready(function(){n.Internal.onReady()})},getToken:function(e,t,s){function i(e){e.data&&e.data.token?(n.token=e.data.token,o?n.get(null,function(s){var i=s.data.ownerid;n.setActiveUserID(i),n.Util.testAndCall(t,e.data)},function(e){n.Util.testAndCall(s,e)}):e.data.user&&e.data.user.userid&&(n.setActiveUserID(e.data.user.userid),n.Util.testAndCall(t,e.data))):n.Util.testAndCall(s,e)}var r={"X-MindMeld-Appid":n.config.appid},o=!1,a=null;if(e.facebook||e.anonymous)a={credentials:e},a=JSON.stringify(a);else if(e.appsecret&&e.simple)r["X-MindMeld-Appsecret"]=e.appsecret,a={credentials:{simple:e.simple}},a=JSON.stringify(a);else{if(!e.appsecret){var c={code:14,type:"CredentialsInvalid",message:"A valid appsecret or either simple or facebook credentials are required."};return void n.Util.testAndCall(s,c)}r["X-MindMeld-Appsecret"]=e.appsecret,o=!0}n.callApi("POST","tokens",a,i,s,r)},revokeToken:function(e,t){function s(s){n.config.debug&&n.Internal.log("SUCCESSFULLY REVOKED TOKEN: "+n.token),n.token="",s.data?n.Util.testAndCall(e,s):n.Util.testAndCall(t,s)}n.callApi("DELETE","token/"+n.token,null,s,t)},setActiveSessionID:function(e,t,s){var i=n.config.appid+"/session/"+n.activeSessionId;n.Internal.EventHandler.clearAllEventsForChannel(i,"session"),n.activeSessionId=e,n.Internal.clearSessionData(),n.activeSession.get(null,t,s)},setActiveSession:function(e,t,s){n.setActiveSessionID(e,t,s)},setActiveUserID:function(e,t,s){var i=n.config.appid+"/user/"+n.activeUserId;n.Internal.EventHandler.clearAllEventsForChannel(i,"user"),n.activeUserId=e,n.Internal.clearUserData(),n.activeUser.get(null,t,s)},setActiveUser:function(e,t,s){n.setActiveUserID(e,t,s)},setToken:function(e,t,s){n.token=e,n.get(null,function(){n.Util.testAndCall(t)},function(){n.Util.testAndCall(s)})},callApi:function(t,s,i,r,o,a){var c=!1;i&&i["if-modified-since"]&&(c=!0,delete i["if-modified-since"]),a=a||{"X-MINDMELD-ACCESS-TOKEN":n.token};var l=n.config.cleanUrl+s;n.config.debug&&n.Internal.log("Calling MindMeld API with: "+t+" and URL: "+l+" and Params: "+JSON.stringify(i)),e.ajax({type:t,url:l,data:i,dataType:"json",headers:a,ifModified:c,success:function(e,t){n.config.debug&&n.Internal.log("The MindMeld request returned: "+JSON.stringify(e)),"notmodified"===t?n.Util.testAndCall(o,t):e?e.data?n.Util.testAndCall(r,e):e.error&&n.Util.testAndCall(o,e.error):n.Util.testAndCall(o,e)},error:function(e,t,s){var i="Ajax Request Error: XMLHTTPRequestObject status: ("+e.status+", "+e.statusText+"), text status: ("+t+"), error thrown: ("+s+")";n.Internal.log("The MindMeld AJAX request failed with the error: "+i),n.Internal.log(e.responseText),n.Internal.log(e.getAllResponseHeaders());var r={code:0,type:"Failed Ajax Request",message:""+s};n.Util.testAndCall(o,r)}})}}),n.models={},n.models.Model=n.Internal.createSubclass(Object,{constructor:function(){this.result=null,this.shouldPersist=!0,this.updateHandler=null,this.eTag=null},backupData:function(){n.support.localStorage&&(localStorage[this.localStoragePath()]=JSON.stringify(this.result))},clearAllData:function(){this.result=null,this.clearLocalData()},clearLocalData:function(){n.support.localStorage&&localStorage.removeItem(this.localStoragePath())},_get:function(e,t,s){function i(e){n.Util.testAndCall(r,e),n.Util.testAndCall(t,e)}this.makeModelRequest("GET",this.path(),e,i,s);var r=this.updateHandler},restore:function(e,t){if(n.support.localStorage){var s=localStorage[this.localStoragePath()];if(s&&(s=JSON.parse(s)))return this.result=s,void n.Util.testAndCall(e)}n.Util.testAndCall(t)},_json:function(){return this.result&&this.result.data?this.result.data:null},makeModelRequest:function(e,t,s,i,r){var o=this,a=function(e){e.request&&e.request.method&&"GET"==e.request.method.toUpperCase()&&(o.result=e,o.shouldPersist&&o.backupData(),e.etag&&(o.eTag=e.etag)),e.data?n.Util.testAndCall(i,e):n.Util.testAndCall(r,e)},c={"X-MINDMELD-ACCESS-TOKEN":n.token};s&&s["if-none-match"]&&null!==this.eTag&&(c["if-none-match"]=this.eTag,delete s["if-none-match"]),n.callApi(e,t,s,a,r,c)},getChannelConfig:function(){var e={},t="/"+n.config.appid;switch(this.channelType){case"app":e.type=this.channelType,e.channel=t;break;case"session":e.type=this.channelType,e.channel=t+"/session/"+n.activeSessionId;break;case"user":e.type=this.channelType,e.channel=t+"/user/"+n.activeUserId}return e},_onUpdate:function(e,t,s){if(this.updateHandler=e,this.updateEventName&&this.channelType){var i={name:this.updateEventName,subscribeAll:!1};if(i.channelConfig=this.getChannelConfig(),e){var r=this;i.handler=function(){r.get()},n.Internal.EventHandler.subscribe(i,t,s)}else n.Internal.EventHandler.unsubscribe(i)}else n.Util.testAndCall(s)},localStoragePath:function(){return""},path:function(){return""}}),n.models.App=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.App.superclass.constructor.apply(this,arguments),e.extend(this,n.Internal.customEventHandlers)},localStoragePath:function(){return"MM.app"},path:function(){return""},json:function(){return this._json()},onUpdate:function(e){this._onUpdate(e,null,null)},get:function(e,t,n){this._get(null,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},publish:function(e,t){this._publish(e,t)},subscribe:function(e,t,n,s){this._subscribe(e,t,n,s)},unsubscribe:function(e){this._unsubscribe(e)},subscribeAll:function(e,t,n){this._subscribeAll(e,t,n)},unsubscribeAll:function(){this._unsubscribeAll()},channelType:"app"}),n.models.ActiveUser=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.ActiveUser.superclass.constructor.apply(this,arguments),e.extend(this,n.Internal.customEventHandlers)},localStoragePath:function(){return"MM.activeUser"},path:function(){return"user/"+n.activeUserId},json:function(){return this._json()},onUpdate:function(e){this._onUpdate(e,null,null)},get:function(e,t,n){this._get(null,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},publish:function(e,t){this._publish(e,t)},subscribe:function(e,t,n,s){this._subscribe(e,t,n,s)},unsubscribe:function(e){this._unsubscribe(e)},subscribeAll:function(e,t,n){this._subscribeAll(e,t,n)},unsubscribeAll:function(){this._unsubscribeAll()},channelType:"user"}),n.models.SessionList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.SessionList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.activeUser.sessions"},path:function(){return"user/"+n.activeUserId+"/sessions"},json:function(){return this._json()},onUpdate:function(e,t,n){this._onUpdate(e,t,n)},get:function(e,t,n){this._get(e,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},"delete":function(e,t,n){this.makeModelRequest("DELETE","session/"+e,null,t,n)},channelType:"user",updateEventName:"sessionsUpdate"}),n.models.TextEntryList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.TextEntryList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.activeSession.textentries"},path:function(){return"session/"+n.activeSessionId+"/textentries"},json:function(){return this._json()},onUpdate:function(e,t,n){this._onUpdate(e,t,n)},get:function(e,t,n){this._get(e,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},"delete":function(e,t,n){this.makeModelRequest("DELETE","textentry/"+e,null,t,n)},channelType:"session",updateEventName:"textentriesUpdate"}),n.models.EntityList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.EntityList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.activeSession.entities"},path:function(){return"session/"+n.activeSessionId+"/entities"},json:function(){return this._json()},onUpdate:function(e,t,n){this._onUpdate(e,t,n)},get:function(e,t,n){this._get(e,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},"delete":function(e,t,n){this.makeModelRequest("DELETE","entity/"+e,null,t,n)},channelType:"session",updateEventName:"entitiesUpdate"}),n.models.ArticleList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.ArticleList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.activeSession.articles"},path:function(){return"session/"+n.activeSessionId+"/articles"},json:function(){return this._json()},onUpdate:function(e){this._onUpdate(e,null,null)},get:function(e,t,n){this._get(e,t,n)}}),n.models.SessionDocumentList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.SessionDocumentList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.activeSession.documents"},path:function(){return"session/"+n.activeSessionId+"/documents"},json:function(){return this._json()},onUpdate:function(e){this._onUpdate(e,null,null)},get:function(e,t,n){this._get(e,t,n)}}),n.models.AppDocumentList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.AppDocumentList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.documents"},path:function(){return"documents"},json:function(){return this._json()},onUpdate:function(e){this._onUpdate(e,null,null)},get:function(e,t,n){this._get(e,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},"delete":function(e,t,n){this.makeModelRequest("DELETE","document/"+e,null,t,n)}}),n.models.LiveUserList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.LiveUserList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.activeSession.liveusers"},path:function(){return"session/"+n.activeSessionId+"/liveusers"},json:function(){return this._json()},onUpdate:function(e,t,n){this._onUpdate(e,t,n)},get:function(e,t,n){this._get(e,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},"delete":function(e,t,n){this.makeModelRequest("DELETE",this.path()+"/"+e,null,t,n)},channelType:"session",updateEventName:"liveusersUpdate"}),n.models.InvitedUserList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.InvitedUserList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.activeSession.invitedusers"},path:function(){return"session/"+n.activeSessionId+"/invitedusers"},json:function(){return this._json()},onUpdate:function(e,t,n){this._onUpdate(e,t,n)},get:function(e,t,n){this._get(e,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},"delete":function(e,t,n){this.makeModelRequest("DELETE",this.path()+"/"+e,null,t,n)},channelType:"session",updateEventName:"invitedusersUpdate"}),n.models.ActivityList=n.Internal.createSubclass(n.models.Model,{constructor:function(){n.models.ActivityList.superclass.constructor.apply(this,arguments)},localStoragePath:function(){return"MM.activeSession.activities"},path:function(){return"session/"+n.activeSessionId+"/activities"},json:function(){return this._json()},onUpdate:function(e,t,n){this._onUpdate(e,t,n)},get:function(e,t,n){this._get(e,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},"delete":function(e,t,n){this.makeModelRequest("DELETE","activity/"+e,null,t,n)},channelType:"session",updateEventName:"activitiesUpdate"}),n.models.ActiveSession=n.Internal.createSubclass(n.models.Model,{constructor:function(){function t(e){s.textentries.post({text:e,type:"speech",weight:.5},function(e){n.Util.testAndCallThis(s._onTextEntryPosted,s.listener,e)})}n.models.ActiveSession.superclass.constructor.apply(this,arguments);var s=this;this.listener=new n.Listener({interimResults:!0,onResult:function(e,i,r,o){e.final&&t(e.transcript),n.Util.testAndCallThis(s._onListenerResult,s.listener,e,i,r,o)},onStart:function(e){n.Util.testAndCallThis(s._onListenerStart,s.listener,e)},onEnd:function(e){var i=this.results,r=null;i.length>0&&(r=i[i.length-1],r.final||t(r.transcript)),n.Util.testAndCallThis(s._onListenerEnd,s.listener,e)},onError:function(e){n.Util.testAndCallThis(s._onListenerError,s.listener,e)}}),e.extend(this,n.Internal.customEventHandlers)},localStoragePath:function(){return"MM.activeSession"},path:function(){return"session/"+n.activeSessionId},json:function(){return this._json()},onUpdate:function(e){this._onUpdate(e,null,null)},setListenerConfig:function(e){var t={onResult:"_onListenerResult",onStart:"_onListenerStart",onEnd:"_onListenerEnd",onError:"_onListenerError",onTextEntryPosted:"_onTextEntryPosted"};for(var n in t)e.hasOwnProperty(n)&&(this[t[n]]=e[n],delete e[n]);this.listener.setConfig(e)},get:function(e,t,n){this._get(null,t,n)},post:function(e,t,n){this.makeModelRequest("POST",this.path(),e,t,n)},publish:function(e,t){this._publish(e,t)},subscribe:function(e,t,n,s){this._subscribe(e,t,n,s)},unsubscribe:function(e){this._unsubscribe(e)},subscribeAll:function(e,t,n){this._subscribeAll(e,t,n)},unsubscribeAll:function(){this._unsubscribeAll()},channelType:"session"}),n.Util=e.extend({},{testAndCall:function(t){if(e.isFunction(t)){var n=Array.prototype.slice.call(arguments,1);t.apply(this,n)}},testAndCallThis:function(t,n){if(e.isFunction(t)){var s=Array.prototype.slice.call(arguments,2);t.apply(n,s)}}}),n.Listener=function(){var e=n.Internal.createSubclass(Object,{constructor:function(e){this.setConfig(e)},setConfig:function(e){var t={onResult:"_onResult",onStart:"_onStart",onEnd:"_onEnd",onError:"_onError",onTextEntryPosted:"_onTextEntryPosted",continuous:"continuous",interimResults:"interimResults",lang:"lang"};for(var n in t)e.hasOwnProperty(n)&&(this[t[n]]=e[n])},_lastStartTime:0,start:function(){function e(){clearTimeout(s),s=setTimeout(function(){i.abort()},2e3,event)}if(!n.support.speechRecognition)throw n.Internal.log("Speech recognition is not supported"),new Error("Speech recognition is not supported");var t=this;if(!(Date.now()-t._lastStartTime<1e3)){var s=0,i=this._recognizer;"undefined"==typeof i&&(i=this._recognizer=new SpeechRecognition,i.onresult=function(i){for(var r={"final":!1,transcript:""},o=i.resultIndex,a=t._results,c=i.resultIndex;c<i.results.length;++c){var l=i.results[c][0].transcript;if(i.results[c].isFinal){r.final=!0,r.transcript=l;break}r.transcript+=l}a[o]=r,0!=s&&e(),n.Util.testAndCallThis(t._onResult,t,r,o,a,i)},i.onstart=function(e){t._listening=!0,t._lastStartTime=Date.now(),n.Util.testAndCallThis(t._onStart,t,e)},i.onend=function(e){clearTimeout(s),s=0,t._listening=!1,n.Util.testAndCallThis(t._onEnd,t,e)},i.onerror=function(e){n.Util.testAndCallThis(t._onError,t,e)},i.onaudioend=function(){i.continuous||e()}),i.continuous=this.continuous,i.interimResults=this.interimResults;var r=function(){var e="";return""!==t.lang?e=t.lang:"undefined"!=typeof document&&null!==document.documentElement&&""!==document.documentElement.lang&&(e=document.documentElement.lang),e}();i.lang=r,t._results=[],i.start()}},stop:function(){this._recognizer&&this._recognizer.stop()},cancel:function(){this._recognizer&&this._recognizer.abort()}});return e.prototype._listening=!1,e.prototype._results=[],e.prototype.continuous=!1,e.prototype.lang="",e.prototype.interimResults=!1,Object.defineProperties(e.prototype,{listening:{get:function(){return this._listening}},results:{get:function(){return JSON.parse(JSON.stringify(this._results))}}}),e}(),n.support=function(e){var t={},n=!1,s=!1;Object.defineProperties(t,{localStorage:{get:function(){return n}},speechRecognition:{get:function(){return s}}});try{s=function(e){"use strict";e=e||{};var t=e.webkitSpeechRecognition||e.SpeechRecognition;return e.SpeechRecognition=t,"undefined"!=typeof t}(e)}catch(i){}try{var n=function(e){"use strict";return e=e||{},"undefined"!=typeof e.Storage}(e)}catch(i){}return t}(window),n.Internal.setup(),n}($,Faye);
-!function(e,t,i){e.widget("mindmeld.mmautocomplete",e.ui.autocomplete,{_truncateText:function(e,t,n){if(n===i&&(n="..."),e.length<=t||e.length-n.length<=t)return e;var o=e.indexOf("<em>");return e=-1!==o?this._getTruncatedEmString(e,t-n.length)+n:String(e).substring(0,t-n.length)+n},_getTruncatedEmString:function(e,t){var i=/<em>\S+<\/em>/,n=i.exec(e),o=n.index,s=n[0],a=s.length,r=t-a,c=Math.max(0,o-r),u=e.substr(c,Math.min(r,o)),l=u+s;if(l.length<t){r=t-l.length;var d=o+a,m=e.indexOf("<em>",d);l+=-1!==m?e.substr(d,Math.min(r,m-d)):e.substr(d,r)}return l},_renderItem:function(t,i){var n=null;if(i.noResult)n=e("<li>",{"class":"noResultItem"}).append(e("<a>").append(e("<div>",{"class":"noResultContainer"}).append(e("<span>",{"class":"noResultText"}).html("No results"))));else{var o=i.document.snippet||i.document.description||i.document.text,s=null;i.document.image&&(s=i.document.image.thumburl||i.document.image.url||null);var a;a=this.options.images&&s?this._getItemContentWithImage(s,o):this._getItemContentWithoutImage(o),n=e("<li>",{"class":"docListItem"}).append(e("<a>",{href:i.document.originurl}).append(e("<div>",{"class":"docListWrapper"}).append(e('<span class="docTitle">'+i.document.title+"</span>")).append(a)))}return n.appendTo(t)},_getItemContentWithImage:function(t,i){return i=this._truncateText(i,75),e("<div>",{"class":"docContentWithImage"}).append(e("<div>",{"class":"docImg"}).append(e("<img>",{"class":"docImgFile",src:t}))).append(e("<div>",{"class":"docDetails"}).append(e('<p class="textBlurb">'+i+"</p>")))},_getItemContentWithoutImage:function(t){return t=this._truncateText(t,130),e("<div>",{"class":"docContentWithoutImage"}).append(e('<p class="textBlurb">'+t+"</p>"))}}),e.widget("mindmeld.searchwidget",{options:{images:!1,voiceNavigatorEnabled:!1,onMMSearchInitialized:function(){},onMMSearchError:function(){}},_create:function(){e('<div id="mm-results" style="position: absolute;"></div>').appendTo("body"),this.queryCache={},this.numQueriesCached=0,this._initMM(),this._initialized=!1},initialized:function(){return this._initialized},_setWidgetOptions:function(){for(var e in t.widgets.config.search)this.options[e]=t.widgets.config.search[e]},_validateConfig:function(){return!e.isEmptyObject(t.widgets)&&!e.isEmptyObject(t.widgets.config)},_initMM:function(){function e(){t.getToken({anonymous:{userid:"MMSearchWidgetUserID",name:"MMSearchWidgetUser",domain:window.location.hostname}},function(){o._getOrSetSession()},function(){o.options.onMMSearchError("Supplied token is invalid")})}if(this._validateConfig()){this._setWidgetOptions();var n=t.widgets.config.appID;if(!this._validateString(n,40))return void this.options.onMMSearchError("Please supply a valid appid");var o=this,s={appid:n,onInit:e};t.widgets.config.cleanUrl!==i&&(s.cleanUrl=t.widgets.config.cleanUrl),t.widgets.config.fayeClientUrl!==i&&(s.fayeClientUrl=t.widgets.config.fayeClientUrl),t.init(s)}else console.log("Invalid search widget config")},_getOrSetSession:function(){function e(){function e(e){t.setActiveSessionID(e.data.sessionid,i,n)}var o=t.activeUser.sessions.json();if(o.length>0)t.setActiveSessionID(o[0].sessionid,i,n);else{var s={name:"search session",privacymode:"inviteonly"};t.activeUser.sessions.post(s,e,n)}}function i(){o._onInitialized()}function n(){o.options.onMMSearchError("Error fetching and setting session")}var o=this;t.activeUser.sessions.get(null,e,n)},_onInitialized:function(){this._initialized=!0,this.options.onMMSearchInitialized();var t=this;this.element.mmautocomplete({minLength:2,delay:100,source:function(i,n){t.queryDocuments(i.term,function(t){var i=[];0===t.length?i.push({noResult:!0}):i=e.map(t,function(e){return{label:e.title,document:e}}),n(i)},function(e){t.onMMSearchError(e),n([])})},appendTo:"#mm-results",open:function(){var i=t.element.offset(),n=t.element.outerHeight(),o=t.element.outerWidth(),s=10,a=o-s,r=i.top+n-1,c=i.left+s/2;e("#mm-results > ul.ui-autocomplete").css({width:a+"px"}).offset({top:r,left:c})},select:function(e,i){return i.item.document&&(e.ctrlKey||e.metaKey||(window.location.href=i.item.document.originurl),t.element.val("")),!1},focus:function(t,i){if(i.item.document){var n=e(this).data("mindmeldMmautocomplete").menu.element,o=n.find("li");o.each(function(){e(this).removeClass("focused")});var s=n.find("li:has(a.ui-state-focus)");s.addClass("focused")}return!1},images:t.options.images}),this.options.voiceNavigatorEnabled&&this.element.keypress(function(e){if(13===e.which){var i=t.element.val();t._openVoiceNavigator(i)}})},_openVoiceNavigator:function(e){t.voiceNavigator!==i?t.voiceNavigator.showModal(e):t.loader.widgetLoaded("voice",function(){t.voiceNavigator.showModal(e)})},_stripEmTags:function(e){return e=e.replace(/<em>/g,""),e=e.replace(/<\/em>/g,"")},queryDocuments:function(e,i,n){var o=this;if(this.queryCache[e])i(this.queryCache[e]);else if(this._initialized){var s=this._getWildcardQuery(e),a={query:s,highlight:1,limit:5};a["document-ranking-factors"]={relevance:1,recency:0,popularity:0,proximity:0,customrank1:0,customrank2:0,customrank3:0},t.activeSession.documents.get(a,function(){var n=t.activeSession.documents.json();o.numQueriesCached++,o.queryCache[e]=n,i(n)},function(e){n("Error fetching documents: "+e.message)}),this._cleanQueryCache()}else n("Cannot query documents, MM search widget not initialized")},_getWildcardQuery:function(t){var i=t.split(" "),n="";if(i.length>0&&" "!==t.slice(-1)){var o=i.length-1;i[o]+="*",e.each(i,function(e,t){n+=t+" "})}else n=t;return n},_cleanQueryCache:function(){if(this.numQueriesCached>100){for(var e=Object.keys(this.queryCache),t=0;50>t;t++){var i=e[t];delete this.queryCache[e[t]],console.log("removing cached query: "+i)}this.numQueriesCached=Object.keys(this.queryCache).length}},_validateString:function(e,t){return e===i?!1:t!==i&&e.length!==t?!1:!0}})}($,MM);
+var Faye = (function() {
+    'use strict';
+
+    var Faye = {
+        VERSION:          '1.0.1',
+
+        BAYEUX_VERSION:   '1.0',
+        ID_LENGTH:        160,
+        JSONP_CALLBACK:   'jsonpcallback',
+        CONNECTION_TYPES: ['long-polling', 'cross-origin-long-polling', 'callback-polling', 'websocket', 'eventsource', 'in-process'],
+
+        MANDATORY_CONNECTION_TYPES: ['long-polling', 'callback-polling', 'in-process'],
+
+        ENV: (typeof window !== 'undefined') ? window : global,
+
+        extend: function(dest, source, overwrite) {
+            if (!source) return dest;
+            for (var key in source) {
+                if (!source.hasOwnProperty(key)) continue;
+                if (dest.hasOwnProperty(key) && overwrite === false) continue;
+                if (dest[key] !== source[key])
+                    dest[key] = source[key];
+            }
+            return dest;
+        },
+
+        random: function(bitlength) {
+            bitlength = bitlength || this.ID_LENGTH;
+            return csprng(bitlength, 36);
+        },
+
+        clientIdFromMessages: function(messages) {
+            var connect = this.filter([].concat(messages), function(message) {
+                return message.channel === '/meta/connect';
+            });
+            return connect[0] && connect[0].clientId;
+        },
+
+        copyObject: function(object) {
+            var clone, i, key;
+            if (object instanceof Array) {
+                clone = [];
+                i = object.length;
+                while (i--) clone[i] = Faye.copyObject(object[i]);
+                return clone;
+            } else if (typeof object === 'object') {
+                clone = (object === null) ? null : {};
+                for (key in object) clone[key] = Faye.copyObject(object[key]);
+                return clone;
+            } else {
+                return object;
+            }
+        },
+
+        commonElement: function(lista, listb) {
+            for (var i = 0, n = lista.length; i < n; i++) {
+                if (this.indexOf(listb, lista[i]) !== -1)
+                    return lista[i];
+            }
+            return null;
+        },
+
+        indexOf: function(list, needle) {
+            if (list.indexOf) return list.indexOf(needle);
+
+            for (var i = 0, n = list.length; i < n; i++) {
+                if (list[i] === needle) return i;
+            }
+            return -1;
+        },
+
+        map: function(object, callback, context) {
+            if (object.map) return object.map(callback, context);
+            var result = [];
+
+            if (object instanceof Array) {
+                for (var i = 0, n = object.length; i < n; i++) {
+                    result.push(callback.call(context || null, object[i], i));
+                }
+            } else {
+                for (var key in object) {
+                    if (!object.hasOwnProperty(key)) continue;
+                    result.push(callback.call(context || null, key, object[key]));
+                }
+            }
+            return result;
+        },
+
+        filter: function(array, callback, context) {
+            if (array.filter) return array.filter(callback, context);
+            var result = [];
+            for (var i = 0, n = array.length; i < n; i++) {
+                if (callback.call(context || null, array[i], i))
+                    result.push(array[i]);
+            }
+            return result;
+        },
+
+        asyncEach: function(list, iterator, callback, context) {
+            var n       = list.length,
+                i       = -1,
+                calls   = 0,
+                looping = false;
+
+            var iterate = function() {
+                calls -= 1;
+                i += 1;
+                if (i === n) return callback && callback.call(context);
+                iterator(list[i], resume);
+            };
+
+            var loop = function() {
+                if (looping) return;
+                looping = true;
+                while (calls > 0) iterate();
+                looping = false;
+            };
+
+            var resume = function() {
+                calls += 1;
+                loop();
+            };
+            resume();
+        },
+
+        // http://assanka.net/content/tech/2009/09/02/json2-js-vs-prototype/
+        toJSON: function(object) {
+            if (!this.stringify) return JSON.stringify(object);
+
+            return this.stringify(object, function(key, value) {
+                return (this[key] instanceof Array) ? this[key] : value;
+            });
+        }
+    };
+
+    if (typeof module !== 'undefined')
+        module.exports = Faye;
+    else if (typeof window !== 'undefined')
+        window.Faye = Faye;
+
+    Faye.Class = function(parent, methods) {
+        if (typeof parent !== 'function') {
+            methods = parent;
+            parent  = Object;
+        }
+
+        var klass = function() {
+            if (!this.initialize) return this;
+            return this.initialize.apply(this, arguments) || this;
+        };
+
+        var bridge = function() {};
+        bridge.prototype = parent.prototype;
+
+        klass.prototype = new bridge();
+        Faye.extend(klass.prototype, methods);
+
+        return klass;
+    };
+
+    (function() {
+        var EventEmitter = Faye.EventEmitter = function() {};
+
+        /*
+         Copyright Joyent, Inc. and other Node contributors. All rights reserved.
+         Permission is hereby granted, free of charge, to any person obtaining a copy of
+         this software and associated documentation files (the "Software"), to deal in
+         the Software without restriction, including without limitation the rights to
+         use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+         of the Software, and to permit persons to whom the Software is furnished to do
+         so, subject to the following conditions:
+
+         The above copyright notice and this permission notice shall be included in all
+         copies or substantial portions of the Software.
+
+         THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+         SOFTWARE.
+         */
+
+        var isArray = typeof Array.isArray === 'function'
+                ? Array.isArray
+                : function (xs) {
+                return Object.prototype.toString.call(xs) === '[object Array]'
+            }
+            ;
+        function indexOf (xs, x) {
+            if (xs.indexOf) return xs.indexOf(x);
+            for (var i = 0; i < xs.length; i++) {
+                if (x === xs[i]) return i;
+            }
+            return -1;
+        }
+
+
+        EventEmitter.prototype.emit = function(type) {
+            // If there is no 'error' event listener then throw.
+            if (type === 'error') {
+                if (!this._events || !this._events.error ||
+                    (isArray(this._events.error) && !this._events.error.length))
+                {
+                    if (arguments[1] instanceof Error) {
+                        throw arguments[1]; // Unhandled 'error' event
+                    } else {
+                        throw new Error("Uncaught, unspecified 'error' event.");
+                    }
+                    return false;
+                }
+            }
+
+            if (!this._events) return false;
+            var handler = this._events[type];
+            if (!handler) return false;
+
+            if (typeof handler == 'function') {
+                switch (arguments.length) {
+                    // fast cases
+                    case 1:
+                        handler.call(this);
+                        break;
+                    case 2:
+                        handler.call(this, arguments[1]);
+                        break;
+                    case 3:
+                        handler.call(this, arguments[1], arguments[2]);
+                        break;
+                    // slower
+                    default:
+                        var args = Array.prototype.slice.call(arguments, 1);
+                        handler.apply(this, args);
+                }
+                return true;
+
+            } else if (isArray(handler)) {
+                var args = Array.prototype.slice.call(arguments, 1);
+
+                var listeners = handler.slice();
+                for (var i = 0, l = listeners.length; i < l; i++) {
+                    listeners[i].apply(this, args);
+                }
+                return true;
+
+            } else {
+                return false;
+            }
+        };
+
+// EventEmitter is defined in src/node_events.cc
+// EventEmitter.prototype.emit() is also defined there.
+        EventEmitter.prototype.addListener = function(type, listener) {
+            if ('function' !== typeof listener) {
+                throw new Error('addListener only takes instances of Function');
+            }
+
+            if (!this._events) this._events = {};
+
+            // To avoid recursion in the case that type == "newListeners"! Before
+            // adding it to the listeners, first emit "newListeners".
+            this.emit('newListener', type, listener);
+
+            if (!this._events[type]) {
+                // Optimize the case of one listener. Don't need the extra array object.
+                this._events[type] = listener;
+            } else if (isArray(this._events[type])) {
+                // If we've already got an array, just append.
+                this._events[type].push(listener);
+            } else {
+                // Adding the second element, need to change to array.
+                this._events[type] = [this._events[type], listener];
+            }
+
+            return this;
+        };
+
+        EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+        EventEmitter.prototype.once = function(type, listener) {
+            var self = this;
+            self.on(type, function g() {
+                self.removeListener(type, g);
+                listener.apply(this, arguments);
+            });
+
+            return this;
+        };
+
+        EventEmitter.prototype.removeListener = function(type, listener) {
+            if ('function' !== typeof listener) {
+                throw new Error('removeListener only takes instances of Function');
+            }
+
+            // does not use listeners(), so no side effect of creating _events[type]
+            if (!this._events || !this._events[type]) return this;
+
+            var list = this._events[type];
+
+            if (isArray(list)) {
+                var i = indexOf(list, listener);
+                if (i < 0) return this;
+                list.splice(i, 1);
+                if (list.length == 0)
+                    delete this._events[type];
+            } else if (this._events[type] === listener) {
+                delete this._events[type];
+            }
+
+            return this;
+        };
+
+        EventEmitter.prototype.removeAllListeners = function(type) {
+            if (arguments.length === 0) {
+                this._events = {};
+                return this;
+            }
+
+            // does not use listeners(), so no side effect of creating _events[type]
+            if (type && this._events && this._events[type]) this._events[type] = null;
+            return this;
+        };
+
+        EventEmitter.prototype.listeners = function(type) {
+            if (!this._events) this._events = {};
+            if (!this._events[type]) this._events[type] = [];
+            if (!isArray(this._events[type])) {
+                this._events[type] = [this._events[type]];
+            }
+            return this._events[type];
+        };
+
+    })();
+
+    Faye.Namespace = Faye.Class({
+        initialize: function() {
+            this._used = {};
+        },
+
+        exists: function(id) {
+            return this._used.hasOwnProperty(id);
+        },
+
+        generate: function() {
+            var name = Faye.random();
+            while (this._used.hasOwnProperty(name))
+                name = Faye.random();
+            return this._used[name] = name;
+        },
+
+        release: function(id) {
+            delete this._used[id];
+        }
+    });
+
+    (function() {
+        'use strict';
+
+        var timeout = setTimeout;
+
+        var defer;
+        if (typeof setImmediate === 'function')
+            defer = function(fn) { setImmediate(fn) };
+        else if (typeof process === 'object' && process.nextTick)
+            defer = function(fn) { process.nextTick(fn) };
+        else
+            defer = function(fn) { timeout(fn, 0) };
+
+        var PENDING   = 0,
+            FULFILLED = 1,
+            REJECTED  = 2;
+
+        var RETURN = function(x) { return x },
+            THROW  = function(x) { throw x  };
+
+        var Promise = function(task) {
+            this._state     = PENDING;
+            this._callbacks = [];
+            this._errbacks  = [];
+
+            if (typeof task !== 'function') return;
+            var self = this;
+
+            task(function(value)  { fulfill(self, value) },
+                function(reason) { reject(self, reason) });
+        };
+
+        Promise.prototype.then = function(callback, errback) {
+            var next = {}, self = this;
+
+            next.promise = new Promise(function(fulfill, reject) {
+                next.fulfill = fulfill;
+                next.reject  = reject;
+
+                registerCallback(self, callback, next);
+                registerErrback(self, errback, next);
+            });
+            return next.promise;
+        };
+
+        var registerCallback = function(promise, callback, next) {
+            if (typeof callback !== 'function') callback = RETURN;
+            var handler = function(value) { invoke(callback, value, next) };
+            if (promise._state === PENDING) {
+                promise._callbacks.push(handler);
+            } else if (promise._state === FULFILLED) {
+                handler(promise._value);
+            }
+        };
+
+        var registerErrback = function(promise, errback, next) {
+            if (typeof errback !== 'function') errback = THROW;
+            var handler = function(reason) { invoke(errback, reason, next) };
+            if (promise._state === PENDING) {
+                promise._errbacks.push(handler);
+            } else if (promise._state === REJECTED) {
+                handler(promise._reason);
+            }
+        };
+
+        var invoke = function(fn, value, next) {
+            defer(function() { _invoke(fn, value, next) });
+        };
+
+        var _invoke = function(fn, value, next) {
+            var called = false, outcome, type, then;
+
+            try {
+                outcome = fn(value);
+                type    = typeof outcome;
+                then    = outcome !== null && (type === 'function' || type === 'object') && outcome.then;
+
+                if (outcome === next.promise)
+                    return next.reject(new TypeError('Recursive promise chain detected'));
+
+                if (typeof then !== 'function') return next.fulfill(outcome);
+
+                then.call(outcome, function(v) {
+                    if (called) return;
+                    called = true;
+                    _invoke(RETURN, v, next);
+                }, function(r) {
+                    if (called) return;
+                    called = true;
+                    next.reject(r);
+                });
+
+            } catch (error) {
+                if (called) return;
+                called = true;
+                next.reject(error);
+            }
+        };
+
+        var fulfill = Promise.fulfill = Promise.resolve = function(promise, value) {
+            if (promise._state !== PENDING) return;
+
+            promise._state    = FULFILLED;
+            promise._value    = value;
+            promise._errbacks = [];
+
+            var callbacks = promise._callbacks, cb;
+            while (cb = callbacks.shift()) cb(value);
+        };
+
+        var reject = Promise.reject = function(promise, reason) {
+            if (promise._state !== PENDING) return;
+
+            promise._state     = REJECTED;
+            promise._reason    = reason;
+            promise._callbacks = [];
+
+            var errbacks = promise._errbacks, eb;
+            while (eb = errbacks.shift()) eb(reason);
+        };
+
+        Promise.defer = defer;
+
+        Promise.deferred = Promise.pending = function() {
+            var tuple = {};
+
+            tuple.promise = new Promise(function(fulfill, reject) {
+                tuple.fulfill = tuple.resolve = fulfill;
+                tuple.reject  = reject;
+            });
+            return tuple;
+        };
+
+        Promise.fulfilled = Promise.resolved = function(value) {
+            return new Promise(function(fulfill, reject) { fulfill(value) });
+        };
+
+        Promise.rejected = function(reason) {
+            return new Promise(function(fulfill, reject) { reject(reason) });
+        };
+
+        if (typeof Faye === 'undefined')
+            module.exports = Promise;
+        else
+            Faye.Promise = Promise;
+
+    })();
+
+    Faye.Set = Faye.Class({
+        initialize: function() {
+            this._index = {};
+        },
+
+        add: function(item) {
+            var key = (item.id !== undefined) ? item.id : item;
+            if (this._index.hasOwnProperty(key)) return false;
+            this._index[key] = item;
+            return true;
+        },
+
+        forEach: function(block, context) {
+            for (var key in this._index) {
+                if (this._index.hasOwnProperty(key))
+                    block.call(context, this._index[key]);
+            }
+        },
+
+        isEmpty: function() {
+            for (var key in this._index) {
+                if (this._index.hasOwnProperty(key)) return false;
+            }
+            return true;
+        },
+
+        member: function(item) {
+            for (var key in this._index) {
+                if (this._index[key] === item) return true;
+            }
+            return false;
+        },
+
+        remove: function(item) {
+            var key = (item.id !== undefined) ? item.id : item;
+            var removed = this._index[key];
+            delete this._index[key];
+            return removed;
+        },
+
+        toArray: function() {
+            var array = [];
+            this.forEach(function(item) { array.push(item) });
+            return array;
+        }
+    });
+
+    Faye.URI = {
+        isURI: function(uri) {
+            return uri && uri.protocol && uri.host && uri.path;
+        },
+
+        isSameOrigin: function(uri) {
+            var location = Faye.ENV.location;
+            return uri.protocol === location.protocol &&
+                uri.hostname === location.hostname &&
+                uri.port     === location.port;
+        },
+
+        parse: function(url) {
+            if (typeof url !== 'string') return url;
+            var uri = {}, parts, query, pairs, i, n, data;
+
+            var consume = function(name, pattern) {
+                url = url.replace(pattern, function(match) {
+                    uri[name] = match;
+                    return '';
+                });
+                uri[name] = uri[name] || '';
+            };
+
+            consume('protocol', /^[a-z]+\:/i);
+            consume('host',     /^\/\/[^\/\?#]+/);
+
+            if (!/^\//.test(url) && !uri.host)
+                url = Faye.ENV.location.pathname.replace(/[^\/]*$/, '') + url;
+
+            consume('pathname', /^[^\?#]*/);
+            consume('search',   /^\?[^#]*/);
+            consume('hash',     /^#.*/);
+
+            uri.protocol = uri.protocol || Faye.ENV.location.protocol;
+
+            if (uri.host) {
+                uri.host     = uri.host.substr(2);
+                parts        = uri.host.split(':');
+                uri.hostname = parts[0];
+                uri.port     = parts[1] || '';
+            } else {
+                uri.host     = Faye.ENV.location.host;
+                uri.hostname = Faye.ENV.location.hostname;
+                uri.port     = Faye.ENV.location.port;
+            }
+
+            uri.pathname = uri.pathname || '/';
+            uri.path = uri.pathname + uri.search;
+
+            query = uri.search.replace(/^\?/, '');
+            pairs = query ? query.split('&') : [];
+            data  = {};
+
+            for (i = 0, n = pairs.length; i < n; i++) {
+                parts = pairs[i].split('=');
+                data[decodeURIComponent(parts[0] || '')] = decodeURIComponent(parts[1] || '');
+            }
+
+            uri.query = data;
+
+            uri.href = this.stringify(uri);
+            return uri;
+        },
+
+        stringify: function(uri) {
+            var string = uri.protocol + '//' + uri.hostname;
+            if (uri.port) string += ':' + uri.port;
+            string += uri.pathname + this.queryString(uri.query) + (uri.hash || '');
+            return string;
+        },
+
+        queryString: function(query) {
+            var pairs = [];
+            for (var key in query) {
+                if (!query.hasOwnProperty(key)) continue;
+                pairs.push(encodeURIComponent(key) + '=' + encodeURIComponent(query[key]));
+            }
+            if (pairs.length === 0) return '';
+            return '?' + pairs.join('&');
+        }
+    };
+
+    Faye.Error = Faye.Class({
+        initialize: function(code, params, message) {
+            this.code    = code;
+            this.params  = Array.prototype.slice.call(params);
+            this.message = message;
+        },
+
+        toString: function() {
+            return this.code + ':' +
+                this.params.join(',') + ':' +
+                this.message;
+        }
+    });
+
+    Faye.Error.parse = function(message) {
+        message = message || '';
+        if (!Faye.Grammar.ERROR.test(message)) return new this(null, [], message);
+
+        var parts   = message.split(':'),
+            code    = parseInt(parts[0]),
+            params  = parts[1].split(','),
+            message = parts[2];
+
+        return new this(code, params, message);
+    };
+
+
+
+
+    Faye.Error.versionMismatch = function() {
+        return new this(300, arguments, 'Version mismatch').toString();
+    };
+
+    Faye.Error.conntypeMismatch = function() {
+        return new this(301, arguments, 'Connection types not supported').toString();
+    };
+
+    Faye.Error.extMismatch = function() {
+        return new this(302, arguments, 'Extension mismatch').toString();
+    };
+
+    Faye.Error.badRequest = function() {
+        return new this(400, arguments, 'Bad request').toString();
+    };
+
+    Faye.Error.clientUnknown = function() {
+        return new this(401, arguments, 'Unknown client').toString();
+    };
+
+    Faye.Error.parameterMissing = function() {
+        return new this(402, arguments, 'Missing required parameter').toString();
+    };
+
+    Faye.Error.channelForbidden = function() {
+        return new this(403, arguments, 'Forbidden channel').toString();
+    };
+
+    Faye.Error.channelUnknown = function() {
+        return new this(404, arguments, 'Unknown channel').toString();
+    };
+
+    Faye.Error.channelInvalid = function() {
+        return new this(405, arguments, 'Invalid channel').toString();
+    };
+
+    Faye.Error.extUnknown = function() {
+        return new this(406, arguments, 'Unknown extension').toString();
+    };
+
+    Faye.Error.publishFailed = function() {
+        return new this(407, arguments, 'Failed to publish').toString();
+    };
+
+    Faye.Error.serverError = function() {
+        return new this(500, arguments, 'Internal server error').toString();
+    };
+
+
+    Faye.Deferrable = {
+        then: function(callback, errback) {
+            var self = this;
+            if (!this._promise)
+                this._promise = new Faye.Promise(function(fulfill, reject) {
+                    self._fulfill = fulfill;
+                    self._reject  = reject;
+                });
+
+            if (arguments.length === 0)
+                return this._promise;
+            else
+                return this._promise.then(callback, errback);
+        },
+
+        callback: function(callback, context) {
+            return this.then(function(value) { callback.call(context, value) });
+        },
+
+        errback: function(callback, context) {
+            return this.then(null, function(reason) { callback.call(context, reason) });
+        },
+
+        timeout: function(seconds, message) {
+            this.then();
+            var self = this;
+            this._timer = Faye.ENV.setTimeout(function() {
+                self._reject(message);
+            }, seconds * 1000);
+        },
+
+        setDeferredStatus: function(status, value) {
+            if (this._timer) Faye.ENV.clearTimeout(this._timer);
+
+            var promise = this.then();
+
+            if (status === 'succeeded')
+                this._fulfill(value);
+            else if (status === 'failed')
+                this._reject(value);
+            else
+                delete this._promise;
+        }
+    };
+
+    Faye.Publisher = {
+        countListeners: function(eventType) {
+            return this.listeners(eventType).length;
+        },
+
+        bind: function(eventType, listener, context) {
+            var slice   = Array.prototype.slice,
+                handler = function() { listener.apply(context, slice.call(arguments)) };
+
+            this._listeners = this._listeners || [];
+            this._listeners.push([eventType, listener, context, handler]);
+            return this.on(eventType, handler);
+        },
+
+        unbind: function(eventType, listener, context) {
+            this._listeners = this._listeners || [];
+            var n = this._listeners.length, tuple;
+
+            while (n--) {
+                tuple = this._listeners[n];
+                if (tuple[0] !== eventType) continue;
+                if (listener && (tuple[1] !== listener || tuple[2] !== context)) continue;
+                this._listeners.splice(n, 1);
+                this.removeListener(eventType, tuple[3]);
+            }
+        }
+    };
+
+    Faye.extend(Faye.Publisher, Faye.EventEmitter.prototype);
+    Faye.Publisher.trigger = Faye.Publisher.emit;
+
+    Faye.Timeouts = {
+        addTimeout: function(name, delay, callback, context) {
+            this._timeouts = this._timeouts || {};
+            if (this._timeouts.hasOwnProperty(name)) return;
+            var self = this;
+            this._timeouts[name] = Faye.ENV.setTimeout(function() {
+                delete self._timeouts[name];
+                callback.call(context);
+            }, 1000 * delay);
+        },
+
+        removeTimeout: function(name) {
+            this._timeouts = this._timeouts || {};
+            var timeout = this._timeouts[name];
+            if (!timeout) return;
+            clearTimeout(timeout);
+            delete this._timeouts[name];
+        },
+
+        removeAllTimeouts: function() {
+            this._timeouts = this._timeouts || {};
+            for (var name in this._timeouts) this.removeTimeout(name);
+        }
+    };
+
+    Faye.Logging = {
+        LOG_LEVELS: {
+            fatal:  4,
+            error:  3,
+            warn:   2,
+            info:   1,
+            debug:  0
+        },
+
+        writeLog: function(messageArgs, level) {
+            if (!Faye.logger) return;
+
+            var messageArgs = Array.prototype.slice.apply(messageArgs),
+                banner      = '[Faye',
+                klass       = this.className,
+
+                message = messageArgs.shift().replace(/\?/g, function() {
+                    try {
+                        return Faye.toJSON(messageArgs.shift());
+                    } catch (e) {
+                        return '[Object]';
+                    }
+                });
+
+            for (var key in Faye) {
+                if (klass) continue;
+                if (typeof Faye[key] !== 'function') continue;
+                if (this instanceof Faye[key]) klass = key;
+            }
+            if (klass) banner += '.' + klass;
+            banner += '] ';
+
+            if (typeof Faye.logger[level] === 'function')
+                Faye.logger[level](banner + message);
+            else if (typeof Faye.logger === 'function')
+                Faye.logger(banner + message);
+        }
+    };
+
+    (function() {
+        for (var key in Faye.Logging.LOG_LEVELS)
+            (function(level, value) {
+                Faye.Logging[level] = function() {
+                    this.writeLog(arguments, level);
+                };
+            })(key, Faye.Logging.LOG_LEVELS[key]);
+    })();
+
+    Faye.Grammar = {
+        CHANNEL_NAME:     /^\/(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)))+(\/(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)))+)*$/,
+        CHANNEL_PATTERN:  /^(\/(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)))+)*\/\*{1,2}$/,
+        ERROR:            /^([0-9][0-9][0-9]:(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)| |\/|\*|\.))*(,(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)| |\/|\*|\.))*)*:(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)| |\/|\*|\.))*|[0-9][0-9][0-9]::(((([a-z]|[A-Z])|[0-9])|(\-|\_|\!|\~|\(|\)|\$|\@)| |\/|\*|\.))*)$/,
+        VERSION:          /^([0-9])+(\.(([a-z]|[A-Z])|[0-9])(((([a-z]|[A-Z])|[0-9])|\-|\_))*)*$/
+    };
+
+    Faye.Extensible = {
+        addExtension: function(extension) {
+            this._extensions = this._extensions || [];
+            this._extensions.push(extension);
+            if (extension.added) extension.added(this);
+        },
+
+        removeExtension: function(extension) {
+            if (!this._extensions) return;
+            var i = this._extensions.length;
+            while (i--) {
+                if (this._extensions[i] !== extension) continue;
+                this._extensions.splice(i,1);
+                if (extension.removed) extension.removed(this);
+            }
+        },
+
+        pipeThroughExtensions: function(stage, message, request, callback, context) {
+            this.debug('Passing through ? extensions: ?', stage, message);
+
+            if (!this._extensions) return callback.call(context, message);
+            var extensions = this._extensions.slice();
+
+            var pipe = function(message) {
+                if (!message) return callback.call(context, message);
+
+                var extension = extensions.shift();
+                if (!extension) return callback.call(context, message);
+
+                var fn = extension[stage];
+                if (!fn) return pipe(message);
+
+                if (fn.length >= 3) extension[stage](message, request, pipe);
+                else                extension[stage](message, pipe);
+            };
+            pipe(message);
+        }
+    };
+
+    Faye.extend(Faye.Extensible, Faye.Logging);
+
+    Faye.Channel = Faye.Class({
+        initialize: function(name) {
+            this.id = this.name = name;
+        },
+
+        push: function(message) {
+            this.trigger('message', message);
+        },
+
+        isUnused: function() {
+            return this.countListeners('message') === 0;
+        }
+    });
+
+    Faye.extend(Faye.Channel.prototype, Faye.Publisher);
+
+    Faye.extend(Faye.Channel, {
+        HANDSHAKE:    '/meta/handshake',
+        CONNECT:      '/meta/connect',
+        SUBSCRIBE:    '/meta/subscribe',
+        UNSUBSCRIBE:  '/meta/unsubscribe',
+        DISCONNECT:   '/meta/disconnect',
+
+        META:         'meta',
+        SERVICE:      'service',
+
+        expand: function(name) {
+            var segments = this.parse(name),
+                channels = ['/**', name];
+
+            var copy = segments.slice();
+            copy[copy.length - 1] = '*';
+            channels.push(this.unparse(copy));
+
+            for (var i = 1, n = segments.length; i < n; i++) {
+                copy = segments.slice(0, i);
+                copy.push('**');
+                channels.push(this.unparse(copy));
+            }
+
+            return channels;
+        },
+
+        isValid: function(name) {
+            return Faye.Grammar.CHANNEL_NAME.test(name) ||
+                Faye.Grammar.CHANNEL_PATTERN.test(name);
+        },
+
+        parse: function(name) {
+            if (!this.isValid(name)) return null;
+            return name.split('/').slice(1);
+        },
+
+        unparse: function(segments) {
+            return '/' + segments.join('/');
+        },
+
+        isMeta: function(name) {
+            var segments = this.parse(name);
+            return segments ? (segments[0] === this.META) : null;
+        },
+
+        isService: function(name) {
+            var segments = this.parse(name);
+            return segments ? (segments[0] === this.SERVICE) : null;
+        },
+
+        isSubscribable: function(name) {
+            if (!this.isValid(name)) return null;
+            return !this.isMeta(name) && !this.isService(name);
+        },
+
+        Set: Faye.Class({
+            initialize: function() {
+                this._channels = {};
+            },
+
+            getKeys: function() {
+                var keys = [];
+                for (var key in this._channels) keys.push(key);
+                return keys;
+            },
+
+            remove: function(name) {
+                delete this._channels[name];
+            },
+
+            hasSubscription: function(name) {
+                return this._channels.hasOwnProperty(name);
+            },
+
+            subscribe: function(names, callback, context) {
+                if (!callback) return;
+                var name;
+                for (var i = 0, n = names.length; i < n; i++) {
+                    name = names[i];
+                    var channel = this._channels[name] = this._channels[name] || new Faye.Channel(name);
+                    channel.bind('message', callback, context);
+                }
+            },
+
+            unsubscribe: function(name, callback, context) {
+                var channel = this._channels[name];
+                if (!channel) return false;
+                channel.unbind('message', callback, context);
+
+                if (channel.isUnused()) {
+                    this.remove(name);
+                    return true;
+                } else {
+                    return false;
+                }
+            },
+
+            distributeMessage: function(message) {
+                var channels = Faye.Channel.expand(message.channel);
+
+                for (var i = 0, n = channels.length; i < n; i++) {
+                    var channel = this._channels[channels[i]];
+                    if (channel) channel.trigger('message', message.data);
+                }
+            }
+        })
+    });
+
+    Faye.Envelope = Faye.Class({
+        initialize: function(message, timeout) {
+            this.id      = message.id;
+            this.message = message;
+
+            if (timeout !== undefined) this.timeout(timeout / 1000, false);
+        }
+    });
+
+    Faye.extend(Faye.Envelope.prototype, Faye.Deferrable);
+
+    Faye.Publication = Faye.Class(Faye.Deferrable);
+
+    Faye.Subscription = Faye.Class({
+        initialize: function(client, channels, callback, context) {
+            this._client    = client;
+            this._channels  = channels;
+            this._callback  = callback;
+            this._context     = context;
+            this._cancelled = false;
+        },
+
+        cancel: function() {
+            if (this._cancelled) return;
+            this._client.unsubscribe(this._channels, this._callback, this._context);
+            this._cancelled = true;
+        },
+
+        unsubscribe: function() {
+            this.cancel();
+        }
+    });
+
+    Faye.extend(Faye.Subscription.prototype, Faye.Deferrable);
+
+    Faye.Client = Faye.Class({
+        UNCONNECTED:          1,
+        CONNECTING:           2,
+        CONNECTED:            3,
+        DISCONNECTED:         4,
+
+        HANDSHAKE:            'handshake',
+        RETRY:                'retry',
+        NONE:                 'none',
+
+        CONNECTION_TIMEOUT:   60,
+        DEFAULT_RETRY:        5,
+        MAX_REQUEST_SIZE:     2048,
+
+        DEFAULT_ENDPOINT:     '/bayeux',
+        INTERVAL:             0,
+
+        initialize: function(endpoint, options) {
+            this.info('New client created for ?', endpoint);
+
+            this._options   = options || {};
+            this.endpoint   = Faye.URI.parse(endpoint || this.DEFAULT_ENDPOINT);
+            this.endpoints  = this._options.endpoints || {};
+            this.transports = {};
+            this.cookies    = Faye.CookieJar && new Faye.CookieJar();
+            this.headers    = {};
+            this.ca         = this._options.ca;
+            this._disabled  = [];
+            this._retry     = this._options.retry || this.DEFAULT_RETRY;
+
+            for (var key in this.endpoints)
+                this.endpoints[key] = Faye.URI.parse(this.endpoints[key]);
+
+            this.maxRequestSize = this.MAX_REQUEST_SIZE;
+
+            this._state     = this.UNCONNECTED;
+            this._channels  = new Faye.Channel.Set();
+            this._messageId = 0;
+
+            this._responseCallbacks = {};
+
+            this._advice = {
+                reconnect: this.RETRY,
+                interval:  1000 * (this._options.interval || this.INTERVAL),
+                timeout:   1000 * (this._options.timeout  || this.CONNECTION_TIMEOUT)
+            };
+
+            if (Faye.Event && Faye.ENV.onbeforeunload !== undefined)
+                Faye.Event.on(Faye.ENV, 'beforeunload', function() {
+                    if (Faye.indexOf(this._disabled, 'autodisconnect') < 0)
+                        this.disconnect();
+                }, this);
+        },
+
+        disable: function(feature) {
+            this._disabled.push(feature);
+        },
+
+        setHeader: function(name, value) {
+            this.headers[name] = value;
+        },
+
+        // Request
+        // MUST include:  * channel
+        //                * version
+        //                * supportedConnectionTypes
+        // MAY include:   * minimumVersion
+        //                * ext
+        //                * id
+        //
+        // Success Response                             Failed Response
+        // MUST include:  * channel                     MUST include:  * channel
+        //                * version                                    * successful
+        //                * supportedConnectionTypes                   * error
+        //                * clientId                    MAY include:   * supportedConnectionTypes
+        //                * successful                                 * advice
+        // MAY include:   * minimumVersion                             * version
+        //                * advice                                     * minimumVersion
+        //                * ext                                        * ext
+        //                * id                                         * id
+        //                * authSuccessful
+        handshake: function(callback, context) {
+            if (this._advice.reconnect === this.NONE) return;
+            if (this._state !== this.UNCONNECTED) return;
+
+            this._state = this.CONNECTING;
+            var self = this;
+
+            this.info('Initiating handshake with ?', Faye.URI.stringify(this.endpoint));
+            this._selectTransport(Faye.MANDATORY_CONNECTION_TYPES);
+
+            this._send({
+                channel:                  Faye.Channel.HANDSHAKE,
+                version:                  Faye.BAYEUX_VERSION,
+                supportedConnectionTypes: [this._transport.connectionType]
+
+            }, function(response) {
+
+                if (response.successful) {
+                    this._state     = this.CONNECTED;
+                    this._clientId  = response.clientId;
+
+                    this._selectTransport(response.supportedConnectionTypes);
+
+                    this.info('Handshake successful: ?', this._clientId);
+
+                    this.subscribe(this._channels.getKeys(), true);
+                    if (callback) Faye.Promise.defer(function() { callback.call(context) });
+
+                } else {
+                    this.info('Handshake unsuccessful');
+                    Faye.ENV.setTimeout(function() { self.handshake(callback, context) }, this._advice.interval);
+                    this._state = this.UNCONNECTED;
+                }
+            }, this);
+        },
+
+        // Request                              Response
+        // MUST include:  * channel             MUST include:  * channel
+        //                * clientId                           * successful
+        //                * connectionType                     * clientId
+        // MAY include:   * ext                 MAY include:   * error
+        //                * id                                 * advice
+        //                                                     * ext
+        //                                                     * id
+        //                                                     * timestamp
+        connect: function(callback, context) {
+            if (this._advice.reconnect === this.NONE) return;
+            if (this._state === this.DISCONNECTED) return;
+
+            if (this._state === this.UNCONNECTED)
+                return this.handshake(function() { this.connect(callback, context) }, this);
+
+            this.callback(callback, context);
+            if (this._state !== this.CONNECTED) return;
+
+            this.info('Calling deferred actions for ?', this._clientId);
+            this.setDeferredStatus('succeeded');
+            this.setDeferredStatus('unknown');
+
+            if (this._connectRequest) return;
+            this._connectRequest = true;
+
+            this.info('Initiating connection for ?', this._clientId);
+
+            this._send({
+                channel:        Faye.Channel.CONNECT,
+                clientId:       this._clientId,
+                connectionType: this._transport.connectionType
+
+            }, this._cycleConnection, this);
+        },
+
+        // Request                              Response
+        // MUST include:  * channel             MUST include:  * channel
+        //                * clientId                           * successful
+        // MAY include:   * ext                                * clientId
+        //                * id                  MAY include:   * error
+        //                                                     * ext
+        //                                                     * id
+        disconnect: function() {
+            if (this._state !== this.CONNECTED) return;
+            this._state = this.DISCONNECTED;
+
+            this.info('Disconnecting ?', this._clientId);
+
+            this._send({
+                channel:  Faye.Channel.DISCONNECT,
+                clientId: this._clientId
+
+            }, function(response) {
+                if (!response.successful) return;
+                this._transport.close();
+                delete this._transport;
+            }, this);
+
+            this.info('Clearing channel listeners for ?', this._clientId);
+            this._channels = new Faye.Channel.Set();
+        },
+
+        // Request                              Response
+        // MUST include:  * channel             MUST include:  * channel
+        //                * clientId                           * successful
+        //                * subscription                       * clientId
+        // MAY include:   * ext                                * subscription
+        //                * id                  MAY include:   * error
+        //                                                     * advice
+        //                                                     * ext
+        //                                                     * id
+        //                                                     * timestamp
+        subscribe: function(channel, callback, context) {
+            if (channel instanceof Array)
+                return Faye.map(channel, function(c) {
+                    return this.subscribe(c, callback, context);
+                }, this);
+
+            var subscription = new Faye.Subscription(this, channel, callback, context),
+                force        = (callback === true),
+                hasSubscribe = this._channels.hasSubscription(channel);
+
+            if (hasSubscribe && !force) {
+                this._channels.subscribe([channel], callback, context);
+                subscription.setDeferredStatus('succeeded');
+                return subscription;
+            }
+
+            this.connect(function() {
+                this.info('Client ? attempting to subscribe to ?', this._clientId, channel);
+                if (!force) this._channels.subscribe([channel], callback, context);
+
+                this._send({
+                    channel:      Faye.Channel.SUBSCRIBE,
+                    clientId:     this._clientId,
+                    subscription: channel
+
+                }, function(response) {
+                    if (!response.successful) {
+                        subscription.setDeferredStatus('failed', Faye.Error.parse(response.error));
+                        return this._channels.unsubscribe(channel, callback, context);
+                    }
+
+                    var channels = [].concat(response.subscription);
+                    this.info('Subscription acknowledged for ? to ?', this._clientId, channels);
+                    subscription.setDeferredStatus('succeeded');
+                }, this);
+            }, this);
+
+            return subscription;
+        },
+
+        // Request                              Response
+        // MUST include:  * channel             MUST include:  * channel
+        //                * clientId                           * successful
+        //                * subscription                       * clientId
+        // MAY include:   * ext                                * subscription
+        //                * id                  MAY include:   * error
+        //                                                     * advice
+        //                                                     * ext
+        //                                                     * id
+        //                                                     * timestamp
+        unsubscribe: function(channel, callback, context) {
+            if (channel instanceof Array)
+                return Faye.map(channel, function(c) {
+                    return this.unsubscribe(c, callback, context);
+                }, this);
+
+            var dead = this._channels.unsubscribe(channel, callback, context);
+            if (!dead) return;
+
+            this.connect(function() {
+                this.info('Client ? attempting to unsubscribe from ?', this._clientId, channel);
+
+                this._send({
+                    channel:      Faye.Channel.UNSUBSCRIBE,
+                    clientId:     this._clientId,
+                    subscription: channel
+
+                }, function(response) {
+                    if (!response.successful) return;
+
+                    var channels = [].concat(response.subscription);
+                    this.info('Unsubscription acknowledged for ? from ?', this._clientId, channels);
+                }, this);
+            }, this);
+        },
+
+        // Request                              Response
+        // MUST include:  * channel             MUST include:  * channel
+        //                * data                               * successful
+        // MAY include:   * clientId            MAY include:   * id
+        //                * id                                 * error
+        //                * ext                                * ext
+        publish: function(channel, data) {
+            var publication = new Faye.Publication();
+
+            this.connect(function() {
+                this.info('Client ? queueing published message to ?: ?', this._clientId, channel, data);
+
+                this._send({
+                    channel:  channel,
+                    data:     data,
+                    clientId: this._clientId
+
+                }, function(response) {
+                    if (response.successful)
+                        publication.setDeferredStatus('succeeded');
+                    else
+                        publication.setDeferredStatus('failed', Faye.Error.parse(response.error));
+                }, this);
+            }, this);
+
+            return publication;
+        },
+
+        receiveMessage: function(message) {
+            var id = message.id, timeout, callback;
+
+            if (message.successful !== undefined) {
+                callback = this._responseCallbacks[id];
+                delete this._responseCallbacks[id];
+            }
+
+            this.pipeThroughExtensions('incoming', message, null, function(message) {
+                if (!message) return;
+
+                if (message.advice) this._handleAdvice(message.advice);
+                this._deliverMessage(message);
+
+                if (callback) callback[0].call(callback[1], message);
+            }, this);
+
+            if (this._transportUp === true) return;
+            this._transportUp = true;
+            this.trigger('transport:up');
+        },
+
+        messageError: function(messages, immediate) {
+            var retry = this._retry,
+                self  = this,
+                id, message, timeout;
+
+            for (var i = 0, n = messages.length; i < n; i++) {
+                message = messages[i];
+                id      = message.id;
+
+                if (immediate)
+                    this._transportSend(message);
+                else
+                    Faye.ENV.setTimeout(function() { self._transportSend(message) }, retry * 1000);
+            }
+
+            if (immediate || this._transportUp === false) return;
+            this._transportUp = false;
+            this.trigger('transport:down');
+        },
+
+        _selectTransport: function(transportTypes) {
+            Faye.Transport.get(this, transportTypes, this._disabled, function(transport) {
+                this.debug('Selected ? transport for ?', transport.connectionType, Faye.URI.stringify(transport.endpoint));
+
+                if (transport === this._transport) return;
+                if (this._transport) this._transport.close();
+
+                this._transport = transport;
+            }, this);
+        },
+
+        _send: function(message, callback, context) {
+            if (!this._transport) return;
+            message.id = message.id || this._generateMessageId();
+
+            this.pipeThroughExtensions('outgoing', message, null, function(message) {
+                if (!message) return;
+                if (callback) this._responseCallbacks[message.id] = [callback, context];
+                this._transportSend(message);
+            }, this);
+        },
+
+        _transportSend: function(message) {
+            if (!this._transport) return;
+
+            var timeout  = 1.2 * (this._advice.timeout || this._retry * 1000),
+                envelope = new Faye.Envelope(message, timeout);
+
+            envelope.errback(function(immediate) {
+                this.messageError([message], immediate);
+            }, this);
+
+            this._transport.send(envelope);
+        },
+
+        _generateMessageId: function() {
+            this._messageId += 1;
+            if (this._messageId >= Math.pow(2,32)) this._messageId = 0;
+            return this._messageId.toString(36);
+        },
+
+        _handleAdvice: function(advice) {
+            Faye.extend(this._advice, advice);
+
+            if (this._advice.reconnect === this.HANDSHAKE && this._state !== this.DISCONNECTED) {
+                this._state    = this.UNCONNECTED;
+                this._clientId = null;
+                this._cycleConnection();
+            }
+        },
+
+        _deliverMessage: function(message) {
+            if (!message.channel || message.data === undefined) return;
+            this.info('Client ? calling listeners for ? with ?', this._clientId, message.channel, message.data);
+            this._channels.distributeMessage(message);
+        },
+
+        _cycleConnection: function() {
+            if (this._connectRequest) {
+                this._connectRequest = null;
+                this.info('Closed connection for ?', this._clientId);
+            }
+            var self = this;
+            Faye.ENV.setTimeout(function() { self.connect() }, this._advice.interval);
+        }
+    });
+
+    Faye.extend(Faye.Client.prototype, Faye.Deferrable);
+    Faye.extend(Faye.Client.prototype, Faye.Publisher);
+    Faye.extend(Faye.Client.prototype, Faye.Logging);
+    Faye.extend(Faye.Client.prototype, Faye.Extensible);
+
+    Faye.Transport = Faye.extend(Faye.Class({
+        MAX_DELAY: 0,
+        batching:  true,
+
+        initialize: function(client, endpoint) {
+            this._client  = client;
+            this.endpoint = endpoint;
+            this._outbox  = [];
+        },
+
+        close: function() {},
+
+        encode: function(envelopes) {
+            return '';
+        },
+
+        send: function(envelope) {
+            var message = envelope.message;
+
+            this.debug('Client ? sending message to ?: ?',
+                this._client._clientId, Faye.URI.stringify(this.endpoint), message);
+
+            if (!this.batching) return this.request([envelope]);
+
+            this._outbox.push(envelope);
+
+            if (message.channel === Faye.Channel.HANDSHAKE)
+                return this.addTimeout('publish', 0.01, this.flush, this);
+
+            if (message.channel === Faye.Channel.CONNECT)
+                this._connectMessage = message;
+
+            this.flushLargeBatch();
+            this.addTimeout('publish', this.MAX_DELAY, this.flush, this);
+        },
+
+        flush: function() {
+            this.removeTimeout('publish');
+
+            if (this._outbox.length > 1 && this._connectMessage)
+                this._connectMessage.advice = {timeout: 0};
+
+            this.request(this._outbox);
+
+            this._connectMessage = null;
+            this._outbox = [];
+        },
+
+        flushLargeBatch: function() {
+            var string = this.encode(this._outbox);
+            if (string.length < this._client.maxRequestSize) return;
+            var last = this._outbox.pop();
+            this.flush();
+            if (last) this._outbox.push(last);
+        },
+
+        receive: function(envelopes, responses) {
+            var n = envelopes.length;
+            while (n--) envelopes[n].setDeferredStatus('succeeded');
+
+            responses = [].concat(responses);
+
+            this.debug('Client ? received from ?: ?',
+                this._client._clientId, Faye.URI.stringify(this.endpoint), responses);
+
+            for (var i = 0, n = responses.length; i < n; i++)
+                this._client.receiveMessage(responses[i]);
+        },
+
+        handleError: function(envelopes, immediate) {
+            var n = envelopes.length;
+            while (n--) envelopes[n].setDeferredStatus('failed', immediate);
+        },
+
+        _getCookies: function() {
+            var cookies = this._client.cookies;
+            if (!cookies) return '';
+
+            return cookies.getCookies({
+                domain: this.endpoint.hostname,
+                path:   this.endpoint.path,
+                secure: this.endpoint.protocol === 'https:'
+            }).toValueString();
+        },
+
+        _storeCookies: function(setCookie) {
+            if (!setCookie || !this._client.cookies) return;
+            setCookie = [].concat(setCookie);
+            var cookie;
+
+            for (var i = 0, n = setCookie.length; i < n; i++) {
+                cookie = this._client.cookies.setCookie(setCookie[i]);
+                cookie = cookie[0] || cookie;
+                cookie.domain = cookie.domain || this.endpoint.hostname;
+            }
+        }
+
+    }), {
+        get: function(client, allowed, disabled, callback, context) {
+            var endpoint = client.endpoint;
+
+            Faye.asyncEach(this._transports, function(pair, resume) {
+                var connType     = pair[0], klass = pair[1],
+                    connEndpoint = client.endpoints[connType] || endpoint;
+
+                if (Faye.indexOf(disabled, connType) >= 0)
+                    return resume();
+
+                if (Faye.indexOf(allowed, connType) < 0) {
+                    klass.isUsable(client, connEndpoint, function() {});
+                    return resume();
+                }
+
+                klass.isUsable(client, connEndpoint, function(isUsable) {
+                    if (!isUsable) return resume();
+                    var transport = klass.hasOwnProperty('create') ? klass.create(client, connEndpoint) : new klass(client, connEndpoint);
+                    callback.call(context, transport);
+                });
+            }, function() {
+                throw new Error('Could not find a usable connection type for ' + Faye.URI.stringify(endpoint));
+            });
+        },
+
+        register: function(type, klass) {
+            this._transports.push([type, klass]);
+            klass.prototype.connectionType = type;
+        },
+
+        _transports: []
+    });
+
+    Faye.extend(Faye.Transport.prototype, Faye.Logging);
+    Faye.extend(Faye.Transport.prototype, Faye.Timeouts);
+
+    Faye.Event = {
+        _registry: [],
+
+        on: function(element, eventName, callback, context) {
+            var wrapped = function() { callback.call(context) };
+
+            if (element.addEventListener)
+                element.addEventListener(eventName, wrapped, false);
+            else
+                element.attachEvent('on' + eventName, wrapped);
+
+            this._registry.push({
+                _element:   element,
+                _type:      eventName,
+                _callback:  callback,
+                _context:     context,
+                _handler:   wrapped
+            });
+        },
+
+        detach: function(element, eventName, callback, context) {
+            var i = this._registry.length, register;
+            while (i--) {
+                register = this._registry[i];
+
+                if ((element    && element    !== register._element)   ||
+                    (eventName  && eventName  !== register._type)      ||
+                    (callback   && callback   !== register._callback)  ||
+                    (context      && context      !== register._context))
+                    continue;
+
+                if (register._element.removeEventListener)
+                    register._element.removeEventListener(register._type, register._handler, false);
+                else
+                    register._element.detachEvent('on' + register._type, register._handler);
+
+                this._registry.splice(i,1);
+                register = null;
+            }
+        }
+    };
+
+    if (Faye.ENV.onunload !== undefined) Faye.Event.on(Faye.ENV, 'unload', Faye.Event.detach, Faye.Event);
+
+    /*
+     json2.js
+     2013-05-26
+
+     Public Domain.
+
+     NO WARRANTY EXPRESSED OR IMPLIED. USE AT YOUR OWN RISK.
+
+     See http://www.JSON.org/js.html
+
+
+     This code should be minified before deployment.
+     See http://javascript.crockford.com/jsmin.html
+
+     USE YOUR OWN COPY. IT IS EXTREMELY UNWISE TO LOAD CODE FROM SERVERS YOU DO
+     NOT CONTROL.
+
+
+     This file creates a global JSON object containing two methods: stringify
+     and parse.
+
+     JSON.stringify(value, replacer, space)
+     value       any JavaScript value, usually an object or array.
+
+     replacer    an optional parameter that determines how object
+     values are stringified for objects. It can be a
+     function or an array of strings.
+
+     space       an optional parameter that specifies the indentation
+     of nested structures. If it is omitted, the text will
+     be packed without extra whitespace. If it is a number,
+     it will specify the number of spaces to indent at each
+     level. If it is a string (such as '\t' or '&nbsp;'),
+     it contains the characters used to indent at each level.
+
+     This method produces a JSON text from a JavaScript value.
+
+     When an object value is found, if the object contains a toJSON
+     method, its toJSON method will be called and the result will be
+     stringified. A toJSON method does not serialize: it returns the
+     value represented by the name/value pair that should be serialized,
+     or undefined if nothing should be serialized. The toJSON method
+     will be passed the key associated with the value, and this will be
+     bound to the value
+
+     For example, this would serialize Dates as ISO strings.
+
+     Date.prototype.toJSON = function (key) {
+     function f(n) {
+     // Format integers to have at least two digits.
+     return n < 10 ? '0' + n : n;
+     }
+
+     return this.getUTCFullYear()   + '-' +
+     f(this.getUTCMonth() + 1) + '-' +
+     f(this.getUTCDate())      + 'T' +
+     f(this.getUTCHours())     + ':' +
+     f(this.getUTCMinutes())   + ':' +
+     f(this.getUTCSeconds())   + 'Z';
+     };
+
+     You can provide an optional replacer method. It will be passed the
+     key and value of each member, with this bound to the containing
+     object. The value that is returned from your method will be
+     serialized. If your method returns undefined, then the member will
+     be excluded from the serialization.
+
+     If the replacer parameter is an array of strings, then it will be
+     used to select the members to be serialized. It filters the results
+     such that only members with keys listed in the replacer array are
+     stringified.
+
+     Values that do not have JSON representations, such as undefined or
+     functions, will not be serialized. Such values in objects will be
+     dropped; in arrays they will be replaced with null. You can use
+     a replacer function to replace those with JSON values.
+     JSON.stringify(undefined) returns undefined.
+
+     The optional space parameter produces a stringification of the
+     value that is filled with line breaks and indentation to make it
+     easier to read.
+
+     If the space parameter is a non-empty string, then that string will
+     be used for indentation. If the space parameter is a number, then
+     the indentation will be that many spaces.
+
+     Example:
+
+     text = JSON.stringify(['e', {pluribus: 'unum'}]);
+     // text is '["e",{"pluribus":"unum"}]'
+
+
+     text = JSON.stringify(['e', {pluribus: 'unum'}], null, '\t');
+     // text is '[\n\t"e",\n\t{\n\t\t"pluribus": "unum"\n\t}\n]'
+
+     text = JSON.stringify([new Date()], function (key, value) {
+     return this[key] instanceof Date ?
+     'Date(' + this[key] + ')' : value;
+     });
+     // text is '["Date(---current time---)"]'
+
+
+     JSON.parse(text, reviver)
+     This method parses a JSON text to produce an object or array.
+     It can throw a SyntaxError exception.
+
+     The optional reviver parameter is a function that can filter and
+     transform the results. It receives each of the keys and values,
+     and its return value is used instead of the original value.
+     If it returns what it received, then the structure is not modified.
+     If it returns undefined then the member is deleted.
+
+     Example:
+
+     // Parse the text. Values that look like ISO date strings will
+     // be converted to Date objects.
+
+     myData = JSON.parse(text, function (key, value) {
+     var a;
+     if (typeof value === 'string') {
+     a =
+     /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/.exec(value);
+     if (a) {
+     return new Date(Date.UTC(+a[1], +a[2] - 1, +a[3], +a[4],
+     +a[5], +a[6]));
+     }
+     }
+     return value;
+     });
+
+     myData = JSON.parse('["Date(09/09/2001)"]', function (key, value) {
+     var d;
+     if (typeof value === 'string' &&
+     value.slice(0, 5) === 'Date(' &&
+     value.slice(-1) === ')') {
+     d = new Date(value.slice(5, -1));
+     if (d) {
+     return d;
+     }
+     }
+     return value;
+     });
+
+
+     This is a reference implementation. You are free to copy, modify, or
+     redistribute.
+     */
+
+    /*jslint evil: true, regexp: true */
+
+    /*members "", "\b", "\t", "\n", "\f", "\r", "\"", JSON, "\\", apply,
+     call, charCodeAt, getUTCDate, getUTCFullYear, getUTCHours,
+     getUTCMinutes, getUTCMonth, getUTCSeconds, hasOwnProperty, join,
+     lastIndex, length, parse, prototype, push, replace, slice, stringify,
+     test, toJSON, toString, valueOf
+     */
+
+
+// Create a JSON object only if one does not already exist. We create the
+// methods in a closure to avoid creating global variables.
+
+    if (typeof JSON !== 'object') {
+        JSON = {};
+    }
+
+    (function () {
+        'use strict';
+
+        function f(n) {
+            // Format integers to have at least two digits.
+            return n < 10 ? '0' + n : n;
+        }
+
+        if (typeof Date.prototype.toJSON !== 'function') {
+
+            Date.prototype.toJSON = function () {
+
+                return isFinite(this.valueOf())
+                    ? this.getUTCFullYear()     + '-' +
+                    f(this.getUTCMonth() + 1) + '-' +
+                    f(this.getUTCDate())      + 'T' +
+                    f(this.getUTCHours())     + ':' +
+                    f(this.getUTCMinutes())   + ':' +
+                    f(this.getUTCSeconds())   + 'Z'
+                    : null;
+            };
+
+            String.prototype.toJSON      =
+                Number.prototype.toJSON  =
+                    Boolean.prototype.toJSON = function () {
+                        return this.valueOf();
+                    };
+        }
+
+        var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+            escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+            gap,
+            indent,
+            meta = {    // table of character substitutions
+                '\b': '\\b',
+                '\t': '\\t',
+                '\n': '\\n',
+                '\f': '\\f',
+                '\r': '\\r',
+                '"' : '\\"',
+                '\\': '\\\\'
+            },
+            rep;
+
+
+        function quote(string) {
+
+// If the string contains no control characters, no quote characters, and no
+// backslash characters, then we can safely slap some quotes around it.
+// Otherwise we must also replace the offending characters with safe escape
+// sequences.
+
+            escapable.lastIndex = 0;
+            return escapable.test(string) ? '"' + string.replace(escapable, function (a) {
+                var c = meta[a];
+                return typeof c === 'string'
+                    ? c
+                    : '\\u' + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+            }) + '"' : '"' + string + '"';
+        }
+
+
+        function str(key, holder) {
+
+// Produce a string from holder[key].
+
+            var i,          // The loop counter.
+                k,          // The member key.
+                v,          // The member value.
+                length,
+                mind = gap,
+                partial,
+                value = holder[key];
+
+// If the value has a toJSON method, call it to obtain a replacement value.
+
+            if (value && typeof value === 'object' &&
+                typeof value.toJSON === 'function') {
+                value = value.toJSON(key);
+            }
+
+// If we were called with a replacer function, then call the replacer to
+// obtain a replacement value.
+
+            if (typeof rep === 'function') {
+                value = rep.call(holder, key, value);
+            }
+
+// What happens next depends on the value's type.
+
+            switch (typeof value) {
+                case 'string':
+                    return quote(value);
+
+                case 'number':
+
+// JSON numbers must be finite. Encode non-finite numbers as null.
+
+                    return isFinite(value) ? String(value) : 'null';
+
+                case 'boolean':
+                case 'null':
+
+// If the value is a boolean or null, convert it to a string. Note:
+// typeof null does not produce 'null'. The case is included here in
+// the remote chance that this gets fixed someday.
+
+                    return String(value);
+
+// If the type is 'object', we might be dealing with an object or an array or
+// null.
+
+                case 'object':
+
+// Due to a specification blunder in ECMAScript, typeof null is 'object',
+// so watch out for that case.
+
+                    if (!value) {
+                        return 'null';
+                    }
+
+// Make an array to hold the partial results of stringifying this object value.
+
+                    gap += indent;
+                    partial = [];
+
+// Is the value an array?
+
+                    if (Object.prototype.toString.apply(value) === '[object Array]') {
+
+// The value is an array. Stringify every element. Use null as a placeholder
+// for non-JSON values.
+
+                        length = value.length;
+                        for (i = 0; i < length; i += 1) {
+                            partial[i] = str(i, value) || 'null';
+                        }
+
+// Join all of the elements together, separated with commas, and wrap them in
+// brackets.
+
+                        v = partial.length === 0
+                            ? '[]'
+                            : gap
+                            ? '[\n' + gap + partial.join(',\n' + gap) + '\n' + mind + ']'
+                            : '[' + partial.join(',') + ']';
+                        gap = mind;
+                        return v;
+                    }
+
+// If the replacer is an array, use it to select the members to be stringified.
+
+                    if (rep && typeof rep === 'object') {
+                        length = rep.length;
+                        for (i = 0; i < length; i += 1) {
+                            if (typeof rep[i] === 'string') {
+                                k = rep[i];
+                                v = str(k, value);
+                                if (v) {
+                                    partial.push(quote(k) + (gap ? ': ' : ':') + v);
+                                }
+                            }
+                        }
+                    } else {
+
+// Otherwise, iterate through all of the keys in the object.
+
+                        for (k in value) {
+                            if (Object.prototype.hasOwnProperty.call(value, k)) {
+                                v = str(k, value);
+                                if (v) {
+                                    partial.push(quote(k) + (gap ? ': ' : ':') + v);
+                                }
+                            }
+                        }
+                    }
+
+// Join all of the member texts together, separated with commas,
+// and wrap them in braces.
+
+                    v = partial.length === 0
+                        ? '{}'
+                        : gap
+                        ? '{\n' + gap + partial.join(',\n' + gap) + '\n' + mind + '}'
+                        : '{' + partial.join(',') + '}';
+                    gap = mind;
+                    return v;
+            }
+        }
+
+// If the JSON object does not yet have a stringify method, give it one.
+
+        Faye.stringify = function (value, replacer, space) {
+
+// The stringify method takes a value and an optional replacer, and an optional
+// space parameter, and returns a JSON text. The replacer can be a function
+// that can replace values, or an array of strings that will select the keys.
+// A default replacer method can be provided. Use of the space parameter can
+// produce text that is more easily readable.
+
+            var i;
+            gap = '';
+            indent = '';
+
+// If the space parameter is a number, make an indent string containing that
+// many spaces.
+
+            if (typeof space === 'number') {
+                for (i = 0; i < space; i += 1) {
+                    indent += ' ';
+                }
+
+// If the space parameter is a string, it will be used as the indent string.
+
+            } else if (typeof space === 'string') {
+                indent = space;
+            }
+
+// If there is a replacer, it must be a function or an array.
+// Otherwise, throw an error.
+
+            rep = replacer;
+            if (replacer && typeof replacer !== 'function' &&
+                (typeof replacer !== 'object' ||
+                    typeof replacer.length !== 'number')) {
+                throw new Error('JSON.stringify');
+            }
+
+// Make a fake root object containing our value under the key of ''.
+// Return the result of stringifying the value.
+
+            return str('', {'': value});
+        };
+
+        if (typeof JSON.stringify !== 'function') {
+            JSON.stringify = Faye.stringify;
+        }
+
+// If the JSON object does not yet have a parse method, give it one.
+
+        if (typeof JSON.parse !== 'function') {
+            JSON.parse = function (text, reviver) {
+
+// The parse method takes a text and an optional reviver function, and returns
+// a JavaScript value if the text is a valid JSON text.
+
+                var j;
+
+                function walk(holder, key) {
+
+// The walk method is used to recursively walk the resulting structure so
+// that modifications can be made.
+
+                    var k, v, value = holder[key];
+                    if (value && typeof value === 'object') {
+                        for (k in value) {
+                            if (Object.prototype.hasOwnProperty.call(value, k)) {
+                                v = walk(value, k);
+                                if (v !== undefined) {
+                                    value[k] = v;
+                                } else {
+                                    delete value[k];
+                                }
+                            }
+                        }
+                    }
+                    return reviver.call(holder, key, value);
+                }
+
+
+// Parsing happens in four stages. In the first stage, we replace certain
+// Unicode characters with escape sequences. JavaScript handles many characters
+// incorrectly, either silently deleting them, or treating them as line endings.
+
+                text = String(text);
+                cx.lastIndex = 0;
+                if (cx.test(text)) {
+                    text = text.replace(cx, function (a) {
+                        return '\\u' +
+                            ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+                    });
+                }
+
+// In the second stage, we run the text against regular expressions that look
+// for non-JSON patterns. We are especially concerned with '()' and 'new'
+// because they can cause invocation, and '=' because it can cause mutation.
+// But just to be safe, we want to reject all unexpected forms.
+
+// We split the second stage into 4 regexp operations in order to work around
+// crippling inefficiencies in IE's and Safari's regexp engines. First we
+// replace the JSON backslash pairs with '@' (a non-JSON character). Second, we
+// replace all simple value tokens with ']' characters. Third, we delete all
+// open brackets that follow a colon or comma or that begin the text. Finally,
+// we look to see that the remaining characters are only whitespace or ']' or
+// ',' or ':' or '{' or '}'. If that is so, then the text is safe for eval.
+
+                if (/^[\],:{}\s]*$/
+                    .test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, '@')
+                        .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
+                        .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
+
+// In the third stage we use the eval function to compile the text into a
+// JavaScript structure. The '{' operator is subject to a syntactic ambiguity
+// in JavaScript: it can begin a block or an object literal. We wrap the text
+// in parens to eliminate the ambiguity.
+
+                    j = eval('(' + text + ')');
+
+// In the optional fourth stage, we recursively walk the new structure, passing
+// each name/value pair to a reviver function for possible transformation.
+
+                    return typeof reviver === 'function'
+                        ? walk({'': j}, '')
+                        : j;
+                }
+
+// If the text is not JSON parseable, then a SyntaxError is thrown.
+
+                throw new SyntaxError('JSON.parse');
+            };
+        }
+    }());
+
+    Faye.Transport.WebSocket = Faye.extend(Faye.Class(Faye.Transport, {
+        UNCONNECTED:  1,
+        CONNECTING:   2,
+        CONNECTED:    3,
+
+        batching:     false,
+
+        isUsable: function(callback, context) {
+            this.callback(function() { callback.call(context, true) });
+            this.errback(function() { callback.call(context, false) });
+            this.connect();
+        },
+
+        request: function(envelopes) {
+            this._pending = this._pending || new Faye.Set();
+            for (var i = 0, n = envelopes.length; i < n; i++) this._pending.add(envelopes[i]);
+
+            this.callback(function(socket) {
+                if (!socket) return;
+                var messages = Faye.map(envelopes, function(e) { return e.message });
+                socket.send(Faye.toJSON(messages));
+            }, this);
+            this.connect();
+        },
+
+        connect: function() {
+            if (Faye.Transport.WebSocket._unloaded) return;
+
+            this._state = this._state || this.UNCONNECTED;
+            if (this._state !== this.UNCONNECTED) return;
+            this._state = this.CONNECTING;
+
+            var socket = this._createSocket();
+            if (!socket) return this.setDeferredStatus('failed');
+
+            var self = this;
+
+            socket.onopen = function() {
+                if (socket.headers) self._storeCookies(socket.headers['set-cookie']);
+                self._socket = socket;
+                self._state = self.CONNECTED;
+                self._everConnected = true;
+                self._ping();
+                self.setDeferredStatus('succeeded', socket);
+            };
+
+            var closed = false;
+            socket.onclose = socket.onerror = function() {
+                if (closed) return;
+                closed = true;
+
+                var wasConnected = (self._state === self.CONNECTED);
+                socket.onopen = socket.onclose = socket.onerror = socket.onmessage = null;
+
+                delete self._socket;
+                self._state = self.UNCONNECTED;
+                self.removeTimeout('ping');
+                self.setDeferredStatus('unknown');
+
+                var pending = self._pending ? self._pending.toArray() : [];
+                delete self._pending;
+
+                if (wasConnected) {
+                    self.handleError(pending, true);
+                } else if (self._everConnected) {
+                    self.handleError(pending);
+                } else {
+                    self.setDeferredStatus('failed');
+                }
+            };
+
+            socket.onmessage = function(event) {
+                var messages  = JSON.parse(event.data),
+                    envelopes = [],
+                    envelope;
+
+                if (!messages) return;
+                messages = [].concat(messages);
+
+                for (var i = 0, n = messages.length; i < n; i++) {
+                    if (messages[i].successful === undefined) continue;
+                    envelope = self._pending.remove(messages[i]);
+                    if (envelope) envelopes.push(envelope);
+                }
+                self.receive(envelopes, messages);
+            };
+        },
+
+        close: function() {
+            if (!this._socket) return;
+            this._socket.close();
+        },
+
+        _createSocket: function() {
+            var url     = Faye.Transport.WebSocket.getSocketUrl(this.endpoint),
+                options = {headers: Faye.copyObject(this._client.headers), ca: this._client.ca};
+
+            options.headers['Cookie'] = this._getCookies();
+
+            if (Faye.WebSocket)        return new Faye.WebSocket.Client(url, [], options);
+            if (Faye.ENV.MozWebSocket) return new MozWebSocket(url);
+            if (Faye.ENV.WebSocket)    return new WebSocket(url);
+        },
+
+        _ping: function() {
+            if (!this._socket) return;
+            this._socket.send('[]');
+            this.addTimeout('ping', this._client._advice.timeout/2000, this._ping, this);
+        }
+
+    }), {
+        PROTOCOLS: {
+            'http:':  'ws:',
+            'https:': 'wss:'
+        },
+
+        create: function(client, endpoint) {
+            var sockets = client.transports.websocket = client.transports.websocket || {};
+            sockets[endpoint.href] = sockets[endpoint.href] || new this(client, endpoint);
+            return sockets[endpoint.href];
+        },
+
+        getSocketUrl: function(endpoint) {
+            endpoint = Faye.copyObject(endpoint);
+            endpoint.protocol = this.PROTOCOLS[endpoint.protocol];
+            return Faye.URI.stringify(endpoint);
+        },
+
+        isUsable: function(client, endpoint, callback, context) {
+            this.create(client, endpoint).isUsable(callback, context);
+        }
+    });
+
+    Faye.extend(Faye.Transport.WebSocket.prototype, Faye.Deferrable);
+    Faye.Transport.register('websocket', Faye.Transport.WebSocket);
+
+    if (Faye.Event)
+        Faye.Event.on(Faye.ENV, 'beforeunload', function() {
+            Faye.Transport.WebSocket._unloaded = true;
+        });
+
+    Faye.Transport.EventSource = Faye.extend(Faye.Class(Faye.Transport, {
+        initialize: function(client, endpoint) {
+            Faye.Transport.prototype.initialize.call(this, client, endpoint);
+            if (!Faye.ENV.EventSource) return this.setDeferredStatus('failed');
+
+            this._xhr = new Faye.Transport.XHR(client, endpoint);
+
+            endpoint = Faye.copyObject(endpoint);
+            endpoint.pathname += '/' + client._clientId;
+
+            var socket = new EventSource(Faye.URI.stringify(endpoint)),
+                self   = this;
+
+            socket.onopen = function() {
+                self._everConnected = true;
+                self.setDeferredStatus('succeeded');
+            };
+
+            socket.onerror = function() {
+                if (self._everConnected) {
+                    self._client.messageError([]);
+                } else {
+                    self.setDeferredStatus('failed');
+                    socket.close();
+                }
+            };
+
+            socket.onmessage = function(event) {
+                self.receive([], JSON.parse(event.data));
+            };
+
+            this._socket = socket;
+        },
+
+        close: function() {
+            if (!this._socket) return;
+            this._socket.onopen = this._socket.onerror = this._socket.onmessage = null;
+            this._socket.close();
+            delete this._socket;
+        },
+
+        isUsable: function(callback, context) {
+            this.callback(function() { callback.call(context, true) });
+            this.errback(function() { callback.call(context, false) });
+        },
+
+        encode: function(envelopes) {
+            return this._xhr.encode(envelopes);
+        },
+
+        request: function(envelopes) {
+            this._xhr.request(envelopes);
+        }
+
+    }), {
+        isUsable: function(client, endpoint, callback, context) {
+            var id = client._clientId;
+            if (!id) return callback.call(context, false);
+
+            Faye.Transport.XHR.isUsable(client, endpoint, function(usable) {
+                if (!usable) return callback.call(context, false);
+                this.create(client, endpoint).isUsable(callback, context);
+            }, this);
+        },
+
+        create: function(client, endpoint) {
+            var sockets = client.transports.eventsource = client.transports.eventsource || {},
+                id      = client._clientId;
+
+            endpoint = Faye.copyObject(endpoint);
+            endpoint.pathname += '/' + (id || '');
+            var url = Faye.URI.stringify(endpoint);
+
+            sockets[url] = sockets[url] || new this(client, endpoint);
+            return sockets[url];
+        }
+    });
+
+    Faye.extend(Faye.Transport.EventSource.prototype, Faye.Deferrable);
+    Faye.Transport.register('eventsource', Faye.Transport.EventSource);
+
+    Faye.Transport.XHR = Faye.extend(Faye.Class(Faye.Transport, {
+        encode: function(envelopes) {
+            var messages = Faye.map(envelopes, function(e) { return e.message });
+            return Faye.toJSON(messages);
+        },
+
+        request: function(envelopes) {
+            var path = this.endpoint.path,
+                xhr  = Faye.ENV.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest(),
+                self = this;
+
+            xhr.open('POST', path, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.setRequestHeader('Pragma', 'no-cache');
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            var headers = this._client.headers;
+            for (var key in headers) {
+                if (!headers.hasOwnProperty(key)) continue;
+                xhr.setRequestHeader(key, headers[key]);
+            }
+
+            var abort = function() { xhr.abort() };
+            Faye.Event.on(Faye.ENV, 'beforeunload', abort);
+
+            xhr.onreadystatechange = function() {
+                if (!xhr || xhr.readyState !== 4) return;
+
+                var parsedMessage = null,
+                    status        = xhr.status,
+                    text          = xhr.responseText,
+                    successful    = (status >= 200 && status < 300) || status === 304 || status === 1223;
+
+                Faye.Event.detach(Faye.ENV, 'beforeunload', abort);
+                xhr.onreadystatechange = function() {};
+                xhr = null;
+
+                if (!successful) return self.handleError(envelopes);
+
+                try {
+                    parsedMessage = JSON.parse(text);
+                } catch (e) {}
+
+                if (parsedMessage)
+                    self.receive(envelopes, parsedMessage);
+                else
+                    self.handleError(envelopes);
+            };
+
+            xhr.send(this.encode(envelopes));
+        }
+    }), {
+        isUsable: function(client, endpoint, callback, context) {
+            callback.call(context, Faye.URI.isSameOrigin(endpoint));
+        }
+    });
+
+    Faye.Transport.register('long-polling', Faye.Transport.XHR);
+
+    Faye.Transport.CORS = Faye.extend(Faye.Class(Faye.Transport, {
+        encode: function(envelopes) {
+            var messages = Faye.map(envelopes, function(e) { return e.message });
+            return 'message=' + encodeURIComponent(Faye.toJSON(messages));
+        },
+
+        request: function(envelopes) {
+            var xhrClass = Faye.ENV.XDomainRequest ? XDomainRequest : XMLHttpRequest,
+                xhr      = new xhrClass(),
+                headers  = this._client.headers,
+                self     = this,
+                key;
+
+            xhr.open('POST', Faye.URI.stringify(this.endpoint), true);
+
+            if (xhr.setRequestHeader) {
+                xhr.setRequestHeader('Pragma', 'no-cache');
+                for (key in headers) {
+                    if (!headers.hasOwnProperty(key)) continue;
+                    xhr.setRequestHeader(key, headers[key]);
+                }
+            }
+
+            var cleanUp = function() {
+                if (!xhr) return false;
+                xhr.onload = xhr.onerror = xhr.ontimeout = xhr.onprogress = null;
+                xhr = null;
+            };
+
+            xhr.onload = function() {
+                var parsedMessage = null;
+                try {
+                    parsedMessage = JSON.parse(xhr.responseText);
+                } catch (e) {}
+
+                cleanUp();
+
+                if (parsedMessage)
+                    self.receive(envelopes, parsedMessage);
+                else
+                    self.handleError(envelopes);
+            };
+
+            xhr.onerror = xhr.ontimeout = function() {
+                cleanUp();
+                self.handleError(envelopes);
+            };
+
+            xhr.onprogress = function() {};
+            xhr.send(this.encode(envelopes));
+        }
+    }), {
+        isUsable: function(client, endpoint, callback, context) {
+            if (Faye.URI.isSameOrigin(endpoint))
+                return callback.call(context, false);
+
+            if (Faye.ENV.XDomainRequest)
+                return callback.call(context, endpoint.protocol === Faye.ENV.location.protocol);
+
+            if (Faye.ENV.XMLHttpRequest) {
+                var xhr = new Faye.ENV.XMLHttpRequest();
+                return callback.call(context, xhr.withCredentials !== undefined);
+            }
+            return callback.call(context, false);
+        }
+    });
+
+    Faye.Transport.register('cross-origin-long-polling', Faye.Transport.CORS);
+
+    Faye.Transport.JSONP = Faye.extend(Faye.Class(Faye.Transport, {
+        encode: function(envelopes) {
+            var messages = Faye.map(envelopes, function(e) { return e.message });
+            var url = Faye.copyObject(this.endpoint);
+            url.query.message = Faye.toJSON(messages);
+            url.query.jsonp   = '__jsonp' + Faye.Transport.JSONP._cbCount + '__';
+            return Faye.URI.stringify(url);
+        },
+
+        request: function(envelopes) {
+            var messages     = Faye.map(envelopes, function(e) { return e.message }),
+                head         = document.getElementsByTagName('head')[0],
+                script       = document.createElement('script'),
+                callbackName = Faye.Transport.JSONP.getCallbackName(),
+                endpoint     = Faye.copyObject(this.endpoint),
+                self         = this;
+
+            endpoint.query.message = Faye.toJSON(messages);
+            endpoint.query.jsonp   = callbackName;
+
+            Faye.ENV[callbackName] = function(data) {
+                if (!Faye.ENV[callbackName]) return false;
+                Faye.ENV[callbackName] = undefined;
+                try { delete Faye.ENV[callbackName] } catch (e) {}
+                script.parentNode.removeChild(script);
+                self.receive(envelopes, data);
+            };
+
+            script.type = 'text/javascript';
+            script.src  = Faye.URI.stringify(endpoint);
+            head.appendChild(script);
+        }
+    }), {
+        _cbCount: 0,
+
+        getCallbackName: function() {
+            this._cbCount += 1;
+            return '__jsonp' + this._cbCount + '__';
+        },
+
+        isUsable: function(client, endpoint, callback, context) {
+            callback.call(context, true);
+        }
+    });
+
+    Faye.Transport.register('callback-polling', Faye.Transport.JSONP);
+    return Faye;
+
+})();
+var MM = ( function ($, Faye) {
+
+
+    /**
+     * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM#init} before anything
+     * else. Next obtain a token via {@link MM#getToken} to start making API calls.
+     *
+     * @namespace
+     */
+    var MM = window.MM || {};
+
+    /**
+     * MindMeld SDK Version
+     *
+     * @type {string}
+     * @static
+     * @private
+     */
+    Object.defineProperty(MM, 'version', {
+        value: '2.3.3',
+        writable: false
+    });
+
+    /**
+     *
+     * MindMeld configuration settings
+     *
+     * @type {object}
+     * @property {string}   cleanUrl - URL for MindMeld API
+     * @property {string}   fayeClientUrl - URL for MindMeld API Push Server
+     * @property {string}   appid - Developer's MindMeld application id
+     * @property {function} onInit - Callback called when SDK is initialized
+     * @private
+     */
+    MM.config = {
+        cleanUrl: 'https://mindmeldv2.expectlabs.com/',
+        fayeClientUrl: 'https://push-west-prod-a.expectlabs.com:443/faye'
+    };
+
+    /**
+     * Internal functions used by MindMeld SDK
+     *
+     * @memberOf MM
+     * @namespace
+     * @private
+     */
+    MM.Internal = $.extend({}, {
+
+        /**
+         * Perform any initialization here that can be done before the DOM loads.
+         *
+         * @memberOf MM.Internal
+         */
+        setup: function () {
+            MM.activeSessionId = null;
+            MM.activeUserId = null;
+        },
+
+        /**
+         * Perform any initialization here that should be done after the DOM loads.
+         *
+         * @memberOf MM.Internal
+         */
+        onReady: function () {
+            MM.Internal.initializeModels();
+
+            // Initializes push event handler with faye server URL
+            MM.Internal.EventHandler.init(MM.config.fayeClientUrl);
+
+            // Call the onInit handler.
+            MM.Util.testAndCall(MM.config.onInit);
+        },
+
+        /**
+         * Initialize app, user, and session models
+         *
+         * @memberOf MM.Internal
+         */
+        initializeModels: function () {
+            // App Model
+            $.extend(MM, new MM.models.App());
+            MM.documents = new MM.models.AppDocumentList();
+
+            // User Models
+            MM.activeUser = new MM.models.ActiveUser();
+            MM.activeUser.sessions = new MM.models.SessionList();
+
+            // Session Models
+            MM.activeSession = new MM.models.ActiveSession();
+            MM.activeSession.textentries = new MM.models.TextEntryList();
+            MM.activeSession.entities = new MM.models.EntityList();
+            MM.activeSession.articles = new MM.models.ArticleList();
+            MM.activeSession.documents = new MM.models.SessionDocumentList();
+            MM.activeSession.activities = new MM.models.ActivityList();
+            MM.activeSession.liveusers = new MM.models.LiveUserList();
+            MM.activeSession.invitedusers = new MM.models.InvitedUserList();
+        },
+
+        /**
+         * Clears active user data from local storage
+         *
+         * @memberOf MM.Internal
+         */
+        clearUserData: function () {
+            MM.activeUser.clearAllData();
+            MM.activeUser.sessions.clearAllData();
+        },
+
+        /**
+         * Clears active session data
+         *
+         * @memberOf MM.Internal
+         */
+        clearSessionData: function () {
+            MM.activeSession.clearAllData();
+            MM.activeSession.textentries.clearAllData();
+            MM.activeSession.entities.clearAllData();
+            MM.activeSession.articles.clearAllData();
+            MM.activeSession.documents.clearAllData();
+            MM.activeSession.activities.clearAllData();
+            MM.activeSession.liveusers.clearAllData();
+            MM.activeSession.invitedusers.clearAllData();
+        },
+
+        /**
+         * This method overrides the methods and properties of a given class with the
+         * methods and properties specified in the overrides object.
+         *
+         * @memberOf MM.Internal
+         */
+        override: function (origclass, overrides) {
+            $.extend(origclass.prototype, overrides);
+        },
+
+        /**
+         * Factory to create new object with the properties and methods specified in the
+         * overrides object that inherits from the superclass object.
+         *
+         * @memberOf MM.Internal
+         * @param {Object} superclass
+         * @param {Object} overrides
+         */
+        createSubclass: function (superclass, overrides) {
+            var objectConstructor = Object.prototype.constructor;
+            var subclass = overrides.constructor;
+            var F = function () {
+                },
+                subclassProto,
+                superclassProto = superclass.prototype;
+            F.prototype = superclassProto;
+            subclassProto = subclass.prototype = new F();
+            subclassProto.constructor = subclass;
+            subclass.superclass = superclassProto;
+            if (superclassProto.constructor == objectConstructor) {
+                superclassProto.constructor = superclass;
+            }
+            subclassProto.superclass = subclassProto.supr = (function () {
+                return superclassProto;
+            });
+            subclassProto.proto = subclassProto;
+            MM.Internal.override(subclass, overrides);
+            return subclass;
+        },
+
+        /**
+         * Utility method to print a log message.
+         *
+         * @memberOf MM.Internal
+         * @param {string} msg message to log to console
+         */
+        log: function (msg) {
+            window.console && window.console.log(msg);
+        },
+
+        /**
+         * Event handler service initializes connection with Faye push server, initiates and maintains
+         * subscriptions to various channels, and registers/dispatches both default and user-defined events
+         *
+         * @memberOf MM.Internal
+         * @namespace
+         * @private
+         */
+        EventHandler: {
+
+            /**
+             * Reference to faye client instance
+             *
+             * @type {Faye}
+             * @memberOf MM.Internal.EventHandler
+             */
+            fayeClient: null,
+
+            // Dictionary mapping app|user|session channels to Faye channel object
+            /**
+             * @description Dictionary mapping app|user|session channels to Faye channel object
+             * @type {Object.<string, Faye>}
+             * @memberOf MM.Internal.EventHandler
+             */
+            fayeSubscriptions: {},
+
+            /**
+             * Dictionary for single event on specific channel
+             *
+             * @example
+             * namedEventHandlers = {
+                '/:appid/session/:sessionid': {
+                    'textentriesUpdate': (FN onAnySessionEvent)
+                 }
+             }
+             * @memberOf MM.Internal.EventHandler
+             */
+            namedEventHandlers: {},
+
+            /**
+             * Dictionary for event handlers for all events on an app channel
+             *
+             * @example
+             * appChannelHandlers = {
+                    '/:appid/:appid': (FN onAnyAppEvent)
+                }
+             */
+            appChannelHandlers: {},
+
+            /**
+             * @description Dictionary for event handlers for all events on a user channel
+             * @example
+             * userChannelHandlers = {
+                    '/:appid/user/:userid': (FN onAnyUserEvent)
+                }
+             */
+            userChannelHandlers: {},
+
+            /**
+             * Dictionary for event handlers for all events on a session channel
+             *
+             * @example
+             * sessionChannelHandlers = {
+                    '/:appid/session/:sessionid': (FN onAnySessionEvent)
+                }
+             */
+            sessionChannelHandlers: {},
+
+            /**
+             * Initializes connection with Faye server
+             *
+             * @param {string} url url of MindMeld push API server
+             */
+            init: function (url) {
+                this.fayeClient = new Faye.Client(url, {
+                    'timeout': 120
+                });
+
+                var clientAuth = {
+                    outgoing: function(message, callback) {
+                        if (message.channel !== '/meta/subscribe')
+                            return callback(message);
+                        if (!message.ext) message.ext = {};
+                        message.ext.authToken = MM.token;
+                        callback(message);
+
+                    }
+                };
+
+                this.fayeClient.addExtension(clientAuth);
+            },
+
+            /**
+             * Object specifying channel type and channel string
+             *
+             * @typedef {Object} ChannelConfig
+             * @property {string} type type of channel (e.g., app, user, or session)
+             * @property {string} channel full channel string (e.g., '/:appid/user/:userid')
+             */
+
+            /**
+             * Event configuration object containing an event channel, handler, and event name
+             *
+             * @typedef     {Object}    EventConfig
+             * @property    {string}    name    name of the event
+             * @property    {function}  handler event handler
+             * @property    {ChannelConfig}    channelConfig object specifying channel type and channel string
+             */
+
+            /**
+             * Given an event config object, which contains event channel, event handler, and either a subscribeAll flag
+             * or a specific event name, registers for either the given event or all the events on the channel
+             *
+             * @param {EventConfig} updateEventConfig config object specifying how which event to subscribe to
+             * @param {function} onSuccess called when successfully subscribed to event
+             * @param {function} onError called when there was an error subscribing to an event
+             */
+            subscribe: function (updateEventConfig, onSuccess, onError) {
+                var self = MM.Internal.EventHandler;
+                var channel = updateEventConfig.channelConfig.channel;
+                var channelType = updateEventConfig.channelConfig.type;
+                var channelSubscriptionExists = true;
+
+                // Start new faye subscription if none exists
+                if (this.fayeSubscriptions[channel] === undefined) {
+                    channelSubscriptionExists = false;
+                    var channelHandler = function (event) {
+
+                        if (self.namedEventHandlers[channel] !== undefined) {
+                            MM.Util.testAndCall(self.namedEventHandlers[channel][event.event], event.payload);
+                        }
+                        switch (channelType) {
+                            case 'app':
+                                MM.Util.testAndCall(self.appChannelHandlers[channel], event);
+                                break;
+
+                            case 'session':
+                                MM.Util.testAndCall(self.sessionChannelHandlers[channel], event);
+                                break;
+
+                            case 'user':
+                                MM.Util.testAndCall(self.userChannelHandlers[channel], event);
+                                break;
+                        }
+                    };
+                    // subscribe to channel
+                    var channelSubscription = self.fayeClient.subscribe(channel, channelHandler);
+                    self.fayeSubscriptions[channel] = channelSubscription;
+                    channelSubscription.then(
+                        function () {
+                            if (MM.config.debug){
+                                MM.Internal.log("SUCCESSFULLY CONNECTED TO CHANNEL: " + updateEventConfig.channel);
+                            }
+                            MM.Util.testAndCall(onSuccess);
+                        },
+                        function (error) {
+                            MM.Internal.log("COULD NOT CONNECT TO CHANNEL: " + updateEventConfig.channel + '. Error: ' + error.message);
+                            MM.Util.testAndCall(onError, error);
+                        }
+                    );
+                }
+
+                // Call onSuccess callback if we already have a valid subscription to the channel
+                if (channelSubscriptionExists) {
+                    MM.Util.testAndCall(onSuccess, channel);
+                }
+
+                var handler = updateEventConfig.handler;
+                if (updateEventConfig.subscribeAll) {
+                    switch (channelType) {
+                        case 'app':
+                            self.appChannelHandlers[channel] = handler;
+                            break;
+
+                        case 'session':
+                            self.sessionChannelHandlers[channel] = handler;
+                            break;
+
+                        case 'user':
+                            self.userChannelHandlers[channel] = handler;
+                            break;
+                    }
+                }
+                else {
+                    if (self.namedEventHandlers[channel] === undefined) {
+                        self.namedEventHandlers[channel] = {};
+                    }
+                    self.namedEventHandlers[channel][updateEventConfig.name] = handler;
+
+                }
+            },
+
+            /**
+             * Unsubscribes from an event. If there are no more handler's for events on the specified Faye channel,
+             * unsubscribe from the Faye channel as well
+             *
+             * @param {EventConfig} updateEventConfig config object specifying how which event to unsubscribe from
+             */
+            unsubscribe: function (updateEventConfig) {
+                var self = MM.Internal.EventHandler;
+                var channel = updateEventConfig.channelConfig.channel;
+                var channelType = updateEventConfig.channelConfig.type;
+                if (updateEventConfig.subscribeAll) {
+                    switch (channelType) {
+                        case 'app':
+                            delete self.appChannelHandlers[channel];
+                            break;
+
+                        case 'session':
+                            delete self.sessionChannelHandlers[channel];
+                            break;
+
+                        case 'user':
+                            delete self.userChannelHandlers[channel];
+                            break;
+                    }
+                }
+                else {
+                    if (this.namedEventHandlers[channel] !== undefined) {
+                        delete self.namedEventHandlers[channel][updateEventConfig.name];
+                        if ($.isEmptyObject(self.namedEventHandlers[channel])) {
+                            delete self.namedEventHandlers[channel];
+                        }
+                    }
+                }
+
+                var shouldCancelSubscription = false;
+                var hasNamedEventsOnChannel = self.namedEventHandlers[channel] !== undefined;
+                if (! hasNamedEventsOnChannel) {
+                    switch (channelType) {
+                        case 'app':
+                            shouldCancelSubscription = self.appChannelHandlers[channel] === undefined;
+                            break;
+
+                        case 'session':
+                            shouldCancelSubscription = self.sessionChannelHandlers[channel] === undefined;
+                            break;
+
+                        case 'user':
+                            shouldCancelSubscription = self.userChannelHandlers[channel] === undefined;
+                            break;
+                    }
+                }
+
+                if (shouldCancelSubscription) {
+                    var fayeSubscription = self.fayeSubscriptions[channel];
+                    if (fayeSubscription) {
+                        fayeSubscription.cancel();
+                        delete this.fayeSubscriptions[channel];
+                    }
+                }
+            },
+
+            /**
+             * Unsubscribes from all custom events and subscribeAll events on specified channel
+             *
+             * @param {string} channel full channel string
+             * @param {string} channelType channel type (e.g., app, user, session)
+             */
+            clearAllEventsForChannel: function (channel, channelType) {
+                var self = MM.Internal.EventHandler;
+                delete self.namedEventHandlers[channel];
+                switch (channelType) {
+                    case 'app':
+                        delete self.appChannelHandlers[channel];
+                        break;
+
+                    case 'session':
+                        delete self.sessionChannelHandlers[channel];
+                        break;
+
+                    case 'user':
+                        delete self.userChannelHandlers[channel];
+                        break;
+                }
+
+                var fayeSubscription = self.fayeSubscriptions[channel];
+                if (fayeSubscription) {
+                    fayeSubscription.cancel();
+                    delete self.fayeSubscriptions[channel];
+                }
+
+                if(MM.config.debug) {
+                    MM.Internal.log('Cleared all event handlers on ' + channel + ' channel');
+                }
+            }
+        },
+
+        /**
+         * Contains common functionality for custom events on all channels. The {@link MM},
+         * {@link MM.activeUser}, and {@link MM.activeSession} {@link Model}'s are the only
+         * objects that use this mixin
+         *
+         * @mixin CustomEventHandlers
+         */
+        customEventHandlers: {
+            /**
+             * The NamedEventCallBack is used when subscribing to a specific event on a channel, as opposed
+             * to subscribing to all events on a channel
+             *
+             * @callback NamedEventCallBack
+             * @param {EventPayload} payload
+             */
+
+            /**
+             * The AllEventsCallback is used when subscribing to every event on a given channel. The callback
+             * takes an 'event' parameter object that contains the event name and the event payload
+             *
+             * @callback AllEventsCallback
+             * @param {Object} eventObject event object received from push server
+             * @param {string} eventObject.event    name of the event
+             * @param {EventPayload} eventObject.payload    payload from the event
+             */
+
+            /**
+             * Payload received from MindMeld push server. The payload may be either a string containing
+             * a message about the event or a JSON object containing arbitrary data
+             *
+             * @typedef {(string | Object)} EventPayload
+             */
+
+
+            /**
+             * Publish a new custom event
+             *
+             * @param {string} event event name
+             * @param {EventPayload} payload payload for event
+             * @instance
+             * @memberOf CustomEventHandlers
+             */
+            _publish: function (event, payload) {
+                var eventData = {
+                    name: event,
+                    payload: payload
+                };
+
+                var path = this.path() + '/events';
+
+                this.makeModelRequest('POST', path, eventData);
+            },
+
+            /**
+             * Uses {@link MM.Internal.EventHandler} to subscribe to a custom event
+             *
+             * @param eventName {string} name of event to subscribe to
+             * @param eventHandler  {NamedEventCallBack} callback for when event is fired
+             * @param onSuccess {function} callback for when subscription is successful
+             * @param onError   {function} callback for when there is an error subscribing
+             * @instance
+             * @memberOf CustomEventHandlers
+             */
+            _subscribe: function (eventName, eventHandler, onSuccess, onError) {
+                var eventConfig = {
+                    name: eventName,
+                    handler: eventHandler,
+                    subscribeAll: false
+                };
+                eventConfig.channelConfig = this.getChannelConfig();
+
+                MM.Internal.EventHandler.subscribe(eventConfig, onSuccess, onError);
+            },
+
+            /**
+             * Unsubscribe from a named event
+             *
+             * @param {string} eventName name of event to subscribe from
+             * @instance
+             * @memberOf CustomEventHandlers
+             */
+            _unsubscribe: function (eventName) {
+                var eventConfig = {
+                    name: eventName,
+                    subscribeAll: false
+                };
+                eventConfig.channelConfig = this.getChannelConfig();
+                MM.Internal.EventHandler.unsubscribe(eventConfig);
+            },
+
+            /**
+             * Subscribes to every event on this object's channel
+             *
+             * @param {AllEventsCallback} eventHandler callback for when an event on this object's channel is fired
+             * @param onSuccess {function=} callback for when subscription is successful
+             * @param onError   {function=} callback for when there is an error subscribing
+             * @instance
+             * @memberOf CustomEventHandlers
+             */
+            _subscribeAll: function (eventHandler, onSuccess, onError) {
+                var eventConfig = {
+                    subscribeAll: true,
+                    handler: eventHandler
+                };
+                eventConfig.channelConfig = this.getChannelConfig();
+                MM.Internal.EventHandler.subscribe(eventConfig, onSuccess, onError);
+            },
+
+            /**
+             * Unsubscribe from all events on this object's channel
+             *
+             * @instance
+             * @memberOf CustomEventHandlers
+             */
+            _unsubscribeAll: function () {
+                var eventConfig = {
+                    subscribeAll: true
+                };
+                eventConfig.channelConfig = this.getChannelConfig();
+                MM.Internal.EventHandler.unsubscribe(eventConfig);
+            }
+        }
+    });
+
+
+    // Apply the API methods to the MindMeld API object
+    $.extend(MM, {
+
+        /**
+         *  This method will initialize the MindMeld SDK and must be called before any other
+         *  calls to the MM SDK
+         *
+         * @param {Object} config configuration parameters containing developers' application id and
+         *                  onInit callback
+         *
+         * @param {string} config.appid application id for this MindMeld application
+         * @param {function} config.onInit callback for when MindMeld SDK is initialized
+         * @memberOf MM
+         * @instance
+         *
+         * @example
+         *
+         var mindMeldConfig = {
+            appid: '<appid>',
+            onInit: onMindMeldInit
+         };
+
+         function onMindMeldInit () {
+            // MindMeld SDK Initialized
+         }
+         */
+        init: function (config) {
+            var defaultConfig = MM.config;
+
+            // Allow user to override defaults
+            //noinspection JSCheckFunctionSignatures
+            MM.config = $.extend({}, defaultConfig, config);
+
+            $(document).ready(function () {
+                MM.Internal.onReady();
+            });
+        },
+
+        /**
+         * Requests a new admin or user token from the API and stores it locally. This token is automatically
+         * used for all subsequent requests to the API. If we successfully obtain a token, {@link MM#getToken}
+         * automatically calls {@link MM#setActiveUserID} with the appropriate user id
+         *
+         * @param {Object} credentials credentials for obtaining an API token.
+         * Please refer to [documentation here](https://developer.expectlabs.com/docs/authentication) for details
+         * @param onSuccess {function=} callback for when token obtained successfully
+         * @param onError   {function=} callback for when there was an error obtaining token
+         * @memberOf MM
+         * @instance
+         *
+         *
+         * @example <caption> Example code to get a token </caption>
+         *
+         var credentials = {...}; // admin credentials, simple user credentials, or user credentials
+         MM.getToken(credentials, onGetToken);
+
+         function onGetToken (result) {
+            var token = result.token;
+         }
+
+         * @example <caption> Example credentials to get an admin token </caption>
+         *
+         var adminCredentials = {
+            appsceret: '<appsecret>'
+         };
+
+         * @example <caption> Example credentials to get a simple user token </caption>
+         *
+         var simpleUserCredentials = {
+            appsceret: '<appsecret>',
+            simple: {
+                userid: 'einstein79',
+                name: 'Albert Einstein'
+            }
+         }
+
+         * @example <caption> Example credentials to get a user token </caption>
+         *
+         var fbUserId = 'Facebook User Id';
+         var fbAuthToken = 'Facebook User Token';
+         var userCredentials = {
+             facebook: {
+                userid: fbUserId,
+                token: fbAuthToken
+             }
+         };
+         *
+         */
+        getToken: function (credentials, onSuccess, onError) {
+            var headers = {'X-MindMeld-Appid': MM.config.appid}; // included on every token request
+            var isAdminToken = false;
+            var params = null;
+            if (credentials.facebook || credentials.anonymous) { // User token
+                params = {
+                    credentials: credentials
+                };
+                params = JSON.stringify(params);
+            }
+            else if (credentials.appsecret && credentials.simple) {
+                headers['X-MindMeld-Appsecret'] = credentials.appsecret;
+                params = {
+                    credentials: {'simple': credentials.simple}
+                };
+                params = JSON.stringify(params);
+            }
+            else if (credentials.appsecret) { // Admin token
+                headers['X-MindMeld-Appsecret'] = credentials.appsecret;
+                isAdminToken = true;
+            }
+            else { // Invalid credentials passed in
+                var error = {
+                    code: 14,
+                    type: 'CredentialsInvalid',
+                    message: 'A valid appsecret or either simple or facebook credentials are required.'
+                };
+                MM.Util.testAndCall(onError, error);
+                return;
+            }
+
+            MM.callApi('POST', 'tokens', params, onTokenSuccess, onError, headers);
+
+            // Sets MM.token on success
+            function onTokenSuccess(response) {
+                if (response.data && response.data.token) {
+                    MM.token = response.data.token;
+                    if (isAdminToken) {
+                        // The admin user id is not returned when requesting a new token
+                        // It can be found in the app object's 'ownerid' field
+                        MM.get( null,
+                            function (appResponse) {
+                                var adminId = appResponse.data.ownerid;
+                                MM.setActiveUserID(adminId);
+                                MM.Util.testAndCall(onSuccess, response.data);
+                            },
+                            function (error) {
+                                MM.Util.testAndCall(onError, error);
+                            }
+                        );
+                    }
+                    else {
+                        // The user id is returned when requesting a new user token
+                        if (response.data.user && response.data.user.userid) {
+                            MM.setActiveUserID(response.data.user.userid);
+                            MM.Util.testAndCall(onSuccess, response.data);
+                        }
+                    }
+                }
+                else {
+                    MM.Util.testAndCall(onError, response);
+                }
+            }
+        },
+
+        /**
+         * Revokes the current API token. Note that subsequent calls to the MindMeld API will not
+         * work until a new token is obtained
+         *
+         * @param onSuccess {function=} callback for when token is successfully revoked
+         * @param onError {function=} callback for when there was an error revoking token
+         * @memberOf MM
+         * @instance
+         *
+         * @example
+         *
+         function revokeTokenExample () {
+            // First, get a token. In this example, we are getting an admin token
+            var credentials = {
+                appsecret: '<appsecret>'
+            };
+            MM.getToken(credentials, onGetToken);
+         }
+         function onGetToken () {
+            // Now that we have a token, try an API request
+            MM.get(null, onGetApplicationInfo);
+         }
+         function onGetApplicationInfo (result) {
+            // Request succeeds because we have a token
+            var applicationInfo = result.data;
+            // Now, let's revoke the token
+            MM.revokeToken (onRevokeToken);
+         }
+         function onRevokeToken () {
+            // Now that we have revoked the token, try an API Request
+            MM.get(null, onGetApplicationInfo, onGetApplicationError);
+         }
+         function onGetApplicationError (error) {
+            console.log('Call failed. Error code ' + error.code + ': ' + error.message);
+            // "Call failed. Error code 8: No token parameter was included in the api request"
+         }
+         */
+        revokeToken: function (onSuccess, onError) {
+            MM.callApi('DELETE', 'token/' + MM.token, null, onRevokeTokenSuccess, onError);
+
+            // Clears MM.token on success
+            function onRevokeTokenSuccess(response) {
+                if (MM.config.debug) MM.Internal.log('SUCCESSFULLY REVOKED TOKEN: ' + MM.token);
+                MM.token = '';
+                if (response.data) {
+                    MM.Util.testAndCall(onSuccess, response);
+                }
+                else {
+                    MM.Util.testAndCall(onError, response);
+                }
+            }
+        },
+
+        /**
+         * Sets the active session to a specified session id. {@link MM#setActiveSessionID} also tries to fetch the session
+         * object and clears all event handlers from the previous session. You must call setActiveSessionID before calling
+         * any of the functions in the {@link MM.activeSession} namespace
+         *
+         * @param {string} sessionid session id to set active session to
+         * @param onSuccess {APISuccessCallback=} callback for when session data was successfully fetched
+         * @param onError   {APIErrorCallback=} callback for when there was an error fetching session data
+         * @memberOf MM
+         * @instance
+         *
+         * @example
+         *
+         function testSetActiveSessionID () {
+            MM.setActiveSessionID('<session id>');
+         }
+         */
+        setActiveSessionID: function (sessionid, onSuccess, onError) {
+            var sessionEventChannel = MM.config.appid + '/session/' + MM.activeSessionId;
+            MM.Internal.EventHandler.clearAllEventsForChannel(sessionEventChannel, 'session');
+            MM.activeSessionId = sessionid;
+            MM.Internal.clearSessionData();
+            MM.activeSession.get(null, onSuccess, onError);
+        },
+
+        /**
+         * Deprecated function for setting active session id. Use {@link MM#setActiveSessionID} instead
+         *
+         * @memberOf MM
+         * @instance
+         * @deprecated
+         * @private
+         */
+        setActiveSession: function (sessionid, onSuccess, onError) {
+            MM.setActiveSessionID(sessionid, onSuccess, onError);
+        },
+
+        /**
+         * Sets the active user to a specified user id. {@link MM#setActiveUserID} also tries to fetch the user object
+         * and clears all event handlers from the previous user. {@link MM#setActiveUserID} is automatically called
+         * after successfully calling {@link MM#getToken}. You should only to call this method if you are using an
+         * admin token and want to impersonate other users, or if you call {@link MM#setToken} with an existing token
+         * and already know the corresponding user id
+         *
+         * @param {string} userid
+         * @param onSuccess {APISuccessCallback=} callback for when user data successfully fetched
+         * @param onError   {APIErrorCallback=} callback for when there was an error fetching user data
+         * @memberOf MM
+         * @instance
+         *
+         * @example
+         *
+         var userToken = '<known user token>';
+         MM.setToken(userToken, onTokenValid);
+
+         function onTokenValid () {
+            MM.setActiveUserID('<known mindmeld user  id>', onGetUserInfo);
+         }
+         function onGetUserInfo (response) {
+            var userInfo = response.data;
+         }
+         */
+        setActiveUserID: function (userid, onSuccess, onError) {
+            var userEventChannel = MM.config.appid + '/user/' + MM.activeUserId;
+            MM.Internal.EventHandler.clearAllEventsForChannel(userEventChannel, 'user');
+            MM.activeUserId = userid;
+            MM.Internal.clearUserData();
+            MM.activeUser.get(null, onSuccess, onError);
+        },
+
+        /**
+         * Deprecated function for setting active user id. Use {@link MM#setActiveUserID} instead
+         *
+         * @memberOf MM
+         * @instance
+         * @deprecated
+         * @private
+         */
+        setActiveUser: function (userid, onSuccess, onError) {
+            MM.setActiveUserID(userid, onSuccess, onError);
+        },
+
+        /**
+         * Set the MM token directly instead of calling {@link MM#getToken}. This function also
+         * provides valid/invalid callbacks to determine if the given token is valid or not.
+         * Regardless of the token being valid, {@link MM#setToken} always sets the token
+         * used by MM. Unlike {@link MM#getToken}, {@link MM#setToken} does not automatically
+         * call {@link MM#setActiveUserID}
+         *
+         * @param {string} token token to be used by SDK
+         * @param {function=} onTokenValid callback for when given token is valid
+         * @param {function=} onTokenInvalid callback for when given token is invalid
+         * @memberOf MM
+         * @instance
+         *
+         * @example
+         *
+         function setToken () {
+            MM.setToken('<token>', onTokenValid, onTokenInvalid);
+         }
+         function onTokenValid () {
+            // token is valid
+         }
+         function onTokenInvalid () {
+            // token is invalid
+         }
+         */
+        setToken: function (token, onTokenValid, onTokenInvalid) {
+            MM.token = token;
+            MM.get(null,
+                function onTokenSuccess () {
+                    MM.Util.testAndCall(onTokenValid);
+                },
+                function onTokenError () {
+                    MM.Util.testAndCall(onTokenInvalid);
+                }
+            );
+        },
+
+        /**
+         * The APISuccessCallback handles successful responses from the API. Every response from the MindMeld API conforms
+         * to the same format
+         *
+         * @callback APISuccessCallback
+         * @param {Object} result result object containing response from the API
+         * @param {(Object | Array)} result.data data returned from the API. For object endpoints (e.g., "/user/:userid"), data is an Object,
+         * but for collection endpoints (e.g., "/documents"), data is an Array of Objects
+         * @param {Object} result.request contains information about the request made
+         * @param {string} result.timestamp timestamp of the request
+         * @param {number} result.responsetime amount of time the API call took in seconds
+         * @param {string} result.etag  ETag for request. Please refer to our [documentation here](https://developer.expectlabs.com/docs/sendingRequest) for more information on ETags
+         */
+
+        /**
+         * The APIErrorCallback handles unsuccessful response from the API. Every error response from the api conforms
+         * to the same format
+         *
+         * @callback APIErrorCallback
+         * @param {Object} error error object containing information about an API Error
+         * @param {number} error.code API error code
+         * @param {string} error.message API error message
+         * @param {string} error.type API error type
+         */
+
+        /**
+         * A QueryParameter Object has one or more fields that allow you to narrow down the list of
+         * items returned from a collection. A QueryParameter object looks like the following:
+         *
+         * @example
+         * var queryParams = {
+         *      query: "san francisco", // return items that match the string 'san francisco'
+         *      start: 4,   // return items starting at the 4th index
+         *      limit: 10,  // limit the number of returned items to 10
+         *      since: "last Monday",   // return items created since last Monday
+         *      until: "yesterday"     // return items that were crated before yesterday
+         * }
+         *
+         * @typedef {Object} QueryParameters
+         * @property {string=} query search query string to retrieve specific objects that match the query. See the
+         * documentation on [search query syntax](https://developer.expectlabs.com/docs/searchQuerySyntax)
+         * for more information
+         * @property {number=} start The index of the first object in the returned list of objects. This can
+         * be used for paging through large collections of objects.
+         * @property {number=} limit The maximum number of individual objects to be returned in the response.
+         * If not specified, the default is 10. The maximum allowed value is 50.
+         * @property {(number|string)=} since A Unix timestamp or
+         * [strtotime](http://php.net/manual/en/function.strtotime.php) date value that specifies the
+         * start of a range of time-based data. Only objects created after this timestamp will be
+         * returned in the response.
+         * @property {(number|string)=} until A Unix timestamp or
+         * [strtotime](http://php.net/manual/en/function.strtotime.php) date value that specifies the end
+         * of a range of time-based data. Only objects created before this timestamp will be
+         * returned in the response.
+         */
+
+        /**
+         * Makes a call directly to the MindMeld API. This method can be used to make calls to any path of
+         * the MindMeld API that are not part of the namespaces
+         *
+         * @param {string}                          method      HTTP method to use for API call ('GET', 'POST', or 'DELETE')
+         * @param {string}                          path        API endpoint path (e.g., 'session/:sessionid/textentries')
+         * @param {QueryParameters=}                params      Parameters to be sent to MindMeld API. Params are URL
+         * encoded for GET and DELETE requests
+         *                                                      and are sent as POST data for POST requests
+         * @param {APISuccessCallback=}             success     A callback function to be called if the API request succeeds.
+         * The function receives one argument containing the data returned from the server
+         * @param {qAPIErrorCallback=}               error       A callback function to be called if the API request fails.
+         * The function receives one argument, the error message returned from the server
+         * @memberOf MM
+         * @instance
+         *
+         * @example <caption> Example GET request
+         * to the
+         * [session text entries endpoint](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidTextentries)
+         * </caption>
+         *
+         function callAPI () {
+            MM.callApi('GET', 'session/47978/textentries', null, onGetTextEntries);
+         }
+         function onGetTextEntries (response) {
+            var responseData = response.data;
+         }
+
+         * @example <caption> Example POST request to the application's
+         * [publish event endpoint](https://developer.expectlabs.com/docs/endpointApp#postEvents) </caption>
+         *
+         function callAPI () {
+            var eventData = {
+                name: 'custom event name',
+                payload: 'test payload'
+            };
+            MM.callApi('POST', 'events', eventData, onPublishEvent);
+         }
+         function onPublishEvent (response) {
+            var responseData = response.data;
+         }
+         */
+        callApi: function (method, path, params, success, error, headers) {
+            var modSince = false;
+            if (params && params['if-modified-since']) {
+                modSince = true;
+                delete params['if-modified-since'];
+            }
+
+            headers = headers || {'X-MINDMELD-ACCESS-TOKEN': MM.token};
+            var fullUrl = MM.config.cleanUrl + path;
+            if (MM.config.debug) MM.Internal.log('Calling MindMeld API with: ' + method + ' and URL: ' + fullUrl + ' and Params: ' + JSON.stringify(params));
+            // Now call the API using AJAX.
+            $.ajax({
+                type: method,
+                url: fullUrl,
+                data: params,
+                dataType: 'json',
+                headers: headers,
+                ifModified: modSince,
+                success: function (result, status) {
+                    if (MM.config.debug) MM.Internal.log('The MindMeld request returned: ' + JSON.stringify(result));
+                    if (status === 'notmodified') {
+                        MM.Util.testAndCall(error, status);
+                    }
+                    else if (result) {
+                        if (result.data) {
+                            MM.Util.testAndCall(success, result);
+                        }
+                        else if (result.error) {
+                            MM.Util.testAndCall(error, result.error);
+                        }
+                    }
+                    else {
+                        MM.Util.testAndCall(error, result);
+                    }
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    var text = 'Ajax Request Error: ' + 'XMLHTTPRequestObject status: (' + xhr.status + ', ' + xhr.statusText + '), ' +
+                        'text status: (' + textStatus + '), error thrown: (' + errorThrown + ')';
+                    MM.Internal.log('The MindMeld AJAX request failed with the error: ' + text);
+                    MM.Internal.log(xhr.responseText);
+                    MM.Internal.log(xhr.getAllResponseHeaders());
+                    var errorObj = {
+                        code: 0,
+                        type: 'Failed Ajax Request',
+                        message: ''+errorThrown
+                    };
+                    MM.Util.testAndCall(error, errorObj);
+                }
+            });
+        }
+    });
+
+    /**
+     * Collection MindMeld object models
+     *
+     * @namespace
+     * @memberOf MM
+     * @private
+     */
+    MM.models = {};
+
+    MM.models.Model = MM.Internal.createSubclass(Object, {
+        /**
+         * Object specifying a location object containing a latitude and longitude
+         *
+         * @example
+         * location = {
+         *  latitude: 33.53,
+         *  longitude: -7.59
+         * }
+         *
+         * @typedef {Object} Location
+         * @property {number} latitude latitude of the location
+         * @property {number} longitude longitude of the location
+         */
+
+        /**
+         * Constructor for Model class
+         *
+         * @constructs Model
+         * @classdesc This is the base class for all the API objects. This is where the functionality for getting and pushing
+         * data to the API is located. This class is never used directly, however; it's always one of the child classes that
+         * is used (e.g., ActiveUser, TextEntryList)
+         * @private
+         */
+        constructor: function () {
+            this.result = null;
+            this.shouldPersist = true;
+            this.updateHandler = null;
+            this.eTag = null;
+        },
+
+        /**
+         * Write object data to [localstorage](http://www.w3schools.com/html/html5_webstorage.asp) (if available)
+         *
+         * @memberOf Model
+         * @instance
+         * @private
+         */
+        backupData: function () {
+            if (MM.support.localStorage) {
+                localStorage[this.localStoragePath()] = JSON.stringify(this.result);
+            }
+        },
+
+        /**
+         * Clears both stored result data and localStorage data
+         *
+         * @memberOf Model
+         * @instance
+         * @private
+         */
+        clearAllData: function () {
+            this.result = null;
+            this.clearLocalData();
+        },
+
+        /**
+         * Clears local storage data
+         *
+         * @memberOf Model
+         * @instance
+         * @private
+         */
+        clearLocalData: function () {
+            if (MM.support.localStorage) {
+                localStorage.removeItem(this.localStoragePath());
+            }
+        },
+
+
+        /**
+         * Internal method for Model class used by every Model to reload all data
+         * from the MindMeld API for this object
+         *
+         * @param {Object=} params optional query parameters when GET-ing collection
+         * @param {function=} onSuccess callback for when GET-ing data from collection was successful
+         * @param {function=} onFail callback for when GET-ing data from collection failed
+         * @memberOf Model
+         * @private
+         * @instance
+         */
+        _get: function (params, onSuccess, onFail) {
+            this.makeModelRequest('GET', this.path(), params, onGetSuccess, onFail);
+
+            var updateHandler = this.updateHandler; // Closures FTW
+            // Call onUpdate handler before callback if specified
+            function onGetSuccess(response) {
+                MM.Util.testAndCall(updateHandler, response);
+                MM.Util.testAndCall(onSuccess, response);
+            }
+        },
+
+        /**
+         * Restores data from local storage
+         *
+         * @param {function=} onSuccess callback for when object data was successfully restored from localstorage
+         * @param {function=} onFail callback for when restoring object data from localstorage failed
+         * @memberOf Model
+         * @instance
+         * @private
+         */
+        restore: function (onSuccess, onFail) {
+            if (MM.support.localStorage) {
+                var storedData = localStorage[this.localStoragePath()];
+                if (storedData) {
+                    storedData = JSON.parse(storedData);
+                    if (storedData) {
+                        this.result = storedData;
+                        MM.Util.testAndCall(onSuccess);
+                        return;
+                    }
+                }
+            }
+            MM.Util.testAndCall(onFail);
+        },
+
+        /**
+         * Internal helper function returns the data portion of the response from a GET request
+         *
+         * @returns {?Object}
+         * @memberOf Model
+         * @instance
+         */
+        _json: function () {
+            if (this.result && this.result.data) {
+                return this.result.data;
+            }
+            else {
+                return null;
+            }
+        },
+
+        /**
+         * Use {@link MM#callApi} to GET, POST, or DELETE data. {@link Model#makeModelRequest} (by default) saves data returned from
+         * GET requests to localstorage. It also records the ETag returned from the API responses. Note, this is an internal
+         * function, and not needed to use the SDK
+         *
+         * @param {string} method HTTP method to use for API call
+         * @param {string} path API endpoint path
+         * @param {Object=} params query parameters or data to be sent API
+         * @param {APISuccessCallback=} success callback for when {@link Model} request is successful
+         * @param {APIErrorCallback=} error callback for when there is an error with {@link Model} request
+         * @private
+         * @memberOf Model
+         * @instance
+         */
+        makeModelRequest: function (method, path, params, success, error) {
+            var me = this;
+            var callback = function (result) {
+                if (result.request && result.request.method && result.request.method.toUpperCase() == 'GET') {
+                    me.result = result;
+                    if (me.shouldPersist) {
+                        me.backupData();
+                    }
+                    if (result.etag) {
+                        me.eTag = result.etag;
+                    }
+                }
+                if (result.data) {
+                    MM.Util.testAndCall(success, result);
+                }
+                else {
+                    MM.Util.testAndCall(error, result);
+                }
+            };
+            var headers = {'X-MINDMELD-ACCESS-TOKEN': MM.token};
+            if (params) {
+                if (params['if-none-match'] && this.eTag !== null) {
+                    headers['if-none-match'] = this.eTag;
+                    delete params['if-none-match'];
+                }
+            }
+            MM.callApi(method, path, params, callback, error, headers);
+        },
+
+        /**
+         * Obtains the channel config for this object, using this model's channelType field.
+         *
+         * @private
+         * @memberOf Model
+         * @instance
+         * @returns {ChannelConfig} channelConfig object specifying channel type and full channel string
+         */
+        getChannelConfig: function () {
+            var channelConfig = {};
+            var channelString = '/' + MM.config.appid;
+            switch (this.channelType) {
+                case 'app':
+                    channelConfig['type'] = this.channelType;
+                    channelConfig['channel'] = channelString;
+                    break;
+
+                case 'session':
+                    channelConfig['type'] = this.channelType;
+                    channelConfig['channel'] = channelString + '/session/' + MM.activeSessionId;
+                    break;
+
+                case 'user':
+                    channelConfig['type'] = this.channelType;
+                    channelConfig['channel'] = channelString + '/user/' + MM.activeUserId;
+                    break;
+            }
+            return channelConfig;
+        },
+
+        /**
+         * Internal function that sets this model's onUpdate handler. If no handler is passed in
+         * onUpdate unsubscribes from push events
+         *
+         * @param {?NamedEventCallBack} updateHandler callback for when this {@link Model}'s collection updates
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
+         * @memberOf Model
+         * @instance
+         */
+        _onUpdate: function (updateHandler, onSuccess, onError) {
+            this.updateHandler = updateHandler;
+            if (this.updateEventName && this.channelType) {
+                var eventConfig = {
+                    name: this.updateEventName,
+                    subscribeAll: false
+                };
+                eventConfig.channelConfig = this.getChannelConfig();
+                if (updateHandler) {
+                    var self = this;
+                    eventConfig.handler = function () { // Closures strike again!
+                        self.get();
+                    };
+                    MM.Internal.EventHandler.subscribe(eventConfig, onSuccess, onError);
+                }
+                else {
+                    MM.Internal.EventHandler.unsubscribe(eventConfig);
+                }
+            }
+            else {
+                MM.Util.testAndCall(onError);
+            }
+        },
+
+        /**
+         * Returns this {@link Model}'s unique local storage path.
+         *
+         * @private
+         * @memberOf Model
+         * @instance
+         * @returns {string}
+         */
+        localStoragePath: function () {
+            return '';
+        },
+
+        /**
+         * Returns this {@link Model}'s unique API endpoint path
+         *
+         * @private
+         * @memberOf Model
+         * @instance
+         * @returns {string}
+         */
+        path: function () {
+            return '';
+        }
+    });
+
+    MM.models.App = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * Constructor for App
+         *
+         * @constructs App
+         * @classdesc The App class represents the data for the current application. It can be accessed via
+         * 'MM'. The global MM object is an instance of class App and has access to all the same methods
+         * as each of the other {@link Model} classes. The App object is used to fetch data for the current
+         * app and publish / subscribe to app channel events.
+         * @augments Model
+         * @private
+         */
+        constructor: function () {
+            MM.models.App.superclass.constructor.apply(this, arguments);
+            $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on app channel
+        },
+        localStoragePath: function () {
+            return 'MM.app'
+        },
+        path: function () {
+            return('');
+        },
+        /**
+         * Helper function returns the JSON data for the current application. You must have called {@link MM#get}
+         * first, before {@link MM#json} returns any data.
+         *
+         *
+         * @returns {Object}
+         * @memberOf MM
+         * @instance
+         *
+         * @example
+         *
+         function getApplicationInfo () {
+            MM.get(null, onGetApplicationInfo);
+         }
+         function onGetApplicationInfo () {
+            var applicationInfo = MM.json();
+            // MM.json() returns a JSON object containing data received from MM.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the app object's onUpdate handler. Pass null as the updateHandler parameter to
+         * deregister a previously set updateHandler. If the updateHandler has been set, it
+         * is automatically called when application info is fetched (e.g. {@link MM#get})
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the app object updates
+         * @memberOf MM
+         * @instance
+         *
+         * @example
+         *
+         function getApplicationInfo () {
+            MM.onUpdate(onGetApplicationInfo); // Set the updateHandler
+            MM.get(); // Fetch application info
+         }
+         function onGetApplicationInfo (response) {
+            var applicationInfo = response.data;
+         }
+         */
+        onUpdate: function (updateHandler) {
+            this._onUpdate(updateHandler, null, null);
+        },
+        /**
+         * Get information about the application. User privileges
+         * allow access to basic application information. Admin privileges allow access
+         * to extended information about the application. Note that, if an onUpdate handler
+         * has already been specified for this object, the onUpdate handler will be invoked
+         * first, followed by any specified 'onSuccess' callback.
+         * @param {QueryParameters=} params query parameters when fetching the application object
+         * @param {APISuccessCallback=} onSuccess callback for when getting application data was successful
+         * @param {APIErrorCallback=} onFail callback for when getting application data failed
+         * @memberOf MM
+         * @instance
+         *
+         * @example
+         *
+         function getApplicationInfo () {
+            MM.get(null, onGetApplicationInfo);
+         }
+         function onGetApplicationInfo (response) {
+            var applicationInfo = response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(null, onSuccess, onFail);
+        },
+        /**
+         * Update application information. This function requires an admin token
+         *
+         * @param {Object} appData
+         * @param {APISuccessCallback=} onSuccess
+         * @param {APISuccessCallback=} onFail
+         * @memberOf MM
+         * @private
+         * @instance
+         */
+        post: function (appData, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), appData, onSuccess, onFail);
+        },
+        /**
+         * Publish a new, custom event on the app channel
+         *
+         * @param {string} event event name
+         * @param {EventPayload=} payload payload for event
+         * @memberOf MM
+         * @instance
+         *
+         * @example <caption> Code snippet to subscribe and publish a
+         * custom event on the application channel </caption>
+         *
+         function publishEvent() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on application channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent' with the payload containing the string
+            // 'custom payload'
+            MM.publish('testEvent', 'custom payload');
+         }
+         function onTestEvent (payload) {
+            // the payload parameter is 'custom payload'
+            console.log('Received testEvent with payload: ' + payload);
+         }
+         */
+        publish: function (event, payload) {
+            this._publish(event, payload);
+        },
+        /**
+         * Subscribe to a custom event on the app channel
+         *
+         * @param eventName {string} name of event to subscribe to
+         * @param eventHandler  {NamedEventCallBack} callback for when event is fired
+         * @param onSuccess {function=} callback for when subscription is successful
+         * @param onError   {function=} callback for when there is an error subscribing
+         * @memberOf MM
+         * @instance
+         *
+         * @example <caption> Code snippet to subscribe and publish a
+         * custom event on the application channel </caption>
+         *
+         function publishEvent() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on application channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent' with the payload containing the string
+            // 'custom payload'
+            MM.publish('testEvent', 'custom payload');
+         }
+         function onTestEvent (payload) {
+            // the payload parameter is 'custom payload'
+            console.log('Received testEvent with payload: ' + payload);
+         }
+         */
+        subscribe: function (eventName, eventHandler, onSuccess, onError) {
+            this._subscribe(eventName, eventHandler, onSuccess, onError);
+        },
+        /**
+         * Unsubscribe from a custom event on the app channel
+         *
+         * @param {string} eventName name of event to subscribe from
+         * @instance
+         * @memberOf MM
+         *
+         * @example
+         *
+         function unsubscribeExample() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on application channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent'
+            MM.publish('testEvent');
+         }
+         function onTestEvent (payload) {
+            // onTestEvent will be called once after 'testEvent' is published
+            console.log('received test event');
+            // Now unsubscribe from 'testEvent'
+            MM.unsubscribe('testEvent');
+            // Publish 'testEvent' again
+            MM.publish('testEvent');
+            // Since we unsubscribed, onTestEvent won't be called anymore
+         }
+         */
+        unsubscribe: function (eventName) {
+            this._unsubscribe(eventName);
+        },
+        /**
+         * Subscribes to every event on the app channel
+         *
+         * @param {AllEventsCallback} eventHandler callback for when an event on the app channel is fired
+         * @param onSuccess {function=} callback for when subscription is successful
+         * @param onError   {function=} callback for when there is an error subscribing
+         * @instance
+         * @memberOf MM
+         *
+         * @example
+         *
+         function subscribeAllExample () {
+            MM.subscribeAll(onApplicationChannelEvent, onSubscribeApplicationChannel);
+         }
+         function onSubscribeApplicationChannel () {
+            MM.publish('eventA', 'payloadA');
+            MM.publish('eventB', 'payloadB');
+         }
+         function onApplicationChannelEvent (eventObject) {
+            var eventName = eventObject.event;
+            var eventPayload = eventObject.payload;
+            console.log('Received event ' + eventName +
+                ' with payload ' + eventPayload);
+            // Received event eventA with payload payloadA
+            // Received event eventB with payload payloadB
+         }
+         */
+        subscribeAll: function (eventHandler, onSuccess, onError) {
+            this._subscribeAll(eventHandler, onSuccess, onError);
+        },
+        /**
+         * Unsubscribe from all events on the app channel
+         *
+         * @instance
+         * @memberOf MM
+         *
+         * @example
+         *
+         function unsubscribeAllExample () {
+            // First subscribe to all events on app channel
+            MM.subscribeAll(onApplicationEvent, onSubscribeApplicationChannel);
+         }
+         function onSubscribeApplicationChannel () {
+            // publish the event 'testEvent'
+            MM.publish('testEvent');
+         }
+         function onApplicationEvent (eventObject) {
+            var eventName = eventObject.event;
+            console.log('Received event ' + eventName);
+            // Now unsubscribe from application events
+            MM.unsubscribeAll();
+            MM.publish('testEvent');
+            // onApplicationEvent won't be called because we are unsubscribed
+            // from all application level events
+         }
+         */
+        unsubscribeAll: function () {
+            this._unsubscribeAll();
+        },
+        channelType: 'app'
+    });
+
+    MM.models.ActiveUser = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeUser is a namespace that represents the currently active user. It can only be used after
+         * {@link MM#setActiveUserID} has been called. All API calls requiring a user's context use the activeUser's
+         * userid. This namespace provides methods to subscribe to user's push events and interface to the
+         * user's session list via {@link MM.activeUser.sessions}
+         *
+         * @namespace MM.activeUser
+         * @memberOf MM
+         */
+        constructor: function () {
+            MM.models.ActiveUser.superclass.constructor.apply(this, arguments);
+            $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on user channel
+        },
+        localStoragePath: function () {
+            return 'MM.activeUser'
+        },
+        path: function () {
+            return('user/' + MM.activeUserId);
+        },
+        /**
+         * Helper function returns the JSON data for the activeUser object
+         *
+         * @returns {Object}
+         * @memberOf MM.activeUser
+         * @instance
+         *
+         * @example
+         *
+         function getUserInfo () {
+            MM.activeUser.get(null, onGetUserInfo);
+         }
+         function onGetUserInfo () {
+            var userInfo = MM.activeUser.json();
+            // MM.activeUser.json() returns a JSON object containing
+            // data received from MM.activeUser.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeUser's onUpdate handler. Pass null as the updateHandler parameter to
+         * deregister a previously set updateHandler. If the updateHandler has been set, it
+         * is automatically called when active user info is fetched (e.g. {@link MM.activeUser#get})
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeUser object updates
+         * @memberOf MM.activeUser
+         * @instance
+         *
+         * @example
+         *
+         function getUserInfo () {
+            MM.activeUser.onUpdate(onGetUserInfo); // Set the updateHandler
+            MM.activeUser.get(); // Fetch active user info
+         }
+         function onGetUserInfo (response) {
+            var userInfo = response.data;
+         }
+         */
+        onUpdate: function (updateHandler) {
+            this._onUpdate(updateHandler, null, null);
+        },
+        /**
+         * Get information about the user with the specified userid. For a token with user privileges,
+         * the request will only allow access for the user associated with the token. For a token
+         * with admin privileges, this request is permitted for any user of the app.
+         *
+         * @param {QueryParameters=} params query parameters when fetching the user object
+         * @param {APISuccessCallback=} onSuccess callback for when getting user data was successful
+         * @param {APIErrorCallback=} onFail callback for when getting user data failed
+         * @memberOf MM.activeUser
+         * @instance
+         *
+         * @example
+         *
+         function getUserInfo () {
+            MM.activeUser.get(null, onGetUserInfo);
+         }
+         function onGetUserInfo (response) {
+            var userInfo = response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(null, onSuccess, onFail);
+        },
+        /**
+         * Modify information about the active user
+         *
+         * @param {Object} userInfo Object containing updated user data. Currently, this function permits
+         * the 'location' attribute for the user to be updated. Please see User endpoints documentation
+         * [here](https://developer.expectlabs.com/docs/endpointUser#postUserUserid) for more info
+         * @param {Location} userInfo.location location object containing lat/long
+         * @param {APISuccessCallback=} onSuccess callback for when updating user info was successful
+         * @param {APIErrorCallback=} onFail callback for when updating user info failed
+         * @memberOf MM.activeUser
+         * @instance
+         *
+         * @example
+         *
+         function updateUserLocation () {
+            var newUserInfo = {
+                location: {
+                    latitude: 33.53,
+                    longitude: -7.59
+                }
+            };
+            MM.activeUser.post(newUserInfo, onUpdateUserInfo);
+         }
+         function onUpdateUserInfo (response) {
+            // User location updated
+         }
+         */
+        post: function (userInfo, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), userInfo, onSuccess, onFail);
+        },
+        /**
+         * Publish a new, custom event on the active user's channel
+         *
+         * @param {string} event event name
+         * @param {EventPayload=} payload payload for event
+         * @memberOf MM.activeUser
+         * @instance
+         *
+         * @example <caption> Code snippet to subscribe and publish a
+         * custom event on the active user's channel </caption>
+         *
+         function publishEvent() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.activeUser.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on user channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent' with the payload containing the string
+            // 'custom payload'
+            MM.activeUser.publish('testEvent', 'custom payload');
+         }
+         function onTestEvent (payload) {
+            // the payload parameter is 'custom payload'
+            console.log('Received testEvent with payload: ' + payload);
+         }
+         */
+        publish: function (event, payload) {
+            this._publish(event, payload);
+        },
+        /**
+         * Subscribe to a custom event on the active user's channel
+         *
+         * @param eventName {string} name of event to subscribe to
+         * @param eventHandler  {NamedEventCallBack} callback for when event is fired
+         * @param onSuccess {function=} callback for when subscription is successful
+         * @param onError   {function=} callback for when there is an error subscribing
+         * @memberOf MM.activeUser
+         * @instance
+         *
+         * @example <caption> Code snippet to subscribe and publish a
+         * custom event on the active user's channel </caption>
+         *
+         function publishEvent() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.activeUser.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on user channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent' with the payload containing the string
+            // 'custom payload'
+            MM.activeUser.publish('testEvent', 'custom payload');
+         }
+         function onTestEvent (payload) {
+            // the payload parameter is 'custom payload'
+            console.log('Received testEvent with payload: ' + payload);
+         }
+         */
+        subscribe: function (eventName, eventHandler, onSuccess, onError) {
+            this._subscribe(eventName, eventHandler, onSuccess, onError);
+        },
+        /**
+         * Unsubscribe from a custom event on the active user's channel
+         *
+         * @param {string} eventName name of event to subscribe from
+         * @instance
+         * @memberOf MM.activeUser
+         *
+         * @example
+         *
+         function unsubscribeExample() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.activeUser.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on user channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent'
+            MM.activeUser.publish('testEvent');
+         }
+         function onTestEvent (payload) {
+            // onTestEvent will be called once after 'testEvent' is published
+            console.log('received test event');
+            // Now unsubscribe from 'testEvent'
+            MM.activeUser.unsubscribe('testEvent');
+            // Publish 'testEvent' again
+            MM.activeUser.publish('testEvent');
+            // Since we unsubscribed, onTestEvent won't be called anymore
+         }
+         */
+        unsubscribe: function (eventName) {
+            this._unsubscribe(eventName);
+        },
+        /**
+         * Subscribes to every event on the active user's channel
+         *
+         * @param {AllEventsCallback} eventHandler callback for when an event on the user channel is fired
+         * @param onSuccess {function=} callback for when subscription is successful
+         * @param onError   {function=} callback for when there is an error subscribing
+         * @instance
+         * @memberOf MM.activeUser
+         *
+         * @example
+         *
+         function subscribeAllExample () {
+            MM.activeUser.subscribeAll(onUserChannelEvent, onSubscribeUserChannel);
+         }
+         function onSubscribeUserChannel () {
+            MM.activeUser.publish('eventA', 'payloadA');
+            MM.activeUser.publish('eventB', 'payloadB');
+         }
+         function onUserChannelEvent (eventObject) {
+            var eventName = eventObject.event;
+            var eventPayload = eventObject.payload;
+            console.log('Received event ' + eventName +
+                ' with payload ' + eventPayload);
+            // Received event eventA with payload payloadA
+            // Received event eventB with payload payloadB
+         }
+         */
+        subscribeAll: function (eventHandler, onSuccess, onError) {
+            this._subscribeAll(eventHandler, onSuccess, onError);
+        },
+        /**
+         * Unsubscribe from all events on the active user's channel
+         *
+         * @instance
+         * @memberOf MM.activeUser
+         *
+         * @example
+         *
+         function unsubscribeAllExample () {
+            // First subscribe to all events on active user channel
+            MM.activeUser.subscribeAll(onUserChannelEvent, onSubscribeUserChannel);
+         }
+         function onSubscribeUserChannel () {
+            // publish the event 'testEvent'
+            MM.activeUser.publish('testEvent');
+         }
+         function onUserChannelEvent (eventObject) {
+            var eventName = eventObject.event;
+            console.log('Received event ' + eventName);
+            // Now unsubscribe from user channel events
+            MM.activeUser.unsubscribeAll();
+            MM.activeUser.publish('testEvent');
+            // onUserChannelEvent won't be called because we are unsubscribed
+            // from all user channel events
+         }
+         */
+        unsubscribeAll: function () {
+            this._unsubscribeAll();
+        },
+        channelType: 'user'
+    });
+
+    MM.models.SessionList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeUser.sessions represents the user's sessions collection in the MindMeld API.
+         *
+         * @namespace MM.activeUser.sessions
+         * @memberOf MM.activeUser
+         */
+        constructor: function () {
+            MM.models.SessionList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.activeUser.sessions'
+        },
+        path: function () {
+            return('user/' + MM.activeUserId + '/sessions');
+        },
+        /**
+         * Helper function returns the JSON data for the sessions collection
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.activeUser.sessions
+         * @instance
+         *
+         * @example
+         *
+         function getSessions () {
+            MM.activeUser.sessions.get(null, onGetSessions);
+         }
+         function onGetSessions (response) {
+            var sessions = MM.activeUser.sessions.json();
+            // MM.activeUser.sessions.json() returns a JSON object
+            // containing data received from MM.activeUser.sessions.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeUser.session's onUpdate handler. If no handler is passed in, onUpdate unsubscribes from push events
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the active user's session list updates
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
+         * @memberOf MM.activeUser.sessions
+         * @instance
+         *
+         * @example <caption> Setting the onUpdate handler, creating a new session, and
+         * obtaining the latest session list </caption>
+         *
+         function sessionsOnUpdateExample () {
+            // set the onUpdate handler for the sessions list
+            MM.activeUser.sessions.onUpdate(onSessionsUpdate, onSubscribedToSessionsUpdates);
+         }
+         function onSubscribedToSessionsUpdates () {
+            // successfully subscribed to updates to the user's sessions list
+
+            // now, create a new session
+            createNewSession();
+         }
+         function onSessionsUpdate () {
+            // there was an update to the sessions list
+            var sessions = MM.activeUser.sessions.json();
+            // sessions contains the latest list of sessions
+         }
+         function createNewSession () {
+            var newSessionData = {
+                name: 'new session name',
+                privacymode: 'inviteonly'
+            };
+            MM.activeUser.sessions.post(newSessionData);
+         }
+         *
+         * @example <caption> Deregistering the onUpdate handler </caption>
+         *
+         function deregisterSessionListOnUpdate () {
+            MM.activeUser.sessions.onUpdate(null);
+         }
+         */
+        onUpdate: function (updateHandler, onSuccess, onError) {
+            this._onUpdate(updateHandler,  onSuccess, onError);
+        },
+        /**
+         * Get the list of sessions that can be accessed by the specified user. A request made with a user token is permitted
+         * to get the session list for only the user associated with the token. A request made with an admin token
+         * can get the session list for any user of your application.
+         *
+         * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the sessions returned.
+         * See documentation [here](https://developer.expectlabs.com/docs/endpointUser#getUserUseridSessions) for more details
+         * @param {APISuccessCallback=} onSuccess callback for when getting the session list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting the session list failed
+         * @memberOf MM.activeUser.sessions
+         * @instance
+         *
+         * @example
+         *
+         function getSessions () {
+            MM.activeUser.sessions.get(null, onGetSessions);
+         }
+         function onGetSessions (response) {
+            var sessions = response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        },
+        /**
+         * Creates a new session for currently active user. This will create a new session, and the specified
+         * user will be set as the session organizer, as indicated by the 'organizer' attribute of the session object.
+         * A request made with a user token is permitted to post to the session list for only the user associated
+         * with the token. A request made with an admin token is permitted to create a new session on behalf
+         * of any user of the application.
+         *
+         * @param {Object} sessionInfo Object containing new session data. Please refer to documentation for creating sessions
+         * [here](https://developer.expectlabs.com/docs/endpointUser#postUserUseridSessions) for more info
+         * @param {string} sessionInfo.name name of the new session
+         * @param {string} sessionInfo.privacymode the privacy mode for the session. The supported privacy modes
+         * are 'friendsonly', 'inviteonly', and 'public'.  Sessions that are 'inviteonly' can be accessed only
+         * by the session organizer and any user on the inviteduser list for the session. Sessions that
+         * are 'friendsonly' can be accessed by users who are in the friends collection of the session
+         * organizer. Sessions that are 'public' can be accessed by all users of your application.
+         * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
+         * @param {APIErrorCallback=} onFail callback for when creating new session failed
+         * @memberOf MM.activeUser.sessions
+         * @instance
+         *
+         * @example
+         *
+         function createNewSession () {
+            var newSessionData = {
+                name: 'new session name',
+                privacymode: 'inviteonly'
+            };
+            MM.activeUser.sessions.post(newSessionData, onCreateNewSession);
+         }
+         function onCreateNewSession (result) {
+            console.log(result);
+         }
+         */
+        post: function (sessionInfo, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), sessionInfo, onSuccess, onFail);
+        },
+        /**
+         * Delete a session from the application and the user's session list
+         *
+         * @param {string} sessionid id of the session to delete
+         * @param {APISuccessCallback=} onSuccess callback for when deleting object was successful
+         * @param {APIErrorCallback=} onFail callback for when deleting object failed
+         * @memberOf MM.activeUser.sessions
+         * @instance
+         *
+         * @example
+         *
+         function deleteSession () {
+            MM.activeUser.sessions.delete('72798', onSessionDeleted);
+         }
+         function onSessionDeleted (response) {
+            // session deleted
+         }
+         */
+        delete: function (sessionid, onSuccess, onFail) {
+            this.makeModelRequest('DELETE', 'session/' + sessionid, null, onSuccess, onFail);
+        },
+        channelType: 'user',
+        updateEventName: 'sessionsUpdate'
+    });
+
+    MM.models.TextEntryList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeSession.textentries represents the TextEntries collection in the MindMeld API. The history
+         * of TextEntry objects posted to the Session objects that can be accessed by the User.
+         *
+         * @namespace MM.activeSession.textentries
+         * @memberOf MM.activeSession
+         */
+        constructor: function () {
+            MM.models.TextEntryList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.activeSession.textentries'
+        },
+        path: function () {
+            return('session/' + MM.activeSessionId + '/textentries');
+        },
+        /**
+         * Helper function returns the JSON data for the textentries collection
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.activeSession.textentries
+         * @instance
+         *
+         * @example
+         *
+         function getTextEntries () {
+            MM.activeSession.textentries.get(null, onGetTextEntries);
+         }
+         function onGetTextEntries (response) {
+            var textentries = MM.activeSession.textentries.json();
+            // MM.activeSession.textentries.json() returns a JSON object
+            // containing data received from MM.activeSession.textentries.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeSession.textentries' onUpdate handler. If no handler is passed in,
+         * onUpdate unsubscribes from push events
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeSession's text entry list updates
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
+         * @memberOf MM.activeSession.textentries
+         * @instance
+         *
+         * @example <caption> Setting the onUpdate handler, creating a new text entry, and
+         * obtaining the latest text entry list </caption>
+         *
+         function textEntriesOnUpdateExample () {
+            // set the onUpdate handler for the text entries list
+            MM.activeSession.textentries.onUpdate(onTextEntriesUpdate, onSubscribedToTextEntriesUpdates);
+         }
+         function onSubscribedToTextEntriesUpdates () {
+            // successfully subscribed to updates to the session's textentries list
+
+            // now, create a new text entry
+            createNewTextEntry();
+         }
+         function onTextEntriesUpdate () {
+            // there was an update to the textentries list
+            var textentries = MM.activeSession.textentries.json();
+            // textentries contains the latest list of textentries
+         }
+         function createNewTextEntry () {
+            var textEntryData = {
+                text: 'my new text segment',
+                type: 'voice-spoken',
+                weight: 0.5
+
+            };
+            MM.activeSession.textentries.post(textEntryData);
+         }
+         *
+         * @example <caption> Deregistering the onUpdate handler </caption>
+         *
+         function deregisterTextEntriesOnUpdate () {
+            MM.activeSession.textentries.onUpdate(null);
+         }
+         */
+        onUpdate: function (updateHandler, onSuccess, onError) {
+            this._onUpdate(updateHandler,  onSuccess, onError);
+        },
+        /**
+         * Get the history of text entries that are associated with the specified session.
+         * Each text entry is a segment of human-language text that is analyzed to infer
+         * the context associated with this session. This endpoint can be used to retrieve
+         * and search across the full history of text entries that have been posted to this
+         * session. A request with a user token can access this collection only if the
+         * associated user is permitted to access the session object itself. A request
+         * with an admin token can access this collection for any session associated
+         * with your application.
+         *
+         * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the text entries returned.
+         * See documentation [here](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidTextentries) for more details
+         * @param {APISuccessCallback=} onSuccess callback for when getting the text entry list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting the text entry list failed
+         * @memberOf MM.activeSession.textentries
+         * @instance
+         *
+         * @example
+         *
+         function getTextEntries () {
+            MM.activeSession.textentries.get(null, onGetTextEntries);
+         }
+         function onGetTextEntries (response) {
+            var textentries = response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        },
+        /**
+         * Create a new text entry for the specified session. A text entry is a segment of human-language
+         * text that will be analyzed to model the context of the current session. A text segment
+         * typically represents information that a user has written, read, spoken or heard. A text
+         * entry exists at a specific point in time, and it can be assigned a numerical weight indicating
+         * its relative importance in the overall contextual stream. Typical text entries are one or two
+         * sentences in length; the maximum size for a single text entry is 5000 characters. Once created,
+         * textentry objects can be deleted but not modified.
+         *
+         * @param {Object} textEntryData Object containing new text entry data.
+         * @param {string} textEntryData.text A segment of human-language text containing contextual
+         * information about the session. This string is typically one or two sentences but can be
+         * as long as 5000 characters. This text will be analyzed to understand the semantic concepts
+         * pertinent to the session over time.
+         * @param {string} textEntryData.type A short string that can be used to categorize text
+         * entries into different buckets. You may choose to categorize text entries based on the
+         * content the user has written, read, spoken or heard. For example, possible 'type'
+         * values could be 'email-written', 'email-read', 'sms-written', 'sms-read',
+         * 'post-written', 'post-read', 'tweet-written', 'tweet-read', 'voice-spoken', 'voice-heard',
+         * etc. Subsequent searches on the textentries collection can use this 'type' field
+         * to filter textentries by type.
+         * @param {number} textEntryData.weight A decimal number between 0 and 1 indicating the
+         * relative importance of this text entry in the overall history of text entries for the
+         * session. A value of 0 indicates that this text entry will be ignored in modeling the
+         * context of the session. A value of 1 indicates that any contextual information
+         * contained in the text entry will have the maximum amount of influence over
+         * document ranking and recommendations.
+         * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
+         * @param {APIErrorCallback=} onFail callback for when creating new session failed
+         * @memberOf MM.activeSession.textentries
+         * @instance
+         *
+         * @example
+         *
+         function createNewTextEntry () {
+            var textEntryData = {
+                text: 'my new text segment',
+                type: 'voice-spoken',
+                weight: 0.5
+
+            };
+            MM.activeSession.textentries.post(textEntryData, onCreateNewTextEntry);
+         }
+         function onCreateNewTextEntry (response) {
+            // new text entry posted
+         }
+         */
+        post: function (textEntryData, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), textEntryData, onSuccess, onFail);
+        },
+        /**
+         * Delete a text entry from the active session
+         *
+         * @param {string} textentryid id of the text entry to delete
+         * @param {APISuccessCallback=} onSuccess callback for when deleting the text entry was successful
+         * @param {APIErrorCallback=} onFail callback for when deleting the text entry failed
+         * @memberOf MM.activeSession.textentries
+         * @instance
+         *
+         * @example
+         *
+         function deleteTextEntry () {
+            MM.activeSession.textentries.delete('76643', onTextEntryDeleted);
+         }
+         function onTextEntryDeleted (response) {
+            // text entry deleted
+         }
+         */
+        delete: function (textentryid, onSuccess, onFail) {
+            this.makeModelRequest('DELETE', 'textentry/' + textentryid, null, onSuccess, onFail);
+        },
+        channelType: 'session',
+        updateEventName: 'textentriesUpdate'
+    });
+
+    MM.models.EntityList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeSession.entities represents the Entities collection in the MindMeld API. The history of
+         * Entity objects, which are derived from TextEntries or directly posted to the Session
+         * objects that can be accessed by the User
+         *
+         * @namespace MM.activeSession.entities
+         * @memberOf MM.activeSession
+         */
+        constructor: function () {
+            MM.models.EntityList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.activeSession.entities'
+        },
+        path: function () {
+            return('session/' + MM.activeSessionId + '/entities');
+        },
+        /**
+         * Helper function returns the JSON data for the entities collection
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.activeSession.entities
+         * @instance
+         *
+         * @example
+         *
+         function getEntities () {
+            MM.activeSession.entities.get(null, onGetEntities);
+         }
+         function onGetEntities () {
+            var entities =  MM.activeSession.entities.json();
+            // MM.activeSession.entities.json() returns a JSON object
+            // containing data received from MM.activeSession.entities.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeSession.entities' onUpdate handler. If no handler is passed in,
+         * onUpdate unsubscribes from push events
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeSession's entity list updates
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
+         * @memberOf MM.activeSession.entities
+         * @instance
+         *
+         * @example <caption> Setting the onUpdate handler, creating a new entity, and
+         * obtaining the latest entity list </caption>
+         *
+         function entitiesOnUpdateExample () {
+            // set the onUpdate handler for the entities list
+            MM.activeSession.entities.onUpdate(onEntitiesUpdate, onSubscribedToEntitiesUpdates);
+         }
+         function onSubscribedToEntitiesUpdates () {
+            // successfully subscribed to updates to the session's entities list
+
+            // now, create a new entity
+            createEntity();
+         }
+         function onEntitiesUpdate () {
+            // there was an update to the entities list
+            var entities = MM.activeSession.entities.json();
+            // entities contains the latest list of entities
+         }
+         function createEntity () {
+            var newEntityData = {
+                text: 'Diplo',
+                entitytype: 'person',
+                score: 0.9
+            };
+            MM.activeSession.entities.post(newEntityData, onCreateNewEntity);
+         }
+         *
+         * @example <caption> Deregistering the onUpdate handler </caption>
+         *
+         function deregisterEntitiesOnUpdate () {
+            MM.activeSession.entities.onUpdate(null);
+         }
+         */
+        onUpdate: function (updateHandler, onSuccess, onError) {
+            this._onUpdate(updateHandler,  onSuccess, onError);
+        },
+        /**
+         * Get the history of entities that are associated with the specified session. Each
+         * entity represents an individual logical concept that occurs at a point in time
+         * during a session. For example, an entity could be a proper noun, such as the
+         * name of a person or company, or it could also be any noun phrase representing
+         * a distinct concept. Entities can be posted directly to a session or be
+         * automatically derived from posted text entries. This endpoint can be used to
+         * retrieve and search across the full history of entities associated with this
+         * session. A request with a user token can access this collection only if the associated
+         * user is permitted to access the session object itself. A request with an admin
+         * token can access this collection for any session associated with your application.
+         *
+         * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the entities returned.
+         * See documentation [here](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidEntities) for more details
+         * @param {APISuccessCallback=} onSuccess callback for when getting the entity list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting the entity list failed
+         * @memberOf MM.activeSession.entities
+         * @instance
+         *
+         * @example
+         *
+         function getEntities () {
+            MM.activeSession.entities.get(null, onGetEntities);
+         }
+         function onGetEntities (response) {
+            var entities =  response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        },
+        /**
+         * Adds a new entity to the active session. Each entity represents an individual
+         * logical concept that occurs at a point in time during the session. For example,
+         * an entity can be a proper noun, such as the name of a person or place
+         * (e.g. 'Barack Obama', 'Paris'), or it could be a noun phrase representing a distinct
+         * concept (e.g. 'minestrone soup'). Entities are automatically derived from submitted
+         * text entries, however this endpoint can be used to explicitly post entities to a session.
+         * Refer to documentation [here](https://developer.expectlabs.com/docs/endpointSession#postSessionSessionidEntities)
+         * for more information
+         *
+         *
+         * @param {Object} entityData Object containing new entity data
+         * @param {string} entityData.text The text of the entity. This is typically a proper
+         * noun or a noun phrase representing a distinct logical concept. For example,
+         * "Winston Churchill", "great wall of china", "Citizen Kane", "baseball playoffs", etc.
+         * @param {string} entityData.entitytype A short string that can be used to categorize entities
+         * by type. This can be an arbitrary string that can be used in subsequent searches on
+         * the entities collection to filter entities by type. There are several entitytype
+         * values, however, that the MindMeld platform uses. They are listed
+         * [here](https://developer.expectlabs.com/docs/reservedEntityTypes)
+         * @param {number} entityData.score A decimal number between 0 and 1 indicating the relative importance of
+         * this entity in the overall context of the session. A value of 0 indicates that this entity has no
+         * impact on the session context. A value of 1 indicates that this entity is very important
+         * in interpreting the overall context of the session and therefore also important in
+         * determining search ranking and recommendations.
+         * @param {APISuccessCallback=} onSuccess callback for when creating new entity was successful
+         * @param {APIErrorCallback=} onFail callback for when creating new entity failed
+         * @memberOf MM.activeSession.entities
+         * @instance
+         *
+         * @example
+         *
+         function createEntity () {
+            var newEntityData = {
+                text: 'Diplo',
+                entitytype: 'person',
+                score: 0.9
+            };
+            MM.activeSession.entities.post(newEntityData, onCreateNewEntity);
+         }
+         function onCreateNewEntity () {
+            // New entity created
+         }
+         */
+        post: function (entityData, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), entityData, onSuccess, onFail);
+        },
+        /**
+         * Delete an entity from the active session
+         *
+         * @param {string} entityid id of the entity to delete
+         * @param {APISuccessCallback=} onSuccess callback for when deleting the entity was successful
+         * @param {APIErrorCallback=} onFail callback for when deleting the entity failed
+         * @memberOf MM.activeSession.entities
+         * @instance
+         *
+         * @example
+         *
+         function deleteEntity () {
+            MM.activeSession.entities.delete('<entity id>', onEntityDeleted);
+         }
+         function onEntityDeleted () {
+            // entity deleted
+         }
+         */
+        delete: function (entityid, onSuccess, onFail) {
+            this.makeModelRequest('DELETE', 'entity/' + entityid, null, onSuccess, onFail);
+        },
+        channelType: 'session',
+        updateEventName: 'entitiesUpdate'
+    });
+
+    MM.models.ArticleList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeSession.articles represents the Articles collection in the MindMeld API. This searchable collection
+         * contains Article objects that are relevant to the contextual history of the active session
+         * (Available for Enterprise developer accounts only).
+         *
+         * @namespace MM.activeSession.articles
+         * @memberOf MM.activeSession
+         */
+        constructor: function () {
+            MM.models.ArticleList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.activeSession.articles'
+        },
+        path: function () {
+            return('session/' + MM.activeSessionId + '/articles');
+        },
+        /**
+         * Helper function returns the JSON data for the articles collection
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.activeSession.articles
+         * @instance
+         *
+         * @example
+         *
+         function getArticles () {
+            MM.activeSession.articles.get(null, onGetArticles);
+         }
+         function onGetArticles () {
+            var articles =  MM.activeSession.articles.json();
+            // MM.activeSession.articles.json() returns a JSON object
+            // containing data received from MM.activeSession.articles.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeSession's articles' onUpdate handler. Pass null as the updateHandler parameter to
+         * deregister a previously set updateHandler. Note that there are no push events for the articles
+         * collection so it must be polled instead. The update handler will be called automatically when
+         * calling {@link MM.activeSession.articles#get}
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeSession's article list updates.
+         *
+         * @memberOf MM.activeSession.articles
+         * @instance
+         *
+         * @example
+         *
+         function getArticles () {
+            MM.activeSession.articles.onUpdate(onGetArticles); // Set the updateHandler
+            MM.activeSession.articles.get(); // Fetch articles
+         }
+         function onGetArticles (response) {
+            var articles = response.data;
+            console.log(articles);
+         }
+         */
+        onUpdate: function (updateHandler) {
+            this._onUpdate(updateHandler, null, null);
+        },
+        /**
+         * Get a list of articles from third-party data sources that are relevant to the context
+         * of the session. Articles typically include web pages, images, videos, and documents
+         * from data sources on the Internet. For example, articles might include pages from
+         * Wikipedia, videos from YouTube, or local business listings from Yelp. When enabled,
+         * relevant articles are automatically identified based on the contextual history of
+         * the session. Article sources can be configured for each application. A request with
+         * a user token can retrieve articles only if the associated user is permitted to access
+         * the session object itself. A request with an admin token can retrieve articles for
+         * any session associated with your application. Custom configuration of article
+         * sources is available for Enterprise developer accounts only.
+         *
+         *
+         * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the articles returned.
+         * See documentation [here](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidArticles) for more details
+         * For this function, the following additional parameters are also available:
+         * @param {(string[]|string)=} params.entityids An array of entityid values or a single entityid value
+         * If specified, only articles related to the specified entities will be returned in the response.
+         * @param {number=} params.numentities The number of most recent entities to include in the request. If specified,
+         * only articles related to the specified number of most recent entities will be returned in the response.
+         * @param {(string[]|string)=} params.textentryids An array of textentryid values or a single textentryid
+         * value. If specified, only articles related to the specified text entries will be returned in the response
+         * @param {APISuccessCallback=} onSuccess callback for when getting the article list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting the article list failed
+         * @memberOf MM.activeSession.articles
+         * @instance
+         *
+         * @example
+         *
+         function getArticles () {
+            var queryParams = {
+                limit: 5, // only return 5 articles
+                entityids: "[54321, 432432]" // only return articles related to these 2 entities
+                                             // note that the entityids array is a JSON string
+            };
+            MM.activeSession.articles.get(queryParams, onGetArticles);
+         }
+         function onGetArticles (response) {
+            var articles = response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        }
+    });
+
+    MM.models.SessionDocumentList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeSession.documents represents the Documents collection related to a session in the MindMeld API.
+         * The searchable corpus of Document objects that are contextually related to the Session.
+         *
+         * @namespace MM.activeSession.documents
+         * @memberOf MM.activeSession
+         */
+        constructor: function () {
+            MM.models.SessionDocumentList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.activeSession.documents'
+        },
+        path: function () {
+            return('session/' + MM.activeSessionId + '/documents');
+        },
+        /**
+         * Helper function returns the JSON data for the session documents collection
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.activeSession.documents
+         * @instance
+         *
+         * @example
+         *
+         function getDocuments () {
+            MM.activeSession.documents.get(null, onGetDocuments);
+         }
+         function onGetDocuments () {
+            var documents = MM.activeSession.documents.json();
+            // MM.activeSession.documents.json() returns a JSON object
+            // containing data received from MM.activeSession.documents.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeSession's documents' onUpdate handler. Pass null as the updateHandler parameter to
+         * deregister a previously set updateHandler. Note that there are no push events for the documents
+         * collection so it must be polled instead. The update handler will be called automatically when
+         * calling {@link MM.activeSession.documents#get}
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeSession's document list updates.
+         * @memberOf MM.activeSession.documents
+         * @instance
+         *
+         * @example
+         *
+         function getDocuments () {
+            MM.activeSession.documents.onUpdate(onGetDocuments);
+            MM.activeSession.documents.get();
+         }
+         function onGetDocuments () {
+            var documents = MM.activeSession.documents.json();
+            console.log(documents);
+         }
+         */
+        onUpdate: function (updateHandler) {
+            this._onUpdate(updateHandler, null, null);
+        },
+        /**
+         * Get and search across all documents indexed for your application. In addition to providing
+         * faceted search and filtering across your collection of documents, this endpoint also provides
+         * the capability to deliver relevant document results based on the contextual history of your
+         * session. A request with a user token can retrieve documents only if the associated user is
+         * permitted to access the session object itself. A request with an admin token can retrieve
+         * documents for any session associated with your application.
+         *
+         *
+         * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the documents returned.
+         * See documentation [here](https://developer.expectlabs.com/docs/endpointSession#getSessionSessionidDocuments)
+         * for more details
+         * For this function, the following additional parameters are also available:
+         * @param {(string[]|string)=} params.entityids An array of entityid values or a single entityid value.
+         * If specified, only documents related to the specified entities will be returned in the response.
+         * @param {number=} params.numentities The number of most recent entities to include in the request. If
+         * specified, only documents related to the specified number of most recent entities will be returned
+         * in the response.
+         * @param {(string[]|string)=} params.textentryids An array of textentryid values or a single textentryid
+         * value. If specified, only documents related to the specified text entries will be returned in the response
+         * @param {string=} params.query A search query string to retrieve specific
+         * objects that match the query. See the documentation on [search query
+         * syntax](https://developer.expectlabs.com/docs/customRankingFactors)
+         * for more information.
+         * @param {string=} params.document-ranking-factors A JSON string containing custom factors that will be
+         * used to rank the documents returned by this request. Read the section on
+         * [custom ranking factors](https://developer.expectlabs.com/docs/customRankingFactors) to learn more about how you can adjust the search ranking factors to customize the document results for your application.
+         * @param {(number|string)=} params.history-since A Unix timestamp or
+         * [strtotime](http://php.net/manual/en/function.strtotime.php) date value that specifies the beginning of
+         * the contextual history time window that will be used to influence the document results. Any contextual
+         * data uploaded prior to the start of this window will be ignored in the calculation to determine
+         * contextually relevant document results. If not specified, the value defaults to the latest contextual
+         * history of the session.
+         * @param {(number|string)=} params.history-until A Unix timestamp or
+         * [strtotime](http://php.net/manual/en/function.strtotime.php) date value that specifies the end of the
+         * contextual history time window that will be used to influence the document results. Any contextual
+         * data uploaded after the end of this window will be ignored in the calculation to determine contextually
+         * relevant document results. If not specified, the value defaults to the latest contextual history of the session
+         * @param {number=} params.start The index of the first object in the
+         * returned list of objects. This can be used for paging through large
+         * collections of objects.
+         * @param {number=} params.limit The maximum number of individual objects
+         * to be returned in the response. If not specified, the default is 10. The
+         * maximum allowed value is 50.
+         * @param {(number|string)=} params.since A Unix timestamp or
+         * [strtotime](http://php.net/manual/en/function.strtotime.php) date value
+         * that specifies the start of a range of time-based data. Only documents
+         * with publication date after this timestamp will be returned in the
+         * response.
+         * @param {(number|string)=} params.until A Unix timestamp or
+         * [strtotime](http://php.net/manual/en/function.strtotime.php) date value
+         * that specifies the end of a range of time-based data. Only documents
+         * with publication date before this timestamp will be returned in the
+         * response.
+         * @param {APISuccessCallback=} onSuccess callback for when getting the session document list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting the session document list failed
+         * @memberOf MM.activeSession.documents
+         * @instance
+         *
+         * @example
+         *
+         function getDocuments () {
+            var queryParams = {
+                numentities: 4
+            };
+            // add custom ranking factors to this query
+            queryParams['document-ranking-factors'] = {
+                recency: 0.5,
+                popularity: 0.7,
+                relevance: 0,
+                proximity: 0.2,
+                customrank1: 0.3
+            };
+            queryParams['history-since'] = 'yesterday';
+            MM.activeSession.documents.get(queryParams, onGetDocuments);
+         }
+         function onGetDocuments (response) {
+            var documents = response.data;
+            console.log(documents);
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        }
+    });
+
+
+    MM.models.AppDocumentList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.documents represents the whole Documents collection that are part of a
+         * particular application. These Documents are not related to a particular Session.
+         *
+         * @namespace MM.documents
+         * @memberOf MM
+         */
+        constructor: function () {
+            MM.models.AppDocumentList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.documents'
+        },
+        path: function () {
+            return('documents');
+        },
+        /**
+         * Helper function returns the JSON data from the application's document collection
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.documents
+         * @instance
+         *
+         * @example
+         *
+         function getDocuments () {
+            MM.documents.onUpdate(onGetDocuments);
+            MM.documents.get();
+         }
+         function onGetDocuments () {
+            var documents = MM.documents.json();
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the MM documents' onUpdate handler. Pass null as the updateHandler parameter to
+         * deregister a previously set updateHandler. Note that there are no push events for the documents
+         * collection so it must be polled instead. The update handler will be called automatically when
+         * calling {@link MM.documents#get}
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the app's document list updates.
+         * @memberOf MM.documents
+         * @instance
+         *
+         * @example
+         *
+         function getDocuments () {
+            MM.documents.onUpdate(onGetDocuments);
+            MM.documents.get();
+         }
+         function onGetDocuments () {
+            var documents = MM.documents.json();
+            console.log(documents);
+         }
+         */
+        onUpdate: function (updateHandler) {
+            this._onUpdate(updateHandler, null, null);
+        },
+        /**
+         * Get and search across all documents indexed for your application. This endpoint will let you access
+         * all documents that have been crawled from your website as well as all documents that you have posted
+         * to the documents collection for this application. User privileges do not permit access to this
+         * object; admin privileges are required
+         *
+         *
+         * @param {QueryParameters=} params A {@link QueryParameters} object allowing you to filter the documents returned.
+         * See documentation [here](https://developer.expectlabs.com/docs/endpointApp#getDocuments) for more details. For
+         * this function, the following additional parameters are also available:
+         * @param {string=} params.document-ranking-factors A JSON string containing custom factors that will be
+         * used to rank the documents returned by this request. Read the section on
+         * [custom ranking factors](https://developer.expectlabs.com/docs/customRankingFactors) to learn more about
+         * how you can adjust the search ranking factors to customize the document results for your application
+         * @param {APISuccessCallback=} onSuccess callback for when getting the application document list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting the application document list failed
+         * @memberOf MM.documents
+         * @instance
+         *
+         * @example
+         *
+         function getDocuments () {
+            var queryParams = {
+                query: 'san francisco' // get documents matching the string 'san francisco'
+            };
+            // add custom ranking factors to this query
+            queryParams['document-ranking-factors'] = {
+                recency: 0.5,
+                popularity: 0.7,
+                relevance: 0,
+                proximity: 0.2,
+                customrank1: 0.3
+            };
+            MM.documents.get(queryParams, onGetDocuments);
+         }
+         function onGetDocuments (response) {
+            var documents = response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        },
+        /**
+         * Upload a document to the application. This requires an admin token
+         *
+         * @param {Object} document object containing document data. The only required parameters are 'title'
+         * and 'originurl'. Please see Document documentation
+         * [here](https://developer.expectlabs.com/docs/endpointApp#postDocuments) for more info
+         * @param {string} document.title The title of the document
+         * @param {string} document.originurl The fully qualified link to the webpage containing the
+         * original document. Note that this url will be stored, but not returned in subsequent GET
+         * requests to this document object. Instead, the 'originurl' field value will contain a
+         * wrapper url which, when loaded in a browser, will record a page view for this document
+         * and then redirect to the originurl value provided here. This mechanism enables the view
+         * count to be tracked and used to influence the document ranking calculation
+         *
+         * @param {string=} document.description A short text description of the contents of the document
+         * @param {string=} document.text The full text contents of the document
+         * @param {string=} document.sections The text from the header sections of the document. This
+         * includes any text contained in the h1, h2, h3, h4 and h5 tags, if your document is a webpage
+         * @param {number=} document.pubdate The Unix timestamp reflecting the date when this document
+         * was originally published
+         * @param {string=} document.language The 3-letter [ISO-639-2](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes)
+         * language code indicating the language of this document (e.g. 'eng', 'spa', 'ger', etc.)
+         * @param {Object=} document.image An object specifying information about an image related to the document
+         * @param {string=} document.image.url The URL for the image associated with this document
+         * @param {string=} document.image.thumburl The URL for a small-format image, if available. This is typically
+         * a thumbnail of a larger image and it should have a maximum dimension of around 500 pixels or less
+         * @param {number=} document.image.width The width of the full image in pixels
+         * @param {number=} document.image.height The height of the full image in pixels
+         * @param {Object=} document.source An object specifying information about the source of this document
+         * @param {string=} document.source.name A text string suitable for display containing the name of the source
+         * of the document (e.g. 'The New York Times')
+         * @param {string=} document.source.url The website for the document source homepage (e.g. 'www.nyt.com')
+         * @param {string=} document.source.icon The url for an icon, typically a favicon, representing the source
+         * @param {Location=} document.location The location associated with this document
+         * @param {number=} document.customrank1 A custom numerical rank value that can be used in the document ranking
+         * calculation. See the documentation on
+         * [custom ranking factors](https://developer.expectlabs.com/docs/customRankingFactors) for more information
+         * @param {number=} document.customrank2 A custom numerical rank value that can be used in the document ranking
+         * calculation. See the documentation on
+         * [custom ranking factors](https://developer.expectlabs.com/docs/customRankingFactors) for more information
+         * @param {number=} document.customrank3 A custom numerical rank value that can be used in the document ranking
+         * calculation. See the documentation on
+         * [custom ranking factors](https://developer.expectlabs.com/docs/customRankingFactors) for more information
+         *
+         * @param {APISuccessCallback=} onSuccess callback for when posting data to collection was successful
+         * @param {APIErrorCallback=} onFail callback for when posting data to collection failed
+         * @memberOf MM.documents
+         * @instance
+         *
+         * @example
+         *
+         function addDocument () {
+            var newDocumentData = {
+                title: 'new document title',
+                originurl: 'www.expectlabs.com'
+            };
+            MM.documents.post(newDocumentData, onDocumentAdded);
+         }
+         function onDocumentAdded () {
+            // new document added
+         }
+         */
+        post: function (document, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), document, onSuccess, onFail);
+        },
+        /**
+         * Delete a document from the application. This requires an admin token
+         *
+         * @param {string} documentid id of the document to delete
+         * @param {APISuccessCallback=} onSuccess callback for when deleting object was successful
+         * @param {APIErrorCallback=} onFail callback for when deleting object failed
+         * @memberOf MM.documents
+         * @instance
+         *
+         * @example
+         *
+         function deleteDocument () {
+            MM.documents.delete('381c21d853faf6db58a0ab7d7d12e604', onDocumentDeleted);
+         }
+         function onDocumentDeleted (response) {
+            // document with documentid response.data.documentid deleted
+         }
+         */
+        delete: function (documentid, onSuccess, onFail) {
+            this.makeModelRequest('DELETE', 'document/' + documentid, null, onSuccess, onFail);
+        }
+    });
+
+    MM.models.LiveUserList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeSession.liveusers represents the LiveUsers collection in the MindMeld API. The list
+         * of User objects who are currently using the Session
+         *
+         * @namespace MM.activeSession.liveusers
+         * @memberOf MM.activeSession
+         */
+        constructor: function () {
+            MM.models.LiveUserList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.activeSession.liveusers'
+        },
+        path: function () {
+            return('session/' + MM.activeSessionId + '/liveusers');
+        },
+        /**
+         * Helper function returns the JSON data for the live users list
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.activeSession.liveusers
+         * @instance
+         *
+         * @example
+         *
+         function getLiveUsers () {
+            MM.activeSession.liveusers.get(null, onGetLiveUsers);
+         }
+         function onGetLiveUsers () {
+            var liveUsers = MM.activeSession.liveusers.json();
+            // MM.activeSession.liveusers.json() returns a JSON object
+            // containing data received from MM.activeSession.liveusers.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeSession.liveusers' onUpdate handler. If no handler is passed in,
+         * onUpdate unsubscribes from push events
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeSession's live users list updates
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
+         * @memberOf MM.activeSession.liveusers
+         * @instance
+         *
+         * @example <caption> Setting the onUpdate handler, creating a new activity, and
+         * obtaining the latest activities list </caption>
+         *
+         function liveUsersOnUpdateExample () {
+            // set the onUpdate handler for the liveusers list
+            MM.activeSession.liveusers.onUpdate(onLiveUsersUpdate, onSubscribedToLiveUsersUpdates);
+         }
+         function onSubscribedToLiveUsersUpdates () {
+            // successfully subscribed to updates to the session's liveusers list
+            console.log('subscribed');
+            // now, add a live user
+            addLiveUser();
+         }
+         function onLiveUsersUpdate () {
+            // there was an update to the liveusers list
+            var liveusers = MM.activeSession.liveusers.json();
+            console.log(liveusers);
+            // liveusers contains the latest list of liveusers
+         }
+         function addLiveUser () {
+            var liveUserData = {
+                userid: '365'
+            };
+            MM.activeSession.liveusers.post(liveUserData);
+         }
+         *
+         * @example <caption> Deregistering the onUpdate handler </caption>
+         *
+         function deregisterLiveUsersOnUpdate () {
+            MM.activeSession.liveusers.onUpdate(null);
+         }
+         */
+        onUpdate: function (updateHandler, onSuccess, onError) {
+            this._onUpdate(updateHandler,  onSuccess, onError);
+        },
+        /**
+         * Get the list of users that are currently active users of the specified session. A request with a
+         * user token can get the liveusers list only if the associated user is permitted to access the session
+         * object itself. A request with an admin token can get the liveusers list for any session associated
+         * with your application.
+         *
+         * @param {QueryParameters=} params query parameters when fetching the live user list
+         * @param {APISuccessCallback=} onSuccess callback for when getting live user list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting live user list failed
+         * @memberOf MM.activeSession.liveusers
+         * @instance
+         *
+         * @example
+         *
+         function getLiveUsers () {
+            MM.activeSession.liveusers.get(null, onGetLiveUsers);
+         }
+         function onGetLiveUsers (response) {
+            var liveUsers = response.data;
+            console.log(liveUsers);
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        },
+        /**
+         * Adds a new user to the list of active users for the active session
+         *
+         * @param {Object} newLiveUserData object specifying userid of user to be added to live user list
+         * @param {string} newLiveUserData.userid The MindMeld userid for the user to add to the liveusers list for the session
+         * @param {APISuccessCallback=} onSuccess callback for when adding live user was successful
+         * @param {APIErrorCallback=} onFail callback for when adding live user failed
+         * @memberOf MM.activeSession.liveusers
+         * @instance
+         *
+         * @example
+         *
+         function addLiveUser () {
+            var liveUserData = {
+                userid: '365'
+            };
+            MM.activeSession.liveusers.post(liveUserData, onLiveUserAdded);
+         }
+         function onLiveUserAdded (response) {
+            // New live user added
+         }
+         */
+        post: function (newLiveUserData, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), newLiveUserData, onSuccess, onFail);
+        },
+        /**
+         * Deletes a user from the list of active users for the active session
+         *
+         * @param {string} liveuserid id of the user to remove from active user list
+         * @param {APISuccessCallback=} onSuccess callback for when removing user from active users list was successful
+         * @param {APIErrorCallback=} onFail callback for when removing user from active users list failed
+         * @memberOf MM.activeSession.liveusers
+         * @instance
+         *
+         * @example
+         *
+         function removeLiveUser () {
+            MM.activeSession.liveusers.delete('365', onLiveUserRemoved);
+         }
+         function onLiveUserRemoved () {
+            // live user removed
+         }
+         */
+        delete: function (liveuserid, onSuccess, onFail) {
+            this.makeModelRequest('DELETE', this.path() + '/' + liveuserid, null, onSuccess, onFail);
+        },
+        channelType: 'session',
+        updateEventName: 'liveusersUpdate'
+    });
+
+    MM.models.InvitedUserList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeSession.invitedusers represents the InvitedUsers collection in the MindMeld API.
+         * The list of User objects who have been invited to join the Session.
+         *
+         * @namespace MM.activeSession.invitedusers
+         * @memberOf MM.activeSession
+         */
+        constructor: function () {
+            MM.models.InvitedUserList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.activeSession.invitedusers'
+        },
+        path: function () {
+            return('session/' + MM.activeSessionId + '/invitedusers');
+        },
+        /**
+         * Helper function returns the JSON data for the invited users list
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.activeSession.invitedusers
+         * @instance
+         *
+         * @example
+         *
+         function getInvitedUsers () {
+            MM.activeSession.invitedusers.get(null, onGetInvitedUsers);
+         }
+         function onGetInvitedUsers (response) {
+            var invitedUsers = MM.activeSession.invitedusers.json();
+            // MM.activeSession.invitedusers.json() returns a JSON object
+            // containing data received from MM.activeSession.invitedusers.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeSession.invitedusers' onUpdate handler. If no handler is passed in,
+         * onUpdate unsubscribes from push events
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeSession's invited users list updates
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
+         * @memberOf MM.activeSession.invitedusers
+         * @instance
+         *
+         * @example <caption> Setting the onUpdate handler, adding a new invited user, and
+         * obtaining the latest invited users list </caption>
+         *
+         function invitedUsersOnUpdateExample () {
+            // set the onUpdate handler for the invitedusers list
+            MM.activeSession.invitedusers.onUpdate(onInvitedUsersUpdate, onSubscribedToInvitedUsersUpdates);
+         }
+         function onSubscribedToInvitedUsersUpdates () {
+            // successfully subscribed to updates to the session's invitedusers list
+            // now, invite a new user
+            inviteNewUser();
+         }
+         function onInvitedUsersUpdate () {
+            // there was an update to the invitedusers list
+            var invitedusers = MM.activeSession.invitedusers.json();
+            // invitedusers contains the latest list of invitedusers
+         }
+         function inviteNewUser () {
+            var newInvitedUserData = {
+                provider: 'simple',
+                userid: 'einstein79',
+                name: 'Albert Einstein'
+            };
+            MM.activeSession.invitedusers.post(newInvitedUserData);
+         }
+         *
+         * @example <caption> Deregistering the onUpdate handler </caption>
+         *
+         function deregisterInvitedUsersOnUpdate () {
+            MM.activeSession.invitedusers.onUpdate(null);
+         }
+         */
+        onUpdate: function (updateHandler, onSuccess, onError) {
+            this._onUpdate(updateHandler,  onSuccess, onError);
+        },
+        /**
+         * Get the list of users that have been added to the invitedusers collection for this session. A request
+         * with a user token can get the invitedusers list only if the associated user is permitted to access the
+         * session object itself. A request with an admin token can get the invitedusers list for any session
+         * associated with your application.
+         *
+         * @param {QueryParameters=} params query parameters when fetching the invited user list
+         * @param {APISuccessCallback=} onSuccess callback for when getting invited user list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting invited user list failed
+         * @memberOf MM.activeSession.invitedusers
+         * @instance
+         *
+         * @example
+         *
+         function getInvitedUsers () {
+            MM.activeSession.invitedusers.get(null, onGetInvitedUsers);
+         }
+         function onGetInvitedUsers (response) {
+            var invitedUsers = response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        },
+        /**
+         * Invite a new user to the active session
+         *
+         * @param {Object} newInvitedUserData object specifying userid of user to be added to active session
+         * @param {string} newInvitedUserData.provider The name of the authentication provider that you are using in your
+         * application. This should be 'simple' for Simple User Authentication. For third-party authentication,
+         * this should be the name of the third-party provider, such as 'facebook'
+         * @param {string} newInvitedUserData.userid The userid for the user to invite. This should be the user
+         * id value provided by your authentication service. This should not be the MindMeld userid
+         * @param {string} newInvitedUserData.name The name of the user to invite
+         * @param {APISuccessCallback=} onSuccess callback for when adding user to session was successful
+         * @param {APIErrorCallback=} onFail callback for when adding live user to session failed
+         * @memberOf MM.activeSession.invitedusers
+         * @instance
+         *
+         * @example
+         *
+         function inviteUser () {
+            var newInvitedUserData = {
+                provider: 'simple',
+                userid: 'einstein79',
+                name: 'Albert Einstein'
+            };
+            MM.activeSession.invitedusers.post(newInvitedUserData, onInviteNewUser);
+         }
+         function onInviteNewUser (response) {
+            // New user invited to session
+         }
+         */
+        post: function (newInvitedUserData, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), newInvitedUserData, onSuccess, onFail);
+        },
+        /**
+         * Uninvite the specified user from the specified session
+         *
+         * @param {string} inviteduserid The MindMeld userid of the user to remove from invited user list
+         * @param {APISuccessCallback=} onSuccess callback for when removing a user from the session was successful
+         * @param {APIErrorCallback=} onFail callback for when removing a user from the session failed
+         * @memberOf MM.activeSession.invitedusers
+         * @instance
+         *
+         * @example
+         *
+         function removeUserFromSession () {
+            MM.activeSession.invitedusers.delete('<mindmeld user id>', onRemoveUserFromSession);
+         }
+         function onRemoveUserFromSession (response) {
+            // invited user removed from session
+         }
+         */
+        delete: function (inviteduserid, onSuccess, onFail) {
+            this.makeModelRequest('DELETE', this.path() + '/' + inviteduserid, null, onSuccess, onFail);
+        },
+        channelType: 'session',
+        updateEventName: 'invitedusersUpdate'
+    });
+
+    MM.models.ActivityList = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * MM.activeSession.activities represents the Activities collection in the MindMeld API. This collection captures
+         * the history of user actions and other non-text contextual signals associated with the active session
+         *
+         * @namespace MM.activeSession.activities
+         * @memberOf MM.activeSession
+         */
+        constructor: function () {
+            MM.models.ActivityList.superclass.constructor.apply(this, arguments);
+        },
+        localStoragePath: function () {
+            return 'MM.activeSession.activities'
+        },
+        path: function () {
+            return('session/' + MM.activeSessionId + '/activities');
+        },
+        /**
+         * Helper function returns the JSON data for the activities collection
+         *
+         * @returns {Array.<Object>}
+         * @memberOf MM.activeSession.activities
+         * @instance
+         *
+         * @example
+         *
+         function getActivities () {
+            MM.activeSession.activities.get(null, onGetActivities);
+         }
+         function onGetActivities () {
+            var activities =  MM.activeSession.activities.json();
+            // MM.activeSession.activities.json() returns a JSON object
+            // containing data received from MM.activeSession.activities.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeSession's activities' onUpdate handler. The onUpdate handler is called once
+         * there is an update to the active session's activities list AND the latest
+         * activities list is fetched successfully. If no updateHandler is passed in,
+         * {@link MM.activeSession.activities#onUpdate} unsubscribes from push events.
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeSession's activity list updates
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
+         * @memberOf MM.activeSession.activities
+         * @instance
+         *
+         * @example <caption> Setting the onUpdate handler, creating a new activity, and
+         * obtaining the latest activities list </caption>
+         *
+         function activitiesOnUpdateExample () {
+            // set the onUpdate handler for the activities list
+            MM.activeSession.activities.onUpdate(onActivitiesUpdate, onSubscribedToActivitiesUpdates);
+         }
+         function onSubscribedToActivitiesUpdates () {
+            // successfully subscribed to updates to the session's activities list
+
+            // now, create a new activity
+            createNewActivity();
+         }
+         function onActivitiesUpdate () {
+            // there was an update to the activities list
+            var activities = MM.activeSession.activities.json();
+            // activities contains the latest list of activities
+         }
+         function createNewActivity () {
+            var newActivityData = {
+                activitytype: 'status update',
+                title: 'hello world'
+            };
+            MM.activeSession.activities.post(newActivityData);
+         }
+         *
+         * @example <caption> Deregistering the onUpdate handler </caption>
+         *
+         function deregisterActivitiesOnUpdate () {
+            MM.activeSession.activities.onUpdate(null);
+         }
+         */
+        onUpdate: function (updateHandler, onSuccess, onError) {
+            this._onUpdate(updateHandler,  onSuccess, onError);
+        },
+        /**
+         * Get and search through the activity stream for the specified session. The activity stream is designed to
+         * capture non-text contextual signals important to your application. For example, the activity stream could
+         * be used keep track of the location history for a given user; it could be used to log the time when a user
+         * joins or leaves a session; or it could be used to track when users select certain documents, articles or
+         * entities. Currently, the activites collection provides a consistent data representation to capture and search
+         * through a history of non-text contextual signals. As we enhance the MindMeld Platform in the coming months,
+         * we will add capabilities to recognize patterns and make recommendations based on commonly observed
+         * activity histories. A request with a user token can retrieve activites only if the associated user
+         * is permitted to access the session object itself. A request with an admin token can retrieve activites
+         * for any session associated with your application.
+         *
+         * @param {QueryParameters=} params query parameters when fetching the activities list
+         * @param {APISuccessCallback=} onSuccess callback for when getting activities list was successful
+         * @param {APIErrorCallback=} onFail callback for when getting activities list failed
+         * @memberOf MM.activeSession.activities
+         * @instance
+         *
+         * @example
+         *
+         function getActivities () {
+            MM.activeSession.activities.get(null, onGetActivities);
+         }
+         function onGetActivities (response) {
+            var activities = response.data;
+            console.log(activities);
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(params, onSuccess, onFail);
+        },
+        /**
+         * Adds a new activity to the activity stream of the active session. The activity
+         * stream is designed to capture non-text contextual signals important to your
+         * application. This endpoint can be used to create new activities when your
+         * users take specific actions in your app
+         *
+         * @param {Object} activityData Object containing new activity data.
+         * @param {string} activityData.activitytype A short string
+         * identifying the type of activity this object represents. For example, if the activity
+         * corresponds to a user selecting an entity, this attribute could be set to 'select entity'.
+         * If the activity is an update in user status, such as joining or leaving a session,
+         * this attribute could be 'user status update'
+         * @param {string} activityData.title A short text string that can be displayed as the title for the activity
+         * @param {Location=} activityData.location A location object containing the longitude and
+         * latitude coordinates associated with the activity. This can be used to keep track
+         * of location history for a user
+         * @param {string=} activityData.documentid The id of a document, if any, associated with the activity
+         * @param {string=} activityData.articleid The id of an article, if any, associated with the activity
+         * @param {string=} activityData.entityid The id of an entity, if any, associated with the activity
+         * @param {string=} activityData.textentryid The id of a textentry, if any, associated with the activity
+         * @param {APISuccessCallback=} onSuccess callback for when creating new activity was successful
+         * @param {APIErrorCallback=} onFail callback for when creating new activity failed
+         * @memberOf MM.activeSession.activities
+         * @instance
+         *
+         * @example
+         *
+         function createNewActivity () {
+            var newActivityData = {
+                activitytype: 'status update',
+                title: 'hello world'
+            };
+            MM.activeSession.activities.post(newActivityData, onCreateNewActivity);
+         }
+         function onCreateNewActivity () {
+            // New activity created
+         }
+         */
+        post: function (activityData, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), activityData, onSuccess, onFail);
+        },
+        /**
+         * Delete an activity from the active session
+         *
+         * @param {string} activityid id of the activity to delete
+         * @param {APISuccessCallback=} onSuccess callback for when deleting the activity was successful
+         * @param {APIErrorCallback=} onFail callback for when deleting the activity failed
+         * @memberOf MM.activeSession.activities
+         * @instance
+         *
+         * @example
+         *
+         function deleteActivity () {
+            MM.activeSession.activities.delete('<activity id>', onActivityDeleted);
+         }
+         function onActivityDeleted () {
+            // activity deleted
+         }
+         */
+        delete: function (activityid, onSuccess, onFail) {
+            this.makeModelRequest('DELETE', 'activity/' + activityid, null, onSuccess, onFail);
+        },
+        channelType: 'session',
+        updateEventName: 'activitiesUpdate'
+    });
+
+    MM.models.ActiveSession = MM.Internal.createSubclass(MM.models.Model, {
+        /**
+         * The MM.activeSession object represents the currently active session. It can only be used after
+         * {@link MM#setActiveSessionID} has been called. This object is a container for capturing a history of contextual
+         * information for one or more users interacting with an application. The activeSession contains
+         * several child object collections that can be used to upload contextual information and
+         * display relevant search results to your users. The activeSession object is also used to
+         * publish / subscribe session-level push events
+         *
+         * @namespace MM.activeSession
+         * @memberOf MM
+         */
+        constructor: function () {
+            MM.models.ActiveSession.superclass.constructor.apply(this, arguments);
+            var session = this;
+
+            /**
+             * A session's listener is automatically configured to post text entries with type 'speech' and weight of 0.5
+             * when it receives a final {@link ListenerResult} object. Use {@link MM.activeSession#setListenerConfig} to
+             * register callbacks. Before using a Listener, check that it is supported with {@link MM.support}.
+             *
+             * @name listener
+             * @memberOf MM.activeSession
+             * @type {MM.Listener}
+             * @instance
+             * @example
+             if (MM.support.speechRecognition) {
+                 MM.activeSession.setListenerConfig({
+                     onResult: function(result) {
+                         // update UI
+                     }
+                 });
+                 MM.activeSession.listener.start();
+             }
+             */
+            this.listener = new MM.Listener({
+                interimResults: true,
+                onResult: function(result, resultIndex, results, event) {
+                    // post a text entry for finalized results
+                    if (result.final) {
+                        postListenerResult(result.transcript);
+                    }
+                    // notify handler
+                    MM.Util.testAndCallThis(session._onListenerResult, session.listener, result, resultIndex, results, event);
+                },
+                onStart: function(event) {
+                    MM.Util.testAndCallThis(session._onListenerStart, session.listener, event);
+                },
+                onEnd: function(event) {
+                    // Add last result if it was not final
+                    var results = this.results;
+                    var lastResult = null;
+                    if (results.length > 0) {
+                        lastResult = results[results.length - 1];
+                        if (!lastResult.final) {
+                            postListenerResult(lastResult.transcript);
+                        }
+                    }
+                    MM.Util.testAndCallThis(session._onListenerEnd, session.listener, event);
+                },
+                onError: function(error) {
+                    MM.Util.testAndCallThis(session._onListenerError, session.listener, error);
+                }
+            });
+
+            function postListenerResult(transcript) {
+                session.textentries.post({
+                    text: transcript,
+                    type: 'speech',
+                    weight: 0.5
+                }, function(response) {
+                    MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
+                });
+            }
+
+            $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
+        },
+        localStoragePath: function () {
+            return 'MM.activeSession'
+        },
+        path: function () {
+            return('session/' + MM.activeSessionId);
+        },
+        /**
+         * Helper function returns the JSON data for the activeSession object
+         *
+         * @returns {Object}
+         * @memberOf MM.activeSession
+         * @instance
+         *
+         * @example
+         *
+         function getSessionInfo () {
+            MM.activeSession.get(null, onGetSessionInfo);
+         }
+         function onGetSessionInfo () {
+            var sessionInfo = MM.activeSession.json();
+            // MM.activeSession.json() returns a JSON object containing data received from MM.activeSession.get()
+         }
+         */
+        json: function () {
+            return this._json();
+        },
+        /**
+         * Sets the activeSession's onUpdate handler. Pass null as the updateHandler parameter to
+         * deregister a previously set updateHandler. If the updateHandler has been set, it
+         * is automatically called when active session info is fetched (e.g. {@link MM.activeSession#get})
+         *
+         * @param {APISuccessCallback=} updateHandler callback for when the activeSession object updates
+         * @memberOf MM.activeSession
+         * @instance
+         *
+         * @example
+         *
+         function getSessionInfo () {
+            MM.activeSession.onUpdate(onGetSessionInfo); // Set the updateHandler
+            MM.activeSession.get(); // Fetch active session info
+         }
+         function onGetSessionInfo (response) {
+            var sessionInfo = response.data;
+            console.log(sessionInfo);
+         }
+         */
+        onUpdate: function (updateHandler) {
+            this._onUpdate(updateHandler,  null, null);
+        },
+        /**
+         * Sets the listener configuration of the active session. Pass null for callback fields to remove previous callbacks.
+         * See {@link MM.Listener#setConfig} for more details.
+         *
+         * @param {ListenerConfig} config an object containing listener configuration properties
+         * @memberOf MM.activeSession
+         * @instance
+         */
+        setListenerConfig: function (config) {
+            var configProperties = {
+                onResult: '_onListenerResult',
+                onStart: '_onListenerStart',
+                onEnd: '_onListenerEnd',
+                onError: '_onListenerError',
+                onTextEntryPosted: '_onTextEntryPosted'
+            };
+
+            for (var configProperty in configProperties) { // only look at safe properties
+                if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
+                    this[configProperties[configProperty]] = config[configProperty];
+                    delete config[configProperty]; // remove from config
+                }
+            }
+
+            this.listener.setConfig(config); // pass other configuration settings to listener
+        },
+        /**
+         * Get information about the active session. User privileges may allow access to this object
+         * depending on the privacymode of the session:
+         * If the privacymode is 'public', a user token will allow access.
+         * If the privacymode is 'friendsonly', a user token will allow access only if the user is in the friends collection of the session organizer.
+         * If the privacymode is 'inviteonly', a user token will allow access only if the user is on the invitedusers list associated with this session.
+         * If the user token belongs to the session organizer, it will be allowed to access the session.
+         * Admin privileges allow access to all sessions associated with your application.
+         * @param {QueryParameters=} params query parameters when fetching the session object
+         * @param {APISuccessCallback=} onSuccess callback for when getting session data was successful
+         * @param {APIErrorCallback=} onFail callback for when getting session data failed
+         * @memberOf MM.activeSession
+         * @instance
+         *
+         * @example
+         *
+         function getSessionInfo () {
+            MM.activeSession.get(null, onGetSessionInfo);
+         }
+         function onGetSessionInfo (response) {
+            var sessionInfo = response.data;
+         }
+         */
+        get: function (params, onSuccess, onFail) {
+            this._get(null, onSuccess, onFail);
+        },
+        /**
+         * Updates information about the ActiveSession
+         *
+         * @param {Object} sessionInfo Object containing updated session data. The only fields
+         * that can be updated are 'name' and 'privacymode'. Please see the Session endpoints
+         * documentation [here](https://developer.expectlabs.com/docs/endpointSession#postSessionSessionid)
+         * for more info
+         * @param {string=} sessionInfo.name updated name of active session
+         * @param {string=} sessionInfo.privacymode update privacy mode of the active session. The supported privacy modes
+         * are 'friendsonly', 'inviteonly', and 'public'
+         *
+         * @param {APISuccessCallback=} onSuccess callback for when updating session info was successful
+         * @param {APIErrorCallback=} onFail callback for when updating session info failed
+         * @memberOf MM.activeSession
+         * @instance
+         *
+         * @example
+         *
+         function updateSessionInfo () {
+            var newSessionData = {
+                name: 'updated session name',
+                privacymode: 'public' // privacy mode will be updated to 'public'
+            };
+            MM.activeSession.post(newSessionData, onUpdateSessionSuccess);
+         }
+         function onUpdateSessionSuccess () {
+            // Session data updated
+         }
+         */
+        post: function (sessionInfo, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), sessionInfo, onSuccess, onFail);
+        },
+        /**
+         * Publish a new, custom event on the active session's channel
+         *
+         * @param {string} event event name
+         * @param {EventPayload=} payload payload for event
+         * @memberOf MM.activeSession
+         * @instance
+         *
+         * @example <caption> Code snippet to subscribe and publish a
+         * custom event on the active session's channel </caption>
+         *
+         function publishEvent() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.activeSession.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on session channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent' with the payload containing the string
+            // 'custom payload'
+            MM.activeSession.publish('testEvent', 'custom payload');
+         }
+         function onTestEvent (payload) {
+            // the payload parameter is 'custom payload'
+            console.log('Received testEvent with payload: ' + payload);
+         }
+         */
+        publish: function (event, payload) {
+            this._publish(event, payload);
+        },
+        /**
+         * Subscribe to a custom event on the active session's channel
+         *
+         * @param eventName {string} name of event to subscribe to
+         * @param eventHandler  {NamedEventCallBack} callback for when event is fired
+         * @param onSuccess {function=} callback for when subscription is successful
+         * @param onError   {function=} callback for when there is an error subscribing
+         * @memberOf MM.activeSession
+         * @instance
+         *
+         * @example <caption> Code snippet to subscribe and publish a
+         * custom event on the active session's channel </caption>
+         *
+         function publishEvent() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.activeSession.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on session channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent' with the payload containing the string
+            // 'custom payload'
+            MM.activeSession.publish('testEvent', 'custom payload');
+         }
+         function onTestEvent (payload) {
+            // the payload parameter is 'custom payload'
+            console.log('Received testEvent with payload: ' + payload);
+         }
+         */
+        subscribe: function (eventName, eventHandler, onSuccess, onError) {
+            this._subscribe(eventName, eventHandler, onSuccess, onError);
+        },
+        /**
+         * Unsubscribe from a custom event on the active session's channel
+         *
+         * @param {string} eventName name of event to subscribe from
+         * @instance
+         * @memberOf MM.activeSession
+         *
+         * @example
+         *
+         function unsubscribeExample() {
+            // First subscribe to an event. In this case we are
+            // subscribing to an event named 'testEvent'
+            MM.activeSession.subscribe('testEvent', onTestEvent, onTestEventSubscribed);
+         }
+         function onTestEventSubscribed () {
+            console.log('Successfully subscribed to testEvent on session channel');
+            // Now that we have successfully subscribed to the 'testEvent' event,
+            // publish a 'testEvent'
+            MM.activeSession.publish('testEvent');
+         }
+         function onTestEvent (payload) {
+            // onTestEvent will be called once after 'testEvent' is published
+            console.log('received test event');
+            // Now unsubscribe from 'testEvent'
+            MM.activeSession.unsubscribe('testEvent');
+            // Publish 'testEvent' again
+            MM.activeSession.publish('testEvent');
+            // Since we unsubscribed, onTestEvent won't be called anymore
+         }
+         */
+        unsubscribe: function (eventName) {
+            this._unsubscribe(eventName);
+        },
+        /**
+         * Subscribes to every event on the active session's channel
+         *
+         * @param {AllEventsCallback} eventHandler callback for when an event on the active session's channel is fired
+         * @param onSuccess {function=} callback for when subscription is successful
+         * @param onError   {function=} callback for when there is an error subscribing
+         * @instance
+         * @memberOf MM.activeSession
+         *
+         * @example
+         *
+         function subscribeAllExample () {
+            MM.activeSession.subscribeAll(onSessionChannelEvent, onSubscribeSessionChannel);
+         }
+         function onSubscribeSessionChannel () {
+            MM.activeSession.publish('eventA', 'payloadA');
+            MM.activeSession.publish('eventB', 'payloadB');
+         }
+         function onSessionChannelEvent (eventObject) {
+            var eventName = eventObject.event;
+            var eventPayload = eventObject.payload;
+            console.log('Received event ' + eventName +
+                ' with payload ' + eventPayload);
+            // Received event eventA with payload payloadA
+            // Received event eventB with payload payloadB
+         }
+         */
+        subscribeAll: function (eventHandler, onSuccess, onError) {
+            this._subscribeAll(eventHandler, onSuccess, onError);
+        },
+        /**
+         * Unsubscribe from all events on the active session's channel
+         *
+         * @instance
+         * @memberOf MM.activeSession
+         *
+         * @example
+         *
+         function unsubscribeAllExample () {
+            // First subscribe to all events on active session channel
+            MM.activeSession.subscribeAll(onSessionChannelEvent, onSubscribeSessionChannel);
+         }
+         function onSubscribeSessionChannel () {
+            // publish the event 'testEvent'
+            MM.activeSession.publish('testEvent');
+         }
+         function onSessionChannelEvent (eventObject) {
+            var eventName = eventObject.event;
+            console.log('Received event ' + eventName);
+            // Now unsubscribe from session channel events
+            MM.activeSession.unsubscribeAll();
+            MM.activeSession.publish('testEvent');
+            // onSessionChannelEvent won't be called because we are unsubscribed
+            // from all session channel events
+         }
+         */
+        unsubscribeAll: function () {
+            this._unsubscribeAll();
+        },
+        channelType: 'session'
+    });
+
+    /**
+     * The Util namespace which contains utility methods
+     *
+     * @memberOf MM
+     * @namespace
+     * @private
+     */
+    MM.Util = $.extend({}, {
+
+        /**
+         * Tests whether given parameter is a function, and if so calls it
+         *
+         * @param {?function} func object to test if it is a function
+         * @memberOf MM.Util
+         *
+         * @example
+         var func = function(arg1, arg2) {
+            console.log('Argument 1: ' + arg1);
+            console.log('Argument 2: ' + arg2);
+         };
+
+         MM.Util.testAndCall(func, 'a', 'b');
+         // Argument 1: a
+         // Argument 2: b
+
+         */
+        testAndCall: function (func) {
+            if($.isFunction(func)){
+                // args will be the arguments to be passed to func
+                // arguments[0] is a reference to func, so we call
+                // slice to remove it from the arguments list
+                var args = Array.prototype.slice.call(arguments, 1);
+                func.apply(this, args);
+            }
+        },
+
+        /**
+         * Tests whether given parameter is a function, and if so calls it
+         * with a given 'this' value
+         *
+         * @param {?function} func object to test if it is a function
+         * @param {Object} thisArg value for 'this' when func is called
+         * @memberOf MM.Util
+         *
+         * @example
+         var func = function(arg1, arg2) {
+            console.log('This.prop: ' + this.prop);
+            console.log('Argument 1: ' + arg1);
+            console.log('Argument 2: ' + arg2);
+         };
+
+         var self = {
+            prop: 'property'
+         };
+
+         MM.Util.testAndCallThis(func, self, 'a', 'b');
+         // This.prop: property
+         // Argument 1: a
+         // Argument 2: b
+         */
+        testAndCallThis: function (func, thisArg) {
+            if($.isFunction(func)){
+                // args will be the arguments to be passed to func
+                // arguments[0] is a reference to func, so we call
+                // slice to remove it from the arguments list
+                var args = Array.prototype.slice.call(arguments, 2);
+                func.apply(thisArg, args);
+            }
+        }
+    });
+
+    MM.Listener = (function () {
+        var Listener = MM.Internal.createSubclass(Object, {
+            /**
+             * An object representing the text result from the speech recognition API.
+             *
+             * @typedef  {Object}  ListenerResult
+             * @property {string}  transcript the text of the speech that was processed
+             * @property {boolean} final      indicates whether the result is final or interim
+             */
+
+            /**
+             * An object representing the configuration of a {@link MM.Listener}
+             *
+             * @typedef  {Object}  ListenerConfig
+             * @property {boolean} [continuous=false]        whether the listener should continue listening until stop() is called.
+             *                                               If false, recording will continue until the speech recognition provider
+             *                                               recognizes a sufficient pause in speech.
+             * @property {boolean} [interimResults=false]    whether the listener should provide interim results
+             * @property {string} [lang=""]                  the 'Simple language sub tag' or 'Language-Region tag' of the [BCP 47](http://tools.ietf.org/html/bcp47)
+             *                                               code for the language the listener should recognize (e.g. 'ko' for Korean,
+             *                                               'en-US' for American English, and 'de-DE' for German). When set to the empty
+             *                                               string "" or unspecified, the listener attempts to use the lang attribute
+             *                                               of the root html element (document.documentElement.lang). A "language-not-supported"
+             *                                               error will be thrown for unsupported languages. Language support depends on
+             *                                               the browser. For Chrome, no official list of supported languages exists.
+             *                                               There is however, a good unofficial list in this question on
+             *                                               [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
+             * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
+             *                                               provided when creating a new {@link MM.Listener}.
+             * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
+             * @property {function} [onEnd=null]             the event handler which is called when a listening session ends.
+             * @property {function} [onError=null]           the event handler which is called when errors are received.
+             * @property {APISuccessCallback} [onTextEntryPosted=null] the event handler which is called when text entries are posted.
+             *                                                         Note: This is only called when using the activeSession's listener
+             */
+
+            /**
+             * The ListenerResultCallback handles results from the Speech Recognition API. A ListenerResultCallback should at
+             * minimum handle the result parameter.
+             *
+             * @callback ListenerResultCallback
+             * @param {ListenerResult} result result object containing speech recognition result
+             * @param {number} resultIndex the index of the provided result in the results array
+             * @param {Array} results an array of {@link ListenerResult} objects received during the current speech recognition session
+             * @param {Event} event the original event received from the underlying SpeechRecognition instance
+             */
+
+            /**
+             * Constructor for Listener class
+             *
+             * @constructs MM.Listener
+             * @param {ListenerConfig} config an object containing the listener's configuration properties. Any properties that
+             *                         are omitted default to either null or false.
+             *
+             * @classdesc This is the class for the MindMeld speech recognition API. Before using a Listener, check that it
+             *            is supported with {@link MM.support}. Currently the known browsers which support MM.Listener are
+             *            Google Chrome for Desktop (versions 25+) and Android (versions 31+). The MM.Listener class relies
+             *            upon the speech recognition portion of the Web Speech API (https://dvcs.w3.org/hg/speech-api/raw-file/tip/webspeechapi.html)
+             *            which has not yet been implemented by all major browsers. Note that listening won't work when accessing
+             *            locally hosted JavaScript and HTML. Speech recognition is only supported when your JavaScript and
+             *            HTML are served from a web server.
+             *
+             * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
+             * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
+             *                                    recent listening session. Readonly.
+             * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
+             * @property {boolean} continuous     indicates whether or not continuous recognition is enabled. Defaults to false.
+             * @property {string} lang            the 'Simple language sub tag' or 'Language-Region tag' of the [BCP 47](http://tools.ietf.org/html/bcp47)
+             *                                    code for the language the listener should recognize (e.g. 'ko' for Korean, 'en-US'
+             *                                    for American English, and 'de-DE' for German). When set to the empty string "" or
+             *                                    unspecified, the listener attempts to use the lang attribute of the root html
+             *                                    element (document.documentElement.lang). A "language-not-supported" error will
+             *                                    be thrown for unsupported languages. Language support depends on the browser. For
+             *                                    Chrome, no official list of supported languages exists. There is however, a good
+             *                                    unofficial list in this question on
+             *                                    [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
+             *
+             * @example
+             function postTextEntry(text) {
+                 MM.activeSession.textentries.post({
+                     text: text,
+                     type: 'speech',
+                     weight: '0.5'
+                 });
+             }
+
+             if (MM.support.speechRecognition) {
+                 var myListener = new MM.Listener({
+                     continuous: true,
+                     interimResults: true,
+                     lang: 'es-ES' // listen for European Spanish
+                     onResult: function(result) {
+                         if (result.final) {
+                             // post text entry for final results
+                             postTextEntry(result.transcript);
+
+                             // update UI to show final result
+                         } else {
+                             // update UI to show interim result
+                         }
+                     },
+                     onStart: function(event) {
+                         // update ui to show listening
+                     },
+                     onEnd: function(event) {
+                         var results = this.results;
+                         var lastResult = null;
+                         if (results.length > 0) {
+                             lastResult = results[results.length - 1];
+                         }
+
+                         if (!lastResult.final) { // wasn't final when last received onResult
+                             // post for the last result
+                             postTextEntry(lastResult.transcript);
+                             // update UI to show final result
+                         }
+                     },
+                     onError: function(event) {
+                         console.log('listener encountered error: ' + event.error);
+                         // notify user of error if applicable
+                     }
+                 });
+                 myListener.start();
+             }
+             */
+            constructor: function(config) {
+                this.setConfig(config);
+            },
+            /**
+             * Sets the listener object's configuration. Pass null for callback fields to deregister previous callbacks.
+             *
+             * @param {ListenerConfig} config an object containing the listener's configuration properties
+             * @memberOf MM.Listener
+             * @instance
+             */
+            setConfig: function(config) {
+                var configProperties = {
+                    onResult: '_onResult',
+                    onStart: '_onStart',
+                    onEnd: '_onEnd',
+                    onError: '_onError',
+                    onTextEntryPosted: '_onTextEntryPosted',
+                    continuous: 'continuous',
+                    interimResults: 'interimResults',
+                    lang: 'lang'
+                };
+
+                for (var configProperty in configProperties) { // only look at safe properties
+                    if (config.hasOwnProperty(configProperty)) { // only update property if it is in the config object
+                        this[configProperties[configProperty]] = config[configProperty];
+                    }
+                }
+            },
+            /**
+             * The time the listener last begin listening. Defaults to 0.
+             *
+             * @memberOf MM.Listener
+             * @instance
+             * @private
+             */
+            _lastStartTime: 0,
+            /**
+             * Starts a speech recognition session. The onResult callback will begin receiving results as the user's speech
+             * is recognized.
+             *
+             * @throws When speech recognition is not supported in the browser, an error is thrown.
+             * @memberOf MM.Listener
+             * @instance
+             */
+            start: function() {
+                if (!MM.support.speechRecognition) {
+                    MM.Internal.log('Speech recognition is not supported');
+                    throw new Error('Speech recognition is not supported');
+                }
+
+                var listener = this;
+                if (Date.now() - listener._lastStartTime < 1000) {
+                    // TODO(jj): should we throw an error here, or call onError?
+                    return;
+                }
+
+                var abortTimeout = 0;
+                function setAbortTimeout() {
+                    clearTimeout(abortTimeout);
+                    abortTimeout = setTimeout(function(event) {
+                        recognizer.abort();
+                    }, 2000, event); // abort if the recognition fails to call onEnd (chrome bug hack)
+                }
+
+                var recognizer = this._recognizer;
+                if (typeof recognizer === 'undefined') {
+                    recognizer = this._recognizer = new SpeechRecognition();
+                    recognizer.onresult = function(event) {
+                        var result = {
+                            final: false,
+                            transcript: ''
+                        };
+                        var resultIndex = event.resultIndex;
+                        var results = listener._results;
+
+                        for (var i = event.resultIndex; i < event.results.length; ++i) {
+                            var transcript = event.results[i][0].transcript;
+
+                            if (event.results[i].isFinal) {
+                                result.final = true;
+                                result.transcript = transcript;
+                                break;
+                            } else {
+                                result.transcript += transcript; // collapse multiple pending results into one
+                            }
+                        }
+                        results[resultIndex] = result;
+
+                        if (abortTimeout != 0) {
+                            setAbortTimeout();
+                        }
+
+                        MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
+                    };
+                    recognizer.onstart = function(event) {
+                        listener._listening = true;
+                        listener._lastStartTime = Date.now();
+                        MM.Util.testAndCallThis(listener._onStart, listener, event);
+                    };
+                    recognizer.onend = function(event) {
+                        clearTimeout(abortTimeout);
+                        abortTimeout = 0;
+                        listener._listening = false;
+                        MM.Util.testAndCallThis(listener._onEnd, listener, event);
+                    };
+                    recognizer.onerror = function(event) {
+                        MM.Util.testAndCallThis(listener._onError, listener, event);
+                    };
+                    recognizer.onaudioend = function(event) {
+                        if (!recognizer.continuous) {
+                            setAbortTimeout();
+                        }
+                    }
+                }
+                recognizer.continuous = this.continuous;
+                recognizer.interimResults = this.interimResults;
+                var lang = (function () {
+                    var language = '';
+                    if (listener.lang !== '') {
+                        language = listener.lang;
+                    } else if (typeof document !== 'undefined' && document.documentElement !== null && document.documentElement.lang !== '') {
+                        // attempt to retrieve from html element
+                        language = document.documentElement.lang;
+                    }
+                    return language;
+                })();
+                recognizer.lang = lang;
+                listener._results = []; // clear previous results
+
+                recognizer.start();
+            },
+            /**
+             * Stops the active speech recognition session. One more result may be send to the onResult callback.
+             *
+             * @memberOf MM.Listener
+             * @instance
+             */
+            stop: function() {
+                if (this._recognizer) {
+                    this._recognizer.stop();
+                }
+            },
+            /**
+             * Cancels the active speech recognition session. No further results will be sent to the onResult callback.
+             *
+             * @memberOf MM.Listener
+             * @instance
+             */
+            cancel: function() {
+                if (this._recognizer) {
+                    this._recognizer.abort();
+                }
+            }
+        });
+
+
+        Listener.prototype._listening = false;
+        Listener.prototype._results = [];
+        Listener.prototype.continuous = false;
+        Listener.prototype.lang = "";
+        Listener.prototype.interimResults = false;
+        Object.defineProperties(Listener.prototype, {
+            listening: {
+                get: function() {
+                    return this._listening;
+                }
+            },
+            results: {
+                get: function() {
+                    return JSON.parse(JSON.stringify(this._results));
+                }
+            }
+        });
+        return Listener;
+    })();
+
+    /**
+     * An overview of features supported in the browser.
+     *
+     * @memberOf MM
+     * @namespace
+     *
+     * @property {boolean} speechRecognition whether speech recognition is supported in the current browser
+     * @property {boolean} localStorage      whether local storage is supported in the current browser
+     */
+    MM.support = (function(window) {
+        var support = {};
+
+        var localStorage = false;
+        var speechRecognition = false;
+
+        Object.defineProperties(support, {
+            localStorage: {
+                get: function() { return localStorage; }
+            },
+            speechRecognition: {
+                get: function() { return speechRecognition; }
+            }
+        });
+        try {
+            speechRecognition = (function(window) {
+                'use strict';
+                window = window || {};
+                var SpeechRecognition = window.webkitSpeechRecognition ||
+    //                window.mozSpeechRecognition || // TODO: add these as they become supported, and update MM.Listener docs
+    //                window.msSpeechRecognition ||
+    //                window.oSpeechRecognition ||
+                    window.SpeechRecognition;
+                window.SpeechRecognition = SpeechRecognition; // now we can use one!
+                return (typeof(SpeechRecognition) !== 'undefined');
+            })(window);
+        } catch (e) {
+            // TODO: maybe add something here?
+        }
+        try {
+            var localStorage = (function(window) {
+                'use strict';
+                window = window || {};
+                return (typeof(window.Storage) !== 'undefined');
+            })(window);
+        } catch (e) {
+            // TODO: maybe add something here?
+        }
+
+        return support;
+    })(window);
+
+
+    // Setup MM SDK
+    MM.Internal.setup();
+    return MM;
+
+}($, Faye));
+(function ($, MM, undefined) {
+
+    $.widget('mindmeld.mmautocomplete', $.ui.autocomplete,  {
+        _truncateText: function (text, length, end) {
+            if(end === undefined){
+                end = '...';
+            }
+            if(text.length <= length || text.length - end.length <= length){
+                return text;
+            }
+            else{
+                var emIndex = text.indexOf('<em>');
+                if (emIndex !== -1 ){ // snippet, need to truncate <em> tags carefully
+                    text = this._getTruncatedEmString(text, length - end.length) + end;
+                }
+                else {
+                    text = String(text).substring(0, length - end.length) + end;
+                }
+                return text;
+            }
+        },
+
+        // Attempts to return the maximum # of characters containing valid <em> tags
+        // within a maxLength
+        _getTruncatedEmString: function (string, maxLength) {
+            var emRegex = /<em>\S+<\/em>/; // match strings with <em>html tag</em>
+            var emMatches = emRegex.exec(string);
+
+            var emIndex = emMatches.index; // index of first match
+            var emString = emMatches[0]; // full string match: '<em>html tag</em>
+            var emLength = emString.length;
+            var remainingLength = maxLength - emLength;
+            var startIndex = Math.max(0, emIndex - remainingLength);
+            var beforeEmString = string.substr(startIndex, Math.min(remainingLength, emIndex)); // prepend up to maxLength number of characters before <em> tag
+            var truncated = beforeEmString + emString;
+            if (truncated.length < maxLength) { // we can get more characters!
+                remainingLength = maxLength - truncated.length;
+                var endFirstEmIndex = emIndex + emLength;
+                var nextEmIndex = string.indexOf('<em>', endFirstEmIndex);
+                if (nextEmIndex !== -1 ) {
+                    truncated += string.substr(endFirstEmIndex, Math.min(remainingLength, nextEmIndex - endFirstEmIndex));
+                }
+                else {
+                    truncated += string.substr(endFirstEmIndex, remainingLength);
+                }
+            }
+            return truncated;
+        },
+
+        _renderItem: function (ul, item) {
+            var liItem = null;
+            if (item.noResult) {
+                liItem = $('<li>', {class:'noResultItem'})
+                    .append(
+                        $('<a>')
+                            .append(
+                                $('<div>', {class:'noResultContainer'})
+                                .append(
+                                    $('<span>', {class: 'noResultText'}).html('No results')
+                                )
+                            )
+                    )
+            }
+            else {
+                var textBlurb = item.document.snippet ||
+                    item.document.description ||
+                    item.document.text;
+                var image = null;
+                if (item.document.image) {
+                    image = item.document.image.thumburl || item.document.image.url || null;
+                }
+
+                var itemContent;
+                if (this.options.images && image) {
+                    itemContent = this._getItemContentWithImage(image, textBlurb);
+                }
+                else {
+                    itemContent = this._getItemContentWithoutImage(textBlurb);
+                }
+                liItem = $('<li>', {class: 'docListItem'})
+                    .append(
+                        $('<a>', {href: item.document.originurl})
+                            .append(
+                                $('<div>', {class: 'docListWrapper'})
+                                    .append(
+                                        $('<span class="docTitle">' + item.document.title + '</span>')
+                                    )
+                                    .append(
+                                        itemContent
+                                )
+                            )
+                    );
+            }
+            return liItem.appendTo(ul);
+        },
+
+        _getItemContentWithImage: function (imgSrc, textBlurb) {
+            textBlurb = this._truncateText(textBlurb, 75);
+            return $('<div>', {class: 'docContentWithImage'})
+                .append(
+                    $('<div>', {class: 'docImg'})
+                        .append(
+                        $('<img>', {class: 'docImgFile', src: imgSrc})
+                    )
+                )
+                .append(
+                    $('<div>', {class: 'docDetails'})
+                        .append(
+                        $('<p class="textBlurb">' + textBlurb + '</p>')
+                    )
+                );
+        },
+        _getItemContentWithoutImage: function (textBlurb) {
+            textBlurb = this._truncateText(textBlurb, 130);
+            return $('<div>', {class: 'docContentWithoutImage'})
+                .append(
+                    $('<p class="textBlurb">' + textBlurb + '</p>')
+                );
+        }
+    });
+
+    $.widget('mindmeld.searchwidget', {
+
+        options: {
+            images: false,
+            voiceNavigatorEnabled: false,
+            onMMSearchInitialized: function () {},
+            onMMSearchError: function () {}
+        },
+
+        _create: function () {
+            $('<div id="mm-results" style="position: absolute;"></div>').appendTo('body');
+            this.queryCache = {};
+            this.numQueriesCached = 0;
+            this._initMM();
+            this._initialized = false;
+        },
+
+        initialized: function () {
+            return this._initialized;
+        },
+
+        /**
+         * Updates this.options with config from MM.widgets.config.search
+         * @private
+         */
+        _setWidgetOptions: function () {
+            for (var widgetOption in MM.widgets.config.search) {
+                this.options[widgetOption] = MM.widgets.config.search[widgetOption];
+            }
+        },
+
+        _validateConfig: function () {
+            return (! $.isEmptyObject(MM.widgets) && ! ($.isEmptyObject(MM.widgets.config)));
+        },
+
+        _initMM: function () {
+            if (this._validateConfig()) {
+                this._setWidgetOptions();
+                var appID = MM.widgets.config.appID;
+                if (! this._validateString(appID, 40)) {
+                    this.options.onMMSearchError('Please supply a valid appid');
+                    return;
+                }
+                var self = this;
+                var config = {
+                    appid: appID,
+                    onInit: onMMInit
+                };
+                if (MM.widgets.config.cleanUrl !== undefined) {
+                    config.cleanUrl = MM.widgets.config.cleanUrl;
+                }
+                if (MM.widgets.config.fayeClientUrl !== undefined) {
+                    config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
+                }
+                MM.init(config);
+
+                function onMMInit () {
+                    MM.getToken(
+                        {
+                            anonymous: {
+                                userid: 'MMSearchWidgetUserID',
+                                name: 'MMSearchWidgetUser',
+                                domain: window.location.hostname
+                            }
+                        },
+                        function onGetToken () {
+                            self._getOrSetSession();
+                        },
+                        function onTokenError () {
+                            self.options.onMMSearchError('Supplied token is invalid');
+                        }
+                    );
+                }
+            }
+            else {
+                console.log('Invalid search widget config');
+            }
+        },
+
+        _getOrSetSession: function () {
+            var self = this;
+
+            MM.activeUser.sessions.get(null, onGetSessions, onSessionError);
+
+            function onGetSessions () {
+                var sessions = MM.activeUser.sessions.json();
+                // Sessions exist, use a previous one
+                if (sessions.length > 0 ) {
+                    MM.setActiveSessionID(sessions[0].sessionid, onSessionSet, onSessionError);
+                }
+                // No sessions yet, let's create one
+                else {
+                    var newSessionData = {
+                        name: 'search session',
+                        privacymode: 'inviteonly'
+                    };
+                    MM.activeUser.sessions.post(newSessionData, onSessionCreated, onSessionError);
+
+                    function onSessionCreated (response) {
+                        MM.setActiveSessionID(response.data.sessionid, onSessionSet, onSessionError);
+                    }
+                }
+            }
+
+            function onSessionSet () {
+                self._onInitialized();
+            }
+
+            function onSessionError () {
+                self.options.onMMSearchError('Error fetching and setting session');
+            }
+        },
+
+        _onInitialized: function () {
+            this._initialized = true;
+            this.options.onMMSearchInitialized();
+            var self = this;
+            this.element.mmautocomplete({
+                minLength: 2,
+                delay: 100,
+                source: function (request, response) {
+
+                    self.queryDocuments(request.term,
+                        function (documents) {
+                            var results = [];
+                            if (documents.length === 0) {
+                                results.push({
+                                    noResult: true
+                                });
+                            }
+                            else {
+                                results = $.map(documents, function (document) {
+                                    return {
+                                        label: document.title,
+                                        document: document
+                                    }
+                                });
+                            }
+                            response(results);
+                        },
+                        function (errorMessage) {
+                            self.onMMSearchError(errorMessage);
+                            response([]);
+                        }
+                    );
+                },
+                appendTo: '#mm-results',
+                open: function () {
+                    var searchFieldPosition = self.element.offset();
+                    var searchFieldHeight = self.element.outerHeight();
+                    var searchFieldWidth = self.element.outerWidth();
+
+                    var insetLength = 10;
+                    var resultsWidth = searchFieldWidth - insetLength;
+                    var resultsTop = searchFieldPosition.top + searchFieldHeight - 1;
+                    var resultsLeft = searchFieldPosition.left + insetLength / 2;
+                    $('#mm-results > ul.ui-autocomplete')
+                        .css( {
+                            width: resultsWidth + 'px'
+                        })
+                        .offset({
+                            top: resultsTop,
+                            left: resultsLeft
+                        });
+
+                },
+                select: function (event, ui) {
+                    if (ui.item.document) {
+                        if (!event.ctrlKey && ! event.metaKey) {
+                            window.location.href = ui.item.document.originurl;
+                        }
+                        self.element.val('');
+                    }
+                    return false;
+
+                },
+                focus: function (event, ui) {
+                    if (ui.item.document) {
+                        var menu = $(this).data('mindmeldMmautocomplete').menu.element;
+
+                        // Remove 'focused' class from every <li>
+                        var lis = menu.find('li');
+                        lis.each(function () {
+                            $(this).removeClass('focused');
+                        });
+
+                        // Add 'focused' class to focused <li>
+                        var focused = menu.find("li:has(a.ui-state-focus)");
+                        focused.addClass('focused');
+                    }
+                    return false;
+                },
+                images: self.options.images
+            });
+
+            if (this.options.voiceNavigatorEnabled) {
+                this.element.keypress(
+                    function onKeyPress (event) {
+                        if (event.which === 13) {
+                            var currentQuery = self.element.val();
+                            self._openVoiceNavigator(currentQuery);
+                        }
+                    }
+                );
+            }
+        },
+
+        _openVoiceNavigator: function (query) {
+            if (MM.voiceNavigator !== undefined) {
+                MM.voiceNavigator.showModal(query);
+            }
+            else {
+                MM.loader.widgetLoaded('voice', function () {
+                    MM.voiceNavigator.showModal(query);
+                });
+            }
+        },
+
+        _stripEmTags: function (value) {
+            value = value.replace(/<em>/g, '');
+            value = value.replace(/<\/em>/g, '');
+            return value;
+        },
+
+        queryDocuments: function (query, onQueryDocuments, onQueryError) {
+            var self = this;
+            if (this.queryCache[query]) {
+                onQueryDocuments(this.queryCache[query]);
+            }
+            else {
+                if (this._initialized) {
+                    var wildcardQuery = this._getWildcardQuery(query);
+                    var queryParams = {
+                        query: wildcardQuery,
+                        highlight: 1,
+                        limit: 5
+                    };
+                    queryParams['document-ranking-factors'] = {
+                        'relevance':    1,
+                        'recency':      0,
+                        'popularity':   0,
+                        'proximity':    0,
+                        'customrank1':  0,
+                        'customrank2':  0,
+                        'customrank3':  0
+                    };
+                    MM.activeSession.documents.get(queryParams,
+                        function () {
+                            var documents = MM.activeSession.documents.json();
+                            self.numQueriesCached++;
+                            self.queryCache[query] = documents;
+                            onQueryDocuments(documents);
+                        },
+                        function (error) {
+                            onQueryError('Error fetching documents: ' + error.message);
+                        }
+                    );
+                    this._cleanQueryCache();
+                }
+                else {
+                    onQueryError('Cannot query documents, MM search widget not initialized');
+                }
+            }
+        },
+
+        _getWildcardQuery: function (query) {
+            var queryTerms = query.split(' ');
+            var newQuery = '';
+            if (queryTerms.length > 0 && query.slice(-1) !== ' ') {
+                var lastQueryTermIndex = queryTerms.length - 1;
+                queryTerms[lastQueryTermIndex] += '*';
+                $.each(queryTerms, function (index, term) {
+                   newQuery += term + ' ';
+                });
+            }
+            else {
+                newQuery = query;
+            }
+            return newQuery;
+        },
+
+        _cleanQueryCache: function () {
+            // queryCache size is 100
+            if (this.numQueriesCached > 100) {
+                var cachedQueries = Object.keys(this.queryCache);
+                // Randomly remove 50 items from query cache
+                for (var i = 0; i < 50; i++) {
+                    var cachedQuery = cachedQueries[i];
+                    delete this.queryCache[cachedQueries[i]];
+                    console.log('removing cached query: ' + cachedQuery);
+                }
+                this.numQueriesCached = Object.keys(this.queryCache).length;
+            }
+        },
+
+        _validateString: function (string, length) {
+            if (string === undefined) {
+                return false;
+            }
+            if (length !== undefined && string.length !== length) {
+                return false;
+            }
+            return true;
+        }
+    });
+
+}($, MM));
 }(MM.loader.$jq));
