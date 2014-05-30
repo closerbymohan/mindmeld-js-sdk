@@ -146,7 +146,6 @@ gulp.task('build.modal.css.no-min', ['buildMM'], function() {
 
 gulp.task('build.modal.js.no-min', function() {
     var stream = gulp.src(voiceNavigator.paths['build.modal.js']);
-
     return concatAndMinify('modal', 'js', false, stream);
 });
 
