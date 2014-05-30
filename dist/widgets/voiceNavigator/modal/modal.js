@@ -9208,6 +9208,15 @@ var MM = ( function ($, Faye) {
 
         var voiceNavOptions = MMVoice.config;
 
+        var initialText;
+        if (voiceNavOptions.startQuery === null) {
+            initialText = 'Enable the microphone...';
+        }
+        else {
+            initialText = 'Loading...'
+        }
+        $('#initialText').text(initialText);
+
         if (MMVoice.is_voice_ready && voiceNavOptions.startQuery !== null) { // we have init before
             MMVoice.submitText(voiceNavOptions.startQuery);
             MMVoice._updateUI();
