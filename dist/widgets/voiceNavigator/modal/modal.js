@@ -9203,25 +9203,31 @@ var MM = ( function ($, Faye) {
 
         var voiceNavOptions = MMVoice.config;
 
-        if (MMVoice.config.cardLayout === 'custom') {
-            MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+        if (MMVoice.is_voice_ready && voiceNavOptions.startQuery !== null) { // we have init before
+            MMVoice.submitText(voiceNavOptions.startQuery);
+            MMVoice._updateUI();
         }
+        else {
+            if (MMVoice.config.cardLayout === 'custom') {
+                MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+            }
 
-        var MM_USER_ID_PREFIX = 'vnu';
-        var MM_USER_NAME = 'Voice Navigator User';
-        var MM_USER_ID_COOKIE = 'voice_navigator_user_id';
+            var MM_USER_ID_PREFIX = 'vnu';
+            var MM_USER_NAME = 'Voice Navigator User';
+            var MM_USER_ID_COOKIE = 'voice_navigator_user_id';
 
-        var MM_CONFIG = {
-            appid: voiceNavOptions.appID,
-            onInit: onMMInit
-        };
-        if (typeof voiceNavOptions.cleanUrl !== 'undefined') {
-            MM_CONFIG.cleanUrl = voiceNavOptions.cleanUrl;
+            var MM_CONFIG = {
+                appid: voiceNavOptions.appID,
+                onInit: onMMInit
+            };
+            if (typeof voiceNavOptions.cleanUrl !== 'undefined') {
+                MM_CONFIG.cleanUrl = voiceNavOptions.cleanUrl;
+            }
+            if (typeof voiceNavOptions.fayeClientUrl !== 'undefined') {
+                MM_CONFIG.fayeClientUrl = voiceNavOptions.fayeClientUrl;
+            }
+            MM.init(MM_CONFIG);
         }
-        if (typeof voiceNavOptions.fayeClientUrl !== 'undefined') {
-            MM_CONFIG.fayeClientUrl = voiceNavOptions.fayeClientUrl;
-        }
-        MM.init(MM_CONFIG);
 
         function onMMInit () {
             if (voiceNavOptions.mmCredentials) {
