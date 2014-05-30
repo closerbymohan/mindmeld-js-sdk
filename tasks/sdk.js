@@ -6,7 +6,6 @@ var rename = require('gulp-rename');
 var es = require('event-stream');
 var zip = require('gulp-zip');
 var fs = require('fs');
-var symlink = require('gulp-symlink');
 
 var rootDirectory = __dirname + '/../';
 var exampleDirectory = rootDirectory + 'example/';
@@ -95,11 +94,13 @@ gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
         .pipe(gulp.dest(archiveDirectory));
 });
 
+// Copies embed script to dist directory
 gulp.task('distLoader', function () {
-    return gulp.src(srcDirectory + 'loaders/embed.js')
-        .pipe(symlink(distDirectory + '/loaders/'));
+    return gulp.src(srcDirectory + 'embed.js')
+        .pipe(gulp.dest(distDirectory));
 });
 
+// Watch for changes in mindmeld js files and build mindmeld.js
 gulp.task('watchMM', ['uglifyMM'], function () {
     gulp.watch(srcMMDirectory + '**/*.js', ['buildMM']);
 });

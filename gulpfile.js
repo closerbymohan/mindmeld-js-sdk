@@ -12,7 +12,7 @@ gulp.task('buildSDK', function () {
        .pipe(chug());
 });
 
-gulp.task('archiveSDK', function () {
+gulp.task('archiveSDK', ['buildSearchWidget', 'buildVoiceNavigator'], function () {
    return gulp.src(sdkGulpfilePath, {read: false})
        .pipe(chug({tasks: ['archiveSDK']}));
 });

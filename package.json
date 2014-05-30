@@ -1,7 +1,7 @@
 {
   "name": "mindmeld-js-sdk",
   "description": "JavaScript SDK for MindMeld API",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "homepage": "https://developer.expectlabs.com",
   "dependencies": {},
   "devDependencies": {
@@ -22,7 +22,6 @@
     "gulp-replace": "^0.3.0",
     "gulp-sass": "^0.7.1",
     "gulp-stylus": "^1.0.0",
-    "gulp-symlink": "^1.0.3",
     "gulp-task-listing": "^0.3.0",
     "gulp-uglify": "^0.3.0",
     "gulp-zip": "^0.3.4",
