@@ -143,8 +143,9 @@
         }
     };
 
-    MM.voiceNavigator.showModal = function (query) {
+    MM.voiceNavigator.showModal = function (query, forceNewIFrame) {
         if (MMVoice.is_init) {
+            var iframe;
             // Initialize voice navigator config
             if (typeof MM !== 'undefined' &&
                 typeof MM.widgets !== 'undefined' &&
@@ -191,9 +192,14 @@
                 }
             }
 
+            if (forceNewIFrame && MMVoice.$mm_iframe) {
+                iframe = document.getElementById('mindmeld-iframe');
+                iframe.parentNode.removeChild(iframe);
+            }
+
             // Create iframe if first load
-            if (!MMVoice.$mm_iframe) {
-                var iframe = document.createElement('iframe');
+            if (!MMVoice.$mm_iframe || forceNewIFrame) {
+                iframe = document.createElement('iframe');
                 iframe.setAttribute('frameBorder', '0');
                 iframe.setAttribute('id', 'mindmeld-iframe');
                 iframe.setAttribute('allowtransparency', 'true');
@@ -203,7 +209,6 @@
 
                 MMVoice.el(iframe).on('load', function() {
                     MMVoice.postMessage('open', MM.voiceNavigator.config);
-                    MMVoice.iframe_loaded = true;
 
                     if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
                         var cssLink = document.createElement('link');
