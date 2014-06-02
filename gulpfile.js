@@ -56,11 +56,6 @@ gulp.task('serve.voice-navigator', function () {
         .pipe( chug({ tasks: ['serve'] }) );
 });
 
-gulp.task('serve.voice-navigator.no-min', function () {
-    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
-        .pipe( chug({ tasks: ['serve:no-min'] }) );
-});
-
 // --------------------------------------------------------------------- //
 
 // General Tasks
