@@ -145,57 +145,59 @@
 
     MM.voiceNavigator.showModal = function (query) {
         if (MMVoice.is_init) {
+            // Initialize voice navigator config
+            if (typeof MM !== 'undefined' &&
+                typeof MM.widgets !== 'undefined' &&
+                typeof MM.widgets.config !== 'undefined') {
+                // Move config to voice nav config
+                MM.voiceNavigator.config = MM.widgets.config.voice || {};
+                MM.voiceNavigator.config.appID = MM.widgets.config.appID;
+                if (typeof MM.widgets.config.cleanUrl !== 'undefined') {
+                    MM.voiceNavigator.config.cleanUrl = MM.widgets.config.cleanUrl;
+                }
+                if (typeof MM.widgets.config.fayeClientUrl !== 'undefined') {
+                    MM.voiceNavigator.config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
+                }
+
+                // parse card layout
+                if (typeof MM.voiceNavigator.config.cardTemplate !== 'undefined') {
+                    MM.voiceNavigator.config.cardLayout = 'custom';
+                }
+                if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
+                    MM.voiceNavigator.config.cardLayout = 'default';
+                }
+
+                // parse custom css
+                if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
+                    MM.voiceNavigator.config.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSPath);
+                }
+
+                // Pass token, user ID, and session ID if they are set already
+                if (typeof MM.token !== 'undefined' &&
+                    typeof MM.activeUserId !== 'undefined' && MM.activeUserId !== null &&
+                    typeof MM.activeSessionId !== 'undefined' && MM.activeSessionId !== null) {
+                    MM.voiceNavigator.config.mmCredentials = {
+                        token: MM.token,
+                        userID: MM.activeUserId,
+                        sessionID: MM.activeSessionId
+                    };
+                }
+                // If defined, pass a starting query
+                if (query !== undefined && query !== '') {
+                    MM.voiceNavigator.config.startQuery = query;
+                }
+                else {
+                    MM.voiceNavigator.config.startQuery = null;
+                }
+            }
+
+            // Create iframe if first load
             if (!MMVoice.$mm_iframe) {
                 var iframe = document.createElement('iframe');
                 iframe.setAttribute('frameBorder', '0');
                 iframe.setAttribute('id', 'mindmeld-iframe');
                 iframe.setAttribute('allowtransparency', 'true');
                 iframe.setAttribute('src', MM.loader.rootURL + 'widgets/voiceNavigator/modal/modal.html');
-                if (typeof MM !== 'undefined' &&
-                    typeof MM.widgets !== 'undefined' &&
-                    typeof MM.widgets.config !== 'undefined') {
-                    // Move config to voice nav config
-                    MM.voiceNavigator.config = MM.widgets.config.voice || {};
-                    MM.voiceNavigator.config.appID = MM.widgets.config.appID;
-                    if (typeof MM.widgets.config.cleanUrl !== 'undefined') {
-                        MM.voiceNavigator.config.cleanUrl = MM.widgets.config.cleanUrl;
-                    }
-                    if (typeof MM.widgets.config.fayeClientUrl !== 'undefined') {
-                        MM.voiceNavigator.config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
-                    }
-
-                    // parse card layout
-                    if (typeof MM.voiceNavigator.config.cardTemplate !== 'undefined') {
-                        MM.voiceNavigator.config.cardLayout = 'custom';
-                    }
-                    if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
-                        MM.voiceNavigator.config.cardLayout = 'default';
-                    }
-
-                    // parse custom css
-                    if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
-                        MM.voiceNavigator.config.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSPath);
-                    }
-
-                    // Pass token, user ID, and session ID if they are set already
-                    if (typeof MM.token !== 'undefined' &&
-                        typeof MM.activeUserId !== 'undefined' && MM.activeUserId !== null &&
-                        typeof MM.activeSessionId !== 'undefined' && MM.activeSessionId !== null) {
-                        MM.voiceNavigator.config.mmCredentials = {
-                            token: MM.token,
-                            userID: MM.activeUserId,
-                            sessionID: MM.activeSessionId
-                        };
-                    }
-
-                    // If defined, pass a starting query
-                    if (query !== undefined && query !== '') {
-                        MM.voiceNavigator.config.startQuery = query;
-                    }
-                    else {
-                        MM.voiceNavigator.config.startQuery = null;
-                    }
-                }
 
                 MMVoice.$mm_iframe = MMVoice.el(iframe);
 
@@ -222,13 +224,6 @@
                 MMVoice.$mm.el().appendChild(iframe);
             }
             else {
-                // If defined, pass a starting query
-                if (query !== undefined && query !== '') {
-                    MM.voiceNavigator.config.startQuery = query;
-                }
-                else {
-                    MM.voiceNavigator.config.startQuery = null;
-                }
                 MMVoice.postMessage('open', MM.voiceNavigator.config);
             }
             MMVoice.$mm.addClass('on');
