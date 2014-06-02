@@ -8022,9 +8022,17 @@ var MM = ( function ($, Faye) {
 
 ;(function() {
     var UTIL = {
+        addLeadingZeros: function (number, digits) {
+            var base = Math.pow(10, digits);
+            number += base;
+            number = number.toString();
+            return number.substring(number.length - digits);
+        },
         timestamp: function () {
             var date = new Date();
-            return date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate() + ' ' + date.toTimeString();
+            return UTIL.addLeadingZeros(date.getFullYear(), 4) + '.'
+                + UTIL.addLeadingZeros(date.getMonth() + 1, 2) + '.'
+                + UTIL.addLeadingZeros(date.getDate(), 2) + ' ' + date.toTimeString();
         },
         log: function() {
             var args = Array.prototype.slice.call(arguments, 0);
@@ -9223,7 +9231,12 @@ var MM = ( function ($, Faye) {
         }
         else {
             if (MMVoice.config.cardLayout === 'custom') {
-                MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+                try {
+                    MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+                } catch (e) {
+                    UTIL.log('Voice Navigator was unable to parse card template');
+                    MMVoice.config.cardLayout = 'default';
+                }
             }
 
             var MM_USER_ID_PREFIX = 'vnu';
