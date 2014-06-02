@@ -9230,6 +9230,9 @@ var MM = ( function ($, Faye) {
             MMVoice._updateUI();
         }
         else {
+            if (MMVoice.config.resetCardsCSS) {
+                $('#cards-css').remove();
+            }
             if (MMVoice.config.cardLayout === 'custom') {
                 try {
                     MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
