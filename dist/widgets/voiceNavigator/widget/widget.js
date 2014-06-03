@@ -208,14 +208,14 @@
                         cssLink.href = MM.voiceNavigator.config.customCSSPath;
                         cssLink.rel = 'stylesheet';
                         cssLink.type = 'text/css';
-                        frames['mindmeld-iframe'].contentWindow.document.head.appendChild(cssLink);
+                        iframe.contentWindow.document.head.appendChild(cssLink);
                     }
 
                     if (typeof MM.voiceNavigator.config.customCSS !== 'undefined') {
                         var cssStyle = document.createElement('style');
                         cssStyle.type = 'text/css';
                         cssStyle.innerText = MM.voiceNavigator.config.customCSS;
-                        frames['mindmeld-iframe'].contentWindow.document.head.appendChild(cssStyle);
+                        iframe.contentWindow.document.head.appendChild(cssStyle);
                     }
                 });
 
