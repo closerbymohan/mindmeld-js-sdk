@@ -1,5 +1,6 @@
-;(function() {
-    var MM = window.MM || {};
+;
+var MM = window.MM || {};
+(function() {
     MM.voiceNavigator = MM.voiceNavigator || {};
     MM.loader = MM.loader || {};
     MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
@@ -33,6 +34,18 @@
             for(var i = 0; i < $inits.length; i++) {
                 this.el($inits[i]).click(clickHandler);
             }
+
+            var $textInits = document.getElementsByClassName('mm-voice-nav-text-init');
+            var keyPressHandler = function (event) {
+                if (event.which === 13) {
+                    var query = event.target.value;
+                    MM.voiceNavigator.showModal(query);
+                }
+            };
+            for(var j = 0; j < $textInits.length; j++) {
+                this.el($textInits[j]).keypress(keyPressHandler);
+            }
+
             self.set_initialized();
 
             // Wait for messages
@@ -114,6 +127,10 @@
                     this.on('click', func);
                 },
 
+                keypress: function (func) {
+                    this.on('keypress', func);
+                },
+
                 removeClass : function(className) {
                     el.className = el.className.replace(
                         new RegExp('(^|\\s+)' + className + '(\\s+|$)', 'g'),
@@ -143,65 +160,72 @@
         }
     };
 
-    MM.voiceNavigator.showModal = function (query) {
+    MM.voiceNavigator.showModal = function (query, forceNewIFrame) {
         if (MMVoice.is_init) {
-            if (!MMVoice.$mm_iframe) {
-                var iframe = document.createElement('iframe');
+            var iframe;
+            // Initialize voice navigator config
+            if (typeof MM !== 'undefined' &&
+                typeof MM.widgets !== 'undefined' &&
+                typeof MM.widgets.config !== 'undefined') {
+                // Move config to voice nav config
+                MM.voiceNavigator.config = MM.widgets.config.voice || {};
+                MM.voiceNavigator.config.appID = MM.widgets.config.appID;
+                if (typeof MM.widgets.config.cleanUrl !== 'undefined') {
+                    MM.voiceNavigator.config.cleanUrl = MM.widgets.config.cleanUrl;
+                }
+                if (typeof MM.widgets.config.fayeClientUrl !== 'undefined') {
+                    MM.voiceNavigator.config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
+                }
+
+                // parse card layout
+                if (typeof MM.voiceNavigator.config.cardTemplate !== 'undefined') {
+                    MM.voiceNavigator.config.cardLayout = 'custom';
+                }
+                if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
+                    MM.voiceNavigator.config.cardLayout = 'default';
+                }
+
+                // parse custom css
+                if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
+                    MM.voiceNavigator.config.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSPath);
+                }
+
+                // Pass token, user ID, and session ID if they are set already
+                if (typeof MM.token !== 'undefined' &&
+                    typeof MM.activeUserId !== 'undefined' && MM.activeUserId !== null &&
+                    typeof MM.activeSessionId !== 'undefined' && MM.activeSessionId !== null) {
+                    MM.voiceNavigator.config.mmCredentials = {
+                        token: MM.token,
+                        userID: MM.activeUserId,
+                        sessionID: MM.activeSessionId
+                    };
+                }
+                // If defined, pass a starting query
+                if (query !== undefined && query !== '') {
+                    MM.voiceNavigator.config.startQuery = query;
+                }
+                else {
+                    MM.voiceNavigator.config.startQuery = null;
+                }
+            }
+
+            if (forceNewIFrame && MMVoice.$mm_iframe) {
+                iframe = document.getElementById('mindmeld-iframe');
+                iframe.parentNode.removeChild(iframe);
+            }
+
+            // Create iframe if first load
+            if (!MMVoice.$mm_iframe || forceNewIFrame) {
+                iframe = document.createElement('iframe');
                 iframe.setAttribute('frameBorder', '0');
                 iframe.setAttribute('id', 'mindmeld-iframe');
                 iframe.setAttribute('allowtransparency', 'true');
                 iframe.setAttribute('src', MM.loader.rootURL + 'widgets/voiceNavigator/modal/modal.html');
-                if (typeof MM !== 'undefined' &&
-                    typeof MM.widgets !== 'undefined' &&
-                    typeof MM.widgets.config !== 'undefined') {
-                    // Move config to voice nav config
-                    MM.voiceNavigator.config = MM.widgets.config.voice || {};
-                    MM.voiceNavigator.config.appID = MM.widgets.config.appID;
-                    if (typeof MM.widgets.config.cleanUrl !== 'undefined') {
-                        MM.voiceNavigator.config.cleanUrl = MM.widgets.config.cleanUrl;
-                    }
-                    if (typeof MM.widgets.config.fayeClientUrl !== 'undefined') {
-                        MM.voiceNavigator.config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
-                    }
-
-                    // parse card layout
-                    if (typeof MM.voiceNavigator.config.cardTemplate !== 'undefined') {
-                        MM.voiceNavigator.config.cardLayout = 'custom';
-                    }
-                    if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
-                        MM.voiceNavigator.config.cardLayout = 'default';
-                    }
-
-                    // parse custom css
-                    if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
-                        MM.voiceNavigator.config.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSPath);
-                    }
-
-                    // Pass token, user ID, and session ID if they are set already
-                    if (typeof MM.token !== 'undefined' &&
-                        typeof MM.activeUserId !== 'undefined' && MM.activeUserId !== null &&
-                        typeof MM.activeSessionId !== 'undefined' && MM.activeSessionId !== null) {
-                        MM.voiceNavigator.config.mmCredentials = {
-                            token: MM.token,
-                            userID: MM.activeUserId,
-                            sessionID: MM.activeSessionId
-                        };
-                    }
-
-                    // If defined, pass a starting query
-                    if (query !== undefined && query !== '') {
-                        MM.voiceNavigator.config.startQuery = query;
-                    }
-                    else {
-                        MM.voiceNavigator.config.startQuery = null;
-                    }
-                }
 
                 MMVoice.$mm_iframe = MMVoice.el(iframe);
 
                 MMVoice.el(iframe).on('load', function() {
                     MMVoice.postMessage('open', MM.voiceNavigator.config);
-                    MMVoice.iframe_loaded = true;
 
                     if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
                         var cssLink = document.createElement('link');
@@ -222,13 +246,6 @@
                 MMVoice.$mm.el().appendChild(iframe);
             }
             else {
-                // If defined, pass a starting query
-                if (query !== undefined && query !== '') {
-                    MM.voiceNavigator.config.startQuery = query;
-                }
-                else {
-                    MM.voiceNavigator.config.startQuery = null;
-                }
                 MMVoice.postMessage('open', MM.voiceNavigator.config);
             }
             MMVoice.$mm.addClass('on');
