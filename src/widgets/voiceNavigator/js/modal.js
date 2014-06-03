@@ -208,20 +208,14 @@
 
                 $form.submit(function(e) {
                     e.preventDefault();
-                    var recording = $input.val();
+                    var text = $input.val();
 
                     $input.val("").focus();
-                    $input.attr("placeholder", recording);
-                    self.appendHistory({transcript: recording});
+                    $input.attr("placeholder", text);
+                    self.appendHistory({transcript: text});
 
                     // Submit!
-                    self.$cards.addClass('loading');
-                    MM.activeSession.textentries.post({
-                        text: recording,
-                        type: 'text',
-                        weight: 0.5
-                    }, function (response) {
-                    });
+                    self.submitText(text);
                 });
 
                 $text_input.append($form);
