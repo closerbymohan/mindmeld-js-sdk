@@ -30,9 +30,12 @@ var voiceNavigator  = (function() {
         'build.widget.js' : [
                 sourceVoiceNav + 'js/widget.js'
         ],
-        'build.modal.css' : [
+        'build.modal.css.modal' : [
                 sourceVoiceNav + 'css/vendor/normalize.styl',
-                sourceVoiceNav + 'css/modal.styl'
+                sourceVoiceNav + 'css/modal/modal.styl'
+        ],
+        'build.modal.css.cards' : [
+                sourceVoiceNav + 'css/modal/cards.styl'
         ],
         'build.modal.js' : [
                 sourceVoiceNav + 'js/vendor/jquery-1.10.1.min.js',
@@ -55,36 +58,39 @@ var voiceNavigator  = (function() {
                 sourceVoiceNav + 'audio/*'
         ]
     };
+    object.paths['build.modal.css'] = object.paths['build.modal.css.modal']
+        .concat(object.paths['build.modal.css.cards']);
     object.paths['build.modal.other'] = object.paths['build.modal.img']
         .concat(object.paths['build.modal.audio']);
 
     return object;
 })();
 
-/* Shared functions */
-function concatAndMinify(target, type, minify, stream) {
-    stream = stream
-        .pipe(concat(target + '.' + type))
-        .pipe(gulp.dest(voiceNavigator.distVoiceNav + target))
-        .pipe(rename(target + '.min.' + type));
-    if (target === 'widget' && type === 'js') {
-        stream = stream.pipe(replace(/modal\.html/, 'modal.min.html'));
+function genericMinify(type) {
+    switch (type) {
+        case 'js':
+            return uglify();
+        case 'css':
+            return minifyCSS();
+        case 'html':
+        default:
+            return replace(/(modal|cards)\.(css|js)/g, '$1.min.$2');
     }
-    if (minify) {
-        stream = stream
-            .pipe((function(type) {
-                switch (type) {
-                    case 'js':
-                        return uglify();
-                    case 'css':
-                        return minifyCSS();
-                    case 'html':
-                        return replace(/modal\.(css|js)/g, 'modal.min.$1');
-                }
-            })(type));
+}
+
+/* Shared functions */
+function concatAndMinify(stream, name, type, directory) {
+    directory = directory || name;
+    stream = stream
+        .pipe(concat(name + '.' + type))
+        .pipe(gulp.dest(voiceNavigator.distVoiceNav + directory))
+        .pipe(rename(name + '.min.' + type));
+    if (name === 'widget' && directory === 'widget' && type === 'js') {
+        stream = stream.pipe(replace(/modal\.html/g, 'modal.min.html'));
     }
     return stream
-        .pipe(gulp.dest(voiceNavigator.distVoiceNav + target))
+        .pipe(genericMinify(type))
+        .pipe(gulp.dest(voiceNavigator.distVoiceNav + directory))
 
         .pipe(connect.reload());
 }
@@ -94,66 +100,42 @@ gulp.task('build.widget.css', function() {
     var stream = gulp.src(voiceNavigator.paths['build.widget.css'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
 
-    return concatAndMinify('widget', 'css', true, stream);
+    return concatAndMinify(stream, 'widget', 'css');
 });
 
 gulp.task('build.widget.js', function() {
     var stream = gulp.src(voiceNavigator.paths['build.widget.js'])
         .pipe(fileinclude('@@'));
 
-    return concatAndMinify('widget', 'js', true, stream);
-});
-
-gulp.task('build.widget.css.no-min', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.widget.css'])
-        .pipe(stylus({ errors: true, use: [ nib() ] }));
-
-    return concatAndMinify('widget', 'css', false, stream);
-});
-
-gulp.task('build.widget.js.no-min', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.widget.js']);
-
-    return concatAndMinify('widget', 'js', false, stream);
+    return concatAndMinify(stream, 'widget', 'js');
 });
 
 /* Modal Tasks */
 
-gulp.task('build.modal.css', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.modal.css'])
+gulp.task('build.modal.css.cards', function() {
+    var stream = gulp.src(voiceNavigator.paths['build.modal.css.cards'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
-    return concatAndMinify('modal', 'css', true, stream);
+    return concatAndMinify(stream, 'cards', 'css', 'modal');
 });
+
+gulp.task('build.modal.css.modal', function() {
+    var stream = gulp.src(voiceNavigator.paths['build.modal.css.modal'])
+        .pipe(stylus({ errors: true, use: [ nib() ] }));
+    return concatAndMinify(stream, 'modal', 'css');
+});
+
+gulp.task('build.modal.css', ['build.modal.css.modal', 'build.modal.css.cards']);
 
 gulp.task('build.modal.js', ['buildMM'], function() {
     var stream = gulp.src(voiceNavigator.paths['build.modal.js']);
-
-    return concatAndMinify('modal', 'js', true, stream);
+    return concatAndMinify(stream, 'modal', 'js');
 });
 
 gulp.task('build.modal.html', function() {
     var stream = gulp.src(voiceNavigator.paths['build.modal.html'])
         .pipe(jade());
 
-    return concatAndMinify('modal', 'html', true, stream);
-});
-
-gulp.task('build.modal.css.no-min', ['buildMM'], function() {
-    var stream = gulp.src(voiceNavigator.paths['build.modal.css'])
-        .pipe(stylus({ errors: true, use: [ nib() ] }));
-    return concatAndMinify('modal', 'css', false, stream);
-});
-
-gulp.task('build.modal.js.no-min', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.modal.js']);
-    return concatAndMinify('modal', 'js', false, stream);
-});
-
-gulp.task('build.modal.html.no-min', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.modal.html'])
-        .pipe(jade());
-
-    return concatAndMinify('modal', 'html', false, stream);
+    return concatAndMinify(stream, 'modal', 'html');
 });
 
 gulp.task('build.modal.other', function() {
@@ -183,30 +165,7 @@ gulp.task('watch', ['build'], function() {
     }
 });
 
-// Doesn't minify code
-gulp.task('watch.no-min', ['build.no-min'], function() {
-    var watchLocations = [
-        'build.modal.js',
-        'build.modal.css',
-        'build.modal.html',
-        'build.widget.js',
-        'build.widget.css'
-    ];
-
-    for (var i = 0; i < watchLocations.length; i++) {
-        gulp.watch(voiceNavigator.paths[watchLocations[i]], [ watchLocations[i] + '.no-min' ]);
-    }
-    gulp.watch(voiceNavigator.paths['build.modal.other'], [ 'build.modal.other' ]);
-});
-
 gulp.task('serve', ['watch'], function() {
-    connect.server({
-        root: '../',
-        https: true,
-        livereload: false
-    });
-});
-gulp.task('serve.no-min', ['watch.no-min'], function() {
     connect.server({
         root: '../',
         https: true,
@@ -215,14 +174,6 @@ gulp.task('serve.no-min', ['watch.no-min'], function() {
 });
 
 gulp.task('serve.livereload', ['watch'], function() {
-    connect.server({
-        root: '../',
-        https: true,
-        livereload: true
-    });
-});
-
-gulp.task('serve.livereload.no-min', ['watch.no-min'], function() {
     connect.server({
         root: '../',
         https: true,
@@ -240,13 +191,6 @@ gulp.task('buildMM', function () {
     return gulp.src(voiceNavigator.sdkGulpfilePath, {read: false})
         .pipe(chug({tasks: ['buildMM']}));
 });
-
-// Doesn't minify code
-gulp.task('build.no-min', [
-    'build.widget.css.no-min', 'build.widget.js.no-min',
-    'build.modal.css.no-min', 'build.modal.js.no-min', 'build.modal.html.no-min', 'build.modal.other'
-]);
-
 
 // The default task (called when you run `gulp` from cli)
 gulp.task('build', [

@@ -1,8 +1,16 @@
 ;(function() {
     var UTIL = {
+        addLeadingZeros: function (number, digits) {
+            var base = Math.pow(10, digits);
+            number += base;
+            number = number.toString();
+            return number.substring(number.length - digits);
+        },
         timestamp: function () {
             var date = new Date();
-            return date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate() + ' ' + date.toTimeString();
+            return UTIL.addLeadingZeros(date.getFullYear(), 4) + '.'
+                + UTIL.addLeadingZeros(date.getMonth() + 1, 2) + '.'
+                + UTIL.addLeadingZeros(date.getDate(), 2) + ' ' + date.toTimeString();
         },
         log: function() {
             var args = Array.prototype.slice.call(arguments, 0);
@@ -200,20 +208,14 @@
 
                 $form.submit(function(e) {
                     e.preventDefault();
-                    var recording = $input.val();
+                    var text = $input.val();
 
                     $input.val("").focus();
-                    $input.attr("placeholder", recording);
-                    self.appendHistory({transcript: recording});
+                    $input.attr("placeholder", text);
+                    self.appendHistory({transcript: text});
 
                     // Submit!
-                    self.$cards.addClass('loading');
-                    MM.activeSession.textentries.post({
-                        text: recording,
-                        type: 'text',
-                        weight: 0.5
-                    }, function (response) {
-                    });
+                    self.submitText(text);
                 });
 
                 $text_input.append($form);
@@ -1200,8 +1202,16 @@
             MMVoice._updateUI();
         }
         else {
+            if (MMVoice.config.resetCardsCSS) {
+                $('#cards-css').remove();
+            }
             if (MMVoice.config.cardLayout === 'custom') {
-                MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+                try {
+                    MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+                } catch (e) {
+                    UTIL.log('Voice Navigator was unable to parse card template');
+                    MMVoice.config.cardLayout = 'default';
+                }
             }
 
             var MM_USER_ID_PREFIX = 'vnu';
