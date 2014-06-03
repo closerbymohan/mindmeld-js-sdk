@@ -1,5 +1,6 @@
-;(function() {
-    var MM = window.MM || {};
+;
+var MM = window.MM || {};
+(function() {
     MM.voiceNavigator = MM.voiceNavigator || {};
     MM.loader = MM.loader || {};
     MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
