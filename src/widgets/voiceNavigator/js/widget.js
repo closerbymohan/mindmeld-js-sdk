@@ -33,6 +33,18 @@
             for(var i = 0; i < $inits.length; i++) {
                 this.el($inits[i]).click(clickHandler);
             }
+
+            var $textInits = document.getElementsByClassName('mm-voice-nav-text-init');
+            var keyPressHandler = function (event) {
+                if (event.which === 13) {
+                    var query = event.target.value;
+                    MM.voiceNavigator.showModal(query);
+                }
+            };
+            for(var j = 0; j < $textInits.length; j++) {
+                this.el($textInits[j]).keypress(keyPressHandler);
+            }
+
             self.set_initialized();
 
             // Wait for messages
@@ -112,6 +124,10 @@
 
                 click: function(func) {
                     this.on('click', func);
+                },
+
+                keypress: function (func) {
+                    this.on('keypress', func);
                 },
 
                 removeClass : function(className) {
