@@ -8059,7 +8059,7 @@ var MM = ( function ($, Faye) {
         pendingRecording : {},
         selectedEntityMap : {},
         currentEntities: [],
-        results_length : 0,
+        results_length : -1,
         _entityMap : {},
         _similarEntityMap : {},
         _textEntryMap: {},
@@ -8296,7 +8296,7 @@ var MM = ( function ($, Faye) {
             self.$mm_parent.removeClass('open results');
             self.$body.removeClass('results');
             self.is_results = false;
-            self.results_length = 0;
+            self.results_length = -1;
             setTimeout(function() {
                 self.postMessage('close');
             }, 500);
@@ -9148,7 +9148,7 @@ var MM = ( function ($, Faye) {
             }
 
             if('results_length' in updates) {
-                if(updates.results_length > 0 && !self.is_results) {
+                if(updates.results_length >= 0 && !self.is_results) {
                     self.$body.addClass('results');
                     self.$mm_parent.addClass('results');
                     self.is_results = true;
