@@ -8660,7 +8660,7 @@ var MM = ( function ($, Faye) {
                 }
 
                 var description;
-                if (typeof doc.description !== 'undefined') {
+                if (typeof doc.description !== 'string') {
                     description = doc.description.substr(0, 150) + (doc.description.length > 150 ? "&hellip;" : "");
                 } else {
                     description = "No description";
