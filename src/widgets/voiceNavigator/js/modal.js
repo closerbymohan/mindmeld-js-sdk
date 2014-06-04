@@ -197,13 +197,14 @@
                 var $text_input = $('<li>', {'class':'text-input'});
                 var $form = $('<form>');
                 var $input = $('<input>', {
-                    type: "text",
-                    class: "search",
-                    placeholder: "Search query"
+                    type: 'text',
+                    class: 'search',
+                    placeholder: 'Search query'
                 });
                 var $button = $('<button>', {
-                    html: "&nbsp;<span></span>",
-                    type: "submit"
+                    html: '&nbsp;<span></span>',
+                    type: 'submit',
+                    class: 'mm-button-background mm-button-border'
                 });
 
                 $form.submit(function(e) {
