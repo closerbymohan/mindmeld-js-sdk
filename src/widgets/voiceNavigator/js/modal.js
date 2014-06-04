@@ -639,7 +639,7 @@
                 }
 
                 var description;
-                if (typeof doc.description !== 'string') {
+                if (typeof doc.description === 'string') {
                     description = doc.description.substr(0, 150) + (doc.description.length > 150 ? "&hellip;" : "");
                 } else {
                     description = "No description";
@@ -672,9 +672,8 @@
                                     html: field.label
                                 });
                             }
-                            // If we aren't using the placeholder,
                             var $value = $('<span>', {
-                                class: 'value',
+                                class: 'value'
                             });
                             // if we aren't using placeholder, format the string
                             if (value !== field.placeholder) {
@@ -1203,6 +1202,13 @@
             MMVoice._updateUI();
         }
         else {
+            if (typeof MMVoice.config.baseZIndex !== 'undefined') {
+                var baseZIndex = parseInt(MMVoice.config.baseZIndex);
+                MMVoice.$mm_button.css('z-index', baseZIndex + 100);
+                MMVoice.$mm_button.find('#icon-microphone, #icon-mute, #icon-lock').css('z-index', baseZIndex + 10);
+                MMVoice.$mm_alert.css('z-index', baseZIndex + 1000);
+            }
+
             if (MMVoice.config.resetCardsCSS) {
                 $('#cards-css').remove();
             }
