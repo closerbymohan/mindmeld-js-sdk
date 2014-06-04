@@ -8218,13 +8218,14 @@ var MM = ( function ($, Faye) {
                 var $text_input = $('<li>', {'class':'text-input'});
                 var $form = $('<form>');
                 var $input = $('<input>', {
-                    type: "text",
-                    class: "search",
-                    placeholder: "Search query"
+                    type: 'text',
+                    class: 'search',
+                    placeholder: 'Search query'
                 });
                 var $button = $('<button>', {
-                    html: "&nbsp;<span></span>",
-                    type: "submit"
+                    html: '&nbsp;<span></span>',
+                    type: 'submit',
+                    class: 'mm-button-background mm-button-border'
                 });
 
                 $form.submit(function(e) {
@@ -8236,7 +8237,7 @@ var MM = ( function ($, Faye) {
                     self.appendHistory({transcript: text});
 
                     // Submit!
-                    self.submitText(text)
+                    self.submitText(text);
                 });
 
                 $text_input.append($form);
