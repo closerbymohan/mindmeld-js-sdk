@@ -623,11 +623,11 @@ body #mm-button.status-listening a:active,
 body #mm-button.status-listening a:focus {
   -webkit-box-shadow: 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset;
   box-shadow: 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset;
-  -webkit-animation: mm-color 1.5s infinite;
-  -moz-animation: mm-color 1.5s infinite;
-  -o-animation: mm-color 1.5s infinite;
-  -ms-animation: mm-color 1.5s infinite;
-  animation: mm-color 1.5s infinite;
+  -webkit-animation: mm-button-background-active-anim 1.5s infinite;
+  -moz-animation: mm-button-background-active-anim 1.5s infinite;
+  -o-animation: mm-button-background-active-anim 1.5s infinite;
+  -ms-animation: mm-button-background-active-anim 1.5s infinite;
+  animation: mm-button-background-active-anim 1.5s infinite;
 }
 body #mm-button.status-listening .bubbles {
   position: absolute;
@@ -1694,7 +1694,7 @@ body #mindmeld-parent.results {
     box-shadow: 0 0 0 12px rgba(0,0,0,0);
   }
 }
-@-moz-keyframes mm-color {
+@-moz-keyframes mm-button-background-active-anim {
   0% {
     background-color: #ca6b37;
   }
@@ -1705,7 +1705,7 @@ body #mindmeld-parent.results {
     background-color: #ca6b37;
   }
 }
-@-webkit-keyframes mm-color {
+@-webkit-keyframes mm-button-background-active-anim {
   0% {
     background-color: #ca6b37;
   }
@@ -1716,7 +1716,7 @@ body #mindmeld-parent.results {
     background-color: #ca6b37;
   }
 }
-@-o-keyframes mm-color {
+@-o-keyframes mm-button-background-active-anim {
   0% {
     background-color: #ca6b37;
   }
@@ -1727,7 +1727,7 @@ body #mindmeld-parent.results {
     background-color: #ca6b37;
   }
 }
-@keyframes mm-color {
+@keyframes mm-button-background-active-anim {
   0% {
     background-color: #ca6b37;
   }
