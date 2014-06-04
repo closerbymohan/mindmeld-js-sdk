@@ -435,17 +435,6 @@ table {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.table {
-  display: table;
-  width: 100%;
-}
-.tr {
-  display: table-row;
-}
-.td {
-  display: table-cell;
-  vertical-align: top;
-}
 a {
   text-decoration: none;
 }
@@ -453,58 +442,6 @@ html,
 body {
   height: 100%;
   min-height: 100%;
-}
-#mindmeld@media all and (min-width: 275px) {
-    #mindmeld {
-      width: 260px;
-      margin-left: -130px;
-    }
-}
-@media all and (min-width: 513px) {
-    #mindmeld {
-      width: 498px;
-      margin-left: -249px;
-    }
-}
-@media all and (min-width: 751px) {
-    #mindmeld {
-      width: 736px;
-      margin-left: -368px;
-    }
-}
-@media all and (min-width: 989px) {
-    #mindmeld {
-      width: 974px;
-      margin-left: -487px;
-    }
-}
-@media all and (min-width: 1227px) {
-    #mindmeld {
-      width: 1212px;
-      margin-left: -606px;
-    }
-}
-@media all and (min-width: 1465px) {
-    #mindmeld {
-      width: 1450px;
-      margin-left: -725px;
-    }
-}
-@media all and (min-width: 1703px) {
-    #mindmeld {
-      width: 1688px;
-      margin-left: -844px;
-    }
-}
- {
-  background-color: #800080;
-
-
-
-
-
-
-
 }
 @media all and (min-width: 275px) {
   #mindmeld {
@@ -548,6 +485,22 @@ body {
     margin-left: -844px;
   }
 }
+.mm-button-background {
+  background: #ca6b37;
+}
+.mm-button-background:hover {
+  background-color: #b76030;
+}
+.mm-button-background:active {
+  background: -webkit-linear-gradient(#8e4b26, #ca6b37);
+  background: -moz-linear-gradient(#8e4b26, #ca6b37);
+  background: -o-linear-gradient(#8e4b26, #ca6b37);
+  background: -ms-linear-gradient(#8e4b26, #ca6b37);
+  background: linear-gradient(#8e4b26, #ca6b37);
+}
+.mm-button-border {
+  border: 1px solid #a3552b;
+}
 body {
   background: none transparent;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -556,6 +509,11 @@ body {
   color: #333;
   padding: 60px;
   overflow: hidden;
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  body {
+    padding: 50px 0 0;
+  }
 }
 body #mm-button {
   position: absolute;
@@ -579,19 +537,9 @@ body #mm-button.shadow {
   -webkit-box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
   box-shadow: 0 0 0 1px rgba(0,0,0,0.1);
 }
-body #mm-button .mm-button-slider {
-  position: relative;
-  -webkit-transition: -webkit-transform 0.2s ease-out;
-  -moz-transition: -moz-transform 0.2s ease-out;
-  -o-transition: -o-transform 0.2s ease-out;
-  -ms-transition: -ms-transform 0.2s ease-out;
-  transition: transform 0.2s ease-out;
-  width: 75px;
-}
 body #mm-button a {
   width: 76px;
   height: 76px;
-  background-color: #ca6b37;
   -webkit-transition: box-shadow 0.2s ease-out;
   -moz-transition: box-shadow 0.2s ease-out;
   -o-transition: box-shadow 0.2s ease-out;
@@ -607,15 +555,11 @@ body #mm-button a {
   position: relative;
   cursor: pointer;
 }
-body #mm-button a:hover {
-  background-color: #b76030;
-}
 body #mm-button a #icon-microphone,
 body #mm-button a #icon-mute,
 body #mm-button a #icon-lock {
   display: block;
   z-index: 100010;
-  position: relative;
   position: absolute;
   top: 16px;
   -webkit-transition: opacity 0.3s ease-out, -webkit-transform 0.3s ease-out;
@@ -679,11 +623,11 @@ body #mm-button.status-listening a:active,
 body #mm-button.status-listening a:focus {
   -webkit-box-shadow: 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset;
   box-shadow: 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset;
-  -webkit-animation: mm-color 1.5s infinite;
-  -moz-animation: mm-color 1.5s infinite;
-  -o-animation: mm-color 1.5s infinite;
-  -ms-animation: mm-color 1.5s infinite;
-  animation: mm-color 1.5s infinite;
+  -webkit-animation: mm-button-background-active-anim 1.5s infinite;
+  -moz-animation: mm-button-background-active-anim 1.5s infinite;
+  -o-animation: mm-button-background-active-anim 1.5s infinite;
+  -ms-animation: mm-button-background-active-anim 1.5s infinite;
+  animation: mm-button-background-active-anim 1.5s infinite;
 }
 body #mm-button.status-listening .bubbles {
   position: absolute;
@@ -726,13 +670,6 @@ body #mm-button.status-listening.lock #icon-lock {
   -o-transform: scale(1);
   -ms-transform: scale(1);
   transform: scale(1);
-}
-body #mm-button a:active {
-  background: -webkit-linear-gradient(#8e4b26, #ca6b37);
-  background: -moz-linear-gradient(#8e4b26, #ca6b37);
-  background: -o-linear-gradient(#8e4b26, #ca6b37);
-  background: -ms-linear-gradient(#8e4b26, #ca6b37);
-  background: linear-gradient(#8e4b26, #ca6b37);
 }
 body #mm-button.status-listening .mm-pattern {
   -webkit-transform: scale(1.25);
@@ -1016,6 +953,15 @@ body #mindmeld-parent.results {
 .results #mindmeld {
   height: 100%;
 }
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  #mindmeld {
+    width: 100%;
+    left: auto;
+    margin-left: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+  }
+}
 #history-button {
   z-index: 1000;
   display: none;
@@ -1045,6 +991,13 @@ body #mindmeld-parent.results {
     -webkit-background-size: 31px 28px;
     -moz-background-size: 31px 28px;
     background-size: 31px 28px;
+  }
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  #history-button {
+    background: none;
+    height: auto;
+    padding-top: 0;
   }
 }
 .no-speech #history-button {
@@ -1591,7 +1544,6 @@ body #mindmeld-parent.results {
 }
 #history #history-data ul li.text-input button {
   display: inline-block;
-  border: 1px solid #a3552b;
   width: 50px;
   top: 0;
   right: 0;
@@ -1601,11 +1553,6 @@ body #mindmeld-parent.results {
   -webkit-border-radius: 0 2px 3px 0;
   border-radius: 0 2px 3px 0;
   color: #fff;
-  background: -webkit-linear-gradient(#ca6b37, #a3552b);
-  background: -moz-linear-gradient(#ca6b37, #a3552b);
-  background: -o-linear-gradient(#ca6b37, #a3552b);
-  background: -ms-linear-gradient(#ca6b37, #a3552b);
-  background: linear-gradient(#ca6b37, #a3552b);
 }
 #history #history-data ul li.text-input button span {
   width: 27px;
@@ -1625,22 +1572,10 @@ body #mindmeld-parent.results {
     background-size: 27px 27px;
   }
 }
-#history #history-data ul li.text-input button:active,
 #history #history-data ul li.text-input button:focus,
-#history #history-data ul li.text-input button:hover {
-  outline: 0 none;
-  background: -webkit-linear-gradient(#b76030, #8e4b26);
-  background: -moz-linear-gradient(#b76030, #8e4b26);
-  background: -o-linear-gradient(#b76030, #8e4b26);
-  background: -ms-linear-gradient(#b76030, #8e4b26);
-  background: linear-gradient(#b76030, #8e4b26);
-}
+#history #history-data ul li.text-input button:hover,
 #history #history-data ul li.text-input button:active {
-  background: -webkit-linear-gradient(#a3552b, #b76030);
-  background: -moz-linear-gradient(#a3552b, #b76030);
-  background: -o-linear-gradient(#a3552b, #b76030);
-  background: -ms-linear-gradient(#a3552b, #b76030);
-  background: linear-gradient(#a3552b, #b76030);
+  outline: 0 none;
 }
 #history.open {
   -webkit-transition: all 0.8s ease-out;
@@ -1665,6 +1600,9 @@ body #mindmeld-parent.results {
 .no-speech #results {
   padding-top: 107px;
 }
+#results .slimScrollDiv {
+  background-color: #f3f3f3;
+}
 #results #tags {
   padding: 10px;
   text-align: center;
@@ -1687,95 +1625,6 @@ body #mindmeld-parent.results {
 #results #tags .selected {
   font-weight: bold;
   background-color: #ddf;
-}
-#results #cards {
-  height: 1px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  background: #f3f3f3;
-  border: 1px solid #fff;
-}
-#results #cards.loading {
-  opacity: 0.3;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)";
-  filter: alpha(opacity=30);
-}
-#results #cards a.card {
-  text-decoration: none;
-  display: block;
-  width: 218px;
-  background-color: #fff;
-  -webkit-border-radius: 7px;
-  border-radius: 7px;
-  margin: 10px;
-  padding: 15px 0px 5px;
-  -webkit-box-shadow: 0 0 6px rgba(0,0,0,0.2);
-  box-shadow: 0 0 6px rgba(0,0,0,0.2);
-}
-#results #cards a.card:hover {
-  -webkit-box-shadow: 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920;
-  box-shadow: 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920;
-  text-decoration: none;
-}
-#results #cards a.card:hover h2 {
-  color: #2d2d2d;
-}
-#results #cards a.card h2 {
-  color: #636363;
-  font-size: 15px;
-  font-family: 'Open Sans', sans-serif;
-  margin: 0 15px;
-}
-#results #cards a.card p.image {
-  width: 100%;
-  text-align: center;
-  margin: 0;
-}
-#results #cards a.card p.image.notloaded {
-  height: 100px;
-  background-color: #eee;
-  overflow: hidden;
-}
-#results #cards a.card p.image.notloaded img {
-  opacity: 0;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-  filter: alpha(opacity=0);
-}
-#results #cards a.card p.image img {
-  width: 100%;
-}
-#results #cards a.card img {
-  max-width: 100%;
-}
-#results #cards a.card p:not(.image) {
-  font-size: 11px;
-  line-height: 1.5em;
-  margin: 10px 15px;
-  color: #888;
-}
-#results #cards a.card p.mm-doc-field {
-  margin: 2px inherit;
-}
-#results #cards a.card p.mm-doc-field .label {
-  color: #888;
-  margin-right: 4px;
-  font-size: smaller;
-}
-#results #cards a.card .source {
-  display: block;
-  font-size: 11px;
-  color: #999;
-  padding: 15px 15px 0;
-}
-#results #cards a.card .source img {
-  margin-right: 10px;
-}
-#results #cards .no-results {
-  text-align: center;
-  margin-top: 40px;
-  font-size: 30px;
-  font-style: italic;
-  color: #aaa;
 }
 /* Isotope */
 .isotope.no-transition,
@@ -1845,99 +1694,7 @@ body #mindmeld-parent.results {
     box-shadow: 0 0 0 12px rgba(0,0,0,0);
   }
 }
-@-moz-keyframes pulsate {
-  0% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -webkit-transform: scale(0.4);
-    -moz-transform: scale(0.4);
-    -o-transform: scale(0.4);
-    -ms-transform: scale(0.4);
-    transform: scale(0.4);
-  }
-  100% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-}
-@-webkit-keyframes pulsate {
-  0% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -webkit-transform: scale(0.4);
-    -moz-transform: scale(0.4);
-    -o-transform: scale(0.4);
-    -ms-transform: scale(0.4);
-    transform: scale(0.4);
-  }
-  100% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-}
-@-o-keyframes pulsate {
-  0% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -webkit-transform: scale(0.4);
-    -moz-transform: scale(0.4);
-    -o-transform: scale(0.4);
-    -ms-transform: scale(0.4);
-    transform: scale(0.4);
-  }
-  100% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-}
-@keyframes pulsate {
-  0% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -webkit-transform: scale(0.4);
-    -moz-transform: scale(0.4);
-    -o-transform: scale(0.4);
-    -ms-transform: scale(0.4);
-    transform: scale(0.4);
-  }
-  100% {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -o-transform: scale(1);
-    -ms-transform: scale(1);
-    transform: scale(1);
-  }
-}
-@-moz-keyframes mm-color {
+@-moz-keyframes mm-button-background-active-anim {
   0% {
     background-color: #ca6b37;
   }
@@ -1948,7 +1705,7 @@ body #mindmeld-parent.results {
     background-color: #ca6b37;
   }
 }
-@-webkit-keyframes mm-color {
+@-webkit-keyframes mm-button-background-active-anim {
   0% {
     background-color: #ca6b37;
   }
@@ -1959,7 +1716,7 @@ body #mindmeld-parent.results {
     background-color: #ca6b37;
   }
 }
-@-o-keyframes mm-color {
+@-o-keyframes mm-button-background-active-anim {
   0% {
     background-color: #ca6b37;
   }
@@ -1970,7 +1727,7 @@ body #mindmeld-parent.results {
     background-color: #ca6b37;
   }
 }
-@keyframes mm-color {
+@keyframes mm-button-background-active-anim {
   0% {
     background-color: #ca6b37;
   }

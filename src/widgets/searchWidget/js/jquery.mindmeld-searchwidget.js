@@ -123,6 +123,7 @@
 
         options: {
             images: false,
+            voiceNavigatorEnabled: false,
             onMMSearchInitialized: function () {},
             onMMSearchError: function () {}
         },
@@ -139,34 +140,61 @@
             return this._initialized;
         },
 
-        _initMM: function () {
-            if (! this._validateString(this.options.appid, 40)) {
-                this.options.onMMSearchError('Please supply a valid appid');
-                return;
+        /**
+         * Updates this.options with config from MM.widgets.config.search
+         * @private
+         */
+        _setWidgetOptions: function () {
+            for (var widgetOption in MM.widgets.config.search) {
+                this.options[widgetOption] = MM.widgets.config.search[widgetOption];
             }
-            var self = this;
-            var config = {
-                appid: this.options.appid,
-                onInit: onMMInit
-            };
-            MM.init(config);
+        },
 
-            function onMMInit () {
-                MM.getToken(
-                    {
-                        anonymous: {
-                            userid: 'MMSearchWidgetUserID',
-                            name: 'MMSearchWidgetUser',
-                            domain: window.location.hostname
+        _validateConfig: function () {
+            return (! $.isEmptyObject(MM.widgets) && ! ($.isEmptyObject(MM.widgets.config)));
+        },
+
+        _initMM: function () {
+            if (this._validateConfig()) {
+                this._setWidgetOptions();
+                var appID = MM.widgets.config.appID;
+                if (! this._validateString(appID, 40)) {
+                    this.options.onMMSearchError('Please supply a valid appid');
+                    return;
+                }
+                var self = this;
+                var config = {
+                    appid: appID,
+                    onInit: onMMInit
+                };
+                if (MM.widgets.config.cleanUrl !== undefined) {
+                    config.cleanUrl = MM.widgets.config.cleanUrl;
+                }
+                if (MM.widgets.config.fayeClientUrl !== undefined) {
+                    config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
+                }
+                MM.init(config);
+
+                function onMMInit () {
+                    MM.getToken(
+                        {
+                            anonymous: {
+                                userid: 'MMSearchWidgetUserID',
+                                name: 'MMSearchWidgetUser',
+                                domain: window.location.hostname
+                            }
+                        },
+                        function onGetToken () {
+                            self._getOrSetSession();
+                        },
+                        function onTokenError () {
+                            self.options.onMMSearchError('Supplied token is invalid');
                         }
-                    },
-                    function onGetToken () {
-                        self._getOrSetSession();
-                    },
-                    function onTokenError () {
-                        self.options.onMMSearchError('Supplied token is invalid');
-                    }
-                );
+                    );
+                }
+            }
+            else {
+                console.log('Invalid search widget config');
             }
         },
 
@@ -285,6 +313,28 @@
                 },
                 images: self.options.images
             });
+
+            if (this.options.voiceNavigatorEnabled) {
+                this.element.keypress(
+                    function onKeyPress (event) {
+                        if (event.which === 13) {
+                            var currentQuery = self.element.val();
+                            self._openVoiceNavigator(currentQuery);
+                        }
+                    }
+                );
+            }
+        },
+
+        _openVoiceNavigator: function (query) {
+            if (MM.voiceNavigator !== undefined) {
+                MM.voiceNavigator.showModal(query);
+            }
+            else {
+                MM.loader.widgetLoaded('voice', function () {
+                    MM.voiceNavigator.showModal(query);
+                });
+            }
         },
 
         _stripEmTags: function (value) {
@@ -329,21 +379,25 @@
                     this._cleanQueryCache();
                 }
                 else {
-                    onQueryError('Cannot query documents, MM search widget not initialized')
+                    onQueryError('Cannot query documents, MM search widget not initialized');
                 }
             }
         },
 
         _getWildcardQuery: function (query) {
-            var queryTerms = query.split(" ");
-            var newQuery = "";
-            $.each(queryTerms, function (index, term) {
-                if (term !== '') {
-                    newQuery += term + "* ";
-                }
-            });
-            var fieldsQuery = "title:(" + newQuery + ") description:(" + newQuery + ") text:(" + newQuery +")";
-            return fieldsQuery;
+            var queryTerms = query.split(' ');
+            var newQuery = '';
+            if (queryTerms.length > 0 && query.slice(-1) !== ' ') {
+                var lastQueryTermIndex = queryTerms.length - 1;
+                queryTerms[lastQueryTermIndex] += '*';
+                $.each(queryTerms, function (index, term) {
+                   newQuery += term + ' ';
+                });
+            }
+            else {
+                newQuery = query;
+            }
+            return newQuery;
         },
 
         _cleanQueryCache: function () {

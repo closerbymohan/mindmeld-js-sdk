@@ -1,0 +1,55 @@
+#results #cards a.card .mm-rt-row {
+  margin: 0;
+  display: block;
+  padding: 0 15px;
+}
+#results #cards a.card .mm-rt-row p.clear-fix {
+  clear: both;
+}
+#results #cards a.card .mm-rt-row p {
+  margin: 2px 0;
+}
+#results #cards a.card .mm-rt-row p span.rt-icon {
+  display: inline-block;
+  vertical-align: sub;
+  background: transparent url("../img/rottentomatoes-icons.png") no-repeat -312px -160px;
+}
+#results #cards a.card .mm-rt-row p span.rt-icon.tiny {
+  height: 16px;
+  width: 16px;
+}
+#results #cards a.card .mm-rt-row p span.rt-icon.tiny.fresh {
+  background-position: -256px -144px;
+}
+#results #cards a.card .mm-rt-row p span.rt-icon.tiny.rotten {
+  background-position: -272px -144px;
+}
+#results #cards a.card .mm-rt-row p span.rt-icon.small {
+  height: 24px;
+  width: 24px;
+}
+#results #cards a.card .mm-rt-row p span.rt-icon.small.fresh {
+  background-position: -288px -48px;
+}
+#results #cards a.card .mm-rt-row p span.rt-icon.small.rotten {
+  background-position: -288px -96px;
+}
+#results #cards a.card .mm-rt-row p span.rt-rating {
+  display: inline-block;
+}
+#results #cards a.card .mm-rt-row p.align-left {
+  float: left;
+  text-align: left;
+}
+#results #cards a.card .mm-rt-row p.align-right {
+  float: right;
+  text-align: right;
+}
+#results #cards a.card .mm-rt-row p.placeholder {
+  font-size: 10px;
+  font-style: italic;
+  color: #aaa;
+}
+#results #cards a.card .mm-rt-row:first-of-type {
+  margin-top: 5px;
+}

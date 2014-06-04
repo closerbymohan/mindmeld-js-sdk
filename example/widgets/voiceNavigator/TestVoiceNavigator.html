@@ -27,6 +27,8 @@
 </head>
 <body>
 <div class='main' role='main'>
+    <input type="text" class="mm-voice-nav-text-init">
+
     <div class="trigger mm-voice-nav-init"></div>
 </div>
 
@@ -41,7 +43,8 @@
     MM.loader = MM.loader || {};
     MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
     MM.voiceNavigator = MM.voiceNavigator || {};
-    MM.voiceNavigator.options = {
+    MM.widgets = MM.widgets || {};
+    MM.widgets.config = {
         appID: 'ad666f13daeb5c36f6f2c3a11ec8b5d3d01467a0', // ENTER YOUR APPID
         cleanUrl: 'https://api-' + DEMO_ENVIRONMENT + '.expectlabs.com/',
         fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye'

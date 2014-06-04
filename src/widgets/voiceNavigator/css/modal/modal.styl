@@ -2,18 +2,10 @@
 
 baseZ = 100000
 buttonBGColor = #ca6b37
+mobile = "only screen and (min-device-width : 320px) and (max-device-width : 480px)"
 
 *, *:before, *:after
   box-sizing border-box
-
-.table
-  display table
-  width 100%
-.tr
-  display table-row
-.td
-  display table-cell
-  vertical-align top
 
 a
   text-decoration none
@@ -23,7 +15,6 @@ html, body
   min-height 100%
 
 #mindmeld
-  background-color purple
   for i in (1...8)
     el-width = ((218px + 20) * i) + 20 + 2
     // ((card width + 20 padding) * i) + outer padding + border
@@ -33,6 +24,16 @@ html, body
       width el-width
       margin-left el-width * -0.5
 
+.mm-button-background
+  background buttonBGColor
+  &:hover
+    background-color darken(buttonBGColor, 10%)
+  &:active
+    background linear-gradient(darken(buttonBGColor, 30%), buttonBGColor)
+
+.mm-button-border
+  border 1px solid darken(buttonBGColor, 20%)
+
 body
   background none transparent
   font-family "Helvetica Neue",Helvetica,Arial,sans-serif
@@ -41,6 +42,9 @@ body
   color #333
   padding 60px
   overflow hidden
+
+  @media mobile
+    padding 50px 0 0
 
   #mm-button
     position absolute
@@ -57,14 +61,9 @@ body
     &.shadow
       box-shadow 0 0 0 1px rgba(0,0,0,0.1)
 
-    .mm-button-slider
-      position relative
-      transition transform 0.2s ease-out
-      width 75px
     a
       width 76px
       height 76px
-      background-color buttonBGColor
       transition box-shadow 0.2s ease-out
       box-shadow 0 0 0 1px rgba(0,0,0,0.3) inset, 0 0 5px rgba(255,255,255,0.5) inset
       border 0 none
@@ -73,12 +72,9 @@ body
       padding-top 17px
       position relative
       cursor pointer
-      &:hover
-        background-color darken(buttonBGColor, 10%)
       #icon-microphone, #icon-mute, #icon-lock
         display block
         z-index (baseZ + 10)
-        position relative
         position absolute
         top 16px
         transition opacity 0.3s ease-out, transform 0.3s ease-out
@@ -112,7 +108,7 @@ body
     &.status-listening
       a, a:hover, a:active, a:focus
         box-shadow 0 0 0 8px #333 inset, 0 0 5px rgba(255,255,255,0.5) inset
-        animation mm-color 1.5s infinite
+        animation mm-button-background-active-anim 1.5s infinite
       .bubbles
         position absolute
         animation mm-bubbles 7.5s linear infinite
@@ -133,8 +129,6 @@ body
         #icon-lock
           opacity 1
           transform scale(1)
-    a:active
-      background linear-gradient( #8e4b26, buttonBGColor)
 
     &.status-listening
       .mm-pattern
@@ -309,14 +303,6 @@ body
   100%
     box-shadow 0 0 0 12px rgba(0,0,0,0)
 
-@keyframes pulsate
-  0%
-    transform scale(1)
-  50%
-    transform scale(0.4)
-  100%
-    transform scale(1)
-
 #mindmeld
   background-color #f9f9f9
   border-radius 10px
@@ -327,6 +313,11 @@ body
   transition height 0.3s ease-out
   .results &
     height 100%
+  @media mobile
+    width 100%
+    left auto
+    margin-left 0
+    border-radius 0
 
 #history-button
   z-index 1000
@@ -348,6 +339,10 @@ body
   margin-top 9px
   opacity 0.5
   color #797979
+  @media mobile
+    background none
+    height auto
+    padding-top 0
   .no-speech &
     top 15px
     left 30px
@@ -478,7 +473,6 @@ body
               border-right 0 none
           button
             display inline-block
-            border 1px solid darken(#ca6b37, 20%)
             width 50px
             top 0
             right 0
@@ -487,7 +481,6 @@ body
             font-size 16px
             border-radius 0 2px 3px 0
             color #fff
-            background linear-gradient(#ca6b37, darken(#ca6b37, 20%))
             span
               width 27px
               height 27px
@@ -497,11 +490,8 @@ body
               pointer-events none
               image './search.png' 27px 27px
               position absolute
-            &:active, &:focus, &:hover
+            &:focus, &:hover, &:active
               outline 0 none
-              background linear-gradient(darken(#ca6b37, 10%), darken(#ca6b37, 30%))
-            &:active
-              background linear-gradient(darken(#ca6b37, 20%), darken(#ca6b37, 10%))
 
   &.open
     transition all 0.8s ease-out
@@ -516,6 +506,8 @@ body
     padding-top 107px
   height 510px
   overflow auto
+  .slimScrollDiv
+    background-color #f3f3f3
   #tags
     padding 10px
     text-align center
@@ -536,90 +528,19 @@ body
       font-weight bold
       background-color #ddf
 
-  #cards
-    height 1px
-    padding 10px
-    background-color #f9f9f9
-    background #f3f3f3
-    border 1px solid #fff
-    &.loading
-      opacity 0.3
-    a.card
-      text-decoration none
-      display block
-      width 218px
-      background-color #fff
-      border-radius 7px
-      margin 10px
-      padding 15px 0px 5px
-      box-shadow 0 0 6px rgba(0,0,0,0.2)
-      &:hover
-        box-shadow 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920
-        text-decoration none
-        h2
-          color darken(#636363, 55%)
-
-      h2
-        color #636363
-        font-size 15px
-        font-family 'Open Sans', sans-serif
-        margin 0 15px
-      p.image
-        width 100%
-        text-align center
-        margin 0
-        &.notloaded
-          height 100px
-          background-color #eee
-          overflow hidden
-          img
-            opacity 0
-        img
-          width 100%
-      img
-        max-width 100%
-      p:not(.image)
-        font-size 11px
-        line-height 1.5em
-        margin 10px 15px
-        color #888
-
-      p.mm-doc-field
-        margin 2px inherit
-        .label
-          color #888
-          margin-right 4px
-          font-size smaller
-
-      .source
-        display block
-        font-size 11px
-        color #999
-        padding 15px 15px 0
-        img
-          margin-right 10px
-
-    .no-results
-      text-align center
-      margin-top 40px
-      font-size 30px
-      font-style italic
-      color #aaa
-
-
 /* Isotope */
 .isotope.no-transition,
 .isotope.no-transition .isotope-item,
 .isotope .isotope-item.no-transition
   transition-duration 0s
 
-@keyframes mm-color
+@keyframes mm-button-background-active-anim
   0%
-    background-color #ca6b37
+    background-color buttonBGColor
   50%
-    background-color darken(#ca6b37, 15%)
+    background-color darken(buttonBGColor, 15%)
   100%
-    background-color #ca6b37
+    background-color buttonBGColor
 
 @keyframes mm-bubbles
   0%
