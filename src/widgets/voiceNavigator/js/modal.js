@@ -38,7 +38,7 @@
         pendingRecording : {},
         selectedEntityMap : {},
         currentEntities: [],
-        results_length : 0,
+        results_length : -1,
         _entityMap : {},
         _similarEntityMap : {},
         _textEntryMap: {},
@@ -275,7 +275,7 @@
             self.$mm_parent.removeClass('open results');
             self.$body.removeClass('results');
             self.is_results = false;
-            self.results_length = 0;
+            self.results_length = -1;
             setTimeout(function() {
                 self.postMessage('close');
             }, 500);
@@ -672,9 +672,8 @@
                                     html: field.label
                                 });
                             }
-                            // If we aren't using the placeholder,
                             var $value = $('<span>', {
-                                class: 'value',
+                                class: 'value'
                             });
                             // if we aren't using placeholder, format the string
                             if (value !== field.placeholder) {
@@ -1127,7 +1126,7 @@
             }
 
             if('results_length' in updates) {
-                if(updates.results_length > 0 && !self.is_results) {
+                if(updates.results_length >= 0 && !self.is_results) {
                     self.$body.addClass('results');
                     self.$mm_parent.addClass('results');
                     self.is_results = true;
@@ -1203,6 +1202,13 @@
             MMVoice._updateUI();
         }
         else {
+            if (typeof MMVoice.config.baseZIndex !== 'undefined') {
+                var baseZIndex = parseInt(MMVoice.config.baseZIndex);
+                MMVoice.$mm_button.css('z-index', baseZIndex + 100);
+                MMVoice.$mm_button.find('#icon-microphone, #icon-mute, #icon-lock').css('z-index', baseZIndex + 10);
+                MMVoice.$mm_alert.css('z-index', baseZIndex + 1000);
+            }
+
             if (MMVoice.config.resetCardsCSS) {
                 $('#cards-css').remove();
             }

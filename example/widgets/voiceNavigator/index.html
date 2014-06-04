@@ -36,22 +36,22 @@
     <script id="card-template" type="text/template">
         <h2 class="title"><%= title %></h2>
         <% var desc = 'No Description';
-        if (typeof description !== 'undefined') {
+        if (typeof description === 'string') {
             desc = description.substr(0, 150) + (description.length > 150 ? "&hellip;" : "");
         } %>
         <p class="description"><%= desc %></p>
-        <% if (typeof image !== 'undefined' && image.url !== '') { %>
+        <% if (typeof image !== 'undefined' && image.url && image.url !== '') { %>
         <p class="image not-loaded">
             <img src="<%= image.url %>">
         </p>
         <% } %>
         <div class="mm-rt-row">
-            <% if (typeof genre !== 'undefined' && genre !== '') { %>
+            <% if (typeof genre !== 'undefined' && genre && genre !== '') { %>
             <p class="align-left genre"><%= genre %></p>
             <% } else { %>
             <p class="align-left genre placeholder">No Genre</p>
             <% } %>
-            <% if (typeof pubdate !== 'undefined' && pubdate !== '') { %>
+            <% if (typeof pubdate !== 'undefined' && pubdate && pubdate !== '') { %>
             <p class="align-right release-date">
                 <% var date = new Date(pubdate * 1000); %>
                 <%= (date.getMonth() + 1) + '/' + date.getDay() + '/' + date.getFullYear() %>
@@ -62,7 +62,7 @@
             <p class="clear-fix"></p>
         </div>
         <div class="mm-rt-row">
-            <% if (typeof rating !== 'undefined' && rating !== '') { %>
+            <% if (typeof rating !== 'undefined' && rating && rating !== '') { %>
             <p class="align-left rating">
                 <span class="rt-icon tiny <% print((parseInt(rating) < 60) ? 'rotten' : 'fresh'); %>"></span>
                 <span class="rt-rating"> <%= rating %>%</span>
@@ -70,7 +70,7 @@
             <% } else { %>
             <p class="align-left rating placeholder">No rating</p>
             <% } %>
-            <% if (typeof reviewcount !== 'undefined' && reviewcount !== '') { %>
+            <% if (typeof reviewcount !== 'undefined' && reviewcount && reviewcount !== '') { %>
             <p class="align-right review-count">
                 <%
                 var scales = ['', 'k', 'M'];
@@ -143,7 +143,7 @@
             }
         };
     </script>
-    <script src="../../../dist/widgets/voiceNavigator/widget/widget.js"></script>
+    <script src="/dist/widgets/voiceNavigator/widget/widget.js"></script>
   </body>
 </html>
 
