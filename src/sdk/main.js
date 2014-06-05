@@ -1,12 +1,11 @@
+/**
+ * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM#init} before anything
+ * else. Next obtain a token via {@link MM#getToken} to start making API calls.
+ *
+ * @namespace
+ */
 var MM = ( function ($, Faye) {
 
-
-    /**
-     * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM#init} before anything
-     * else. Next obtain a token via {@link MM#getToken} to start making API calls.
-     *
-     * @namespace
-     */
     var MM = window.MM || {};
 
     /**
@@ -17,7 +16,7 @@ var MM = ( function ($, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.3.3',
+        value: '2.3.4',
         writable: false
     });
 
