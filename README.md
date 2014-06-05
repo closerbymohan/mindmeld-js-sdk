@@ -348,28 +348,28 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 ```
 
 ## Repository Contents ([mindmeld-js-sdk](https://github.com/expectlabs/mindmeld-js-sdk))
-* *mindmeld.js*: Un-minified, documented JavaScript SDK
-* *mindmeld.min.js*: Minified, production ready version of mindmeld.js
-* *HelloWorld.html*: Fully functional, stand-alone HTML page demonstrating basic use of mindmeld.js
-* *mindmeld-js-sdk.zip*: Zip archive containing mindmeld.js, mindmeld.min.js, and HelloWorld.html
-* *docsTemplate/* - templates and configuration required to build JSDoc. Based on
-[jaguarjs-doc](https://github.com/davidshimjs/jaguarjs-jsdoc/)
-* *Gruntfile.js*: [grunt](http://gruntjs.com/) file for mindmeld.js used to minify JS, create zip archive, and
-generate JSDocs
-* *bower.json*: Used to describe client-side dependencies for mindmeld.js and publish repository to
-[bower](http://bower.io/) registry
-* *package.json*: Used to describe grunt dependencies
-* *README.md*: Describes this file!
-
-## Grunt Tasks
-
-`Gruntfile.js` specifies a `grunt build` task that executes the following tasks:
-
-* `grunt clean` (Cleans up auto-generated files)
-* `grunt exec:jsdoc` (Generates JSDocs)
-* `grunt uglify:dist` (Minifies `mindmeld.js` into `mindmeld.min.js`)
-* `grunt zip:dist` (Creates a zip archive of `mindmeld.js`, `mindmeld.min.js`, and `HelloWorld.html`)
-
+* *src/*: Directory containing all source files for SDK and widgets
+* *src/sdk/*: Directory containing source files for mindmeld.js
+* *src/sdk/main.js/*: Main source file for mindmeld.js
+* *src/sdk/widgets/searchWidget/*: Directory containing source files for autocomplete search widget
+* *src/sdk/widgets/searchWidget/js/jquery.mindmeld-searchwidget.js*: Source for autocomplete jQuery widget
+* *src/sdk/widgets/searchWidget/js/util/*: Directory containing headers and footers for creating a standalone search widget file
+* *src/sdk/widget/voiceNavigator/*: Directory containing source files for voice navigator widget
+* *src/docsTemplate/*: Directory containing templates and configuration files for building JS Docs
+* *src/embed.js*: Source for embed script used to asynchronously load widgets
+* *dist/*: Directory containing all built, uglified, and production-ready files for JS SDK
+* *dist/sdk/*: Directory containing compiled mindmeld.js, mindmeld.min.js, and mindmeld-js-sdk.zip
+* *dist/widgets/searchWidget/*: Directory containing all files necessary for using autocomplete search widget
+* *dist/widgets/voiceNavigator/*: Directory containing all files necessary for using voice navigator widget
+* *dist/widgets/voiceNavigator/widget/*: Directory containing voice navigator widget files that create the voice navigator iframe
+* *dist/widgets/voiceNavigator/modal/*: Directory containing voice navigator modal files loaded in the iframe modal
+* *dist/embed.js*: Minified embed script used in prod
+* *example/*: Directory mirroring src/ and dist/ directories containing example HTML pages showing basic usage of SDK and widgets
+* *archive/*: Directory containing all previous versions of mindmeld.js
+* *tasks/*: Directory containing gulpfiles for building SDK and widgets
+* *gulpfile.js*: Main gulpfile used to orchestrate build processes
+* *Gruntfile.js*: Legacy grunt file currently only used for building JS Doc because gulp-js doc does not support our JS doc template
+* *bump.txt*: Add garbage to this file and and check it in when you just want a new SHA for this repo
 
 
 [sdkDocsLink]:https://developer.expectlabs.com/docs/sdks/js/referenceDocs/
