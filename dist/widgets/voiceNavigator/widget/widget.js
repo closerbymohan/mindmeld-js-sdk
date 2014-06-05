@@ -202,21 +202,6 @@
                 MMVoice.el(iframe).on('load', function() {
                     MMVoice.postMessage('open', MM.voiceNavigator.config);
                     MMVoice.iframe_loaded = true;
-
-                    if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
-                        var cssLink = document.createElement('link');
-                        cssLink.href = MM.voiceNavigator.config.customCSSPath;
-                        cssLink.rel = 'stylesheet';
-                        cssLink.type = 'text/css';
-                        iframe.contentWindow.document.head.appendChild(cssLink);
-                    }
-
-                    if (typeof MM.voiceNavigator.config.customCSS !== 'undefined') {
-                        var cssStyle = document.createElement('style');
-                        cssStyle.type = 'text/css';
-                        cssStyle.innerText = MM.voiceNavigator.config.customCSS;
-                        iframe.contentWindow.document.head.appendChild(cssStyle);
-                    }
                 });
 
                 MMVoice.$mm.el().appendChild(iframe);
