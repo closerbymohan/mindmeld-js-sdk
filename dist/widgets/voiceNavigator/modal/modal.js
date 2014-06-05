@@ -3657,7 +3657,7 @@ var MM = ( function ($, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.3.4',
+        value: '2.3.5',
         writable: false
     });
 
@@ -9232,6 +9232,22 @@ var MM = ( function ($, Faye) {
             if (MMVoice.config.resetCardsCSS) {
                 $('#cards-css').remove();
             }
+
+            if (typeof MMVoice.config.customCSSPath !== 'undefined') {
+                var cssLink = document.createElement('link');
+                cssLink.href = MMVoice.config.customCSSPath;
+                cssLink.rel = 'stylesheet';
+                cssLink.type = 'text/css';
+                document.head.appendChild(cssLink);
+            }
+
+            if (typeof MMVoice.config.customCSS !== 'undefined') {
+                var cssStyle = document.createElement('style');
+                cssStyle.type = 'text/css';
+                cssStyle.innerHTML = MMVoice.config.customCSS;
+                document.head.appendChild(cssStyle);
+            }
+
             if (MMVoice.config.cardLayout === 'custom') {
                 try {
                     MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
