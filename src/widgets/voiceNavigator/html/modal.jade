@@ -7,8 +7,9 @@ html(lang="en")
     meta(content="MindMeld Voice Navigator", name="description")
     meta(content="width=device-width", name="viewport")
     link(href='//fonts.googleapis.com/css?family=Open+Sans', rel='stylesheet', type='text/css')
-    link(href="./modal.min.css", rel="stylesheet", type="text/css")
-  body
+    link(id="modal-css", href="./modal.css", rel="stylesheet", type="text/css")
+    link(id="cards-css", href="./cards.css", rel="stylesheet", type="text/css")
+    body
     #mindmeld-overlay
     #mindmeld-alert
       .mm-mic
@@ -21,7 +22,8 @@ html(lang="en")
     #mindmeld-parent
       #mm-pulser
       #mm-button.status-pending
-        a#mm-button-icon.mm-button-icon
+        a#mm-button-icon.mm-button-background
+          .bubbles
           #icon-microphone
             svg(xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve")
               path#mic(d="M16,21.625c2.682,0,4.875-2.25,4.875-5V6.375c0-2.75-2.193-5-4.875-5c-2.682,0-4.875,2.25-4.875,5v10.25  C11.125,19.375,13.318,21.625,16,21.625z M21.876,11.5v5.125c0,3.309-2.636,6-5.876,6s-5.875-2.691-5.875-6V11.5H7.126v5.125  c0,4.443,3.194,8.132,7.372,8.861v2.139h-3.372v3h9.749v-3h-3.376v-2.139c4.181-0.729,7.375-4.418,7.375-8.861V11.5H21.876z")
@@ -36,12 +38,14 @@ html(lang="en")
           .on click to release
 
       #mindmeld
-        a#history-button(href="#") Expand History
+        a.history#history-button(href="#") Expand History
+        a#close(href="#") &times;
+
         #history-wrapper
           #history
             #history-data
               ul
-                li.on Enable the microphone...
+                li.on#initialText
 
               textarea.editable
 
@@ -52,4 +56,4 @@ html(lang="en")
                .card.removed.single-column-fix
 
     audio(id="audio-done", src="./done.wav", preload="auto")
-    script(src="./modal.min.js", type="text/javascript")
+    script(src="./modal.js", type="text/javascript")

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html class='no-js' lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta content='IE=edge,chrome=1' http-equiv='X-UA-Compatible'>
+    <title>MindMeld Voice Demo</title>
+    <meta content='Voice nav' name='description'>
+    <meta content='width=device-width' name='viewport'>
+    <link rel="stylesheet" href="../../../dist/widgets/voiceNavigator/widget/widget.css" type="text/css">
+
+    <style type="text/css">
+        .trigger {
+            background: tomato;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+        }
+
+        .trigger:hover {
+            cursor: pointer;
+        }
+
+        body {
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+<div class='main' role='main'>
+    <input type="text" class="mm-voice-nav-text-init">
+
+    <div class="trigger mm-voice-nav-init"></div>
+</div>
+
+<script>
+    var MM = window.MM || {};
+    MM.loader = MM.loader || {};
+    MM.loader.rootURL = 'http://' + window.location.host + '/dist/';
+    var DEMO_ENVIRONMENT = 'west-dev-e';
+</script>
+<script>
+    var MM = window.MM || {};
+    MM.loader = MM.loader || {};
+    MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
+    MM.voiceNavigator = MM.voiceNavigator || {};
+    MM.widgets = MM.widgets || {};
+    MM.widgets.config = {
+        appID: 'ad666f13daeb5c36f6f2c3a11ec8b5d3d01467a0', // ENTER YOUR APPID
+        cleanUrl: 'https://api-' + DEMO_ENVIRONMENT + '.expectlabs.com/',
+        fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye'
+    };
+</script>
+<script src="../../../dist/widgets/voiceNavigator/widget/widget.js"></script>
+</body>
+</html>
+

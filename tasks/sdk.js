@@ -97,12 +97,14 @@ gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
 // Copies embed script to dist directory
 gulp.task('distLoader', function () {
     return gulp.src(srcDirectory + 'embed.js')
+        .pipe(uglify(), {mangle:true})
         .pipe(gulp.dest(distDirectory));
 });
 
 // Watch for changes in mindmeld js files and build mindmeld.js
-gulp.task('watchMM', ['uglifyMM'], function () {
+gulp.task('watchMM', ['uglifyMM', 'distLoader'], function () {
     gulp.watch(srcMMDirectory + '**/*.js', ['buildMM']);
+    gulp.watch(srcDirectory + 'embed.js', ['distLoader']);
 });
 
 gulp.task('build', ['zipSDK', 'distLoader']);

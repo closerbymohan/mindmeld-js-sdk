@@ -1,5 +1,4 @@
 /*! jQuery v1.10.1 | (c) 2005, 2013 jQuery Foundation, Inc. | jquery.org/license
-//@ sourceMappingURL=jquery.min.map
 */
 (function(e,t){var n,r,i=typeof t,o=e.location,a=e.document,s=a.documentElement,l=e.jQuery,u=e.$,c={},p=[],f="1.10.1",d=p.concat,h=p.push,g=p.slice,m=p.indexOf,y=c.toString,v=c.hasOwnProperty,b=f.trim,x=function(e,t){return new x.fn.init(e,t,r)},w=/[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/.source,T=/\S+/g,C=/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,N=/^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,k=/^<(\w+)\s*\/?>(?:<\/\1>|)$/,E=/^[\],:{}\s]*$/,S=/(?:^|:|,)(?:\s*\[)+/g,A=/\\(?:["\\\/bfnrt]|u[\da-fA-F]{4})/g,j=/"[^"\\\r\n]*"|true|false|null|-?(?:\d+\.|)\d+(?:[eE][+-]?\d+|)/g,D=/^-ms-/,L=/-([\da-z])/gi,H=function(e,t){return t.toUpperCase()},q=function(e){(a.addEventListener||"load"===e.type||"complete"===a.readyState)&&(_(),x.ready())},_=function(){a.addEventListener?(a.removeEventListener("DOMContentLoaded",q,!1),e.removeEventListener("load",q,!1)):(a.detachEvent("onreadystatechange",q),e.detachEvent("onload",q))};x.fn=x.prototype={jquery:f,constructor:x,init:function(e,n,r){var i,o;if(!e)return this;if("string"==typeof e){if(i="<"===e.charAt(0)&&">"===e.charAt(e.length-1)&&e.length>=3?[null,e,null]:N.exec(e),!i||!i[1]&&n)return!n||n.jquery?(n||r).find(e):this.constructor(n).find(e);if(i[1]){if(n=n instanceof x?n[0]:n,x.merge(this,x.parseHTML(i[1],n&&n.nodeType?n.ownerDocument||n:a,!0)),k.test(i[1])&&x.isPlainObject(n))for(i in n)x.isFunction(this[i])?this[i](n[i]):this.attr(i,n[i]);return this}if(o=a.getElementById(i[2]),o&&o.parentNode){if(o.id!==i[2])return r.find(e);this.length=1,this[0]=o}return this.context=a,this.selector=e,this}return e.nodeType?(this.context=this[0]=e,this.length=1,this):x.isFunction(e)?r.ready(e):(e.selector!==t&&(this.selector=e.selector,this.context=e.context),x.makeArray(e,this))},selector:"",length:0,toArray:function(){return g.call(this)},get:function(e){return null==e?this.toArray():0>e?this[this.length+e]:this[e]},pushStack:function(e){var t=x.merge(this.constructor(),e);return t.prevObject=this,t.context=this.context,t},each:function(e,t){return x.each(this,e,t)},ready:function(e){return x.ready.promise().done(e),this},slice:function(){return this.pushStack(g.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(e){var t=this.length,n=+e+(0>e?t:0);return this.pushStack(n>=0&&t>n?[this[n]]:[])},map:function(e){return this.pushStack(x.map(this,function(t,n){return e.call(t,n,t)}))},end:function(){return this.prevObject||this.constructor(null)},push:h,sort:[].sort,splice:[].splice},x.fn.init.prototype=x.fn,x.extend=x.fn.extend=function(){var e,n,r,i,o,a,s=arguments[0]||{},l=1,u=arguments.length,c=!1;for("boolean"==typeof s&&(c=s,s=arguments[1]||{},l=2),"object"==typeof s||x.isFunction(s)||(s={}),u===l&&(s=this,--l);u>l;l++)if(null!=(o=arguments[l]))for(i in o)e=s[i],r=o[i],s!==r&&(c&&r&&(x.isPlainObject(r)||(n=x.isArray(r)))?(n?(n=!1,a=e&&x.isArray(e)?e:[]):a=e&&x.isPlainObject(e)?e:{},s[i]=x.extend(c,a,r)):r!==t&&(s[i]=r));return s},x.extend({expando:"jQuery"+(f+Math.random()).replace(/\D/g,""),noConflict:function(t){return e.$===x&&(e.$=u),t&&e.jQuery===x&&(e.jQuery=l),x},isReady:!1,readyWait:1,holdReady:function(e){e?x.readyWait++:x.ready(!0)},ready:function(e){if(e===!0?!--x.readyWait:!x.isReady){if(!a.body)return setTimeout(x.ready);x.isReady=!0,e!==!0&&--x.readyWait>0||(n.resolveWith(a,[x]),x.fn.trigger&&x(a).trigger("ready").off("ready"))}},isFunction:function(e){return"function"===x.type(e)},isArray:Array.isArray||function(e){return"array"===x.type(e)},isWindow:function(e){return null!=e&&e==e.window},isNumeric:function(e){return!isNaN(parseFloat(e))&&isFinite(e)},type:function(e){return null==e?e+"":"object"==typeof e||"function"==typeof e?c[y.call(e)]||"object":typeof e},isPlainObject:function(e){var n;if(!e||"object"!==x.type(e)||e.nodeType||x.isWindow(e))return!1;try{if(e.constructor&&!v.call(e,"constructor")&&!v.call(e.constructor.prototype,"isPrototypeOf"))return!1}catch(r){return!1}if(x.support.ownLast)for(n in e)return v.call(e,n);for(n in e);return n===t||v.call(e,n)},isEmptyObject:function(e){var t;for(t in e)return!1;return!0},error:function(e){throw Error(e)},parseHTML:function(e,t,n){if(!e||"string"!=typeof e)return null;"boolean"==typeof t&&(n=t,t=!1),t=t||a;var r=k.exec(e),i=!n&&[];return r?[t.createElement(r[1])]:(r=x.buildFragment([e],t,i),i&&x(i).remove(),x.merge([],r.childNodes))},parseJSON:function(n){return e.JSON&&e.JSON.parse?e.JSON.parse(n):null===n?n:"string"==typeof n&&(n=x.trim(n),n&&E.test(n.replace(A,"@").replace(j,"]").replace(S,"")))?Function("return "+n)():(x.error("Invalid JSON: "+n),t)},parseXML:function(n){var r,i;if(!n||"string"!=typeof n)return null;try{e.DOMParser?(i=new DOMParser,r=i.parseFromString(n,"text/xml")):(r=new ActiveXObject("Microsoft.XMLDOM"),r.async="false",r.loadXML(n))}catch(o){r=t}return r&&r.documentElement&&!r.getElementsByTagName("parsererror").length||x.error("Invalid XML: "+n),r},noop:function(){},globalEval:function(t){t&&x.trim(t)&&(e.execScript||function(t){e.eval.call(e,t)})(t)},camelCase:function(e){return e.replace(D,"ms-").replace(L,H)},nodeName:function(e,t){return e.nodeName&&e.nodeName.toLowerCase()===t.toLowerCase()},each:function(e,t,n){var r,i=0,o=e.length,a=M(e);if(n){if(a){for(;o>i;i++)if(r=t.apply(e[i],n),r===!1)break}else for(i in e)if(r=t.apply(e[i],n),r===!1)break}else if(a){for(;o>i;i++)if(r=t.call(e[i],i,e[i]),r===!1)break}else for(i in e)if(r=t.call(e[i],i,e[i]),r===!1)break;return e},trim:b&&!b.call("\ufeff\u00a0")?function(e){return null==e?"":b.call(e)}:function(e){return null==e?"":(e+"").replace(C,"")},makeArray:function(e,t){var n=t||[];return null!=e&&(M(Object(e))?x.merge(n,"string"==typeof e?[e]:e):h.call(n,e)),n},inArray:function(e,t,n){var r;if(t){if(m)return m.call(t,e,n);for(r=t.length,n=n?0>n?Math.max(0,r+n):n:0;r>n;n++)if(n in t&&t[n]===e)return n}return-1},merge:function(e,n){var r=n.length,i=e.length,o=0;if("number"==typeof r)for(;r>o;o++)e[i++]=n[o];else while(n[o]!==t)e[i++]=n[o++];return e.length=i,e},grep:function(e,t,n){var r,i=[],o=0,a=e.length;for(n=!!n;a>o;o++)r=!!t(e[o],o),n!==r&&i.push(e[o]);return i},map:function(e,t,n){var r,i=0,o=e.length,a=M(e),s=[];if(a)for(;o>i;i++)r=t(e[i],i,n),null!=r&&(s[s.length]=r);else for(i in e)r=t(e[i],i,n),null!=r&&(s[s.length]=r);return d.apply([],s)},guid:1,proxy:function(e,n){var r,i,o;return"string"==typeof n&&(o=e[n],n=e,e=o),x.isFunction(e)?(r=g.call(arguments,2),i=function(){return e.apply(n||this,r.concat(g.call(arguments)))},i.guid=e.guid=e.guid||x.guid++,i):t},access:function(e,n,r,i,o,a,s){var l=0,u=e.length,c=null==r;if("object"===x.type(r)){o=!0;for(l in r)x.access(e,n,l,r[l],!0,a,s)}else if(i!==t&&(o=!0,x.isFunction(i)||(s=!0),c&&(s?(n.call(e,i),n=null):(c=n,n=function(e,t,n){return c.call(x(e),n)})),n))for(;u>l;l++)n(e[l],r,s?i:i.call(e[l],l,n(e[l],r)));return o?e:c?n.call(e):u?n(e[0],r):a},now:function(){return(new Date).getTime()},swap:function(e,t,n,r){var i,o,a={};for(o in t)a[o]=e.style[o],e.style[o]=t[o];i=n.apply(e,r||[]);for(o in t)e.style[o]=a[o];return i}}),x.ready.promise=function(t){if(!n)if(n=x.Deferred(),"complete"===a.readyState)setTimeout(x.ready);else if(a.addEventListener)a.addEventListener("DOMContentLoaded",q,!1),e.addEventListener("load",q,!1);else{a.attachEvent("onreadystatechange",q),e.attachEvent("onload",q);var r=!1;try{r=null==e.frameElement&&a.documentElement}catch(i){}r&&r.doScroll&&function o(){if(!x.isReady){try{r.doScroll("left")}catch(e){return setTimeout(o,50)}_(),x.ready()}}()}return n.promise(t)},x.each("Boolean Number String Function Array Date RegExp Object Error".split(" "),function(e,t){c["[object "+t+"]"]=t.toLowerCase()});function M(e){var t=e.length,n=x.type(e);return x.isWindow(e)?!1:1===e.nodeType&&t?!0:"array"===n||"function"!==n&&(0===t||"number"==typeof t&&t>0&&t-1 in e)}r=x(a),function(e,t){var n,r,i,o,a,s,l,u,c,p,f,d,h,g,m,y,v,b="sizzle"+-new Date,w=e.document,T=0,C=0,N=lt(),k=lt(),E=lt(),S=!1,A=function(){return 0},j=typeof t,D=1<<31,L={}.hasOwnProperty,H=[],q=H.pop,_=H.push,M=H.push,O=H.slice,F=H.indexOf||function(e){var t=0,n=this.length;for(;n>t;t++)if(this[t]===e)return t;return-1},B="checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",P="[\\x20\\t\\r\\n\\f]",R="(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+",W=R.replace("w","w#"),$="\\["+P+"*("+R+")"+P+"*(?:([*^$|!~]?=)"+P+"*(?:(['\"])((?:\\\\.|[^\\\\])*?)\\3|("+W+")|)|)"+P+"*\\]",I=":("+R+")(?:\\(((['\"])((?:\\\\.|[^\\\\])*?)\\3|((?:\\\\.|[^\\\\()[\\]]|"+$.replace(3,8)+")*)|.*)\\)|)",z=RegExp("^"+P+"+|((?:^|[^\\\\])(?:\\\\.)*)"+P+"+$","g"),X=RegExp("^"+P+"*,"+P+"*"),U=RegExp("^"+P+"*([>+~]|"+P+")"+P+"*"),V=RegExp(P+"*[+~]"),Y=RegExp("="+P+"*([^\\]'\"]*)"+P+"*\\]","g"),J=RegExp(I),G=RegExp("^"+W+"$"),Q={ID:RegExp("^#("+R+")"),CLASS:RegExp("^\\.("+R+")"),TAG:RegExp("^("+R.replace("w","w*")+")"),ATTR:RegExp("^"+$),PSEUDO:RegExp("^"+I),CHILD:RegExp("^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\("+P+"*(even|odd|(([+-]|)(\\d*)n|)"+P+"*(?:([+-]|)"+P+"*(\\d+)|))"+P+"*\\)|)","i"),bool:RegExp("^(?:"+B+")$","i"),needsContext:RegExp("^"+P+"*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\("+P+"*((?:-\\d)?\\d*)"+P+"*\\)|)(?=[^-]|$)","i")},K=/^[^{]+\{\s*\[native \w/,Z=/^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,et=/^(?:input|select|textarea|button)$/i,tt=/^h\d$/i,nt=/'|\\/g,rt=RegExp("\\\\([\\da-f]{1,6}"+P+"?|("+P+")|.)","ig"),it=function(e,t,n){var r="0x"+t-65536;return r!==r||n?t:0>r?String.fromCharCode(r+65536):String.fromCharCode(55296|r>>10,56320|1023&r)};try{M.apply(H=O.call(w.childNodes),w.childNodes),H[w.childNodes.length].nodeType}catch(ot){M={apply:H.length?function(e,t){_.apply(e,O.call(t))}:function(e,t){var n=e.length,r=0;while(e[n++]=t[r++]);e.length=n-1}}}function at(e,t,n,i){var o,a,s,l,u,c,d,m,y,x;if((t?t.ownerDocument||t:w)!==f&&p(t),t=t||f,n=n||[],!e||"string"!=typeof e)return n;if(1!==(l=t.nodeType)&&9!==l)return[];if(h&&!i){if(o=Z.exec(e))if(s=o[1]){if(9===l){if(a=t.getElementById(s),!a||!a.parentNode)return n;if(a.id===s)return n.push(a),n}else if(t.ownerDocument&&(a=t.ownerDocument.getElementById(s))&&v(t,a)&&a.id===s)return n.push(a),n}else{if(o[2])return M.apply(n,t.getElementsByTagName(e)),n;if((s=o[3])&&r.getElementsByClassName&&t.getElementsByClassName)return M.apply(n,t.getElementsByClassName(s)),n}if(r.qsa&&(!g||!g.test(e))){if(m=d=b,y=t,x=9===l&&e,1===l&&"object"!==t.nodeName.toLowerCase()){c=bt(e),(d=t.getAttribute("id"))?m=d.replace(nt,"\\$&"):t.setAttribute("id",m),m="[id='"+m+"'] ",u=c.length;while(u--)c[u]=m+xt(c[u]);y=V.test(e)&&t.parentNode||t,x=c.join(",")}if(x)try{return M.apply(n,y.querySelectorAll(x)),n}catch(T){}finally{d||t.removeAttribute("id")}}}return At(e.replace(z,"$1"),t,n,i)}function st(e){return K.test(e+"")}function lt(){var e=[];function t(n,r){return e.push(n+=" ")>o.cacheLength&&delete t[e.shift()],t[n]=r}return t}function ut(e){return e[b]=!0,e}function ct(e){var t=f.createElement("div");try{return!!e(t)}catch(n){return!1}finally{t.parentNode&&t.parentNode.removeChild(t),t=null}}function pt(e,t,n){e=e.split("|");var r,i=e.length,a=n?null:t;while(i--)(r=o.attrHandle[e[i]])&&r!==t||(o.attrHandle[e[i]]=a)}function ft(e,t){var n=e.getAttributeNode(t);return n&&n.specified?n.value:e[t]===!0?t.toLowerCase():null}function dt(e,t){return e.getAttribute(t,"type"===t.toLowerCase()?1:2)}function ht(e){return"input"===e.nodeName.toLowerCase()?e.defaultValue:t}function gt(e,t){var n=t&&e,r=n&&1===e.nodeType&&1===t.nodeType&&(~t.sourceIndex||D)-(~e.sourceIndex||D);if(r)return r;if(n)while(n=n.nextSibling)if(n===t)return-1;return e?1:-1}function mt(e){return function(t){var n=t.nodeName.toLowerCase();return"input"===n&&t.type===e}}function yt(e){return function(t){var n=t.nodeName.toLowerCase();return("input"===n||"button"===n)&&t.type===e}}function vt(e){return ut(function(t){return t=+t,ut(function(n,r){var i,o=e([],n.length,t),a=o.length;while(a--)n[i=o[a]]&&(n[i]=!(r[i]=n[i]))})})}s=at.isXML=function(e){var t=e&&(e.ownerDocument||e).documentElement;return t?"HTML"!==t.nodeName:!1},r=at.support={},p=at.setDocument=function(e){var n=e?e.ownerDocument||e:w,i=n.parentWindow;return n!==f&&9===n.nodeType&&n.documentElement?(f=n,d=n.documentElement,h=!s(n),i&&i.frameElement&&i.attachEvent("onbeforeunload",function(){p()}),r.attributes=ct(function(e){return e.innerHTML="<a href='#'></a>",pt("type|href|height|width",dt,"#"===e.firstChild.getAttribute("href")),pt(B,ft,null==e.getAttribute("disabled")),e.className="i",!e.getAttribute("className")}),r.input=ct(function(e){return e.innerHTML="<input>",e.firstChild.setAttribute("value",""),""===e.firstChild.getAttribute("value")}),pt("value",ht,r.attributes&&r.input),r.getElementsByTagName=ct(function(e){return e.appendChild(n.createComment("")),!e.getElementsByTagName("*").length}),r.getElementsByClassName=ct(function(e){return e.innerHTML="<div class='a'></div><div class='a i'></div>",e.firstChild.className="i",2===e.getElementsByClassName("i").length}),r.getById=ct(function(e){return d.appendChild(e).id=b,!n.getElementsByName||!n.getElementsByName(b).length}),r.getById?(o.find.ID=function(e,t){if(typeof t.getElementById!==j&&h){var n=t.getElementById(e);return n&&n.parentNode?[n]:[]}},o.filter.ID=function(e){var t=e.replace(rt,it);return function(e){return e.getAttribute("id")===t}}):(delete o.find.ID,o.filter.ID=function(e){var t=e.replace(rt,it);return function(e){var n=typeof e.getAttributeNode!==j&&e.getAttributeNode("id");return n&&n.value===t}}),o.find.TAG=r.getElementsByTagName?function(e,n){return typeof n.getElementsByTagName!==j?n.getElementsByTagName(e):t}:function(e,t){var n,r=[],i=0,o=t.getElementsByTagName(e);if("*"===e){while(n=o[i++])1===n.nodeType&&r.push(n);return r}return o},o.find.CLASS=r.getElementsByClassName&&function(e,n){return typeof n.getElementsByClassName!==j&&h?n.getElementsByClassName(e):t},m=[],g=[],(r.qsa=st(n.querySelectorAll))&&(ct(function(e){e.innerHTML="<select><option selected=''></option></select>",e.querySelectorAll("[selected]").length||g.push("\\["+P+"*(?:value|"+B+")"),e.querySelectorAll(":checked").length||g.push(":checked")}),ct(function(e){var t=n.createElement("input");t.setAttribute("type","hidden"),e.appendChild(t).setAttribute("t",""),e.querySelectorAll("[t^='']").length&&g.push("[*^$]="+P+"*(?:''|\"\")"),e.querySelectorAll(":enabled").length||g.push(":enabled",":disabled"),e.querySelectorAll("*,:x"),g.push(",.*:")})),(r.matchesSelector=st(y=d.webkitMatchesSelector||d.mozMatchesSelector||d.oMatchesSelector||d.msMatchesSelector))&&ct(function(e){r.disconnectedMatch=y.call(e,"div"),y.call(e,"[s!='']:x"),m.push("!=",I)}),g=g.length&&RegExp(g.join("|")),m=m.length&&RegExp(m.join("|")),v=st(d.contains)||d.compareDocumentPosition?function(e,t){var n=9===e.nodeType?e.documentElement:e,r=t&&t.parentNode;return e===r||!(!r||1!==r.nodeType||!(n.contains?n.contains(r):e.compareDocumentPosition&&16&e.compareDocumentPosition(r)))}:function(e,t){if(t)while(t=t.parentNode)if(t===e)return!0;return!1},r.sortDetached=ct(function(e){return 1&e.compareDocumentPosition(n.createElement("div"))}),A=d.compareDocumentPosition?function(e,t){if(e===t)return S=!0,0;var i=t.compareDocumentPosition&&e.compareDocumentPosition&&e.compareDocumentPosition(t);return i?1&i||!r.sortDetached&&t.compareDocumentPosition(e)===i?e===n||v(w,e)?-1:t===n||v(w,t)?1:c?F.call(c,e)-F.call(c,t):0:4&i?-1:1:e.compareDocumentPosition?-1:1}:function(e,t){var r,i=0,o=e.parentNode,a=t.parentNode,s=[e],l=[t];if(e===t)return S=!0,0;if(!o||!a)return e===n?-1:t===n?1:o?-1:a?1:c?F.call(c,e)-F.call(c,t):0;if(o===a)return gt(e,t);r=e;while(r=r.parentNode)s.unshift(r);r=t;while(r=r.parentNode)l.unshift(r);while(s[i]===l[i])i++;return i?gt(s[i],l[i]):s[i]===w?-1:l[i]===w?1:0},n):f},at.matches=function(e,t){return at(e,null,null,t)},at.matchesSelector=function(e,t){if((e.ownerDocument||e)!==f&&p(e),t=t.replace(Y,"='$1']"),!(!r.matchesSelector||!h||m&&m.test(t)||g&&g.test(t)))try{var n=y.call(e,t);if(n||r.disconnectedMatch||e.document&&11!==e.document.nodeType)return n}catch(i){}return at(t,f,null,[e]).length>0},at.contains=function(e,t){return(e.ownerDocument||e)!==f&&p(e),v(e,t)},at.attr=function(e,n){(e.ownerDocument||e)!==f&&p(e);var i=o.attrHandle[n.toLowerCase()],a=i&&L.call(o.attrHandle,n.toLowerCase())?i(e,n,!h):t;return a===t?r.attributes||!h?e.getAttribute(n):(a=e.getAttributeNode(n))&&a.specified?a.value:null:a},at.error=function(e){throw Error("Syntax error, unrecognized expression: "+e)},at.uniqueSort=function(e){var t,n=[],i=0,o=0;if(S=!r.detectDuplicates,c=!r.sortStable&&e.slice(0),e.sort(A),S){while(t=e[o++])t===e[o]&&(i=n.push(o));while(i--)e.splice(n[i],1)}return e},a=at.getText=function(e){var t,n="",r=0,i=e.nodeType;if(i){if(1===i||9===i||11===i){if("string"==typeof e.textContent)return e.textContent;for(e=e.firstChild;e;e=e.nextSibling)n+=a(e)}else if(3===i||4===i)return e.nodeValue}else for(;t=e[r];r++)n+=a(t);return n},o=at.selectors={cacheLength:50,createPseudo:ut,match:Q,attrHandle:{},find:{},relative:{">":{dir:"parentNode",first:!0}," ":{dir:"parentNode"},"+":{dir:"previousSibling",first:!0},"~":{dir:"previousSibling"}},preFilter:{ATTR:function(e){return e[1]=e[1].replace(rt,it),e[3]=(e[4]||e[5]||"").replace(rt,it),"~="===e[2]&&(e[3]=" "+e[3]+" "),e.slice(0,4)},CHILD:function(e){return e[1]=e[1].toLowerCase(),"nth"===e[1].slice(0,3)?(e[3]||at.error(e[0]),e[4]=+(e[4]?e[5]+(e[6]||1):2*("even"===e[3]||"odd"===e[3])),e[5]=+(e[7]+e[8]||"odd"===e[3])):e[3]&&at.error(e[0]),e},PSEUDO:function(e){var n,r=!e[5]&&e[2];return Q.CHILD.test(e[0])?null:(e[3]&&e[4]!==t?e[2]=e[4]:r&&J.test(r)&&(n=bt(r,!0))&&(n=r.indexOf(")",r.length-n)-r.length)&&(e[0]=e[0].slice(0,n),e[2]=r.slice(0,n)),e.slice(0,3))}},filter:{TAG:function(e){var t=e.replace(rt,it).toLowerCase();return"*"===e?function(){return!0}:function(e){return e.nodeName&&e.nodeName.toLowerCase()===t}},CLASS:function(e){var t=N[e+" "];return t||(t=RegExp("(^|"+P+")"+e+"("+P+"|$)"))&&N(e,function(e){return t.test("string"==typeof e.className&&e.className||typeof e.getAttribute!==j&&e.getAttribute("class")||"")})},ATTR:function(e,t,n){return function(r){var i=at.attr(r,e);return null==i?"!="===t:t?(i+="","="===t?i===n:"!="===t?i!==n:"^="===t?n&&0===i.indexOf(n):"*="===t?n&&i.indexOf(n)>-1:"$="===t?n&&i.slice(-n.length)===n:"~="===t?(" "+i+" ").indexOf(n)>-1:"|="===t?i===n||i.slice(0,n.length+1)===n+"-":!1):!0}},CHILD:function(e,t,n,r,i){var o="nth"!==e.slice(0,3),a="last"!==e.slice(-4),s="of-type"===t;return 1===r&&0===i?function(e){return!!e.parentNode}:function(t,n,l){var u,c,p,f,d,h,g=o!==a?"nextSibling":"previousSibling",m=t.parentNode,y=s&&t.nodeName.toLowerCase(),v=!l&&!s;if(m){if(o){while(g){p=t;while(p=p[g])if(s?p.nodeName.toLowerCase()===y:1===p.nodeType)return!1;h=g="only"===e&&!h&&"nextSibling"}return!0}if(h=[a?m.firstChild:m.lastChild],a&&v){c=m[b]||(m[b]={}),u=c[e]||[],d=u[0]===T&&u[1],f=u[0]===T&&u[2],p=d&&m.childNodes[d];while(p=++d&&p&&p[g]||(f=d=0)||h.pop())if(1===p.nodeType&&++f&&p===t){c[e]=[T,d,f];break}}else if(v&&(u=(t[b]||(t[b]={}))[e])&&u[0]===T)f=u[1];else while(p=++d&&p&&p[g]||(f=d=0)||h.pop())if((s?p.nodeName.toLowerCase()===y:1===p.nodeType)&&++f&&(v&&((p[b]||(p[b]={}))[e]=[T,f]),p===t))break;return f-=i,f===r||0===f%r&&f/r>=0}}},PSEUDO:function(e,t){var n,r=o.pseudos[e]||o.setFilters[e.toLowerCase()]||at.error("unsupported pseudo: "+e);return r[b]?r(t):r.length>1?(n=[e,e,"",t],o.setFilters.hasOwnProperty(e.toLowerCase())?ut(function(e,n){var i,o=r(e,t),a=o.length;while(a--)i=F.call(e,o[a]),e[i]=!(n[i]=o[a])}):function(e){return r(e,0,n)}):r}},pseudos:{not:ut(function(e){var t=[],n=[],r=l(e.replace(z,"$1"));return r[b]?ut(function(e,t,n,i){var o,a=r(e,null,i,[]),s=e.length;while(s--)(o=a[s])&&(e[s]=!(t[s]=o))}):function(e,i,o){return t[0]=e,r(t,null,o,n),!n.pop()}}),has:ut(function(e){return function(t){return at(e,t).length>0}}),contains:ut(function(e){return function(t){return(t.textContent||t.innerText||a(t)).indexOf(e)>-1}}),lang:ut(function(e){return G.test(e||"")||at.error("unsupported lang: "+e),e=e.replace(rt,it).toLowerCase(),function(t){var n;do if(n=h?t.lang:t.getAttribute("xml:lang")||t.getAttribute("lang"))return n=n.toLowerCase(),n===e||0===n.indexOf(e+"-");while((t=t.parentNode)&&1===t.nodeType);return!1}}),target:function(t){var n=e.location&&e.location.hash;return n&&n.slice(1)===t.id},root:function(e){return e===d},focus:function(e){return e===f.activeElement&&(!f.hasFocus||f.hasFocus())&&!!(e.type||e.href||~e.tabIndex)},enabled:function(e){return e.disabled===!1},disabled:function(e){return e.disabled===!0},checked:function(e){var t=e.nodeName.toLowerCase();return"input"===t&&!!e.checked||"option"===t&&!!e.selected},selected:function(e){return e.parentNode&&e.parentNode.selectedIndex,e.selected===!0},empty:function(e){for(e=e.firstChild;e;e=e.nextSibling)if(e.nodeName>"@"||3===e.nodeType||4===e.nodeType)return!1;return!0},parent:function(e){return!o.pseudos.empty(e)},header:function(e){return tt.test(e.nodeName)},input:function(e){return et.test(e.nodeName)},button:function(e){var t=e.nodeName.toLowerCase();return"input"===t&&"button"===e.type||"button"===t},text:function(e){var t;return"input"===e.nodeName.toLowerCase()&&"text"===e.type&&(null==(t=e.getAttribute("type"))||t.toLowerCase()===e.type)},first:vt(function(){return[0]}),last:vt(function(e,t){return[t-1]}),eq:vt(function(e,t,n){return[0>n?n+t:n]}),even:vt(function(e,t){var n=0;for(;t>n;n+=2)e.push(n);return e}),odd:vt(function(e,t){var n=1;for(;t>n;n+=2)e.push(n);return e}),lt:vt(function(e,t,n){var r=0>n?n+t:n;for(;--r>=0;)e.push(r);return e}),gt:vt(function(e,t,n){var r=0>n?n+t:n;for(;t>++r;)e.push(r);return e})}};for(n in{radio:!0,checkbox:!0,file:!0,password:!0,image:!0})o.pseudos[n]=mt(n);for(n in{submit:!0,reset:!0})o.pseudos[n]=yt(n);function bt(e,t){var n,r,i,a,s,l,u,c=k[e+" "];if(c)return t?0:c.slice(0);s=e,l=[],u=o.preFilter;while(s){(!n||(r=X.exec(s)))&&(r&&(s=s.slice(r[0].length)||s),l.push(i=[])),n=!1,(r=U.exec(s))&&(n=r.shift(),i.push({value:n,type:r[0].replace(z," ")}),s=s.slice(n.length));for(a in o.filter)!(r=Q[a].exec(s))||u[a]&&!(r=u[a](r))||(n=r.shift(),i.push({value:n,type:a,matches:r}),s=s.slice(n.length));if(!n)break}return t?s.length:s?at.error(e):k(e,l).slice(0)}function xt(e){var t=0,n=e.length,r="";for(;n>t;t++)r+=e[t].value;return r}function wt(e,t,n){var r=t.dir,o=n&&"parentNode"===r,a=C++;return t.first?function(t,n,i){while(t=t[r])if(1===t.nodeType||o)return e(t,n,i)}:function(t,n,s){var l,u,c,p=T+" "+a;if(s){while(t=t[r])if((1===t.nodeType||o)&&e(t,n,s))return!0}else while(t=t[r])if(1===t.nodeType||o)if(c=t[b]||(t[b]={}),(u=c[r])&&u[0]===p){if((l=u[1])===!0||l===i)return l===!0}else if(u=c[r]=[p],u[1]=e(t,n,s)||i,u[1]===!0)return!0}}function Tt(e){return e.length>1?function(t,n,r){var i=e.length;while(i--)if(!e[i](t,n,r))return!1;return!0}:e[0]}function Ct(e,t,n,r,i){var o,a=[],s=0,l=e.length,u=null!=t;for(;l>s;s++)(o=e[s])&&(!n||n(o,r,i))&&(a.push(o),u&&t.push(s));return a}function Nt(e,t,n,r,i,o){return r&&!r[b]&&(r=Nt(r)),i&&!i[b]&&(i=Nt(i,o)),ut(function(o,a,s,l){var u,c,p,f=[],d=[],h=a.length,g=o||St(t||"*",s.nodeType?[s]:s,[]),m=!e||!o&&t?g:Ct(g,f,e,s,l),y=n?i||(o?e:h||r)?[]:a:m;if(n&&n(m,y,s,l),r){u=Ct(y,d),r(u,[],s,l),c=u.length;while(c--)(p=u[c])&&(y[d[c]]=!(m[d[c]]=p))}if(o){if(i||e){if(i){u=[],c=y.length;while(c--)(p=y[c])&&u.push(m[c]=p);i(null,y=[],u,l)}c=y.length;while(c--)(p=y[c])&&(u=i?F.call(o,p):f[c])>-1&&(o[u]=!(a[u]=p))}}else y=Ct(y===a?y.splice(h,y.length):y),i?i(null,a,y,l):M.apply(a,y)})}function kt(e){var t,n,r,i=e.length,a=o.relative[e[0].type],s=a||o.relative[" "],l=a?1:0,c=wt(function(e){return e===t},s,!0),p=wt(function(e){return F.call(t,e)>-1},s,!0),f=[function(e,n,r){return!a&&(r||n!==u)||((t=n).nodeType?c(e,n,r):p(e,n,r))}];for(;i>l;l++)if(n=o.relative[e[l].type])f=[wt(Tt(f),n)];else{if(n=o.filter[e[l].type].apply(null,e[l].matches),n[b]){for(r=++l;i>r;r++)if(o.relative[e[r].type])break;return Nt(l>1&&Tt(f),l>1&&xt(e.slice(0,l-1).concat({value:" "===e[l-2].type?"*":""})).replace(z,"$1"),n,r>l&&kt(e.slice(l,r)),i>r&&kt(e=e.slice(r)),i>r&&xt(e))}f.push(n)}return Tt(f)}function Et(e,t){var n=0,r=t.length>0,a=e.length>0,s=function(s,l,c,p,d){var h,g,m,y=[],v=0,b="0",x=s&&[],w=null!=d,C=u,N=s||a&&o.find.TAG("*",d&&l.parentNode||l),k=T+=null==C?1:Math.random()||.1;for(w&&(u=l!==f&&l,i=n);null!=(h=N[b]);b++){if(a&&h){g=0;while(m=e[g++])if(m(h,l,c)){p.push(h);break}w&&(T=k,i=++n)}r&&((h=!m&&h)&&v--,s&&x.push(h))}if(v+=b,r&&b!==v){g=0;while(m=t[g++])m(x,y,l,c);if(s){if(v>0)while(b--)x[b]||y[b]||(y[b]=q.call(p));y=Ct(y)}M.apply(p,y),w&&!s&&y.length>0&&v+t.length>1&&at.uniqueSort(p)}return w&&(T=k,u=C),x};return r?ut(s):s}l=at.compile=function(e,t){var n,r=[],i=[],o=E[e+" "];if(!o){t||(t=bt(e)),n=t.length;while(n--)o=kt(t[n]),o[b]?r.push(o):i.push(o);o=E(e,Et(i,r))}return o};function St(e,t,n){var r=0,i=t.length;for(;i>r;r++)at(e,t[r],n);return n}function At(e,t,n,i){var a,s,u,c,p,f=bt(e);if(!i&&1===f.length){if(s=f[0]=f[0].slice(0),s.length>2&&"ID"===(u=s[0]).type&&r.getById&&9===t.nodeType&&h&&o.relative[s[1].type]){if(t=(o.find.ID(u.matches[0].replace(rt,it),t)||[])[0],!t)return n;e=e.slice(s.shift().value.length)}a=Q.needsContext.test(e)?0:s.length;while(a--){if(u=s[a],o.relative[c=u.type])break;if((p=o.find[c])&&(i=p(u.matches[0].replace(rt,it),V.test(s[0].type)&&t.parentNode||t))){if(s.splice(a,1),e=i.length&&xt(s),!e)return M.apply(n,i),n;break}}}return l(e,f)(i,t,!h,n,V.test(e)),n}o.pseudos.nth=o.pseudos.eq;function jt(){}jt.prototype=o.filters=o.pseudos,o.setFilters=new jt,r.sortStable=b.split("").sort(A).join("")===b,p(),[0,0].sort(A),r.detectDuplicates=S,x.find=at,x.expr=at.selectors,x.expr[":"]=x.expr.pseudos,x.unique=at.uniqueSort,x.text=at.getText,x.isXMLDoc=at.isXML,x.contains=at.contains}(e);var O={};function F(e){var t=O[e]={};return x.each(e.match(T)||[],function(e,n){t[n]=!0}),t}x.Callbacks=function(e){e="string"==typeof e?O[e]||F(e):x.extend({},e);var n,r,i,o,a,s,l=[],u=!e.once&&[],c=function(t){for(r=e.memory&&t,i=!0,a=s||0,s=0,o=l.length,n=!0;l&&o>a;a++)if(l[a].apply(t[0],t[1])===!1&&e.stopOnFalse){r=!1;break}n=!1,l&&(u?u.length&&c(u.shift()):r?l=[]:p.disable())},p={add:function(){if(l){var t=l.length;(function i(t){x.each(t,function(t,n){var r=x.type(n);"function"===r?e.unique&&p.has(n)||l.push(n):n&&n.length&&"string"!==r&&i(n)})})(arguments),n?o=l.length:r&&(s=t,c(r))}return this},remove:function(){return l&&x.each(arguments,function(e,t){var r;while((r=x.inArray(t,l,r))>-1)l.splice(r,1),n&&(o>=r&&o--,a>=r&&a--)}),this},has:function(e){return e?x.inArray(e,l)>-1:!(!l||!l.length)},empty:function(){return l=[],o=0,this},disable:function(){return l=u=r=t,this},disabled:function(){return!l},lock:function(){return u=t,r||p.disable(),this},locked:function(){return!u},fireWith:function(e,t){return t=t||[],t=[e,t.slice?t.slice():t],!l||i&&!u||(n?u.push(t):c(t)),this},fire:function(){return p.fireWith(this,arguments),this},fired:function(){return!!i}};return p},x.extend({Deferred:function(e){var t=[["resolve","done",x.Callbacks("once memory"),"resolved"],["reject","fail",x.Callbacks("once memory"),"rejected"],["notify","progress",x.Callbacks("memory")]],n="pending",r={state:function(){return n},always:function(){return i.done(arguments).fail(arguments),this},then:function(){var e=arguments;return x.Deferred(function(n){x.each(t,function(t,o){var a=o[0],s=x.isFunction(e[t])&&e[t];i[o[1]](function(){var e=s&&s.apply(this,arguments);e&&x.isFunction(e.promise)?e.promise().done(n.resolve).fail(n.reject).progress(n.notify):n[a+"With"](this===r?n.promise():this,s?[e]:arguments)})}),e=null}).promise()},promise:function(e){return null!=e?x.extend(e,r):r}},i={};return r.pipe=r.then,x.each(t,function(e,o){var a=o[2],s=o[3];r[o[1]]=a.add,s&&a.add(function(){n=s},t[1^e][2].disable,t[2][2].lock),i[o[0]]=function(){return i[o[0]+"With"](this===i?r:this,arguments),this},i[o[0]+"With"]=a.fireWith}),r.promise(i),e&&e.call(i,i),i},when:function(e){var t=0,n=g.call(arguments),r=n.length,i=1!==r||e&&x.isFunction(e.promise)?r:0,o=1===i?e:x.Deferred(),a=function(e,t,n){return function(r){t[e]=this,n[e]=arguments.length>1?g.call(arguments):r,n===s?o.notifyWith(t,n):--i||o.resolveWith(t,n)}},s,l,u;if(r>1)for(s=Array(r),l=Array(r),u=Array(r);r>t;t++)n[t]&&x.isFunction(n[t].promise)?n[t].promise().done(a(t,u,n)).fail(o.reject).progress(a(t,l,s)):--i;return i||o.resolveWith(u,n),o.promise()}}),x.support=function(t){var n,r,o,s,l,u,c,p,f,d=a.createElement("div");if(d.setAttribute("className","t"),d.innerHTML="  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>",n=d.getElementsByTagName("*")||[],r=d.getElementsByTagName("a")[0],!r||!r.style||!n.length)return t;s=a.createElement("select"),u=s.appendChild(a.createElement("option")),o=d.getElementsByTagName("input")[0],r.style.cssText="top:1px;float:left;opacity:.5",t.getSetAttribute="t"!==d.className,t.leadingWhitespace=3===d.firstChild.nodeType,t.tbody=!d.getElementsByTagName("tbody").length,t.htmlSerialize=!!d.getElementsByTagName("link").length,t.style=/top/.test(r.getAttribute("style")),t.hrefNormalized="/a"===r.getAttribute("href"),t.opacity=/^0.5/.test(r.style.opacity),t.cssFloat=!!r.style.cssFloat,t.checkOn=!!o.value,t.optSelected=u.selected,t.enctype=!!a.createElement("form").enctype,t.html5Clone="<:nav></:nav>"!==a.createElement("nav").cloneNode(!0).outerHTML,t.inlineBlockNeedsLayout=!1,t.shrinkWrapBlocks=!1,t.pixelPosition=!1,t.deleteExpando=!0,t.noCloneEvent=!0,t.reliableMarginRight=!0,t.boxSizingReliable=!0,o.checked=!0,t.noCloneChecked=o.cloneNode(!0).checked,s.disabled=!0,t.optDisabled=!u.disabled;try{delete d.test}catch(h){t.deleteExpando=!1}o=a.createElement("input"),o.setAttribute("value",""),t.input=""===o.getAttribute("value"),o.value="t",o.setAttribute("type","radio"),t.radioValue="t"===o.value,o.setAttribute("checked","t"),o.setAttribute("name","t"),l=a.createDocumentFragment(),l.appendChild(o),t.appendChecked=o.checked,t.checkClone=l.cloneNode(!0).cloneNode(!0).lastChild.checked,d.attachEvent&&(d.attachEvent("onclick",function(){t.noCloneEvent=!1}),d.cloneNode(!0).click());for(f in{submit:!0,change:!0,focusin:!0})d.setAttribute(c="on"+f,"t"),t[f+"Bubbles"]=c in e||d.attributes[c].expando===!1;d.style.backgroundClip="content-box",d.cloneNode(!0).style.backgroundClip="",t.clearCloneStyle="content-box"===d.style.backgroundClip;for(f in x(t))break;return t.ownLast="0"!==f,x(function(){var n,r,o,s="padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",l=a.getElementsByTagName("body")[0];l&&(n=a.createElement("div"),n.style.cssText="border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px",l.appendChild(n).appendChild(d),d.innerHTML="<table><tr><td></td><td>t</td></tr></table>",o=d.getElementsByTagName("td"),o[0].style.cssText="padding:0;margin:0;border:0;display:none",p=0===o[0].offsetHeight,o[0].style.display="",o[1].style.display="none",t.reliableHiddenOffsets=p&&0===o[0].offsetHeight,d.innerHTML="",d.style.cssText="box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%;",x.swap(l,null!=l.style.zoom?{zoom:1}:{},function(){t.boxSizing=4===d.offsetWidth}),e.getComputedStyle&&(t.pixelPosition="1%"!==(e.getComputedStyle(d,null)||{}).top,t.boxSizingReliable="4px"===(e.getComputedStyle(d,null)||{width:"4px"}).width,r=d.appendChild(a.createElement("div")),r.style.cssText=d.style.cssText=s,r.style.marginRight=r.style.width="0",d.style.width="1px",t.reliableMarginRight=!parseFloat((e.getComputedStyle(r,null)||{}).marginRight)),typeof d.style.zoom!==i&&(d.innerHTML="",d.style.cssText=s+"width:1px;padding:1px;display:inline;zoom:1",t.inlineBlockNeedsLayout=3===d.offsetWidth,d.style.display="block",d.innerHTML="<div></div>",d.firstChild.style.width="5px",t.shrinkWrapBlocks=3!==d.offsetWidth,t.inlineBlockNeedsLayout&&(l.style.zoom=1)),l.removeChild(n),n=d=o=r=null)
 }),n=s=l=u=r=o=null,t}({});var B=/(?:\{[\s\S]*\}|\[[\s\S]*\])$/,P=/([A-Z])/g;function R(e,n,r,i){if(x.acceptData(e)){var o,a,s=x.expando,l=e.nodeType,u=l?x.cache:e,c=l?e[s]:e[s]&&s;if(c&&u[c]&&(i||u[c].data)||r!==t||"string"!=typeof n)return c||(c=l?e[s]=p.pop()||x.guid++:s),u[c]||(u[c]=l?{}:{toJSON:x.noop}),("object"==typeof n||"function"==typeof n)&&(i?u[c]=x.extend(u[c],n):u[c].data=x.extend(u[c].data,n)),a=u[c],i||(a.data||(a.data={}),a=a.data),r!==t&&(a[x.camelCase(n)]=r),"string"==typeof n?(o=a[n],null==o&&(o=a[x.camelCase(n)])):o=a,o}}function W(e,t,n){if(x.acceptData(e)){var r,i,o=e.nodeType,a=o?x.cache:e,s=o?e[x.expando]:x.expando;if(a[s]){if(t&&(r=n?a[s]:a[s].data)){x.isArray(t)?t=t.concat(x.map(t,x.camelCase)):t in r?t=[t]:(t=x.camelCase(t),t=t in r?[t]:t.split(" ")),i=t.length;while(i--)delete r[t[i]];if(n?!I(r):!x.isEmptyObject(r))return}(n||(delete a[s].data,I(a[s])))&&(o?x.cleanData([e],!0):x.support.deleteExpando||a!=a.window?delete a[s]:a[s]=null)}}}x.extend({cache:{},noData:{applet:!0,embed:!0,object:"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"},hasData:function(e){return e=e.nodeType?x.cache[e[x.expando]]:e[x.expando],!!e&&!I(e)},data:function(e,t,n){return R(e,t,n)},removeData:function(e,t){return W(e,t)},_data:function(e,t,n){return R(e,t,n,!0)},_removeData:function(e,t){return W(e,t,!0)},acceptData:function(e){if(e.nodeType&&1!==e.nodeType&&9!==e.nodeType)return!1;var t=e.nodeName&&x.noData[e.nodeName.toLowerCase()];return!t||t!==!0&&e.getAttribute("classid")===t}}),x.fn.extend({data:function(e,n){var r,i,o=null,a=0,s=this[0];if(e===t){if(this.length&&(o=x.data(s),1===s.nodeType&&!x._data(s,"parsedAttrs"))){for(r=s.attributes;r.length>a;a++)i=r[a].name,0===i.indexOf("data-")&&(i=x.camelCase(i.slice(5)),$(s,i,o[i]));x._data(s,"parsedAttrs",!0)}return o}return"object"==typeof e?this.each(function(){x.data(this,e)}):arguments.length>1?this.each(function(){x.data(this,e,n)}):s?$(s,e,x.data(s,e)):null},removeData:function(e){return this.each(function(){x.removeData(this,e)})}});function $(e,n,r){if(r===t&&1===e.nodeType){var i="data-"+n.replace(P,"-$1").toLowerCase();if(r=e.getAttribute(i),"string"==typeof r){try{r="true"===r?!0:"false"===r?!1:"null"===r?null:+r+""===r?+r:B.test(r)?x.parseJSON(r):r}catch(o){}x.data(e,n,r)}else r=t}return r}function I(e){var t;for(t in e)if(("data"!==t||!x.isEmptyObject(e[t]))&&"toJSON"!==t)return!1;return!0}x.extend({queue:function(e,n,r){var i;return e?(n=(n||"fx")+"queue",i=x._data(e,n),r&&(!i||x.isArray(r)?i=x._data(e,n,x.makeArray(r)):i.push(r)),i||[]):t},dequeue:function(e,t){t=t||"fx";var n=x.queue(e,t),r=n.length,i=n.shift(),o=x._queueHooks(e,t),a=function(){x.dequeue(e,t)};"inprogress"===i&&(i=n.shift(),r--),i&&("fx"===t&&n.unshift("inprogress"),delete o.stop,i.call(e,a,o)),!r&&o&&o.empty.fire()},_queueHooks:function(e,t){var n=t+"queueHooks";return x._data(e,n)||x._data(e,n,{empty:x.Callbacks("once memory").add(function(){x._removeData(e,t+"queue"),x._removeData(e,n)})})}}),x.fn.extend({queue:function(e,n){var r=2;return"string"!=typeof e&&(n=e,e="fx",r--),r>arguments.length?x.queue(this[0],e):n===t?this:this.each(function(){var t=x.queue(this,e,n);x._queueHooks(this,e),"fx"===e&&"inprogress"!==t[0]&&x.dequeue(this,e)})},dequeue:function(e){return this.each(function(){x.dequeue(this,e)})},delay:function(e,t){return e=x.fx?x.fx.speeds[e]||e:e,t=t||"fx",this.queue(t,function(t,n){var r=setTimeout(t,e);n.stop=function(){clearTimeout(r)}})},clearQueue:function(e){return this.queue(e||"fx",[])},promise:function(e,n){var r,i=1,o=x.Deferred(),a=this,s=this.length,l=function(){--i||o.resolveWith(a,[a])};"string"!=typeof e&&(n=e,e=t),e=e||"fx";while(s--)r=x._data(a[s],e+"queueHooks"),r&&r.empty&&(i++,r.empty.add(l));return l(),o.promise(n)}});var z,X,U=/[\t\r\n\f]/g,V=/\r/g,Y=/^(?:input|select|textarea|button|object)$/i,J=/^(?:a|area)$/i,G=/^(?:checked|selected)$/i,Q=x.support.getSetAttribute,K=x.support.input;x.fn.extend({attr:function(e,t){return x.access(this,x.attr,e,t,arguments.length>1)},removeAttr:function(e){return this.each(function(){x.removeAttr(this,e)})},prop:function(e,t){return x.access(this,x.prop,e,t,arguments.length>1)},removeProp:function(e){return e=x.propFix[e]||e,this.each(function(){try{this[e]=t,delete this[e]}catch(n){}})},addClass:function(e){var t,n,r,i,o,a=0,s=this.length,l="string"==typeof e&&e;if(x.isFunction(e))return this.each(function(t){x(this).addClass(e.call(this,t,this.className))});if(l)for(t=(e||"").match(T)||[];s>a;a++)if(n=this[a],r=1===n.nodeType&&(n.className?(" "+n.className+" ").replace(U," "):" ")){o=0;while(i=t[o++])0>r.indexOf(" "+i+" ")&&(r+=i+" ");n.className=x.trim(r)}return this},removeClass:function(e){var t,n,r,i,o,a=0,s=this.length,l=0===arguments.length||"string"==typeof e&&e;if(x.isFunction(e))return this.each(function(t){x(this).removeClass(e.call(this,t,this.className))});if(l)for(t=(e||"").match(T)||[];s>a;a++)if(n=this[a],r=1===n.nodeType&&(n.className?(" "+n.className+" ").replace(U," "):"")){o=0;while(i=t[o++])while(r.indexOf(" "+i+" ")>=0)r=r.replace(" "+i+" "," ");n.className=e?x.trim(r):""}return this},toggleClass:function(e,t){var n=typeof e,r="boolean"==typeof t;return x.isFunction(e)?this.each(function(n){x(this).toggleClass(e.call(this,n,this.className,t),t)}):this.each(function(){if("string"===n){var o,a=0,s=x(this),l=t,u=e.match(T)||[];while(o=u[a++])l=r?l:!s.hasClass(o),s[l?"addClass":"removeClass"](o)}else(n===i||"boolean"===n)&&(this.className&&x._data(this,"__className__",this.className),this.className=this.className||e===!1?"":x._data(this,"__className__")||"")})},hasClass:function(e){var t=" "+e+" ",n=0,r=this.length;for(;r>n;n++)if(1===this[n].nodeType&&(" "+this[n].className+" ").replace(U," ").indexOf(t)>=0)return!0;return!1},val:function(e){var n,r,i,o=this[0];{if(arguments.length)return i=x.isFunction(e),this.each(function(n){var o;1===this.nodeType&&(o=i?e.call(this,n,x(this).val()):e,null==o?o="":"number"==typeof o?o+="":x.isArray(o)&&(o=x.map(o,function(e){return null==e?"":e+""})),r=x.valHooks[this.type]||x.valHooks[this.nodeName.toLowerCase()],r&&"set"in r&&r.set(this,o,"value")!==t||(this.value=o))});if(o)return r=x.valHooks[o.type]||x.valHooks[o.nodeName.toLowerCase()],r&&"get"in r&&(n=r.get(o,"value"))!==t?n:(n=o.value,"string"==typeof n?n.replace(V,""):null==n?"":n)}}}),x.extend({valHooks:{option:{get:function(e){var t=x.find.attr(e,"value");return null!=t?t:e.text}},select:{get:function(e){var t,n,r=e.options,i=e.selectedIndex,o="select-one"===e.type||0>i,a=o?null:[],s=o?i+1:r.length,l=0>i?s:o?i:0;for(;s>l;l++)if(n=r[l],!(!n.selected&&l!==i||(x.support.optDisabled?n.disabled:null!==n.getAttribute("disabled"))||n.parentNode.disabled&&x.nodeName(n.parentNode,"optgroup"))){if(t=x(n).val(),o)return t;a.push(t)}return a},set:function(e,t){var n,r,i=e.options,o=x.makeArray(t),a=i.length;while(a--)r=i[a],(r.selected=x.inArray(x(r).val(),o)>=0)&&(n=!0);return n||(e.selectedIndex=-1),o}}},attr:function(e,n,r){var o,a,s=e.nodeType;if(e&&3!==s&&8!==s&&2!==s)return typeof e.getAttribute===i?x.prop(e,n,r):(1===s&&x.isXMLDoc(e)||(n=n.toLowerCase(),o=x.attrHooks[n]||(x.expr.match.bool.test(n)?X:z)),r===t?o&&"get"in o&&null!==(a=o.get(e,n))?a:(a=x.find.attr(e,n),null==a?t:a):null!==r?o&&"set"in o&&(a=o.set(e,r,n))!==t?a:(e.setAttribute(n,r+""),r):(x.removeAttr(e,n),t))},removeAttr:function(e,t){var n,r,i=0,o=t&&t.match(T);if(o&&1===e.nodeType)while(n=o[i++])r=x.propFix[n]||n,x.expr.match.bool.test(n)?K&&Q||!G.test(n)?e[r]=!1:e[x.camelCase("default-"+n)]=e[r]=!1:x.attr(e,n,""),e.removeAttribute(Q?n:r)},attrHooks:{type:{set:function(e,t){if(!x.support.radioValue&&"radio"===t&&x.nodeName(e,"input")){var n=e.value;return e.setAttribute("type",t),n&&(e.value=n),t}}}},propFix:{"for":"htmlFor","class":"className"},prop:function(e,n,r){var i,o,a,s=e.nodeType;if(e&&3!==s&&8!==s&&2!==s)return a=1!==s||!x.isXMLDoc(e),a&&(n=x.propFix[n]||n,o=x.propHooks[n]),r!==t?o&&"set"in o&&(i=o.set(e,r,n))!==t?i:e[n]=r:o&&"get"in o&&null!==(i=o.get(e,n))?i:e[n]},propHooks:{tabIndex:{get:function(e){var t=x.find.attr(e,"tabindex");return t?parseInt(t,10):Y.test(e.nodeName)||J.test(e.nodeName)&&e.href?0:-1}}}}),X={set:function(e,t,n){return t===!1?x.removeAttr(e,n):K&&Q||!G.test(n)?e.setAttribute(!Q&&x.propFix[n]||n,n):e[x.camelCase("default-"+n)]=e[n]=!0,n}},x.each(x.expr.match.bool.source.match(/\w+/g),function(e,n){var r=x.expr.attrHandle[n]||x.find.attr;x.expr.attrHandle[n]=K&&Q||!G.test(n)?function(e,n,i){var o=x.expr.attrHandle[n],a=i?t:(x.expr.attrHandle[n]=t)!=r(e,n,i)?n.toLowerCase():null;return x.expr.attrHandle[n]=o,a}:function(e,n,r){return r?t:e[x.camelCase("default-"+n)]?n.toLowerCase():null}}),K&&Q||(x.attrHooks.value={set:function(e,n,r){return x.nodeName(e,"input")?(e.defaultValue=n,t):z&&z.set(e,n,r)}}),Q||(z={set:function(e,n,r){var i=e.getAttributeNode(r);return i||e.setAttributeNode(i=e.ownerDocument.createAttribute(r)),i.value=n+="","value"===r||n===e.getAttribute(r)?n:t}},x.expr.attrHandle.id=x.expr.attrHandle.name=x.expr.attrHandle.coords=function(e,n,r){var i;return r?t:(i=e.getAttributeNode(n))&&""!==i.value?i.value:null},x.valHooks.button={get:function(e,n){var r=e.getAttributeNode(n);return r&&r.specified?r.value:t},set:z.set},x.attrHooks.contenteditable={set:function(e,t,n){z.set(e,""===t?!1:t,n)}},x.each(["width","height"],function(e,n){x.attrHooks[n]={set:function(e,r){return""===r?(e.setAttribute(n,"auto"),r):t}}})),x.support.hrefNormalized||x.each(["href","src"],function(e,t){x.propHooks[t]={get:function(e){return e.getAttribute(t,4)}}}),x.support.style||(x.attrHooks.style={get:function(e){return e.style.cssText||t},set:function(e,t){return e.style.cssText=t+""}}),x.support.optSelected||(x.propHooks.selected={get:function(e){var t=e.parentNode;return t&&(t.selectedIndex,t.parentNode&&t.parentNode.selectedIndex),null}}),x.each(["tabIndex","readOnly","maxLength","cellSpacing","cellPadding","rowSpan","colSpan","useMap","frameBorder","contentEditable"],function(){x.propFix[this.toLowerCase()]=this}),x.support.enctype||(x.propFix.enctype="encoding"),x.each(["radio","checkbox"],function(){x.valHooks[this]={set:function(e,n){return x.isArray(n)?e.checked=x.inArray(x(e).val(),n)>=0:t}},x.support.checkOn||(x.valHooks[this].get=function(e){return null===e.getAttribute("value")?"on":e.value})});var Z=/^(?:input|select|textarea)$/i,et=/^key/,tt=/^(?:mouse|contextmenu)|click/,nt=/^(?:focusinfocus|focusoutblur)$/,rt=/^([^.]*)(?:\.(.+)|)$/;function it(){return!0}function ot(){return!1}function at(){try{return a.activeElement}catch(e){}}x.event={global:{},add:function(e,n,r,o,a){var s,l,u,c,p,f,d,h,g,m,y,v=x._data(e);if(v){r.handler&&(c=r,r=c.handler,a=c.selector),r.guid||(r.guid=x.guid++),(l=v.events)||(l=v.events={}),(f=v.handle)||(f=v.handle=function(e){return typeof x===i||e&&x.event.triggered===e.type?t:x.event.dispatch.apply(f.elem,arguments)},f.elem=e),n=(n||"").match(T)||[""],u=n.length;while(u--)s=rt.exec(n[u])||[],g=y=s[1],m=(s[2]||"").split(".").sort(),g&&(p=x.event.special[g]||{},g=(a?p.delegateType:p.bindType)||g,p=x.event.special[g]||{},d=x.extend({type:g,origType:y,data:o,handler:r,guid:r.guid,selector:a,needsContext:a&&x.expr.match.needsContext.test(a),namespace:m.join(".")},c),(h=l[g])||(h=l[g]=[],h.delegateCount=0,p.setup&&p.setup.call(e,o,m,f)!==!1||(e.addEventListener?e.addEventListener(g,f,!1):e.attachEvent&&e.attachEvent("on"+g,f))),p.add&&(p.add.call(e,d),d.handler.guid||(d.handler.guid=r.guid)),a?h.splice(h.delegateCount++,0,d):h.push(d),x.event.global[g]=!0);e=null}},remove:function(e,t,n,r,i){var o,a,s,l,u,c,p,f,d,h,g,m=x.hasData(e)&&x._data(e);if(m&&(c=m.events)){t=(t||"").match(T)||[""],u=t.length;while(u--)if(s=rt.exec(t[u])||[],d=g=s[1],h=(s[2]||"").split(".").sort(),d){p=x.event.special[d]||{},d=(r?p.delegateType:p.bindType)||d,f=c[d]||[],s=s[2]&&RegExp("(^|\\.)"+h.join("\\.(?:.*\\.|)")+"(\\.|$)"),l=o=f.length;while(o--)a=f[o],!i&&g!==a.origType||n&&n.guid!==a.guid||s&&!s.test(a.namespace)||r&&r!==a.selector&&("**"!==r||!a.selector)||(f.splice(o,1),a.selector&&f.delegateCount--,p.remove&&p.remove.call(e,a));l&&!f.length&&(p.teardown&&p.teardown.call(e,h,m.handle)!==!1||x.removeEvent(e,d,m.handle),delete c[d])}else for(d in c)x.event.remove(e,d+t[u],n,r,!0);x.isEmptyObject(c)&&(delete m.handle,x._removeData(e,"events"))}},trigger:function(n,r,i,o){var s,l,u,c,p,f,d,h=[i||a],g=v.call(n,"type")?n.type:n,m=v.call(n,"namespace")?n.namespace.split("."):[];if(u=f=i=i||a,3!==i.nodeType&&8!==i.nodeType&&!nt.test(g+x.event.triggered)&&(g.indexOf(".")>=0&&(m=g.split("."),g=m.shift(),m.sort()),l=0>g.indexOf(":")&&"on"+g,n=n[x.expando]?n:new x.Event(g,"object"==typeof n&&n),n.isTrigger=o?2:3,n.namespace=m.join("."),n.namespace_re=n.namespace?RegExp("(^|\\.)"+m.join("\\.(?:.*\\.|)")+"(\\.|$)"):null,n.result=t,n.target||(n.target=i),r=null==r?[n]:x.makeArray(r,[n]),p=x.event.special[g]||{},o||!p.trigger||p.trigger.apply(i,r)!==!1)){if(!o&&!p.noBubble&&!x.isWindow(i)){for(c=p.delegateType||g,nt.test(c+g)||(u=u.parentNode);u;u=u.parentNode)h.push(u),f=u;f===(i.ownerDocument||a)&&h.push(f.defaultView||f.parentWindow||e)}d=0;while((u=h[d++])&&!n.isPropagationStopped())n.type=d>1?c:p.bindType||g,s=(x._data(u,"events")||{})[n.type]&&x._data(u,"handle"),s&&s.apply(u,r),s=l&&u[l],s&&x.acceptData(u)&&s.apply&&s.apply(u,r)===!1&&n.preventDefault();if(n.type=g,!o&&!n.isDefaultPrevented()&&(!p._default||p._default.apply(h.pop(),r)===!1)&&x.acceptData(i)&&l&&i[g]&&!x.isWindow(i)){f=i[l],f&&(i[l]=null),x.event.triggered=g;try{i[g]()}catch(y){}x.event.triggered=t,f&&(i[l]=f)}return n.result}},dispatch:function(e){e=x.event.fix(e);var n,r,i,o,a,s=[],l=g.call(arguments),u=(x._data(this,"events")||{})[e.type]||[],c=x.event.special[e.type]||{};if(l[0]=e,e.delegateTarget=this,!c.preDispatch||c.preDispatch.call(this,e)!==!1){s=x.event.handlers.call(this,e,u),n=0;while((o=s[n++])&&!e.isPropagationStopped()){e.currentTarget=o.elem,a=0;while((i=o.handlers[a++])&&!e.isImmediatePropagationStopped())(!e.namespace_re||e.namespace_re.test(i.namespace))&&(e.handleObj=i,e.data=i.data,r=((x.event.special[i.origType]||{}).handle||i.handler).apply(o.elem,l),r!==t&&(e.result=r)===!1&&(e.preventDefault(),e.stopPropagation()))}return c.postDispatch&&c.postDispatch.call(this,e),e.result}},handlers:function(e,n){var r,i,o,a,s=[],l=n.delegateCount,u=e.target;if(l&&u.nodeType&&(!e.button||"click"!==e.type))for(;u!=this;u=u.parentNode||this)if(1===u.nodeType&&(u.disabled!==!0||"click"!==e.type)){for(o=[],a=0;l>a;a++)i=n[a],r=i.selector+" ",o[r]===t&&(o[r]=i.needsContext?x(r,this).index(u)>=0:x.find(r,this,null,[u]).length),o[r]&&o.push(i);o.length&&s.push({elem:u,handlers:o})}return n.length>l&&s.push({elem:this,handlers:n.slice(l)}),s},fix:function(e){if(e[x.expando])return e;var t,n,r,i=e.type,o=e,s=this.fixHooks[i];s||(this.fixHooks[i]=s=tt.test(i)?this.mouseHooks:et.test(i)?this.keyHooks:{}),r=s.props?this.props.concat(s.props):this.props,e=new x.Event(o),t=r.length;while(t--)n=r[t],e[n]=o[n];return e.target||(e.target=o.srcElement||a),3===e.target.nodeType&&(e.target=e.target.parentNode),e.metaKey=!!e.metaKey,s.filter?s.filter(e,o):e},props:"altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which".split(" "),fixHooks:{},keyHooks:{props:"char charCode key keyCode".split(" "),filter:function(e,t){return null==e.which&&(e.which=null!=t.charCode?t.charCode:t.keyCode),e}},mouseHooks:{props:"button buttons clientX clientY fromElement offsetX offsetY pageX pageY screenX screenY toElement".split(" "),filter:function(e,n){var r,i,o,s=n.button,l=n.fromElement;return null==e.pageX&&null!=n.clientX&&(i=e.target.ownerDocument||a,o=i.documentElement,r=i.body,e.pageX=n.clientX+(o&&o.scrollLeft||r&&r.scrollLeft||0)-(o&&o.clientLeft||r&&r.clientLeft||0),e.pageY=n.clientY+(o&&o.scrollTop||r&&r.scrollTop||0)-(o&&o.clientTop||r&&r.clientTop||0)),!e.relatedTarget&&l&&(e.relatedTarget=l===e.target?n.toElement:l),e.which||s===t||(e.which=1&s?1:2&s?3:4&s?2:0),e}},special:{load:{noBubble:!0},focus:{trigger:function(){if(this!==at()&&this.focus)try{return this.focus(),!1}catch(e){}},delegateType:"focusin"},blur:{trigger:function(){return this===at()&&this.blur?(this.blur(),!1):t},delegateType:"focusout"},click:{trigger:function(){return x.nodeName(this,"input")&&"checkbox"===this.type&&this.click?(this.click(),!1):t},_default:function(e){return x.nodeName(e.target,"a")}},beforeunload:{postDispatch:function(e){e.result!==t&&(e.originalEvent.returnValue=e.result)}}},simulate:function(e,t,n,r){var i=x.extend(new x.Event,n,{type:e,isSimulated:!0,originalEvent:{}});r?x.event.trigger(i,null,t):x.event.dispatch.call(t,i),i.isDefaultPrevented()&&n.preventDefault()}},x.removeEvent=a.removeEventListener?function(e,t,n){e.removeEventListener&&e.removeEventListener(t,n,!1)}:function(e,t,n){var r="on"+t;e.detachEvent&&(typeof e[r]===i&&(e[r]=null),e.detachEvent(r,n))},x.Event=function(e,n){return this instanceof x.Event?(e&&e.type?(this.originalEvent=e,this.type=e.type,this.isDefaultPrevented=e.defaultPrevented||e.returnValue===!1||e.getPreventDefault&&e.getPreventDefault()?it:ot):this.type=e,n&&x.extend(this,n),this.timeStamp=e&&e.timeStamp||x.now(),this[x.expando]=!0,t):new x.Event(e,n)},x.Event.prototype={isDefaultPrevented:ot,isPropagationStopped:ot,isImmediatePropagationStopped:ot,preventDefault:function(){var e=this.originalEvent;this.isDefaultPrevented=it,e&&(e.preventDefault?e.preventDefault():e.returnValue=!1)},stopPropagation:function(){var e=this.originalEvent;this.isPropagationStopped=it,e&&(e.stopPropagation&&e.stopPropagation(),e.cancelBubble=!0)},stopImmediatePropagation:function(){this.isImmediatePropagationStopped=it,this.stopPropagation()}},x.each({mouseenter:"mouseover",mouseleave:"mouseout"},function(e,t){x.event.special[e]={delegateType:t,bindType:t,handle:function(e){var n,r=this,i=e.relatedTarget,o=e.handleObj;return(!i||i!==r&&!x.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,arguments),e.type=t),n}}}),x.support.submitBubbles||(x.event.special.submit={setup:function(){return x.nodeName(this,"form")?!1:(x.event.add(this,"click._submit keypress._submit",function(e){var n=e.target,r=x.nodeName(n,"input")||x.nodeName(n,"button")?n.form:t;r&&!x._data(r,"submitBubbles")&&(x.event.add(r,"submit._submit",function(e){e._submit_bubble=!0}),x._data(r,"submitBubbles",!0))}),t)},postDispatch:function(e){e._submit_bubble&&(delete e._submit_bubble,this.parentNode&&!e.isTrigger&&x.event.simulate("submit",this.parentNode,e,!0))},teardown:function(){return x.nodeName(this,"form")?!1:(x.event.remove(this,"._submit"),t)}}),x.support.changeBubbles||(x.event.special.change={setup:function(){return Z.test(this.nodeName)?(("checkbox"===this.type||"radio"===this.type)&&(x.event.add(this,"propertychange._change",function(e){"checked"===e.originalEvent.propertyName&&(this._just_changed=!0)}),x.event.add(this,"click._change",function(e){this._just_changed&&!e.isTrigger&&(this._just_changed=!1),x.event.simulate("change",this,e,!0)})),!1):(x.event.add(this,"beforeactivate._change",function(e){var t=e.target;Z.test(t.nodeName)&&!x._data(t,"changeBubbles")&&(x.event.add(t,"change._change",function(e){!this.parentNode||e.isSimulated||e.isTrigger||x.event.simulate("change",this.parentNode,e,!0)}),x._data(t,"changeBubbles",!0))}),t)},handle:function(e){var n=e.target;return this!==n||e.isSimulated||e.isTrigger||"radio"!==n.type&&"checkbox"!==n.type?e.handleObj.handler.apply(this,arguments):t},teardown:function(){return x.event.remove(this,"._change"),!Z.test(this.nodeName)}}),x.support.focusinBubbles||x.each({focus:"focusin",blur:"focusout"},function(e,t){var n=0,r=function(e){x.event.simulate(t,e.target,x.event.fix(e),!0)};x.event.special[t]={setup:function(){0===n++&&a.addEventListener(e,r,!0)},teardown:function(){0===--n&&a.removeEventListener(e,r,!0)}}}),x.fn.extend({on:function(e,n,r,i,o){var a,s;if("object"==typeof e){"string"!=typeof n&&(r=r||n,n=t);for(a in e)this.on(a,n,r,e[a],o);return this}if(null==r&&null==i?(i=n,r=n=t):null==i&&("string"==typeof n?(i=r,r=t):(i=r,r=n,n=t)),i===!1)i=ot;else if(!i)return this;return 1===o&&(s=i,i=function(e){return x().off(e),s.apply(this,arguments)},i.guid=s.guid||(s.guid=x.guid++)),this.each(function(){x.event.add(this,e,i,r,n)})},one:function(e,t,n,r){return this.on(e,t,n,r,1)},off:function(e,n,r){var i,o;if(e&&e.preventDefault&&e.handleObj)return i=e.handleObj,x(e.delegateTarget).off(i.namespace?i.origType+"."+i.namespace:i.origType,i.selector,i.handler),this;if("object"==typeof e){for(o in e)this.off(o,n,e[o]);return this}return(n===!1||"function"==typeof n)&&(r=n,n=t),r===!1&&(r=ot),this.each(function(){x.event.remove(this,e,r,n)})},trigger:function(e,t){return this.each(function(){x.event.trigger(e,t,this)})},triggerHandler:function(e,n){var r=this[0];return r?x.event.trigger(e,n,r,!0):t}});var st=/^.[^:#\[\.,]*$/,lt=/^(?:parents|prev(?:Until|All))/,ut=x.expr.match.needsContext,ct={children:!0,contents:!0,next:!0,prev:!0};x.fn.extend({find:function(e){var t,n=[],r=this,i=r.length;if("string"!=typeof e)return this.pushStack(x(e).filter(function(){for(t=0;i>t;t++)if(x.contains(r[t],this))return!0}));for(t=0;i>t;t++)x.find(e,r[t],n);return n=this.pushStack(i>1?x.unique(n):n),n.selector=this.selector?this.selector+" "+e:e,n},has:function(e){var t,n=x(e,this),r=n.length;return this.filter(function(){for(t=0;r>t;t++)if(x.contains(this,n[t]))return!0})},not:function(e){return this.pushStack(ft(this,e||[],!0))},filter:function(e){return this.pushStack(ft(this,e||[],!1))},is:function(e){return!!ft(this,"string"==typeof e&&ut.test(e)?x(e):e||[],!1).length},closest:function(e,t){var n,r=0,i=this.length,o=[],a=ut.test(e)||"string"!=typeof e?x(e,t||this.context):0;for(;i>r;r++)for(n=this[r];n&&n!==t;n=n.parentNode)if(11>n.nodeType&&(a?a.index(n)>-1:1===n.nodeType&&x.find.matchesSelector(n,e))){n=o.push(n);break}return this.pushStack(o.length>1?x.unique(o):o)},index:function(e){return e?"string"==typeof e?x.inArray(this[0],x(e)):x.inArray(e.jquery?e[0]:e,this):this[0]&&this[0].parentNode?this.first().prevAll().length:-1},add:function(e,t){var n="string"==typeof e?x(e,t):x.makeArray(e&&e.nodeType?[e]:e),r=x.merge(this.get(),n);return this.pushStack(x.unique(r))},addBack:function(e){return this.add(null==e?this.prevObject:this.prevObject.filter(e))}});function pt(e,t){do e=e[t];while(e&&1!==e.nodeType);return e}x.each({parent:function(e){var t=e.parentNode;return t&&11!==t.nodeType?t:null},parents:function(e){return x.dir(e,"parentNode")},parentsUntil:function(e,t,n){return x.dir(e,"parentNode",n)},next:function(e){return pt(e,"nextSibling")},prev:function(e){return pt(e,"previousSibling")},nextAll:function(e){return x.dir(e,"nextSibling")},prevAll:function(e){return x.dir(e,"previousSibling")},nextUntil:function(e,t,n){return x.dir(e,"nextSibling",n)},prevUntil:function(e,t,n){return x.dir(e,"previousSibling",n)},siblings:function(e){return x.sibling((e.parentNode||{}).firstChild,e)},children:function(e){return x.sibling(e.firstChild)},contents:function(e){return x.nodeName(e,"iframe")?e.contentDocument||e.contentWindow.document:x.merge([],e.childNodes)}},function(e,t){x.fn[e]=function(n,r){var i=x.map(this,t,n);return"Until"!==e.slice(-5)&&(r=n),r&&"string"==typeof r&&(i=x.filter(r,i)),this.length>1&&(ct[e]||(i=x.unique(i)),lt.test(e)&&(i=i.reverse())),this.pushStack(i)}}),x.extend({filter:function(e,t,n){var r=t[0];return n&&(e=":not("+e+")"),1===t.length&&1===r.nodeType?x.find.matchesSelector(r,e)?[r]:[]:x.find.matches(e,x.grep(t,function(e){return 1===e.nodeType}))},dir:function(e,n,r){var i=[],o=e[n];while(o&&9!==o.nodeType&&(r===t||1!==o.nodeType||!x(o).is(r)))1===o.nodeType&&i.push(o),o=o[n];return i},sibling:function(e,t){var n=[];for(;e;e=e.nextSibling)1===e.nodeType&&e!==t&&n.push(e);return n}});function ft(e,t,n){if(x.isFunction(t))return x.grep(e,function(e,r){return!!t.call(e,r,e)!==n});if(t.nodeType)return x.grep(e,function(e){return e===t!==n});if("string"==typeof t){if(st.test(t))return x.filter(t,e,n);t=x.filter(t,e)}return x.grep(e,function(e){return x.inArray(e,t)>=0!==n})}function dt(e){var t=ht.split("|"),n=e.createDocumentFragment();if(n.createElement)while(t.length)n.createElement(t.pop());return n}var ht="abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",gt=/ jQuery\d+="(?:null|\d+)"/g,mt=RegExp("<(?:"+ht+")[\\s/>]","i"),yt=/^\s+/,vt=/<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,bt=/<([\w:]+)/,xt=/<tbody/i,wt=/<|&#?\w+;/,Tt=/<(?:script|style|link)/i,Ct=/^(?:checkbox|radio)$/i,Nt=/checked\s*(?:[^=]|=\s*.checked.)/i,kt=/^$|\/(?:java|ecma)script/i,Et=/^true\/(.*)/,St=/^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,At={option:[1,"<select multiple='multiple'>","</select>"],legend:[1,"<fieldset>","</fieldset>"],area:[1,"<map>","</map>"],param:[1,"<object>","</object>"],thead:[1,"<table>","</table>"],tr:[2,"<table><tbody>","</tbody></table>"],col:[2,"<table><tbody></tbody><colgroup>","</colgroup></table>"],td:[3,"<table><tbody><tr>","</tr></tbody></table>"],_default:x.support.htmlSerialize?[0,"",""]:[1,"X<div>","</div>"]},jt=dt(a),Dt=jt.appendChild(a.createElement("div"));At.optgroup=At.option,At.tbody=At.tfoot=At.colgroup=At.caption=At.thead,At.th=At.td,x.fn.extend({text:function(e){return x.access(this,function(e){return e===t?x.text(this):this.empty().append((this[0]&&this[0].ownerDocument||a).createTextNode(e))},null,e,arguments.length)},append:function(){return this.domManip(arguments,function(e){if(1===this.nodeType||11===this.nodeType||9===this.nodeType){var t=Lt(this,e);t.appendChild(e)}})},prepend:function(){return this.domManip(arguments,function(e){if(1===this.nodeType||11===this.nodeType||9===this.nodeType){var t=Lt(this,e);t.insertBefore(e,t.firstChild)}})},before:function(){return this.domManip(arguments,function(e){this.parentNode&&this.parentNode.insertBefore(e,this)})},after:function(){return this.domManip(arguments,function(e){this.parentNode&&this.parentNode.insertBefore(e,this.nextSibling)})},remove:function(e,t){var n,r=e?x.filter(e,this):this,i=0;for(;null!=(n=r[i]);i++)t||1!==n.nodeType||x.cleanData(Ft(n)),n.parentNode&&(t&&x.contains(n.ownerDocument,n)&&_t(Ft(n,"script")),n.parentNode.removeChild(n));return this},empty:function(){var e,t=0;for(;null!=(e=this[t]);t++){1===e.nodeType&&x.cleanData(Ft(e,!1));while(e.firstChild)e.removeChild(e.firstChild);e.options&&x.nodeName(e,"select")&&(e.options.length=0)}return this},clone:function(e,t){return e=null==e?!1:e,t=null==t?e:t,this.map(function(){return x.clone(this,e,t)})},html:function(e){return x.access(this,function(e){var n=this[0]||{},r=0,i=this.length;if(e===t)return 1===n.nodeType?n.innerHTML.replace(gt,""):t;if(!("string"!=typeof e||Tt.test(e)||!x.support.htmlSerialize&&mt.test(e)||!x.support.leadingWhitespace&&yt.test(e)||At[(bt.exec(e)||["",""])[1].toLowerCase()])){e=e.replace(vt,"<$1></$2>");try{for(;i>r;r++)n=this[r]||{},1===n.nodeType&&(x.cleanData(Ft(n,!1)),n.innerHTML=e);n=0}catch(o){}}n&&this.empty().append(e)},null,e,arguments.length)},replaceWith:function(){var e=x.map(this,function(e){return[e.nextSibling,e.parentNode]}),t=0;return this.domManip(arguments,function(n){var r=e[t++],i=e[t++];i&&(r&&r.parentNode!==i&&(r=this.nextSibling),x(this).remove(),i.insertBefore(n,r))},!0),t?this:this.remove()},detach:function(e){return this.remove(e,!0)},domManip:function(e,t,n){e=d.apply([],e);var r,i,o,a,s,l,u=0,c=this.length,p=this,f=c-1,h=e[0],g=x.isFunction(h);if(g||!(1>=c||"string"!=typeof h||x.support.checkClone)&&Nt.test(h))return this.each(function(r){var i=p.eq(r);g&&(e[0]=h.call(this,r,i.html())),i.domManip(e,t,n)});if(c&&(l=x.buildFragment(e,this[0].ownerDocument,!1,!n&&this),r=l.firstChild,1===l.childNodes.length&&(l=r),r)){for(a=x.map(Ft(l,"script"),Ht),o=a.length;c>u;u++)i=l,u!==f&&(i=x.clone(i,!0,!0),o&&x.merge(a,Ft(i,"script"))),t.call(this[u],i,u);if(o)for(s=a[a.length-1].ownerDocument,x.map(a,qt),u=0;o>u;u++)i=a[u],kt.test(i.type||"")&&!x._data(i,"globalEval")&&x.contains(s,i)&&(i.src?x._evalUrl(i.src):x.globalEval((i.text||i.textContent||i.innerHTML||"").replace(St,"")));l=r=null}return this}});function Lt(e,t){return x.nodeName(e,"table")&&x.nodeName(1===t.nodeType?t:t.firstChild,"tr")?e.getElementsByTagName("tbody")[0]||e.appendChild(e.ownerDocument.createElement("tbody")):e}function Ht(e){return e.type=(null!==x.find.attr(e,"type"))+"/"+e.type,e}function qt(e){var t=Et.exec(e.type);return t?e.type=t[1]:e.removeAttribute("type"),e}function _t(e,t){var n,r=0;for(;null!=(n=e[r]);r++)x._data(n,"globalEval",!t||x._data(t[r],"globalEval"))}function Mt(e,t){if(1===t.nodeType&&x.hasData(e)){var n,r,i,o=x._data(e),a=x._data(t,o),s=o.events;if(s){delete a.handle,a.events={};for(n in s)for(r=0,i=s[n].length;i>r;r++)x.event.add(t,n,s[n][r])}a.data&&(a.data=x.extend({},a.data))}}function Ot(e,t){var n,r,i;if(1===t.nodeType){if(n=t.nodeName.toLowerCase(),!x.support.noCloneEvent&&t[x.expando]){i=x._data(t);for(r in i.events)x.removeEvent(t,r,i.handle);t.removeAttribute(x.expando)}"script"===n&&t.text!==e.text?(Ht(t).text=e.text,qt(t)):"object"===n?(t.parentNode&&(t.outerHTML=e.outerHTML),x.support.html5Clone&&e.innerHTML&&!x.trim(t.innerHTML)&&(t.innerHTML=e.innerHTML)):"input"===n&&Ct.test(e.type)?(t.defaultChecked=t.checked=e.checked,t.value!==e.value&&(t.value=e.value)):"option"===n?t.defaultSelected=t.selected=e.defaultSelected:("input"===n||"textarea"===n)&&(t.defaultValue=e.defaultValue)}}x.each({appendTo:"append",prependTo:"prepend",insertBefore:"before",insertAfter:"after",replaceAll:"replaceWith"},function(e,t){x.fn[e]=function(e){var n,r=0,i=[],o=x(e),a=o.length-1;for(;a>=r;r++)n=r===a?this:this.clone(!0),x(o[r])[t](n),h.apply(i,n.get());return this.pushStack(i)}});function Ft(e,n){var r,o,a=0,s=typeof e.getElementsByTagName!==i?e.getElementsByTagName(n||"*"):typeof e.querySelectorAll!==i?e.querySelectorAll(n||"*"):t;if(!s)for(s=[],r=e.childNodes||e;null!=(o=r[a]);a++)!n||x.nodeName(o,n)?s.push(o):x.merge(s,Ft(o,n));return n===t||n&&x.nodeName(e,n)?x.merge([e],s):s}function Bt(e){Ct.test(e.type)&&(e.defaultChecked=e.checked)}x.extend({clone:function(e,t,n){var r,i,o,a,s,l=x.contains(e.ownerDocument,e);if(x.support.html5Clone||x.isXMLDoc(e)||!mt.test("<"+e.nodeName+">")?o=e.cloneNode(!0):(Dt.innerHTML=e.outerHTML,Dt.removeChild(o=Dt.firstChild)),!(x.support.noCloneEvent&&x.support.noCloneChecked||1!==e.nodeType&&11!==e.nodeType||x.isXMLDoc(e)))for(r=Ft(o),s=Ft(e),a=0;null!=(i=s[a]);++a)r[a]&&Ot(i,r[a]);if(t)if(n)for(s=s||Ft(e),r=r||Ft(o),a=0;null!=(i=s[a]);a++)Mt(i,r[a]);else Mt(e,o);return r=Ft(o,"script"),r.length>0&&_t(r,!l&&Ft(e,"script")),r=s=i=null,o},buildFragment:function(e,t,n,r){var i,o,a,s,l,u,c,p=e.length,f=dt(t),d=[],h=0;for(;p>h;h++)if(o=e[h],o||0===o)if("object"===x.type(o))x.merge(d,o.nodeType?[o]:o);else if(wt.test(o)){s=s||f.appendChild(t.createElement("div")),l=(bt.exec(o)||["",""])[1].toLowerCase(),c=At[l]||At._default,s.innerHTML=c[1]+o.replace(vt,"<$1></$2>")+c[2],i=c[0];while(i--)s=s.lastChild;if(!x.support.leadingWhitespace&&yt.test(o)&&d.push(t.createTextNode(yt.exec(o)[0])),!x.support.tbody){o="table"!==l||xt.test(o)?"<table>"!==c[1]||xt.test(o)?0:s:s.firstChild,i=o&&o.childNodes.length;while(i--)x.nodeName(u=o.childNodes[i],"tbody")&&!u.childNodes.length&&o.removeChild(u)}x.merge(d,s.childNodes),s.textContent="";while(s.firstChild)s.removeChild(s.firstChild);s=f.lastChild}else d.push(t.createTextNode(o));s&&f.removeChild(s),x.support.appendChecked||x.grep(Ft(d,"input"),Bt),h=0;while(o=d[h++])if((!r||-1===x.inArray(o,r))&&(a=x.contains(o.ownerDocument,o),s=Ft(f.appendChild(o),"script"),a&&_t(s),n)){i=0;while(o=s[i++])kt.test(o.type||"")&&n.push(o)}return s=null,f},cleanData:function(e,t){var n,r,o,a,s=0,l=x.expando,u=x.cache,c=x.support.deleteExpando,f=x.event.special;for(;null!=(n=e[s]);s++)if((t||x.acceptData(n))&&(o=n[l],a=o&&u[o])){if(a.events)for(r in a.events)f[r]?x.event.remove(n,r):x.removeEvent(n,r,a.handle);
@@ -1037,6 +1036,67 @@ function makeArray( obj ) {
 
 }));
 
+/**
+ * @license
+ * Lo-Dash 2.4.1 (Custom Build) lodash.com/license | Underscore.js 1.5.2 underscorejs.org/LICENSE
+ * Build: `lodash -o ./dist/lodash.compat.js`
+ */
+;(function(){function n(n,t,e){e=(e||0)-1;for(var r=n?n.length:0;++e<r;)if(n[e]===t)return e;return-1}function t(t,e){var r=typeof e;if(t=t.l,"boolean"==r||null==e)return t[e]?0:-1;"number"!=r&&"string"!=r&&(r="object");var u="number"==r?e:b+e;return t=(t=t[r])&&t[u],"object"==r?t&&-1<n(t,e)?0:-1:t?0:-1}function e(n){var t=this.l,e=typeof n;if("boolean"==e||null==n)t[n]=true;else{"number"!=e&&"string"!=e&&(e="object");var r="number"==e?n:b+n,t=t[e]||(t[e]={});"object"==e?(t[r]||(t[r]=[])).push(n):t[r]=true
+}}function r(n){return n.charCodeAt(0)}function u(n,t){for(var e=n.m,r=t.m,u=-1,o=e.length;++u<o;){var a=e[u],i=r[u];if(a!==i){if(a>i||typeof a=="undefined")return 1;if(a<i||typeof i=="undefined")return-1}}return n.n-t.n}function o(n){var t=-1,r=n.length,u=n[0],o=n[r/2|0],a=n[r-1];if(u&&typeof u=="object"&&o&&typeof o=="object"&&a&&typeof a=="object")return false;for(u=l(),u["false"]=u["null"]=u["true"]=u.undefined=false,o=l(),o.k=n,o.l=u,o.push=e;++t<r;)o.push(n[t]);return o}function a(n){return"\\"+Y[n]
+}function i(){return v.pop()||[]}function l(){return y.pop()||{k:null,l:null,m:null,"false":false,n:0,"null":false,number:null,object:null,push:null,string:null,"true":false,undefined:false,o:null}}function f(n){return typeof n.toString!="function"&&typeof(n+"")=="string"}function c(n){n.length=0,v.length<w&&v.push(n)}function p(n){var t=n.l;t&&p(t),n.k=n.l=n.m=n.object=n.number=n.string=n.o=null,y.length<w&&y.push(n)}function s(n,t,e){t||(t=0),typeof e=="undefined"&&(e=n?n.length:0);var r=-1;e=e-t||0;for(var u=Array(0>e?0:e);++r<e;)u[r]=n[t+r];
+return u}function g(e){function v(n){return n&&typeof n=="object"&&!qe(n)&&we.call(n,"__wrapped__")?n:new y(n)}function y(n,t){this.__chain__=!!t,this.__wrapped__=n}function w(n){function t(){if(r){var n=s(r);je.apply(n,arguments)}if(this instanceof t){var o=nt(e.prototype),n=e.apply(o,n||arguments);return xt(n)?n:o}return e.apply(u,n||arguments)}var e=n[0],r=n[2],u=n[4];return ze(t,n),t}function Y(n,t,e,r,u){if(e){var o=e(n);if(typeof o!="undefined")return o}if(!xt(n))return n;var a=he.call(n);if(!V[a]||!Le.nodeClass&&f(n))return n;
+var l=Te[a];switch(a){case L:case z:return new l(+n);case W:case M:return new l(n);case J:return o=l(n.source,S.exec(n)),o.lastIndex=n.lastIndex,o}if(a=qe(n),t){var p=!r;r||(r=i()),u||(u=i());for(var g=r.length;g--;)if(r[g]==n)return u[g];o=a?l(n.length):{}}else o=a?s(n):Ye({},n);return a&&(we.call(n,"index")&&(o.index=n.index),we.call(n,"input")&&(o.input=n.input)),t?(r.push(n),u.push(o),(a?Xe:tr)(n,function(n,a){o[a]=Y(n,t,e,r,u)}),p&&(c(r),c(u)),o):o}function nt(n){return xt(n)?Se(n):{}}function tt(n,t,e){if(typeof n!="function")return Ht;
+if(typeof t=="undefined"||!("prototype"in n))return n;var r=n.__bindData__;if(typeof r=="undefined"&&(Le.funcNames&&(r=!n.name),r=r||!Le.funcDecomp,!r)){var u=be.call(n);Le.funcNames||(r=!A.test(u)),r||(r=B.test(u),ze(n,r))}if(false===r||true!==r&&1&r[1])return n;switch(e){case 1:return function(e){return n.call(t,e)};case 2:return function(e,r){return n.call(t,e,r)};case 3:return function(e,r,u){return n.call(t,e,r,u)};case 4:return function(e,r,u,o){return n.call(t,e,r,u,o)}}return Mt(n,t)}function et(n){function t(){var n=l?a:this;
+if(u){var h=s(u);je.apply(h,arguments)}return(o||c)&&(h||(h=s(arguments)),o&&je.apply(h,o),c&&h.length<i)?(r|=16,et([e,p?r:-4&r,h,null,a,i])):(h||(h=arguments),f&&(e=n[g]),this instanceof t?(n=nt(e.prototype),h=e.apply(n,h),xt(h)?h:n):e.apply(n,h))}var e=n[0],r=n[1],u=n[2],o=n[3],a=n[4],i=n[5],l=1&r,f=2&r,c=4&r,p=8&r,g=e;return ze(t,n),t}function rt(e,r){var u=-1,a=ht(),i=e?e.length:0,l=i>=_&&a===n,f=[];if(l){var c=o(r);c?(a=t,r=c):l=false}for(;++u<i;)c=e[u],0>a(r,c)&&f.push(c);return l&&p(r),f}function ot(n,t,e,r){r=(r||0)-1;
+for(var u=n?n.length:0,o=[];++r<u;){var a=n[r];if(a&&typeof a=="object"&&typeof a.length=="number"&&(qe(a)||dt(a))){t||(a=ot(a,t,e));var i=-1,l=a.length,f=o.length;for(o.length+=l;++i<l;)o[f++]=a[i]}else e||o.push(a)}return o}function at(n,t,e,r,u,o){if(e){var a=e(n,t);if(typeof a!="undefined")return!!a}if(n===t)return 0!==n||1/n==1/t;if(n===n&&!(n&&X[typeof n]||t&&X[typeof t]))return false;if(null==n||null==t)return n===t;var l=he.call(n),p=he.call(t);if(l==T&&(l=G),p==T&&(p=G),l!=p)return false;switch(l){case L:case z:return+n==+t;
+case W:return n!=+n?t!=+t:0==n?1/n==1/t:n==+t;case J:case M:return n==ie(t)}if(p=l==$,!p){var s=we.call(n,"__wrapped__"),g=we.call(t,"__wrapped__");if(s||g)return at(s?n.__wrapped__:n,g?t.__wrapped__:t,e,r,u,o);if(l!=G||!Le.nodeClass&&(f(n)||f(t)))return false;if(l=!Le.argsObject&&dt(n)?oe:n.constructor,s=!Le.argsObject&&dt(t)?oe:t.constructor,l!=s&&!(jt(l)&&l instanceof l&&jt(s)&&s instanceof s)&&"constructor"in n&&"constructor"in t)return false}for(l=!u,u||(u=i()),o||(o=i()),s=u.length;s--;)if(u[s]==n)return o[s]==t;
+var h=0,a=true;if(u.push(n),o.push(t),p){if(s=n.length,h=t.length,(a=h==s)||r)for(;h--;)if(p=s,g=t[h],r)for(;p--&&!(a=at(n[p],g,e,r,u,o)););else if(!(a=at(n[h],g,e,r,u,o)))break}else nr(t,function(t,i,l){return we.call(l,i)?(h++,a=we.call(n,i)&&at(n[i],t,e,r,u,o)):void 0}),a&&!r&&nr(n,function(n,t,e){return we.call(e,t)?a=-1<--h:void 0});return u.pop(),o.pop(),l&&(c(u),c(o)),a}function it(n,t,e,r,u){(qe(t)?Dt:tr)(t,function(t,o){var a,i,l=t,f=n[o];if(t&&((i=qe(t))||er(t))){for(l=r.length;l--;)if(a=r[l]==t){f=u[l];
+break}if(!a){var c;e&&(l=e(f,t),c=typeof l!="undefined")&&(f=l),c||(f=i?qe(f)?f:[]:er(f)?f:{}),r.push(t),u.push(f),c||it(f,t,e,r,u)}}else e&&(l=e(f,t),typeof l=="undefined"&&(l=t)),typeof l!="undefined"&&(f=l);n[o]=f})}function lt(n,t){return n+de(Fe()*(t-n+1))}function ft(e,r,u){var a=-1,l=ht(),f=e?e.length:0,s=[],g=!r&&f>=_&&l===n,h=u||g?i():s;for(g&&(h=o(h),l=t);++a<f;){var v=e[a],y=u?u(v,a,e):v;(r?!a||h[h.length-1]!==y:0>l(h,y))&&((u||g)&&h.push(y),s.push(v))}return g?(c(h.k),p(h)):u&&c(h),s}function ct(n){return function(t,e,r){var u={};
+if(e=v.createCallback(e,r,3),qe(t)){r=-1;for(var o=t.length;++r<o;){var a=t[r];n(u,a,e(a,r,t),t)}}else Xe(t,function(t,r,o){n(u,t,e(t,r,o),o)});return u}}function pt(n,t,e,r,u,o){var a=1&t,i=4&t,l=16&t,f=32&t;if(!(2&t||jt(n)))throw new le;l&&!e.length&&(t&=-17,l=e=false),f&&!r.length&&(t&=-33,f=r=false);var c=n&&n.__bindData__;return c&&true!==c?(c=s(c),c[2]&&(c[2]=s(c[2])),c[3]&&(c[3]=s(c[3])),!a||1&c[1]||(c[4]=u),!a&&1&c[1]&&(t|=8),!i||4&c[1]||(c[5]=o),l&&je.apply(c[2]||(c[2]=[]),e),f&&Ee.apply(c[3]||(c[3]=[]),r),c[1]|=t,pt.apply(null,c)):(1==t||17===t?w:et)([n,t,e,r,u,o])
+}function st(){Q.h=F,Q.b=Q.c=Q.g=Q.i="",Q.e="t",Q.j=true;for(var n,t=0;n=arguments[t];t++)for(var e in n)Q[e]=n[e];t=Q.a,Q.d=/^[^,]+/.exec(t)[0],n=ee,t="return function("+t+"){",e=Q;var r="var n,t="+e.d+",E="+e.e+";if(!t)return E;"+e.i+";";e.b?(r+="var u=t.length;n=-1;if("+e.b+"){",Le.unindexedChars&&(r+="if(s(t)){t=t.split('')}"),r+="while(++n<u){"+e.g+";}}else{"):Le.nonEnumArgs&&(r+="var u=t.length;n=-1;if(u&&p(t)){while(++n<u){n+='';"+e.g+";}}else{"),Le.enumPrototypes&&(r+="var G=typeof t=='function';"),Le.enumErrorProps&&(r+="var F=t===k||t instanceof Error;");
+var u=[];if(Le.enumPrototypes&&u.push('!(G&&n=="prototype")'),Le.enumErrorProps&&u.push('!(F&&(n=="message"||n=="name"))'),e.j&&e.f)r+="var C=-1,D=B[typeof t]&&v(t),u=D?D.length:0;while(++C<u){n=D[C];",u.length&&(r+="if("+u.join("&&")+"){"),r+=e.g+";",u.length&&(r+="}"),r+="}";else if(r+="for(n in t){",e.j&&u.push("m.call(t, n)"),u.length&&(r+="if("+u.join("&&")+"){"),r+=e.g+";",u.length&&(r+="}"),r+="}",Le.nonEnumShadows){for(r+="if(t!==A){var i=t.constructor,r=t===(i&&i.prototype),f=t===J?I:t===k?j:L.call(t),x=y[f];",k=0;7>k;k++)r+="n='"+e.h[k]+"';if((!(r&&x[n])&&m.call(t,n))",e.j||(r+="||(!x[n]&&t[n]!==A[n])"),r+="){"+e.g+"}";
+r+="}"}return(e.b||Le.nonEnumArgs)&&(r+="}"),r+=e.c+";return E",n("d,j,k,m,o,p,q,s,v,A,B,y,I,J,L",t+r+"}")(tt,q,ce,we,d,dt,qe,kt,Q.f,pe,X,$e,M,se,he)}function gt(n){return Ve[n]}function ht(){var t=(t=v.indexOf)===zt?n:t;return t}function vt(n){return typeof n=="function"&&ve.test(n)}function yt(n){var t,e;return!n||he.call(n)!=G||(t=n.constructor,jt(t)&&!(t instanceof t))||!Le.argsClass&&dt(n)||!Le.nodeClass&&f(n)?false:Le.ownLast?(nr(n,function(n,t,r){return e=we.call(r,t),false}),false!==e):(nr(n,function(n,t){e=t
+}),typeof e=="undefined"||we.call(n,e))}function mt(n){return He[n]}function dt(n){return n&&typeof n=="object"&&typeof n.length=="number"&&he.call(n)==T||false}function bt(n,t,e){var r=We(n),u=r.length;for(t=tt(t,e,3);u--&&(e=r[u],false!==t(n[e],e,n)););return n}function _t(n){var t=[];return nr(n,function(n,e){jt(n)&&t.push(e)}),t.sort()}function wt(n){for(var t=-1,e=We(n),r=e.length,u={};++t<r;){var o=e[t];u[n[o]]=o}return u}function jt(n){return typeof n=="function"}function xt(n){return!(!n||!X[typeof n])
+}function Ct(n){return typeof n=="number"||n&&typeof n=="object"&&he.call(n)==W||false}function kt(n){return typeof n=="string"||n&&typeof n=="object"&&he.call(n)==M||false}function Et(n){for(var t=-1,e=We(n),r=e.length,u=Zt(r);++t<r;)u[t]=n[e[t]];return u}function Ot(n,t,e){var r=-1,u=ht(),o=n?n.length:0,a=false;return e=(0>e?Be(0,o+e):e)||0,qe(n)?a=-1<u(n,t,e):typeof o=="number"?a=-1<(kt(n)?n.indexOf(t,e):u(n,t,e)):Xe(n,function(n){return++r<e?void 0:!(a=n===t)}),a}function St(n,t,e){var r=true;if(t=v.createCallback(t,e,3),qe(n)){e=-1;
+for(var u=n.length;++e<u&&(r=!!t(n[e],e,n)););}else Xe(n,function(n,e,u){return r=!!t(n,e,u)});return r}function At(n,t,e){var r=[];if(t=v.createCallback(t,e,3),qe(n)){e=-1;for(var u=n.length;++e<u;){var o=n[e];t(o,e,n)&&r.push(o)}}else Xe(n,function(n,e,u){t(n,e,u)&&r.push(n)});return r}function It(n,t,e){if(t=v.createCallback(t,e,3),!qe(n)){var r;return Xe(n,function(n,e,u){return t(n,e,u)?(r=n,false):void 0}),r}e=-1;for(var u=n.length;++e<u;){var o=n[e];if(t(o,e,n))return o}}function Dt(n,t,e){if(t&&typeof e=="undefined"&&qe(n)){e=-1;
+for(var r=n.length;++e<r&&false!==t(n[e],e,n););}else Xe(n,t,e);return n}function Nt(n,t,e){var r=n,u=n?n.length:0;if(t=t&&typeof e=="undefined"?t:tt(t,e,3),qe(n))for(;u--&&false!==t(n[u],u,n););else{if(typeof u!="number")var o=We(n),u=o.length;else Le.unindexedChars&&kt(n)&&(r=n.split(""));Xe(n,function(n,e,a){return e=o?o[--u]:--u,t(r[e],e,a)})}return n}function Bt(n,t,e){var r=-1,u=n?n.length:0,o=Zt(typeof u=="number"?u:0);if(t=v.createCallback(t,e,3),qe(n))for(;++r<u;)o[r]=t(n[r],r,n);else Xe(n,function(n,e,u){o[++r]=t(n,e,u)
+});return o}function Pt(n,t,e){var u=-1/0,o=u;if(typeof t!="function"&&e&&e[t]===n&&(t=null),null==t&&qe(n)){e=-1;for(var a=n.length;++e<a;){var i=n[e];i>o&&(o=i)}}else t=null==t&&kt(n)?r:v.createCallback(t,e,3),Xe(n,function(n,e,r){e=t(n,e,r),e>u&&(u=e,o=n)});return o}function Rt(n,t,e,r){var u=3>arguments.length;if(t=v.createCallback(t,r,4),qe(n)){var o=-1,a=n.length;for(u&&(e=n[++o]);++o<a;)e=t(e,n[o],o,n)}else Xe(n,function(n,r,o){e=u?(u=false,n):t(e,n,r,o)});return e}function Ft(n,t,e,r){var u=3>arguments.length;
+return t=v.createCallback(t,r,4),Nt(n,function(n,r,o){e=u?(u=false,n):t(e,n,r,o)}),e}function Tt(n){var t=-1,e=n?n.length:0,r=Zt(typeof e=="number"?e:0);return Dt(n,function(n){var e=lt(0,++t);r[t]=r[e],r[e]=n}),r}function $t(n,t,e){var r;if(t=v.createCallback(t,e,3),qe(n)){e=-1;for(var u=n.length;++e<u&&!(r=t(n[e],e,n)););}else Xe(n,function(n,e,u){return!(r=t(n,e,u))});return!!r}function Lt(n,t,e){var r=0,u=n?n.length:0;if(typeof t!="number"&&null!=t){var o=-1;for(t=v.createCallback(t,e,3);++o<u&&t(n[o],o,n);)r++
+}else if(r=t,null==r||e)return n?n[0]:h;return s(n,0,Pe(Be(0,r),u))}function zt(t,e,r){if(typeof r=="number"){var u=t?t.length:0;r=0>r?Be(0,u+r):r||0}else if(r)return r=Kt(t,e),t[r]===e?r:-1;return n(t,e,r)}function qt(n,t,e){if(typeof t!="number"&&null!=t){var r=0,u=-1,o=n?n.length:0;for(t=v.createCallback(t,e,3);++u<o&&t(n[u],u,n);)r++}else r=null==t||e?1:Be(0,t);return s(n,r)}function Kt(n,t,e,r){var u=0,o=n?n.length:u;for(e=e?v.createCallback(e,r,1):Ht,t=e(t);u<o;)r=u+o>>>1,e(n[r])<t?u=r+1:o=r;
+return u}function Wt(n,t,e,r){return typeof t!="boolean"&&null!=t&&(r=e,e=typeof t!="function"&&r&&r[t]===n?null:t,t=false),null!=e&&(e=v.createCallback(e,r,3)),ft(n,t,e)}function Gt(){for(var n=1<arguments.length?arguments:arguments[0],t=-1,e=n?Pt(ar(n,"length")):0,r=Zt(0>e?0:e);++t<e;)r[t]=ar(n,t);return r}function Jt(n,t){var e=-1,r=n?n.length:0,u={};for(t||!r||qe(n[0])||(t=[]);++e<r;){var o=n[e];t?u[o]=t[e]:o&&(u[o[0]]=o[1])}return u}function Mt(n,t){return 2<arguments.length?pt(n,17,s(arguments,2),null,t):pt(n,1,null,null,t)
+}function Vt(n,t,e){var r,u,o,a,i,l,f,c=0,p=false,s=true;if(!jt(n))throw new le;if(t=Be(0,t)||0,true===e)var g=true,s=false;else xt(e)&&(g=e.leading,p="maxWait"in e&&(Be(t,e.maxWait)||0),s="trailing"in e?e.trailing:s);var v=function(){var e=t-(ir()-a);0<e?l=Ce(v,e):(u&&me(u),e=f,u=l=f=h,e&&(c=ir(),o=n.apply(i,r),l||u||(r=i=null)))},y=function(){l&&me(l),u=l=f=h,(s||p!==t)&&(c=ir(),o=n.apply(i,r),l||u||(r=i=null))};return function(){if(r=arguments,a=ir(),i=this,f=s&&(l||!g),false===p)var e=g&&!l;else{u||g||(c=a);
+var h=p-(a-c),m=0>=h;m?(u&&(u=me(u)),c=a,o=n.apply(i,r)):u||(u=Ce(y,h))}return m&&l?l=me(l):l||t===p||(l=Ce(v,t)),e&&(m=true,o=n.apply(i,r)),!m||l||u||(r=i=null),o}}function Ht(n){return n}function Ut(n,t,e){var r=true,u=t&&_t(t);t&&(e||u.length)||(null==e&&(e=t),o=y,t=n,n=v,u=_t(t)),false===e?r=false:xt(e)&&"chain"in e&&(r=e.chain);var o=n,a=jt(o);Dt(u,function(e){var u=n[e]=t[e];a&&(o.prototype[e]=function(){var t=this.__chain__,e=this.__wrapped__,a=[e];if(je.apply(a,arguments),a=u.apply(n,a),r||t){if(e===a&&xt(a))return this;
+a=new o(a),a.__chain__=t}return a})})}function Qt(){}function Xt(n){return function(t){return t[n]}}function Yt(){return this.__wrapped__}e=e?ut.defaults(Z.Object(),e,ut.pick(Z,R)):Z;var Zt=e.Array,ne=e.Boolean,te=e.Date,ee=e.Function,re=e.Math,ue=e.Number,oe=e.Object,ae=e.RegExp,ie=e.String,le=e.TypeError,fe=[],ce=e.Error.prototype,pe=oe.prototype,se=ie.prototype,ge=e._,he=pe.toString,ve=ae("^"+ie(he).replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/toString| for [^\]]+/g,".*?")+"$"),ye=re.ceil,me=e.clearTimeout,de=re.floor,be=ee.prototype.toString,_e=vt(_e=oe.getPrototypeOf)&&_e,we=pe.hasOwnProperty,je=fe.push,xe=pe.propertyIsEnumerable,Ce=e.setTimeout,ke=fe.splice,Ee=fe.unshift,Oe=function(){try{var n={},t=vt(t=oe.defineProperty)&&t,e=t(n,n,n)&&t
+}catch(r){}return e}(),Se=vt(Se=oe.create)&&Se,Ae=vt(Ae=Zt.isArray)&&Ae,Ie=e.isFinite,De=e.isNaN,Ne=vt(Ne=oe.keys)&&Ne,Be=re.max,Pe=re.min,Re=e.parseInt,Fe=re.random,Te={};Te[$]=Zt,Te[L]=ne,Te[z]=te,Te[K]=ee,Te[G]=oe,Te[W]=ue,Te[J]=ae,Te[M]=ie;var $e={};$e[$]=$e[z]=$e[W]={constructor:true,toLocaleString:true,toString:true,valueOf:true},$e[L]=$e[M]={constructor:true,toString:true,valueOf:true},$e[q]=$e[K]=$e[J]={constructor:true,toString:true},$e[G]={constructor:true},function(){for(var n=F.length;n--;){var t,e=F[n];
+for(t in $e)we.call($e,t)&&!we.call($e[t],e)&&($e[t][e]=false)}}(),y.prototype=v.prototype;var Le=v.support={};!function(){var n=function(){this.x=1},t={0:1,length:1},r=[];n.prototype={valueOf:1,y:1};for(var u in new n)r.push(u);for(u in arguments);Le.argsClass=he.call(arguments)==T,Le.argsObject=arguments.constructor==oe&&!(arguments instanceof Zt),Le.enumErrorProps=xe.call(ce,"message")||xe.call(ce,"name"),Le.enumPrototypes=xe.call(n,"prototype"),Le.funcDecomp=!vt(e.WinRTError)&&B.test(g),Le.funcNames=typeof ee.name=="string",Le.nonEnumArgs=0!=u,Le.nonEnumShadows=!/valueOf/.test(r),Le.ownLast="x"!=r[0],Le.spliceObjects=(fe.splice.call(t,0,1),!t[0]),Le.unindexedChars="xx"!="x"[0]+oe("x")[0];
+try{Le.nodeClass=!(he.call(document)==G&&!({toString:0}+""))}catch(o){Le.nodeClass=true}}(1),v.templateSettings={escape:/<%-([\s\S]+?)%>/g,evaluate:/<%([\s\S]+?)%>/g,interpolate:I,variable:"",imports:{_:v}},Se||(nt=function(){function n(){}return function(t){if(xt(t)){n.prototype=t;var r=new n;n.prototype=null}return r||e.Object()}}());var ze=Oe?function(n,t){U.value=t,Oe(n,"__bindData__",U)}:Qt;Le.argsClass||(dt=function(n){return n&&typeof n=="object"&&typeof n.length=="number"&&we.call(n,"callee")&&!xe.call(n,"callee")||false
+});var qe=Ae||function(n){return n&&typeof n=="object"&&typeof n.length=="number"&&he.call(n)==$||false},Ke=st({a:"z",e:"[]",i:"if(!(B[typeof z]))return E",g:"E.push(n)"}),We=Ne?function(n){return xt(n)?Le.enumPrototypes&&typeof n=="function"||Le.nonEnumArgs&&n.length&&dt(n)?Ke(n):Ne(n):[]}:Ke,Ge={a:"g,e,K",i:"e=e&&typeof K=='undefined'?e:d(e,K,3)",b:"typeof u=='number'",v:We,g:"if(e(t[n],n,g)===false)return E"},Je={a:"z,H,l",i:"var a=arguments,b=0,c=typeof l=='number'?2:a.length;while(++b<c){t=a[b];if(t&&B[typeof t]){",v:We,g:"if(typeof E[n]=='undefined')E[n]=t[n]",c:"}}"},Me={i:"if(!B[typeof t])return E;"+Ge.i,b:false},Ve={"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"},He=wt(Ve),Ue=ae("("+We(He).join("|")+")","g"),Qe=ae("["+We(Ve).join("")+"]","g"),Xe=st(Ge),Ye=st(Je,{i:Je.i.replace(";",";if(c>3&&typeof a[c-2]=='function'){var e=d(a[--c-1],a[c--],2)}else if(c>2&&typeof a[c-1]=='function'){e=a[--c]}"),g:"E[n]=e?e(E[n],t[n]):t[n]"}),Ze=st(Je),nr=st(Ge,Me,{j:false}),tr=st(Ge,Me);
+jt(/x/)&&(jt=function(n){return typeof n=="function"&&he.call(n)==K});var er=_e?function(n){if(!n||he.call(n)!=G||!Le.argsClass&&dt(n))return false;var t=n.valueOf,e=vt(t)&&(e=_e(t))&&_e(e);return e?n==e||_e(n)==e:yt(n)}:yt,rr=ct(function(n,t,e){we.call(n,e)?n[e]++:n[e]=1}),ur=ct(function(n,t,e){(we.call(n,e)?n[e]:n[e]=[]).push(t)}),or=ct(function(n,t,e){n[e]=t}),ar=Bt,ir=vt(ir=te.now)&&ir||function(){return(new te).getTime()},lr=8==Re(j+"08")?Re:function(n,t){return Re(kt(n)?n.replace(D,""):n,t||0)};
+return v.after=function(n,t){if(!jt(t))throw new le;return function(){return 1>--n?t.apply(this,arguments):void 0}},v.assign=Ye,v.at=function(n){var t=arguments,e=-1,r=ot(t,true,false,1),t=t[2]&&t[2][t[1]]===n?1:r.length,u=Zt(t);for(Le.unindexedChars&&kt(n)&&(n=n.split(""));++e<t;)u[e]=n[r[e]];return u},v.bind=Mt,v.bindAll=function(n){for(var t=1<arguments.length?ot(arguments,true,false,1):_t(n),e=-1,r=t.length;++e<r;){var u=t[e];n[u]=pt(n[u],1,null,null,n)}return n},v.bindKey=function(n,t){return 2<arguments.length?pt(t,19,s(arguments,2),null,n):pt(t,3,null,null,n)
+},v.chain=function(n){return n=new y(n),n.__chain__=true,n},v.compact=function(n){for(var t=-1,e=n?n.length:0,r=[];++t<e;){var u=n[t];u&&r.push(u)}return r},v.compose=function(){for(var n=arguments,t=n.length;t--;)if(!jt(n[t]))throw new le;return function(){for(var t=arguments,e=n.length;e--;)t=[n[e].apply(this,t)];return t[0]}},v.constant=function(n){return function(){return n}},v.countBy=rr,v.create=function(n,t){var e=nt(n);return t?Ye(e,t):e},v.createCallback=function(n,t,e){var r=typeof n;if(null==n||"function"==r)return tt(n,t,e);
+if("object"!=r)return Xt(n);var u=We(n),o=u[0],a=n[o];return 1!=u.length||a!==a||xt(a)?function(t){for(var e=u.length,r=false;e--&&(r=at(t[u[e]],n[u[e]],null,true)););return r}:function(n){return n=n[o],a===n&&(0!==a||1/a==1/n)}},v.curry=function(n,t){return t=typeof t=="number"?t:+t||n.length,pt(n,4,null,null,null,t)},v.debounce=Vt,v.defaults=Ze,v.defer=function(n){if(!jt(n))throw new le;var t=s(arguments,1);return Ce(function(){n.apply(h,t)},1)},v.delay=function(n,t){if(!jt(n))throw new le;var e=s(arguments,2);
+return Ce(function(){n.apply(h,e)},t)},v.difference=function(n){return rt(n,ot(arguments,true,true,1))},v.filter=At,v.flatten=function(n,t,e,r){return typeof t!="boolean"&&null!=t&&(r=e,e=typeof t!="function"&&r&&r[t]===n?null:t,t=false),null!=e&&(n=Bt(n,e,r)),ot(n,t)},v.forEach=Dt,v.forEachRight=Nt,v.forIn=nr,v.forInRight=function(n,t,e){var r=[];nr(n,function(n,t){r.push(t,n)});var u=r.length;for(t=tt(t,e,3);u--&&false!==t(r[u--],r[u],n););return n},v.forOwn=tr,v.forOwnRight=bt,v.functions=_t,v.groupBy=ur,v.indexBy=or,v.initial=function(n,t,e){var r=0,u=n?n.length:0;
+if(typeof t!="number"&&null!=t){var o=u;for(t=v.createCallback(t,e,3);o--&&t(n[o],o,n);)r++}else r=null==t||e?1:t||r;return s(n,0,Pe(Be(0,u-r),u))},v.intersection=function(){for(var e=[],r=-1,u=arguments.length,a=i(),l=ht(),f=l===n,s=i();++r<u;){var g=arguments[r];(qe(g)||dt(g))&&(e.push(g),a.push(f&&g.length>=_&&o(r?e[r]:s)))}var f=e[0],h=-1,v=f?f.length:0,y=[];n:for(;++h<v;){var m=a[0],g=f[h];if(0>(m?t(m,g):l(s,g))){for(r=u,(m||s).push(g);--r;)if(m=a[r],0>(m?t(m,g):l(e[r],g)))continue n;y.push(g)
+}}for(;u--;)(m=a[u])&&p(m);return c(a),c(s),y},v.invert=wt,v.invoke=function(n,t){var e=s(arguments,2),r=-1,u=typeof t=="function",o=n?n.length:0,a=Zt(typeof o=="number"?o:0);return Dt(n,function(n){a[++r]=(u?t:n[t]).apply(n,e)}),a},v.keys=We,v.map=Bt,v.mapValues=function(n,t,e){var r={};return t=v.createCallback(t,e,3),tr(n,function(n,e,u){r[e]=t(n,e,u)}),r},v.max=Pt,v.memoize=function(n,t){if(!jt(n))throw new le;var e=function(){var r=e.cache,u=t?t.apply(this,arguments):b+arguments[0];return we.call(r,u)?r[u]:r[u]=n.apply(this,arguments)
+};return e.cache={},e},v.merge=function(n){var t=arguments,e=2;if(!xt(n))return n;if("number"!=typeof t[2]&&(e=t.length),3<e&&"function"==typeof t[e-2])var r=tt(t[--e-1],t[e--],2);else 2<e&&"function"==typeof t[e-1]&&(r=t[--e]);for(var t=s(arguments,1,e),u=-1,o=i(),a=i();++u<e;)it(n,t[u],r,o,a);return c(o),c(a),n},v.min=function(n,t,e){var u=1/0,o=u;if(typeof t!="function"&&e&&e[t]===n&&(t=null),null==t&&qe(n)){e=-1;for(var a=n.length;++e<a;){var i=n[e];i<o&&(o=i)}}else t=null==t&&kt(n)?r:v.createCallback(t,e,3),Xe(n,function(n,e,r){e=t(n,e,r),e<u&&(u=e,o=n)
+});return o},v.omit=function(n,t,e){var r={};if(typeof t!="function"){var u=[];nr(n,function(n,t){u.push(t)});for(var u=rt(u,ot(arguments,true,false,1)),o=-1,a=u.length;++o<a;){var i=u[o];r[i]=n[i]}}else t=v.createCallback(t,e,3),nr(n,function(n,e,u){t(n,e,u)||(r[e]=n)});return r},v.once=function(n){var t,e;if(!jt(n))throw new le;return function(){return t?e:(t=true,e=n.apply(this,arguments),n=null,e)}},v.pairs=function(n){for(var t=-1,e=We(n),r=e.length,u=Zt(r);++t<r;){var o=e[t];u[t]=[o,n[o]]}return u
+},v.partial=function(n){return pt(n,16,s(arguments,1))},v.partialRight=function(n){return pt(n,32,null,s(arguments,1))},v.pick=function(n,t,e){var r={};if(typeof t!="function")for(var u=-1,o=ot(arguments,true,false,1),a=xt(n)?o.length:0;++u<a;){var i=o[u];i in n&&(r[i]=n[i])}else t=v.createCallback(t,e,3),nr(n,function(n,e,u){t(n,e,u)&&(r[e]=n)});return r},v.pluck=ar,v.property=Xt,v.pull=function(n){for(var t=arguments,e=0,r=t.length,u=n?n.length:0;++e<r;)for(var o=-1,a=t[e];++o<u;)n[o]===a&&(ke.call(n,o--,1),u--);
+return n},v.range=function(n,t,e){n=+n||0,e=typeof e=="number"?e:+e||1,null==t&&(t=n,n=0);var r=-1;t=Be(0,ye((t-n)/(e||1)));for(var u=Zt(t);++r<t;)u[r]=n,n+=e;return u},v.reject=function(n,t,e){return t=v.createCallback(t,e,3),At(n,function(n,e,r){return!t(n,e,r)})},v.remove=function(n,t,e){var r=-1,u=n?n.length:0,o=[];for(t=v.createCallback(t,e,3);++r<u;)e=n[r],t(e,r,n)&&(o.push(e),ke.call(n,r--,1),u--);return o},v.rest=qt,v.shuffle=Tt,v.sortBy=function(n,t,e){var r=-1,o=qe(t),a=n?n.length:0,f=Zt(typeof a=="number"?a:0);
+for(o||(t=v.createCallback(t,e,3)),Dt(n,function(n,e,u){var a=f[++r]=l();o?a.m=Bt(t,function(t){return n[t]}):(a.m=i())[0]=t(n,e,u),a.n=r,a.o=n}),a=f.length,f.sort(u);a--;)n=f[a],f[a]=n.o,o||c(n.m),p(n);return f},v.tap=function(n,t){return t(n),n},v.throttle=function(n,t,e){var r=true,u=true;if(!jt(n))throw new le;return false===e?r=false:xt(e)&&(r="leading"in e?e.leading:r,u="trailing"in e?e.trailing:u),H.leading=r,H.maxWait=t,H.trailing=u,Vt(n,t,H)},v.times=function(n,t,e){n=-1<(n=+n)?n:0;var r=-1,u=Zt(n);
+for(t=tt(t,e,1);++r<n;)u[r]=t(r);return u},v.toArray=function(n){return n&&typeof n.length=="number"?Le.unindexedChars&&kt(n)?n.split(""):s(n):Et(n)},v.transform=function(n,t,e,r){var u=qe(n);if(null==e)if(u)e=[];else{var o=n&&n.constructor;e=nt(o&&o.prototype)}return t&&(t=v.createCallback(t,r,4),(u?Xe:tr)(n,function(n,r,u){return t(e,n,r,u)})),e},v.union=function(){return ft(ot(arguments,true,true))},v.uniq=Wt,v.values=Et,v.where=At,v.without=function(n){return rt(n,s(arguments,1))},v.wrap=function(n,t){return pt(t,16,[n])
+},v.xor=function(){for(var n=-1,t=arguments.length;++n<t;){var e=arguments[n];if(qe(e)||dt(e))var r=r?ft(rt(r,e).concat(rt(e,r))):e}return r||[]},v.zip=Gt,v.zipObject=Jt,v.collect=Bt,v.drop=qt,v.each=Dt,v.eachRight=Nt,v.extend=Ye,v.methods=_t,v.object=Jt,v.select=At,v.tail=qt,v.unique=Wt,v.unzip=Gt,Ut(v),v.clone=function(n,t,e,r){return typeof t!="boolean"&&null!=t&&(r=e,e=t,t=false),Y(n,t,typeof e=="function"&&tt(e,r,1))},v.cloneDeep=function(n,t,e){return Y(n,true,typeof t=="function"&&tt(t,e,1))},v.contains=Ot,v.escape=function(n){return null==n?"":ie(n).replace(Qe,gt)
+},v.every=St,v.find=It,v.findIndex=function(n,t,e){var r=-1,u=n?n.length:0;for(t=v.createCallback(t,e,3);++r<u;)if(t(n[r],r,n))return r;return-1},v.findKey=function(n,t,e){var r;return t=v.createCallback(t,e,3),tr(n,function(n,e,u){return t(n,e,u)?(r=e,false):void 0}),r},v.findLast=function(n,t,e){var r;return t=v.createCallback(t,e,3),Nt(n,function(n,e,u){return t(n,e,u)?(r=n,false):void 0}),r},v.findLastIndex=function(n,t,e){var r=n?n.length:0;for(t=v.createCallback(t,e,3);r--;)if(t(n[r],r,n))return r;
+return-1},v.findLastKey=function(n,t,e){var r;return t=v.createCallback(t,e,3),bt(n,function(n,e,u){return t(n,e,u)?(r=e,false):void 0}),r},v.has=function(n,t){return n?we.call(n,t):false},v.identity=Ht,v.indexOf=zt,v.isArguments=dt,v.isArray=qe,v.isBoolean=function(n){return true===n||false===n||n&&typeof n=="object"&&he.call(n)==L||false},v.isDate=function(n){return n&&typeof n=="object"&&he.call(n)==z||false},v.isElement=function(n){return n&&1===n.nodeType||false},v.isEmpty=function(n){var t=true;if(!n)return t;var e=he.call(n),r=n.length;
+return e==$||e==M||(Le.argsClass?e==T:dt(n))||e==G&&typeof r=="number"&&jt(n.splice)?!r:(tr(n,function(){return t=false}),t)},v.isEqual=function(n,t,e,r){return at(n,t,typeof e=="function"&&tt(e,r,2))},v.isFinite=function(n){return Ie(n)&&!De(parseFloat(n))},v.isFunction=jt,v.isNaN=function(n){return Ct(n)&&n!=+n},v.isNull=function(n){return null===n},v.isNumber=Ct,v.isObject=xt,v.isPlainObject=er,v.isRegExp=function(n){return n&&X[typeof n]&&he.call(n)==J||false},v.isString=kt,v.isUndefined=function(n){return typeof n=="undefined"
+},v.lastIndexOf=function(n,t,e){var r=n?n.length:0;for(typeof e=="number"&&(r=(0>e?Be(0,r+e):Pe(e,r-1))+1);r--;)if(n[r]===t)return r;return-1},v.mixin=Ut,v.noConflict=function(){return e._=ge,this},v.noop=Qt,v.now=ir,v.parseInt=lr,v.random=function(n,t,e){var r=null==n,u=null==t;return null==e&&(typeof n=="boolean"&&u?(e=n,n=1):u||typeof t!="boolean"||(e=t,u=true)),r&&u&&(t=1),n=+n||0,u?(t=n,n=0):t=+t||0,e||n%1||t%1?(e=Fe(),Pe(n+e*(t-n+parseFloat("1e-"+((e+"").length-1))),t)):lt(n,t)},v.reduce=Rt,v.reduceRight=Ft,v.result=function(n,t){if(n){var e=n[t];
+return jt(e)?n[t]():e}},v.runInContext=g,v.size=function(n){var t=n?n.length:0;return typeof t=="number"?t:We(n).length},v.some=$t,v.sortedIndex=Kt,v.template=function(n,t,e){var r=v.templateSettings;n=ie(n||""),e=Ze({},e,r);var u,o=Ze({},e.imports,r.imports),r=We(o),o=Et(o),i=0,l=e.interpolate||N,f="__p+='",l=ae((e.escape||N).source+"|"+l.source+"|"+(l===I?O:N).source+"|"+(e.evaluate||N).source+"|$","g");n.replace(l,function(t,e,r,o,l,c){return r||(r=o),f+=n.slice(i,c).replace(P,a),e&&(f+="'+__e("+e+")+'"),l&&(u=true,f+="';"+l+";\n__p+='"),r&&(f+="'+((__t=("+r+"))==null?'':__t)+'"),i=c+t.length,t
+}),f+="';",l=e=e.variable,l||(e="obj",f="with("+e+"){"+f+"}"),f=(u?f.replace(x,""):f).replace(C,"$1").replace(E,"$1;"),f="function("+e+"){"+(l?"":e+"||("+e+"={});")+"var __t,__p='',__e=_.escape"+(u?",__j=Array.prototype.join;function print(){__p+=__j.call(arguments,'')}":";")+f+"return __p}";try{var c=ee(r,"return "+f).apply(h,o)}catch(p){throw p.source=f,p}return t?c(t):(c.source=f,c)},v.unescape=function(n){return null==n?"":ie(n).replace(Ue,mt)},v.uniqueId=function(n){var t=++m;return ie(null==n?"":n)+t
+},v.all=St,v.any=$t,v.detect=It,v.findWhere=It,v.foldl=Rt,v.foldr=Ft,v.include=Ot,v.inject=Rt,Ut(function(){var n={};return tr(v,function(t,e){v.prototype[e]||(n[e]=t)}),n}(),false),v.first=Lt,v.last=function(n,t,e){var r=0,u=n?n.length:0;if(typeof t!="number"&&null!=t){var o=u;for(t=v.createCallback(t,e,3);o--&&t(n[o],o,n);)r++}else if(r=t,null==r||e)return n?n[u-1]:h;return s(n,Be(0,u-r))},v.sample=function(n,t,e){return n&&typeof n.length!="number"?n=Et(n):Le.unindexedChars&&kt(n)&&(n=n.split("")),null==t||e?n?n[lt(0,n.length-1)]:h:(n=Tt(n),n.length=Pe(Be(0,t),n.length),n)
+},v.take=Lt,v.head=Lt,tr(v,function(n,t){var e="sample"!==t;v.prototype[t]||(v.prototype[t]=function(t,r){var u=this.__chain__,o=n(this.__wrapped__,t,r);return u||null!=t&&(!r||e&&typeof t=="function")?new y(o,u):o})}),v.VERSION="2.4.1",v.prototype.chain=function(){return this.__chain__=true,this},v.prototype.toString=function(){return ie(this.__wrapped__)},v.prototype.value=Yt,v.prototype.valueOf=Yt,Xe(["join","pop","shift"],function(n){var t=fe[n];v.prototype[n]=function(){var n=this.__chain__,e=t.apply(this.__wrapped__,arguments);
+return n?new y(e,n):e}}),Xe(["push","reverse","sort","unshift"],function(n){var t=fe[n];v.prototype[n]=function(){return t.apply(this.__wrapped__,arguments),this}}),Xe(["concat","slice","splice"],function(n){var t=fe[n];v.prototype[n]=function(){return new y(t.apply(this.__wrapped__,arguments),this.__chain__)}}),Le.spliceObjects||Xe(["pop","shift","splice"],function(n){var t=fe[n],e="splice"==n;v.prototype[n]=function(){var n=this.__chain__,r=this.__wrapped__,u=t.apply(r,arguments);return 0===r.length&&delete r[0],n||e?new y(u,n):u
+}}),v}var h,v=[],y=[],m=0,d={},b=+new Date+"",_=75,w=40,j=" \t\x0B\f\xa0\ufeff\n\r\u2028\u2029\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000",x=/\b__p\+='';/g,C=/\b(__p\+=)''\+/g,E=/(__e\(.*?\)|\b__t\))\+'';/g,O=/\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g,S=/\w*$/,A=/^\s*function[ \n\r\t]+\w/,I=/<%=([\s\S]+?)%>/g,D=RegExp("^["+j+"]*0+(?=.$)"),N=/($^)/,B=/\bthis\b/,P=/['\n\r\t\u2028\u2029\\]/g,R="Array Boolean Date Error Function Math Number Object RegExp String _ attachEvent clearTimeout isFinite isNaN parseInt setTimeout".split(" "),F="constructor hasOwnProperty isPrototypeOf propertyIsEnumerable toLocaleString toString valueOf".split(" "),T="[object Arguments]",$="[object Array]",L="[object Boolean]",z="[object Date]",q="[object Error]",K="[object Function]",W="[object Number]",G="[object Object]",J="[object RegExp]",M="[object String]",V={};
+V[K]=false,V[T]=V[$]=V[L]=V[z]=V[W]=V[G]=V[J]=V[M]=true;var H={leading:false,maxWait:0,trailing:false},U={configurable:false,enumerable:false,value:null,writable:false},Q={a:"",b:null,c:"",d:"",e:"",v:null,g:"",h:null,support:null,i:"",j:false},X={"boolean":false,"function":true,object:true,number:false,string:false,undefined:false},Y={"\\":"\\","'":"'","\n":"n","\r":"r","\t":"t","\u2028":"u2028","\u2029":"u2029"},Z=X[typeof window]&&window||this,nt=X[typeof exports]&&exports&&!exports.nodeType&&exports,tt=X[typeof module]&&module&&!module.nodeType&&module,et=tt&&tt.exports===nt&&nt,rt=X[typeof global]&&global;
+!rt||rt.global!==rt&&rt.window!==rt||(Z=rt);var ut=g();typeof define=="function"&&typeof define.amd=="object"&&define.amd?(Z._=ut, define(function(){return ut})):nt&&tt?et?(tt.exports=ut)._=ut:nt._=ut:Z._=ut}).call(this);
 var Faye = (function() {
     'use strict';
 
@@ -3579,15 +3639,14 @@ var Faye = (function() {
     return Faye;
 
 })();
+/**
+ * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM#init} before anything
+ * else. Next obtain a token via {@link MM#getToken} to start making API calls.
+ *
+ * @namespace
+ */
 var MM = ( function ($, Faye) {
 
-
-    /**
-     * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM#init} before anything
-     * else. Next obtain a token via {@link MM#getToken} to start making API calls.
-     *
-     * @namespace
-     */
     var MM = window.MM || {};
 
     /**
@@ -3598,7 +3657,7 @@ var MM = ( function ($, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.3.3',
+        value: '2.3.4',
         writable: false
     });
 
@@ -7651,7 +7710,9 @@ var MM = ( function ($, Faye) {
              * @instance
              */
             stop: function() {
-                this._recognizer.stop();
+                if (this._recognizer) {
+                    this._recognizer.stop();
+                }
             },
             /**
              * Cancels the active speech recognition session. No further results will be sent to the onResult callback.
@@ -7660,7 +7721,9 @@ var MM = ( function ($, Faye) {
              * @instance
              */
             cancel: function() {
-                this._recognizer.abort();
+                if (this._recognizer) {
+                    this._recognizer.abort();
+                }
             }
         });
 
@@ -7956,1314 +8019,1447 @@ var MM = ( function ($, Faye) {
 })();
 
 ;(function() {
-  var UTIL = {
-    timestamp: function () {
-      var date = new Date();
-      return date.getFullYear() + '.' + (date.getMonth() + 1) + '.' + date.getDate() + ' ' + date.toTimeString();
-    },
-    log: function() {
-      var args = Array.prototype.slice.call(arguments, 0);
-      args.splice(0, 0, UTIL.timestamp());
-      console.log.apply(console, args);
-    }
-  };
-
-  /* Manage the state of the UI */
-  var MMVoice = {
-    is_init : false,
-    is_locked : false,
-    _lockWhileRecording: false,
-    status : false,
-    is_first_start : true,
-    is_results : false,
-
-    is_voice_ready  : false,
-
-    config: {},
-
-    _recordings: [],
-    recordings_length: 0,
-    confirmedRecording : {},
-    pendingRecording : {},
-    selectedEntityMap : {},
-    currentEntities: [],
-    results_length : 0,
-    _entityMap : {},
-    _similarEntityMap : {},
-    _textEntryMap: {},
-    _currentTextEntries: [],
-    _height : 0,
-
-    $body : $(),
-
-    $window : $(),
-    $cards : $(),
-    $mm : $(),
-    $mm_parent : $(),
-    $mm_button : $(),
-    $mm_button_icon : $(),
-    $mm_pulser : $(),
-    $mm_alert : $(),
-    $mm_alert_dismiss : $(),
-    $tags : $(),
-    $history : $(),
-    $historyList : $(),
-    $results : $(),
-    $historyData : $(),
-    $historyButton : $(),
-
-    $editable : $(),
-
-    $input : $(),
-
-    // TODO: figure out a better name for this
-    makeNewRecordings : function(confirmedTranscript) {
-      var previousTranscript = this.confirmedRecording.transcript || '';
-      if (previousTranscript.length > 0) {
-        this.appendHistory(this.confirmedRecording);
-      }
-      this.confirmedRecording = this._newRecording(confirmedTranscript);
-      this.pendingRecording = this._newRecording();
-    },
-
-    _newRecording : function(transcript) {
-      transcript = transcript || '';
-      return {
-        transcript: transcript,
-        textEntryID: false
-      };
-    },
-
-    init : function() {
-      var self = this;
-
-      this.$body = $('body');
-
-      this.$window = $(window);
-      this.$mm = $('#mindmeld');
-      this.$mm_button = $('#mm-button');
-      this.$mm_pulser = $('#mm-pulser');
-      this.$mm_button_icon = $('#mm-button-icon');
-      this.$mm_parent = $('#mindmeld-parent');
-      this.$mm_alert_dismiss = $('#mm-alert-dismiss');
-      this.$mm_alert = $('#mindmeld-alert');
-      this.$cards = $('#cards');
-      this.$tags = $('#tags');
-      this.$history = $('#history');
-      this.$historyList = this.$history.find('ul');
-      this.$input = this.$historyList.find('.on');
-      this.$results = $('#results');
-      this.$historyData = $('#history-data');
-      this.$historyButton = $('#history-button');
-
-      this.$editable = $('.editable');
-
-      this.makeNewRecordings();
-
-      // Make tags clickable
-      function onTagClick() {
-        var entityID = $(this).data('entityId');
-        self.toggleEntitySelected(entityID);
-      }
-      this.$tags.on('click', '.tag', onTagClick);
-      this.$historyList.on('click', '.tag', onTagClick);
-
-      // Scrollbars
-      $('.inner-content-div').slimScroll({
-        height: '100%',
-        distance: '6px'
-      });
-
-      // Resize
-      self.$window.on('resize', function(){ self.resize(); });
-      self.resize();
-
-      self.setupEditable(true); // true = allow typing into the box
-
-      // Alert dismiss
-      self.$mm_alert_dismiss.click(function(e) {
-        e.preventDefault();
-        self.$mm_alert.removeClass('on');
-      });
-
-      // History button
-      self.$historyButton.click(function(e) {
-        e.preventDefault();
-
-        // Toggle the open/closed-ness of history
-        var history_open = self.$history.hasClass('open');
-        self.$history.toggleClass('open', !history_open);
-
-        if(!history_open) {
-          var scrollHeight = self._historyHeight(self.$historyData[0].scrollHeight);
-          self.$history.css(self._prefix('transform'), 'translateY('+scrollHeight+'px)');
-          self.$historyButton.text('Close History');
-        } else {
-          self.$history.css(self._prefix('transform'), '');
-          self.$historyButton.text('Expand History');
+    var UTIL = {
+        addLeadingZeros: function (number, digits) {
+            var base = Math.pow(10, digits);
+            number += base;
+            number = number.toString();
+            return number.substring(number.length - digits);
+        },
+        timestamp: function () {
+            var date = new Date();
+            return UTIL.addLeadingZeros(date.getFullYear(), 4) + '.'
+                + UTIL.addLeadingZeros(date.getMonth() + 1, 2) + '.'
+                + UTIL.addLeadingZeros(date.getDate(), 2) + ' ' + date.toTimeString();
+        },
+        log: function() {
+            var args = Array.prototype.slice.call(arguments, 0);
+            args.splice(0, 0, UTIL.timestamp());
+            console.log.apply(console, args);
         }
-
-        // Snap to the bottom
-        self.scrollHistory();
-      });
-
-
-      // Listen to post messages
-      $(window).on('message', function(e) {
-        var event = e.originalEvent;
-        var action = event.data.action;
-        if (event.data.source != 'mindmeld') {
-          return;
-        }
-
-        if(action == 'open') {
-          self.$mm_parent.addClass('open');
-          self._do_on_voice_ready(function() {
-            MMVoice.listen(false);
-          });
-        }
-      });
-
-      if(!MM.support.speechRecognition) {
-        self.$mm_button.hide();
-        self.$mm_pulser.hide();
-        self.$input.hide();
-        var $text_input = $('<li>', {'class':'text-input'});
-        var $form = $('<form>');
-        var $input = $('<input>', {
-                       type: "text",
-                       class: "search",
-                       placeholder: "Search query"});
-
-        $form.submit(function(e) {
-          e.preventDefault();
-          var recording = $input.val();
-
-          $input.val("").focus();
-          self.appendHistory({transcript: recording});
-
-          // Submit!
-          self.$cards.addClass('loading');
-          MM.activeSession.textentries.post({
-            text: recording,
-            type: 'text',
-            weight: 0.5
-          }, function (response) {
-          });
-        });
-
-        $text_input.append($form);
-        $form.append($input);
-        self.$historyList.append($text_input);
-
-        $input.focus();
-        return;
-      }
-
-      // Button Actions
-      var button_status = {
-        mousedown : false,
-        locked : false,
-        just_locked : true
-      };
-
-      self.$mm_button_icon.on('mousedown', function(e) {
-        button_status.mousedown = true;
-        button_status.just_locked = false;
-        setTimeout(function() {
-          if(button_status.mousedown) {
-            button_status.locked = true;
-            button_status.just_locked = true;
-            self.listen(true);
-          }
-        }, 300);
-      });
-
-      self.$mm_button_icon.on('mouseup', function(e) {
-        e.preventDefault();
-        button_status.mousedown = false;
-        if(!button_status.locked) {
-          self.listen(false);
-        }
-
-        if(button_status.locked && !button_status.just_locked) {
-          button_status.locked = false;
-          button_status.mousedown = false;
-          self.listen(false);
-        }
-
-        button_status.just_locked = false;
-      });
-
-      this.is_init = true;
-
-    },
-
-    _do_on_voice_ready : function(fn) {
-      var self = this;
-      if(self.is_voice_ready) {
-        fn();
-      } else {
-        self.do_on_voice_ready_fn = fn;
-      }
-    },
-
-    listen : function(lock) {
-      if(!MM.support.speechRecognition) return;
-
-      var self = this;
-      var statusIsPending = (self.status === 'pending');
-      var statusIsListening= (self.status === 'listening');
-      if (!lock) {
-        if (statusIsPending || statusIsListening) {
-          self.stopListening();
-        } else {
-          self.startListening();
-        }
-      } else {
-        if (!self.is_locked && (statusIsPending || statusIsListening)) {
-          self._lockWhileRecording = true;
-          self.is_locked = true;
-        } else if (self.is_locked) {
-          self.stopListening();
-        } else {
-          self.startListening(true);
-        }
-      }
-      this._updateUI();
-    },
-
-    pulse : function(volume) {
-      var self = this;
-      var scale = ((volume / 100) * 0.5) + 1.4;
-      self.$mm_pulser.css('transform', 'scale(' + scale + ')');
-    },
-
-    _historyHeight : function(scrollHeight) {
-      if(scrollHeight > this._height * 0.8) scrollHeight = this._height * 0.8;
-      if(scrollHeight < 270) scrollHeight = 270;
-      return scrollHeight;
-    },
-
-    setupEditable : function(allowManualEntry) {
-      var self = this;
-      self.$historyList.on('click', '.on .tag', function() {
-        var $this = $(this);
-        var entityID = $this.data('entityId');
-        var newValue = !(!!self.selectedEntityMap[entityID]);
-        $this.toggleClass('selected', newValue);
-
-        // don't focus on text
-        self.$editable.blur();
-        clearTimeout(self._textFocusTimeout);
-
-        return false; // don't bubble up
-      });
-
-      self.$editable.hide();
-
-      if (allowManualEntry) {
-
-        self.$historyList.on('click', '.on', function() {
-          // Not already doing something, and not a prompt
-          var $prompt = self.$input.find('.mm-prompt');
-
-          if (!self.status && ($prompt.hasClass('mm-prompt-error') || !$prompt.length)) {
-            self.$editable.height(self.$input.height());
-            self.$input.hide();
-            $prompt.empty();
-            var text = self.$input.text().trim();
-            self.$editable.show();
-            self.$editable.focus();
-            self.$editable.val(text);
-          }
-        });
-
-        self.$editable.focusin(function() {
-          if (!self.status) {
-            // delay so we know it's not an entity click
-            self._textFocusTimeout = setTimeout(function() {
-              self.status = 'editing';
-            }, 300);
-          } else {
-            self.$editable.blur();
-            self.status = false;
-          }
-          return false;
-        });
-
-        self.$editable.focusout(function() {
-          self.$editable.hide();
-          self.$input.show();
-          self.status = false;
-        });
-
-        self.$editable.keypress(function (e) {
-          var keyCode = e.originalEvent.keyCode;
-          if (keyCode !== 13) {
-            // Update styling?
-            return;
-          }
-
-          // User pressed return
-          var text = self.$editable.val().trim();
-          self.$editable.blur();
-          self.$input.text(text);
-          self.submitText(text);
-
-          return false;
-        });
-      }
-    },
-
-    _prefix_raw : '',
-    _prefix : function(rule) {
-      if(!this._prefix_raw) {
-        var styles = window.getComputedStyle(document.documentElement, ''),
-        pre = (Array.prototype.slice
-               .call(styles)
-               .join('')
-               .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-              )[1];
-        this._prefix_raw = (pre ? '-' + pre + '-' : '') + rule;
-      }
-      return this._prefix_raw;
-    },
-
-    submitText: function(text) {
-      var self = this;
-      self.status = false;
-
-      var recording = self.confirmedRecording;
-      if (recording.textEntryID) {
-        MM.activeSession.textentries.delete(recording.textEntryID);
-      }
-      recording.transcript = text;
-      self.$cards.addClass('loading');
-      MM.activeSession.textentries.post({
-        text: text,
-        type: 'text',
-        weight: 0.5
-      }, function (response) {
-        self.onTextEntryPosted(response);
-      });
-    },
-
-    /*
-    resizeResults: function(size) {
-      this._height = size;
-      this.$results.outerHeight(size);
-      this.$history.outerHeight(this._historyHeight(size));
-    },
-    */
-
-    lockWhileRecording : function() {
-      this.is_locked = true;
-      this._lockWhileRecording = false;
-      MM.activeSession.setListenerConfig({ 'continuous': this.is_locked });
-    },
-
-    startListening : function(is_locked) {
-      this.is_locked = !!is_locked;
-      this.status = 'pending';
-      this.is_first_start = true;
-      this._currentTextEntries = [];
-      MM.activeSession.setListenerConfig({ 'continuous': this.is_locked });
-      MM.activeSession.listener.start();
-
-      this._updateUI();
-    },
-
-    stopListening : function() {
-      this.is_locked = false;
-
-      MM.activeSession.listener.cancel();
-      this._updateUI();
-    },
-
-    showResults : function(data) {
-      this.results_length = data.length;
-      this._updateCards(data);
-      this._updateUI();
-    },
-
-    setTextEntries : function(data) {
-      var self = this;
-      $.each(data, function(k, textEntry) {
-        if (typeof self._textEntryMap[textEntry.textentryid] === 'undefined') {
-          textEntry.entityIDs = [];
-          self._textEntryMap[textEntry.textentryid] = textEntry;
-        }
-      });
-    },
-
-    toggleEntitySelected : function(entityID) {
-      var self = this;
-
-      var entityText = self._entityMap[entityID].text;
-      var similarEntities = self._similarEntityMap[entityText];
-      for (var i = 0, l = similarEntities.length; i < l; i++) {
-        var similarEntityID = similarEntities[i];
-        var $tagsToToggle = $('.tag[data-entity-id="' + similarEntityID + '"]');
-        if (self.selectedEntityMap[similarEntityID]) {
-          delete self.selectedEntityMap[similarEntityID];
-          $tagsToToggle.removeClass('selected');
-        } else {
-          self.selectedEntityMap[similarEntityID] = true;
-          $tagsToToggle.addClass('selected');
-        }
-      }
-
-      self._updateUI();
-      self.getDocuments();
-    },
-
-    setEntities : function(data) {
-      var self = this;
-      var i = 0;
-
-      self.$tags.empty();
-      self._similarEntityMap = {};
-
-      $.each(data, function(k, entity) {
-        if (entity.entitytype === 'segment' ||
-            entity.entitytype === 'keyphrase') {
-          return; // ignore these entities
-        }
-
-        var text = entity.text;
-        if (text.split(' ').length > 10) {
-          return; // ignore long entities
-        }
-
-        var textEntry = self._textEntryMap[entity.textentryid];
-        if (typeof textEntry !== 'undefined') {
-          textEntry.entityIDs.push(entity.entityid);
-        } else {
-          UTIL.log('did not find text entry for entity');
-        }
-        self._entityMap[entity.entityid] = entity;
-
-        // TODO(jj): should we look at type here as well as text
-        var similarEntities = self._similarEntityMap[entity.text];
-        if (typeof similarEntities === 'undefined') {
-          similarEntities = self._similarEntityMap[entity.text] = [];
-
-          // only create tag for first version of an entity
-          var $a = $('<a>', {
-            href: '#',
-            class: 'tag',
-            text: entity.text
-          });
-          self.$tags.append($a);
-          i++;
-          $a.attr('data-entity-id', entity.entityid);
-          self._entityMap[entity.entityid] = entity;
-
-          if (self.selectedEntityMap[entity.entityid]) {
-            $a.addClass('selected');
-          }
-        }
-        similarEntities.push(entity.entityid);
-      });
-
-      self.$tags.toggle(!!i);
-
-      self.currentEntities = self.entitiesForTextEntry(self.confirmedRecording.textEntryID);
-      self._restyleHistory();
-    },
-
-    entitiesForTextEntry : function(textEntryID, entities) {
-      if (typeof textEntryID === 'undefined') {
-        return [];
-      }
-
-      var self = this;
-      var textEntry = self._textEntryMap[textEntryID];
-      if (typeof entities === 'undefined') {
-        entities = [];
-      }
-      if (typeof textEntry === 'undefined') {
-        return entities;
-      }
-      for (var i = 0; i < textEntry.entityIDs.length; i++) {
-        var entityID = textEntry.entityIDs[i];
-        var entity = self._entityMap[entityID];
-        entities.push(entity);
-      }
-      return entities;
-    },
-
-    _isotope_config : {
-      itemSelector: '.card',
-      sortBy: 'sort',
-      layoutMode: 'masonry',
-      filter: ':not(.removed)',
-      getSortData: {
-        sort: '[data-sort] parseInt'
-      }
-    },
-
-    _createCard : function(doc) {
-      var self = this;
-      var $card = $('<a>', {
-        class: 'card new',
-        id: 'doc_' + doc.documentid,
-        href: doc.originurl,
-        target: "_blank"
-      });
-      $card.attr('data-document-id', doc.documentid);
-
-      if (self.config.cardLayout === 'custom') {
-        var html = window.parent.MM.voiceNavigator.getCardHTML(doc);
-        $card.html(html);
-      } else {
-        var $title = $('<h2>', {
-          'html': doc.title
-        });
-        $card.append($title);
-
-        var imageURL = false;
-        if (typeof doc.image !== 'undefined') {
-          if (typeof doc.image.url !== 'undefined') {
-            imageURL = doc.image.url;
-          } else if (typeof doc.image.thumburl !== 'undefined') {
-            imageURL = doc.image.thumburl;
-          }
-        }
-        if (imageURL) {
-          var $image = $('<p>', {
-            class: 'image notloaded'
-          });
-
-          $image.append($('<img>', {
-            'src': imageURL
-          }));
-          $card.append($image);
-        }
-
-        var description;
-        if (typeof doc.description !== 'undefined') {
-          description = doc.description.substr(0, 150) + (doc.description.length > 150 ? "&hellip;" : "");
-        } else {
-          description = "No description";
-        }
-        $card.append($('<p>', {
-          'html': description
-        }));
-
-      }
-
-      return $card;
-    },
-
-    _updateCards : function(data) {
-      var self = this;
-      var newCards = [];
-
-      // Remove the "No results" message if present
-      $('.no-results', this.$cards).remove(); // TODO: animate this nicely?
-
-      // Remove the cards filtered out last time
-      // Leave one card to prevent the single column isotope bug
-      $('.card.removed:not(.single-column-fix)', this.$cards).remove();
-
-      // Mark current to be deleted; we'll un-mark them if they exist
-      $('.card', this.$cards).each(function(k, card) {
-        var $card = $(card);
-        $card.addClass('to-delete');
-        $card.attr('data-sort', k + 1000);
-      });
-
-      $.each(data, function(k, doc) {
-        // Card exists, so update sort order and keep it
-        if ($('#doc_' + doc.documentid).length) {
-          $('#doc_' + doc.documentid).removeClass('to-delete').attr('data-sort', k);
-          return true;
-        }
-
-        // Card doesn't exist, so create it. (TODO: Maybe use a templating system?)
-        var $card = self._createCard(doc);
-        $card.attr('data-sort', k);
-        newCards.push($card);
-      });
-
-      // Filter out unused cards (we don't delete yet b/c we want them to fade out)
-      $('.card.to-delete', this.$cards).removeClass('to-delete').addClass('removed');
-
-      var $newCards = $.makeArray(newCards);
-
-      if (!$('.card:not(.single-column-fix)', self.$cards).length) {
-        if (self.$cards.hasClass('isotope')) {
-          self.$cards.isotope('destroy');
-        }
-
-        // No isotope instance yet; create it.
-
-        self.$cards.append($newCards);
-        self.$cards.isotope(self._isotope_config);
-        self.$cards.removeClass('loading');
-        self.$cards.imagesLoaded(function() {
-          $('.notloaded').removeClass('notloaded');
-          setTimeout(function() {
-            self.$cards.isotope(self._isotope_config);
-          }, 10);
-        });
-      } else {
-        // Isotope already exists, append cards to it
-
-        this.$cards.append( $newCards );
-
-        // Single out the new cards, and 'append' them to isotope (they're already in the DOM)
-        $newCards = $('.new', self.$cards);
-        self.$cards.isotope( 'appended' , $newCards );
-        self.$cards.isotope( 'updateSortData' ).isotope(self._isotope_config);
-        self.$cards.removeClass('loading');
-        self.$cards.imagesLoaded(function() {
-          $('.notloaded').removeClass('notloaded');
-          setTimeout(function() {
-            self.$cards.isotope(self._isotope_config);
-          }, 10);
-        });
-      }
-
-      // TODO: animate this nicely?
-      if ($('.card:not(.removed)', this.$cards).length === 0) {
-        this.$cards.append($('<div>', {
-          class: 'no-results',
-          text: 'No results'
-        }));
-      }
-
-      $('.new', this.$cards).removeClass('new');
-    },
-
-    appendHistory : function(recording) {
-      if (recording.transcript) {
-        this._recordings.push(recording);
-
-        // Append to the history
-        var $new_history = $('<li>', {
-          data: {
-            'recording': recording,
-          },
-          html: this.$input.html(),
-        });
-
-        this.$input.before($new_history);
-        console.log($new_history);
-
-        // Create the new one
-        this.$input.html("&nbsp;");
-
-        var self = this;
-        setTimeout(function() {
-          self.$input.removeClass('hide');
-          self.scrollHistory();
-        }, 100);
-
-        this._restyleHistory();
-        this._updateUI();
-      }
-    },
-
-    lettering : function($el, text, parentClass) {
-      $el.empty();
-      text = text.split('');
-      var $el_parent = $('<div>', {'class': parentClass});
-      for(var i=0; i < text.length; i++) {
-        $el_parent.append($('<span>', {text: text[i]}));
-      }
-      $el.append($el_parent);
-    },
-
-    _restyleHistory: function () {
-      var self = this, i;
-      //this.$historyList.empty();
-      this.$historyList.find('li').each(function() {
-        var recording = $(this).data('recording');
-        if(!recording) return;
-
-        // entities for recording
-        var entities = self.entitiesForTextEntry(recording.textEntryID);
-
-        var stats = highlightEntities(entities, recording.transcript);
-        var $div = $('<div>', {'html': stats.markup});
-
-        var $li = $(this);
-        $li.empty();
-        $li.append($div);
-        $li.attr('data-text-entry-id', recording.textEntryID);
-
-        $li.find('.tag').each(function(k, $tag) {
-          var $this = $(this);
-          var entityID = $this.data('entityId');
-          if (self.selectedEntityMap[entityID]) {
-            $this.addClass('selected');
-          } else {
-            $this.removeClass('selected');
-          }
-        });
-
-        if (i === self._recordings.length - 1 && self.recordings_length !== self._recordings.length) {
-          (function($div) {
-            setTimeout(function () {
-              $div.addClass('on');
-            }, 100);
-          })($div);
-        } else {
-          $div.addClass('old');
-        }
-      });
-
-      self.scrollHistory();
-
-      // So we can tell if there's a new one
-      this.recordings_length = this._recordings.length;
-    },
-
-    scrollHistory : function() {
-      var self = this;
-      self.$historyData.scrollTop(self.$historyData[0].scrollHeight);
-    },
-
-    _documentLock : {
-      canRequestDocuments: function() {
-        return (this.lastDocumentsRequest + 500 < Date.now());
-      },
-      lastDocumentsRequest: 0
-    },
-
-    _documentsCache: {},
-
-    _numColumns : function () {
-      var self = this;
-      var cardWidth = 218;
-      var cardPadding = 20;
-      var widthRemaining = self.$cards.width() - cardPadding;
-      var numCols = 0;
-      while (widthRemaining >= 0) {
-        numCols++;
-        widthRemaining -= cardWidth + cardPadding;
-      }
-      return numCols;
-    },
-
-    _numDocuments : function () {
-      var self = this;
-      var numCols = self._numColumns();
-      var numDocs = Math.max(numCols * 2, 8);
-      if (numDocs % numCols !== 0) {
-        numDocs += numCols - (numDocs % numCols);
-      }
-      return numDocs;
-    },
-
-    getDocuments : function() {
-      UTIL.log('getting documents');
-      var self = this;
-      var queryParams = { limit: 14 };
-      var requestKey = 'default';
-      var selectedEntityIDs = Object.keys(MMVoice.selectedEntityMap);
-      if (selectedEntityIDs.length > 0) {
-        requestKey = JSON.stringify(selectedEntityIDs);
-        queryParams.entityids = requestKey;
-      } else {
-        queryParams.textentryids = JSON.stringify(self._currentTextEntries);
-      }
-
-      // Return cached response if it exists and has not expired (expire time of 10 minutes)
-      if (self._documentsCache.hasOwnProperty(requestKey) &&
-          Date.now() - self._documentsCache[requestKey].requestTime < 600000) {
-        onSuccess(self._documentsCache[requestKey].result, true);
-        return;
-      }
-
-      if (!self._documentLock.canRequestDocuments()) {
-        return;
-      }
-
-      var requestTime = this._documentLock.lastDocumentsRequest = Date.now();
-      function onSuccess(result, cached) {
-        cached = !!cached;
-
-        if (!cached) {
-          self._documentsCache[requestKey] = {
-            result: result,
-            requestTime: requestTime
-          };
-          UTIL.log("Got documents");
-        } else {
-          UTIL.log("Got documents from cache");
-        }
-
-        var numDocuments = self._numDocuments();
-        if (result.data.length > numDocuments) {
-          result.data.splice(numDocuments, result.data.length - numDocuments);
-        }
-        MMVoice.showResults(result.data);
-      }
-
-      function onError(error) {
-        UTIL.log("Error getting documents:  (Type " + error.code +
-            " - " + error.type + "): " + error.message);
-      }
-      MM.activeSession.documents.get(queryParams, onSuccess, onError);
-    },
-
-    resize : function(e) {
-      if(this.is_results) {
-        var size = this.$mm_parent.height();
-        this._height = size;
-        this.$results.outerHeight(size);
-        this.$history.outerHeight(this._historyHeight(size));
-      }
-    },
-
-    update_text : function() {
-      var self = this;
-
-      var fullText = self.confirmedRecording.transcript + self.pendingRecording.transcript;
-
-      if (fullText.length) {
-        this.$input.empty();
-      }
-
-      // TODO: animate transition to highlighted entities ?
-      var confirmedStats = highlightEntities(this.currentEntities, this.confirmedRecording.transcript);
-      this.$input.append($('<span>', {
-        html: confirmedStats.markup
-      }));
-      this.$input.append($('<span>', {
-        class: 'pending',
-        html: self.pendingRecording.transcript
-      }));
-      this.$input.attr('data-text', fullText);
-    },
-
-    onTextEntryPosted: function(response) {
-      var self = MMVoice;
-      UTIL.log('text entry posted');
-      var textEntryID = MMVoice.confirmedRecording.textEntryID = response.data.textentryid;
-      self.$input.data('textentryid', textEntryID);
-      self._currentTextEntries.push(textEntryID);
-      delete self._documentsCache['default'];
-      self.selectedEntityMap = {};
-    },
-
-    _listenerConfig : {
-      onResult: function(result /*, resultIndex, results, event  <-- unused */) {
-        UTIL.log("Listener: onResult", result);
-        if (result.final) {
-          MMVoice.makeNewRecordings(result.transcript);
-        } else {
-          MMVoice.pendingRecording.transcript = result.transcript;
-        }
-        MMVoice._updateUI();
-      },
-      onStart: function(event) {
-        UTIL.log("Listener: onStart");
-        if (MMVoice.is_first_start) {
-          MMVoice.makeNewRecordings();
-          MMVoice.is_first_start = false;
-          MMVoice.status = 'listening';
-          MMVoice._updateUI();
-          startVolumeMonitor();
-          MMVoice.$cards.addClass('loading');
-        }
-      },
-      onEnd: function(event) {
-        UTIL.log("Listener: onEnd");
-        var self = this;
-        var pendingTranscript = MMVoice.pendingRecording.transcript;
-        if (pendingTranscript.length > 0) {
-          MMVoice.makeNewRecordings(pendingTranscript);
-        } else {
-          MMVoice.$cards.removeClass('loading');
-        }
-        if (MMVoice.is_locked) {
-          if (MMVoice._lockWhileRecording) {
-            MMVoice.lockWhileRecording();
-          }
-          MM.activeSession.listener.start();
-        } else {
-          MMVoice.status = false;
-
-          var fullText = MMVoice.confirmedRecording.transcript + MMVoice.pendingRecording.transcript;
-          if(!fullText.length) {
-            MMVoice.lettering(MMVoice.$input, 'Whoops, we didn\'t get that...', 'mm-prompt mm-prompt-error');
-          }
-
-          UTIL.log('full text', fullText);
-
-          // Play the sound
-          $('#audio-done')[0].play();
-        }
-
-        MMVoice._updateUI();
-      },
-      onError: function(event) {
-        if (event.error === 'aborted') {
-          return; // ignore aborted errors
-        }
-        UTIL.log("Listener: onError - ", event.error, event.message);
-        switch (event.error) {
-          case 'not-allowed':
-          case 'service-not-allowed':
-            // TODO: do something here
-            break;
-
-          case 'language-not-supported':
-          // TODO: handle this when we allow setting language
-
-          // Ignore the rest for now
-          case 'bad-grammar':
-          case 'network':
-          case "no-speech":
-          case 'audio-capture':
-          case 'service-not-allowed':
-            break;
-          default:
-            break;
-        }
-
-      },
-      onTextEntryPosted: function(response) {
-        MMVoice.onTextEntryPosted(response);
-      }
-    },
-
-    _changed_cached : {},
-
-    // This will broadcast updated variables to the modal
-    _isChanged : function(name) {
-      var currentValue = this[name];
-      if (typeof this[name] === 'object') {
-        currentValue = JSON.stringify(this[name]);
-      }
-      if (this._changed_cached[name] != currentValue) {
-        this._changed_cached[name] = currentValue;
-        return true;
-      }
-      return false;
-    },
-
-    // Do a dirty check of all variables to see what changed
-    _getUpdated : function(items) {
-      var self = this;
-      var updated = {};
-      $.each(items, function(k, v) {
-        if (typeof v !== 'function' && k[0] != "_" && k[0] != "$") {
-          if (self._isChanged(k)) {
-            updated[k] = v;
-          }
-        }
-      });
-      return updated;
-    },
-
-    // Update the UI to reflect the site 
-    _updateUI : function() {
-      var self = this;
-      var updates = self._getUpdated(this);
-
-      if('recordings_length' in updates) {
-        if(updates.recordings_length == 1) {
-          self.$body.addClass('hashistory');
-          self.$historyButton.show();
-        }
-        if(updates.recordings_length >= 1) {
-          self.$mm_button.addClass('shadow');
-        }
-      }
-
-      if('is_voice_ready' in updates) {
-        if(self.do_on_voice_ready_fn) {
-          self.do_on_voice_ready_fn();
-          delete self.do_on_voice_ready_fn;
-        }
-      }
-
-      if('results_length' in updates) {
-        if(updates.results_length > 0 && !self.is_results) {
-          self.$body.addClass('results');
-          self.$mm_parent.addClass('results');
-          self.is_results = true;
-          self.resize();
-        }
-      }
-
-      if('status' in updates) {
-        self.$mm_button.removeClass('status-pending');
-        self.$mm_button.removeClass('status-listening');
-        self.status = updates.status;
-        if (updates.status !== false) {
-          self.$mm_button.addClass('status-' + updates.status);
-        }
-        if (updates.status === 'listening') {
-          self.$input.empty();
-          self.lettering(self.$input, 'Start speaking now...', 'mm-prompt');
-          //this.$mm.addClass('open');
-        }
-        if (updates.status === false) {
-          self.$mm_pulser.css('transform', 'scale(0)');
-        }
-
-        setTimeout(function() {
-          self.$mm_alert.toggleClass('on', updates.status === 'pending');
-        }, 10);
-      }
-
-      if('is_locked' in updates) {
-        self.$mm_button.toggleClass('lock', updates.is_locked);
-      }
-
-      var textNeedsUpdate = false;
-      if ('currentEntities' in updates) {
-        self.currentEntities = updates.currentEntities;
-        textNeedsUpdate = true;
-      }
-
-      var hasConfirmedRecording = 'confirmedRecording' in updates;
-      var hasPendingRecording = 'pendingRecording' in updates;
-      if (hasConfirmedRecording) {
-        self.confirmedRecording = updates.confirmedRecording;
-      }
-      if (hasPendingRecording) {
-        self.pendingRecording = updates.pendingRecording;
-      }
-      textNeedsUpdate = textNeedsUpdate || hasConfirmedRecording || hasPendingRecording;
-
-      if (textNeedsUpdate && self.status !== 'editing') {
-        self.update_text();
-      }
-
-    },
-
-  };
-
-  $(function() {
-
-    // Load options from iframe attribute
-    var voiceNavOptions = window.frameElement.getAttribute('mm-voice-navigator-options');
-    try {
-      voiceNavOptions = MMVoice.config = JSON.parse(voiceNavOptions);
-    } catch (e) {
-      UTIL.log('Error parsing voice navigator configuration');
-    }
-
-    var MM_USER_ID_PREFIX = 'vnu';
-    var MM_USER_NAME = 'Voice Navigator User';
-    var MM_USER_ID_COOKIE = 'voice_navigator_user_id';
-
-    var MM_CONFIG = {
-      appid: voiceNavOptions.appID,
-      onInit: function() {
-        UTIL.log("Hello from MindMeld!");
-        getToken();
-      }
     };
 
-    if (typeof voiceNavOptions.cleanUrl !== 'undefined') {
-      MM_CONFIG.cleanUrl = voiceNavOptions.cleanUrl;
-    }
-    if (typeof voiceNavOptions.fayeClientUrl !== 'undefined') {
-      MM_CONFIG.fayeClientUrl = voiceNavOptions.fayeClientUrl;
-    }
-    MM.init(MM_CONFIG);
+    /* Manage the state of the UI */
+    var MMVoice = {
+        is_init : false,
+        is_locked : false,
+        _lockWhileRecording: false,
+        status : false,
+        is_first_start : true,
+        is_results : false,
 
-    function guid() {
-      return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-        return v.toString(16);
-      }));
-    }
+        is_voice_ready  : false,
 
-    function getUserID() {
-      // get user id cookie
-      var userID = $.cookie(MM_USER_ID_COOKIE);
-      if (typeof userID === 'undefined') {
-        userID = MM_USER_ID_PREFIX + '-' + guid();
-        $.cookie(MM_USER_ID_COOKIE, userID);
-      }
-      return userID;
-    }
+        config: {},
 
-    function getToken() {
-      function onSuccess(result) {
-        UTIL.log('Successfully got token');
-        setUser(result.user.userid);
-      }
-      function onError (error) {
-        UTIL.log('Token was not valid');
-      }
+        _recordings: [],
+        recordings_length: 0,
+        confirmedRecording : {},
+        pendingRecording : {},
+        selectedEntityMap : {},
+        currentEntities: [],
+        results_length : -1,
+        _entityMap : {},
+        _similarEntityMap : {},
+        _textEntryMap: {},
+        _currentTextEntries: [],
+        _height : 0,
 
-      var userID = getUserID();
-      MM.getToken({
-        /* Anon. user auth is not in prod, so use simple there
-        // simple user auth
-        appsecret: voiceNavOptions.appSecret,
-        simple: {
-          userid: userID,
-          name: MM_USER_NAME
+        $body : $(),
+
+        $window : $(),
+        $cards : $(),
+        $mm : $(),
+        $mm_parent : $(),
+        $mm_close : $(),
+        $mm_button : $(),
+        $mm_button_icon : $(),
+        $mm_pulser : $(),
+        $mm_alert : $(),
+        $mm_alert_dismiss : $(),
+        $tags : $(),
+        $history : $(),
+        $historyList : $(),
+        $results : $(),
+        $historyData : $(),
+        $historyButton : $(),
+
+        $editable : $(),
+
+        $input : $(),
+
+        // TODO: figure out a better name for this
+        makeNewRecordings : function(confirmedTranscript) {
+            var previousTranscript = this.confirmedRecording.transcript || '';
+            if (previousTranscript.length > 0) {
+                this.appendHistory(this.confirmedRecording);
+            }
+            this.confirmedRecording = this._newRecording(confirmedTranscript);
+            this.pendingRecording = this._newRecording();
+        },
+
+        _newRecording : function(transcript) {
+            transcript = transcript || '';
+            return {
+                transcript: transcript,
+                textEntryID: false
+            };
+        },
+
+        init : function() {
+            var self = this;
+
+            this.$body = $('body');
+
+            this.$window = $(window);
+            this.$mm = $('#mindmeld');
+            this.$mm_button = $('#mm-button');
+            this.$mm_close = $('#close, #mindmeld-overlay');
+            this.$mm_pulser = $('#mm-pulser');
+            this.$mm_button_icon = $('#mm-button-icon');
+            this.$mm_parent = $('#mindmeld-parent');
+            this.$mm_alert_dismiss = $('#mm-alert-dismiss');
+            this.$mm_alert = $('#mindmeld-alert');
+            this.$cards = $('#cards');
+            this.$tags = $('#tags');
+            this.$history = $('#history');
+            this.$historyList = this.$history.find('ul');
+            this.$input = this.$historyList.find('.on');
+            this.$results = $('#results');
+            this.$historyData = $('#history-data');
+            this.$historyButton = $('#history-button');
+
+            this.$editable = $('.editable');
+
+            this.makeNewRecordings();
+
+            // Make tags clickable
+            function onTagClick() {
+                var entityID = $(this).data('entityId');
+                self.toggleEntitySelected(entityID);
+            }
+            this.$tags.on('click', '.tag', onTagClick);
+            this.$historyList.on('click', '.tag', onTagClick);
+
+            // Scrollbars
+            $('.inner-content-div').slimScroll({
+                height: '100%',
+                distance: '6px'
+            });
+
+            // Resize
+            self.$window.on('resize', function(){ self.resize(); });
+            self.resize();
+
+            self.setupEditable(true); // true = allow typing into the box
+
+            // Alert dismiss
+            self.$mm_alert_dismiss.click(function(e) {
+                e.preventDefault();
+                self.$mm_alert.removeClass('on');
+            });
+
+            // History button
+            self.$historyButton.click(function(e) {
+                e.preventDefault();
+
+                // Toggle the open/closed-ness of history
+                var history_open = self.$history.hasClass('open');
+                self.$history.toggleClass('open', !history_open);
+
+                if(!history_open) {
+                    var scrollHeight = self._historyHeight(self.$historyData[0].scrollHeight);
+                    self.$history.css(self._prefix('transform'), 'translateY('+scrollHeight+'px)');
+                    self.$historyButton.text('Close History');
+                } else {
+                    self.$history.css(self._prefix('transform'), '');
+                    self.$historyButton.text('Expand History');
+                }
+
+                // Snap to the bottom
+                self.scrollHistory();
+            });
+
+
+            // Listen to post messages
+            $(window).on('message', function(e) {
+                var event = e.originalEvent;
+                var action = event.data.action;
+                if (event.data.source != 'mindmeld') {
+                    return;
+                }
+
+                if (action === 'open') {
+                    self.config = event.data.data;
+                    self.onConfig();
+                    self.$mm_parent.addClass('open');
+                    if (self.config.startQuery === null) {
+                        self._do_on_voice_ready(function() {
+                            MMVoice.listen(false);
+                        });
+                    }
+                }
+            });
+
+            // Close the modal
+            self.$mm_close.click(function(e) {
+                e.preventDefault();
+                self.close();
+            });
+
+            if (!MM.support.speechRecognition) {
+                self.$mm_button.hide();
+                self.$mm_pulser.hide();
+                self.$input.hide();
+
+                self.$body.addClass('no-speech');
+
+                var $text_input = $('<li>', {'class':'text-input'});
+                var $form = $('<form>');
+                var $input = $('<input>', {
+                    type: 'text',
+                    class: 'search',
+                    placeholder: 'Search query'
+                });
+                var $button = $('<button>', {
+                    html: '&nbsp;<span></span>',
+                    type: 'submit',
+                    class: 'mm-button-background mm-button-border'
+                });
+
+                $form.submit(function(e) {
+                    e.preventDefault();
+                    var text = $input.val();
+
+                    $input.val("").focus();
+                    $input.attr("placeholder", text);
+                    self.appendHistory({transcript: text});
+
+                    // Submit!
+                    self.submitText(text);
+                });
+
+                $text_input.append($form);
+                $form.append($input);
+                $form.append($button);
+                self.$historyList.append($text_input);
+
+                $input.focus();
+                return;
+            }
+
+            // Button Actions
+            var button_status = {
+                mousedown : false,
+                locked : false,
+                just_locked : true
+            };
+
+            self.$mm_button_icon.on('mousedown', function(e) {
+                button_status.mousedown = true;
+                button_status.just_locked = false;
+                setTimeout(function() {
+                    if(button_status.mousedown) {
+                        button_status.locked = true;
+                        button_status.just_locked = true;
+                        self.listen(true);
+                    }
+                }, 300);
+            });
+
+            self.$mm_button_icon.on('mouseup', function(e) {
+                e.preventDefault();
+                button_status.mousedown = false;
+                if(!button_status.locked) {
+                    self.listen(false);
+                }
+
+                if(button_status.locked && !button_status.just_locked) {
+                    button_status.locked = false;
+                    button_status.mousedown = false;
+                    self.listen(false);
+                }
+
+                button_status.just_locked = false;
+            });
+
+            this.is_init = true;
+
+        },
+
+
+        close : function() {
+            var self = this;
+
+            self.stopListening();
+            self.$mm_parent.removeClass('open results');
+            self.$body.removeClass('results');
+            self.is_results = false;
+            self.results_length = -1;
+            setTimeout(function() {
+                self.postMessage('close');
+            }, 500);
+        },
+
+        _do_on_voice_ready : function(fn) {
+            var self = this;
+            if(self.is_voice_ready) {
+                fn();
+            } else {
+                self.do_on_voice_ready_fn = fn;
+            }
+        },
+
+        listen : function(lock) {
+            if(!MM.support.speechRecognition) return;
+
+            var self = this;
+            var statusIsPending = (self.status === 'pending');
+            var statusIsListening= (self.status === 'listening');
+            if (!lock) {
+                if (statusIsPending || statusIsListening) {
+                    self.stopListening();
+                } else {
+                    self.startListening();
+                }
+            } else {
+                if (!self.is_locked && (statusIsPending || statusIsListening)) {
+                    self._lockWhileRecording = true;
+                    self.is_locked = true;
+                } else if (self.is_locked) {
+                    self.stopListening();
+                } else {
+                    self.startListening(true);
+                }
+            }
+            this._updateUI();
+        },
+
+        pulse : function(volume) {
+            var self = this;
+            var scale = ((volume / 100) * 0.5) + 1.4;
+            self.$mm_pulser.css('transform', 'scale(' + scale + ')');
+        },
+
+        postMessage : function(action, data) {
+            parent.postMessage({
+                action: action,
+                source: 'mindmeld',
+                data: data
+            }, "*");
+        },
+
+        _historyHeight : function(scrollHeight) {
+            if(scrollHeight > this._height * 0.8) scrollHeight = this._height * 0.8;
+            if(scrollHeight < 270) scrollHeight = 270;
+            return scrollHeight;
+        },
+
+        setupEditable : function(allowManualEntry) {
+            var self = this;
+            self.$historyList.on('click', '.on .tag', function() {
+                var $this = $(this);
+                var entityID = $this.data('entityId');
+                var newValue = !(!!self.selectedEntityMap[entityID]);
+                $this.toggleClass('selected', newValue);
+
+                // don't focus on text
+                self.$editable.blur();
+                clearTimeout(self._textFocusTimeout);
+
+                return false; // don't bubble up
+            });
+
+            self.$editable.hide();
+
+            if (allowManualEntry) {
+
+                self.$historyList.on('click', '.on', function() {
+                    // Not already doing something, and not a prompt
+                    var $prompt = self.$input.find('.mm-prompt');
+
+                    if (!self.status && ($prompt.hasClass('mm-prompt-error') || !$prompt.length)) {
+                        self.$editable.height(self.$input.height());
+                        self.$input.hide();
+                        $prompt.empty();
+                        var text = self.$input.text().trim();
+                        self.$editable.show();
+                        self.$editable.focus();
+                        self.$editable.val(text);
+                    }
+                });
+
+                self.$editable.focusin(function() {
+                    if (!self.status) {
+                        // delay so we know it's not an entity click
+                        self._textFocusTimeout = setTimeout(function() {
+                            self.status = 'editing';
+                        }, 300);
+                    } else {
+                        self.$editable.blur();
+                        self.status = false;
+                    }
+                    return false;
+                });
+
+                self.$editable.focusout(function() {
+                    self.$editable.hide();
+                    self.$input.show();
+                    self.status = false;
+                });
+
+                self.$editable.keypress(function (e) {
+                    var keyCode = e.originalEvent.keyCode;
+                    if (keyCode !== 13) {
+                        // Update styling?
+                        return;
+                    }
+
+                    // User pressed return
+                    var text = self.$editable.val().trim();
+                    self.$editable.blur();
+                    self.$input.text(text);
+                    self.submitText(text);
+
+                    return false;
+                });
+            }
+        },
+
+        _prefix_raw : '',
+        _prefix : function(rule) {
+            if(!this._prefix_raw) {
+                var styles = window.getComputedStyle(document.documentElement, ''),
+                    pre = (Array.prototype.slice
+                        .call(styles)
+                        .join('')
+                        .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+                        )[1];
+                this._prefix_raw = (pre ? '-' + pre + '-' : '') + rule;
+            }
+            return this._prefix_raw;
+        },
+
+        submitText: function(text) {
+            var self = this;
+            self.status = false;
+
+            var recording = self.confirmedRecording;
+            if (recording.textEntryID) {
+                MM.activeSession.textentries.delete(recording.textEntryID);
+            }
+            recording.transcript = text;
+            self.$cards.addClass('loading');
+            MM.activeSession.textentries.post({
+                text: text,
+                type: 'text',
+                weight: 0.5
+            }, function (response) {
+                self.onTextEntryPosted(response);
+            });
+        },
+
+        /*
+         resizeResults: function(size) {
+         this._height = size;
+         this.$results.outerHeight(size);
+         this.$history.outerHeight(this._historyHeight(size));
+         },
+         */
+
+        lockWhileRecording : function() {
+            this.is_locked = true;
+            this._lockWhileRecording = false;
+            MM.activeSession.setListenerConfig({ 'continuous': this.is_locked });
+        },
+
+        startListening : function(is_locked) {
+            this.is_locked = !!is_locked;
+            this.status = 'pending';
+            this.is_first_start = true;
+            this._currentTextEntries = [];
+            MM.activeSession.setListenerConfig({ 'continuous': this.is_locked });
+            MM.activeSession.listener.start();
+
+            this._updateUI();
+        },
+
+        stopListening : function() {
+            if(MM.support.speechRecognition) {
+                MM.activeSession.listener.cancel();
+                this.is_locked = false;
+            }
+            this._updateUI();
+        },
+
+        showResults : function(data) {
+            this.results_length = data.length;
+            this._updateCards(data);
+            this._updateUI();
+        },
+
+        setTextEntries : function(data) {
+            var self = this;
+            $.each(data, function(k, textEntry) {
+                if (typeof self._textEntryMap[textEntry.textentryid] === 'undefined') {
+                    textEntry.entityIDs = [];
+                    self._textEntryMap[textEntry.textentryid] = textEntry;
+                }
+            });
+        },
+
+        toggleEntitySelected : function(entityID) {
+            var self = this;
+
+            var entityText = self._entityMap[entityID].text;
+            var similarEntities = self._similarEntityMap[entityText];
+            for (var i = 0, l = similarEntities.length; i < l; i++) {
+                var similarEntityID = similarEntities[i];
+                var $tagsToToggle = $('.tag[data-entity-id="' + similarEntityID + '"]');
+                if (self.selectedEntityMap[similarEntityID]) {
+                    delete self.selectedEntityMap[similarEntityID];
+                    $tagsToToggle.removeClass('selected');
+                } else {
+                    self.selectedEntityMap[similarEntityID] = true;
+                    $tagsToToggle.addClass('selected');
+                }
+            }
+
+            self._updateUI();
+            self.getDocuments();
+        },
+
+        setEntities : function(data) {
+            var self = this;
+            var i = 0;
+
+            self.$tags.empty();
+            self._similarEntityMap = {};
+
+            $.each(data, function(k, entity) {
+                if (entity.entitytype === 'segment' ||
+                    entity.entitytype === 'keyphrase') {
+                    return; // ignore these entities
+                }
+
+                var text = entity.text;
+                if (text.split(' ').length > 10) {
+                    return; // ignore long entities
+                }
+
+                if (self._currentTextEntries.indexOf(entity.textentryid) === -1) {
+                    return; // ignore entities from past text entries
+                }
+
+                var textEntry = self._textEntryMap[entity.textentryid];
+                if (typeof textEntry !== 'undefined') {
+                    textEntry.entityIDs.push(entity.entityid);
+                } else {
+                    UTIL.log('did not find text entry for entity');
+                }
+                self._entityMap[entity.entityid] = entity;
+
+                // TODO(jj): should we look at type here as well as text
+                var similarEntities = self._similarEntityMap[entity.text];
+                if (typeof similarEntities === 'undefined') {
+                    similarEntities = self._similarEntityMap[entity.text] = [];
+
+                    // only create tag for first version of an entity
+                    var $a = $('<a>', {
+                        href: '#',
+                        class: 'tag',
+                        text: entity.text
+                    });
+                    self.$tags.append($a);
+                    i++;
+                    $a.attr('data-entity-id', entity.entityid);
+                    self._entityMap[entity.entityid] = entity;
+
+                    if (self.selectedEntityMap[entity.entityid]) {
+                        $a.addClass('selected');
+                    }
+                }
+                similarEntities.push(entity.entityid);
+            });
+
+            self.$tags.toggle(!!i);
+
+            self.currentEntities = self.entitiesForTextEntry(self.confirmedRecording.textEntryID);
+            self._restyleHistory();
+        },
+
+        entitiesForTextEntry : function(textEntryID, entities) {
+            if (typeof textEntryID === 'undefined') {
+                return [];
+            }
+
+            var self = this;
+            var textEntry = self._textEntryMap[textEntryID];
+            if (typeof entities === 'undefined') {
+                entities = [];
+            }
+            if (typeof textEntry === 'undefined') {
+                return entities;
+            }
+            for (var i = 0; i < textEntry.entityIDs.length; i++) {
+                var entityID = textEntry.entityIDs[i];
+                var entity = self._entityMap[entityID];
+                entities.push(entity);
+            }
+            return entities;
+        },
+
+        _isotope_config : {
+            itemSelector: '.card',
+            sortBy: 'sort',
+            layoutMode: 'masonry',
+            filter: ':not(.removed)',
+            getSortData: {
+                sort: '[data-sort] parseInt'
+            }
+        },
+
+        _createCard : function(doc) {
+            var self = this;
+            var $card = $('<a>', {
+                class: 'card new',
+                id: 'doc_' + doc.documentid,
+                href: doc.originurl,
+                target: "_blank"
+            });
+            $card.attr('data-document-id', doc.documentid);
+
+            if (self.config.cardLayout === 'custom') {
+                var html = self.cardTemplate(doc);
+                $card.html(html);
+            } else {
+                var $title = $('<h2>', {
+                    class: 'title',
+                    html: doc.title
+                });
+                $card.append($title);
+
+                var imageURL = false;
+                if (typeof doc.image !== 'undefined') {
+                    if (typeof doc.image.url !== 'undefined') {
+                        imageURL = doc.image.url;
+                    } else if (typeof doc.image.thumburl !== 'undefined') {
+                        imageURL = doc.image.thumburl;
+                    }
+                }
+                if (imageURL) {
+                    var $image = $('<p>', {
+                        class: 'image not-loaded'
+                    });
+
+                    $image.append($('<img>', {
+                        src: imageURL
+                    }));
+                    $card.append($image);
+                }
+
+                var description;
+                if (typeof doc.description === 'string') {
+                    description = doc.description.substr(0, 150) + (doc.description.length > 150 ? "&hellip;" : "");
+                } else {
+                    description = "No description";
+                }
+                $card.append($('<p>', {
+                    html: description,
+                    class: 'description'
+                }));
+
+                // fields
+                if (typeof self.config.cardFields !== 'undefined') {
+                    function getFormattedString(format, value) {
+                        switch (format) {
+                            case 'date':
+                                var date = new Date(value * 1000);
+                                return (date.getMonth() + 1) + '/' + date.getDay() + '/' + date.getFullYear();
+                            default:
+                                return value.substr(0, 100) + (value.length > 100 ? "&hellip;" : "");
+                        }
+                    }
+
+                    var cardFields = self.config.cardFields;
+                    $.each(cardFields, function(k2, field) {
+                        var value = doc[field.key] || field.placeholder;
+                        if (typeof value !== 'undefined' && value !== '') {
+                            // If a label is specified, add a label
+                            if (typeof field.label !== 'undefined' && field.label !== '') {
+                                var $label = $('<span>', {
+                                    class: 'label',
+                                    html: field.label
+                                });
+                            }
+                            var $value = $('<span>', {
+                                class: 'value'
+                            });
+                            // if we aren't using placeholder, format the string
+                            if (value !== field.placeholder) {
+                                value = getFormattedString(field.format, value);
+                            } else {
+                                $value.addClass('placeholder'); // other wise add placeholder class
+                            }
+                            $value.text(value);
+                            var $field = $('<p>', {
+                                class: 'mm-doc-field'
+                            });
+                            if (typeof field.class !== 'undefined' && field.class !== '') {
+                                $field.addClass(field.class);
+                            }
+                            $field.append($label).append($value);
+                            $card.append($field);
+                        }
+                    });
+                }
+            }
+            return $card;
+        },
+
+        _updateCards : function(data) {
+            var self = this;
+            var newCards = [];
+
+            // Remove the "No results" message if present
+            $('.no-results', this.$cards).remove(); // TODO: animate this nicely?
+
+            // Remove the cards filtered out last time
+            // Leave one card to prevent the single column isotope bug
+            $('.card.removed:not(.single-column-fix)', this.$cards).remove();
+
+            // Mark current to be deleted; we'll un-mark them if they exist
+            $('.card', this.$cards).each(function(k, card) {
+                var $card = $(card);
+                $card.addClass('to-delete');
+                $card.attr('data-sort', k + 1000);
+            });
+
+            $.each(data, function(k, doc) {
+                // Card exists, so update sort order and keep it
+                if ($('#doc_' + doc.documentid).length) {
+                    $('#doc_' + doc.documentid).removeClass('to-delete').attr('data-sort', k);
+                    return true;
+                }
+
+                // Card doesn't exist, so create it. (TODO: Maybe use a templating system?)
+                var $card = self._createCard(doc);
+                $card.attr('data-sort', k);
+                newCards.push($card);
+            });
+
+            // Filter out unused cards (we don't delete yet b/c we want them to fade out)
+            $('.card.to-delete', this.$cards).removeClass('to-delete').addClass('removed');
+
+            var $newCards = $.makeArray(newCards);
+
+            if (!$('.card:not(.single-column-fix)', self.$cards).length) {
+                if (self.$cards.hasClass('isotope')) {
+                    self.$cards.isotope('destroy');
+                }
+
+                // No isotope instance yet; create it.
+
+                self.$cards.append($newCards);
+                self.$cards.isotope(self._isotope_config);
+                self.$cards.removeClass('loading');
+                self.$cards.imagesLoaded(function() {
+                    $('.not-loaded').removeClass('not-loaded');
+                    setTimeout(function() {
+                        self.$cards.isotope(self._isotope_config);
+                    }, 10);
+                });
+            } else {
+                // Isotope already exists, append cards to it
+
+                this.$cards.append( $newCards );
+
+                // Single out the new cards, and 'append' them to isotope (they're already in the DOM)
+                $newCards = $('.new', self.$cards);
+                self.$cards.isotope( 'appended' , $newCards );
+                self.$cards.isotope( 'updateSortData' ).isotope(self._isotope_config);
+                self.$cards.removeClass('loading');
+                self.$cards.imagesLoaded(function() {
+                    $('.not-loaded').removeClass('not-loaded');
+                    setTimeout(function() {
+                        self.$cards.isotope(self._isotope_config);
+                    }, 10);
+                });
+            }
+
+            // TODO: animate this nicely?
+            if ($('.card:not(.removed)', this.$cards).length === 0) {
+                this.$cards.append($('<div>', {
+                    class: 'no-results',
+                    html: 'No results'
+                }));
+            }
+
+            $('.new', this.$cards).removeClass('new');
+        },
+
+        appendHistory : function(recording) {
+            if (recording.transcript) {
+                this._recordings.push(recording);
+
+                // Append to the history
+                var $new_history = $('<li>', {
+                    data: {
+                        'recording': recording,
+                    },
+                    html: this.$input.html(),
+                });
+
+                this.$input.before($new_history);
+                console.log($new_history);
+
+                // Create the new one
+                this.$input.html("&nbsp;");
+
+                var self = this;
+                setTimeout(function() {
+                    self.$input.removeClass('hide');
+                    self.scrollHistory();
+                }, 100);
+
+                this._restyleHistory();
+                this._updateUI();
+            }
+        },
+
+        lettering : function($el, text, parentClass) {
+            $el.empty();
+            text = text.split('');
+            var $el_parent = $('<div>', {'class': parentClass});
+            for(var i=0; i < text.length; i++) {
+                $el_parent.append($('<span>', { text: text[i] }));
+            }
+            $el.append($el_parent);
+        },
+
+        _restyleHistory: function () {
+            var self = this, i;
+            //this.$historyList.empty();
+            this.$historyList.find('li').each(function() {
+                var recording = $(this).data('recording');
+                if(!recording) return;
+
+                // entities for recording
+                var entities = self.entitiesForTextEntry(recording.textEntryID);
+
+                var stats = highlightEntities(entities, recording.transcript);
+                var $div = $('<div>', {'html': stats.markup});
+
+                var $li = $(this);
+                $li.empty();
+                $li.append($div);
+                $li.attr('data-text-entry-id', recording.textEntryID);
+
+                $li.find('.tag').each(function(k, $tag) {
+                    var $this = $(this);
+                    var entityID = $this.data('entityId');
+                    if (self.selectedEntityMap[entityID]) {
+                        $this.addClass('selected');
+                    } else {
+                        $this.removeClass('selected');
+                    }
+                });
+
+                if (i === self._recordings.length - 1 && self.recordings_length !== self._recordings.length) {
+                    (function($div) {
+                        setTimeout(function () {
+                            $div.addClass('on');
+                        }, 100);
+                    })($div);
+                } else {
+                    $div.addClass('old');
+                }
+            });
+
+            self.scrollHistory();
+
+            // So we can tell if there's a new one
+            this.recordings_length = this._recordings.length;
+        },
+
+        scrollHistory : function() {
+            var self = this;
+            self.$historyData.scrollTop(self.$historyData[0].scrollHeight);
+        },
+
+        _documentLock : {
+            canRequestDocuments: function() {
+                return (this.lastDocumentsRequest + 500 < Date.now());
+            },
+            lastDocumentsRequest: 0
+        },
+
+        _documentsCache: {},
+
+        _numColumns : function () {
+            var self = this;
+            var cardWidth = 218;
+            var cardPadding = 20;
+            var widthRemaining = self.$cards.width() - cardPadding;
+            var numCols = 0;
+            while (widthRemaining >= 0) {
+                numCols++;
+                widthRemaining -= cardWidth + cardPadding;
+            }
+            return numCols;
+        },
+
+        _numDocuments : function () {
+            var self = this;
+            var numCols = self._numColumns();
+            var numDocs = Math.max(numCols * 2, 8);
+            if (numDocs % numCols !== 0) {
+                numDocs += numCols - (numDocs % numCols);
+            }
+            return numDocs;
+        },
+
+        getDocuments : function() {
+            UTIL.log('getting documents');
+            var self = this;
+            var queryParams = { limit: 14 };
+            var requestKey = 'default';
+            var selectedEntityIDs = Object.keys(MMVoice.selectedEntityMap);
+            if (selectedEntityIDs.length > 0) {
+                requestKey = JSON.stringify(selectedEntityIDs);
+                queryParams.entityids = requestKey;
+            } else {
+                queryParams.textentryids = JSON.stringify(self._currentTextEntries);
+            }
+
+            // Return cached response if it exists and has not expired (expire time of 10 minutes)
+            if (self._documentsCache.hasOwnProperty(requestKey) &&
+                Date.now() - self._documentsCache[requestKey].requestTime < 600000) {
+                onSuccess(self._documentsCache[requestKey].result, true);
+                return;
+            }
+
+            if (!self._documentLock.canRequestDocuments()) {
+                return;
+            }
+
+            var requestTime = this._documentLock.lastDocumentsRequest = Date.now();
+            function onSuccess(result, cached) {
+                cached = !!cached;
+
+                if (!cached) {
+                    self._documentsCache[requestKey] = {
+                        result: result,
+                        requestTime: requestTime
+                    };
+                    UTIL.log("Got documents");
+                } else {
+                    UTIL.log("Got documents from cache");
+                }
+
+                var numDocuments = self._numDocuments();
+                if (result.data.length > numDocuments) {
+                    result.data.splice(numDocuments, result.data.length - numDocuments);
+                }
+                MMVoice.showResults(result.data);
+            }
+
+            function onError(error) {
+                UTIL.log("Error getting documents:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            MM.activeSession.documents.get(queryParams, onSuccess, onError);
+        },
+
+        resize : function(e) {
+            if(this.is_results) {
+                var size = this.$mm_parent.height();
+                this._height = size;
+                this.$results.outerHeight(size);
+                this.$history.outerHeight(this._historyHeight(size));
+            }
+        },
+
+        update_text : function() {
+            var self = this;
+
+            var fullText = self.confirmedRecording.transcript + self.pendingRecording.transcript;
+
+            if (fullText.length) {
+                this.$input.empty();
+            }
+
+            // TODO: animate transition to highlighted entities ?
+            var confirmedStats = highlightEntities(this.currentEntities, this.confirmedRecording.transcript);
+            this.$input.append($('<span>', {
+                html: confirmedStats.markup
+            }));
+            this.$input.append($('<span>', {
+                class: 'pending',
+                html: self.pendingRecording.transcript
+            }));
+            this.$input.attr('data-text', fullText);
+        },
+
+        onTextEntryPosted: function(response) {
+            var self = MMVoice;
+            UTIL.log('text entry posted');
+            var textEntryID = MMVoice.confirmedRecording.textEntryID = response.data.textentryid;
+            self.$input.data('textentryid', textEntryID);
+            self._currentTextEntries.push(textEntryID);
+            delete self._documentsCache['default'];
+            self.selectedEntityMap = {};
+            MMVoice.getDocuments();
+        },
+
+        _listenerConfig : {
+            onResult: function(result /*, resultIndex, results, event  <-- unused */) {
+                UTIL.log("Listener: onResult", result);
+                if (result.final) {
+                    MMVoice.makeNewRecordings(result.transcript);
+                } else {
+                    MMVoice.pendingRecording.transcript = result.transcript;
+                }
+                MMVoice._updateUI();
+            },
+            onStart: function(event) {
+                UTIL.log("Listener: onStart");
+                if (MMVoice.is_first_start) {
+                    MMVoice.makeNewRecordings();
+                    MMVoice.is_first_start = false;
+                    MMVoice.status = 'listening';
+                    MMVoice._updateUI();
+                    startVolumeMonitor();
+                    MMVoice.$cards.addClass('loading');
+                }
+            },
+            onEnd: function(event) {
+                UTIL.log("Listener: onEnd");
+                var self = this;
+                var pendingTranscript = MMVoice.pendingRecording.transcript;
+                if (pendingTranscript.length > 0) {
+                    MMVoice.makeNewRecordings(pendingTranscript);
+                } else {
+                    MMVoice.$cards.removeClass('loading');
+                }
+                if (MMVoice.is_locked) {
+                    if (MMVoice._lockWhileRecording) {
+                        MMVoice.lockWhileRecording();
+                    }
+                    MM.activeSession.listener.start();
+                } else {
+                    MMVoice.status = false;
+
+                    var fullText = MMVoice.confirmedRecording.transcript + MMVoice.pendingRecording.transcript;
+                    if(!fullText.length) {
+                        MMVoice.lettering(MMVoice.$input, 'Whoops, we didn\'t get that...', 'mm-prompt mm-prompt-error');
+                    }
+
+                    UTIL.log('full text', fullText);
+
+                    // Play the sound
+                    $('#audio-done')[0].play();
+                }
+
+                MMVoice._updateUI();
+            },
+            onError: function(event) {
+                if (event.error === 'aborted') {
+                    return; // ignore aborted errors
+                }
+                UTIL.log("Listener: onError - ", event.error, event.message);
+                switch (event.error) {
+                    case 'not-allowed':
+                    case 'service-not-allowed':
+                        // TODO: do something here
+                        break;
+
+                    case 'language-not-supported':
+                    // TODO: handle this when we allow setting language
+
+                    // Ignore the rest for now
+                    case 'bad-grammar':
+                    case 'network':
+                    case "no-speech":
+                    case 'audio-capture':
+                    case 'service-not-allowed':
+                        break;
+                    default:
+                        break;
+                }
+
+            },
+            onTextEntryPosted: function(response) {
+                MMVoice.onTextEntryPosted(response);
+            }
+        },
+
+        _changed_cached : {},
+
+        // This will broadcast updated variables to the modal
+        _isChanged : function(name) {
+            var currentValue = this[name];
+            if (typeof this[name] === 'object') {
+                currentValue = JSON.stringify(this[name]);
+            }
+            if (this._changed_cached[name] != currentValue) {
+                this._changed_cached[name] = currentValue;
+                return true;
+            }
+            return false;
+        },
+
+        // Do a dirty check of all variables to see what changed
+        _getUpdated : function(items) {
+            var self = this;
+            var updated = {};
+            $.each(items, function(k, v) {
+                if (typeof v !== 'function' && k[0] != "_" && k[0] != "$") {
+                    if (self._isChanged(k)) {
+                        updated[k] = v;
+                    }
+                }
+            });
+            return updated;
+        },
+
+        // Update the UI to reflect the site
+        _updateUI : function() {
+            var self = this;
+            var updates = self._getUpdated(this);
+
+            if('recordings_length' in updates) {
+                if(updates.recordings_length == 1) {
+                    self.$body.addClass('hashistory');
+                    self.$historyButton.show();
+                }
+                if(updates.recordings_length >= 1) {
+                    self.$mm_button.addClass('shadow');
+                }
+            }
+
+            if('is_voice_ready' in updates) {
+                if(self.do_on_voice_ready_fn) {
+                    self.do_on_voice_ready_fn();
+                    delete self.do_on_voice_ready_fn;
+                }
+            }
+
+            if('results_length' in updates) {
+                if(updates.results_length >= 0 && !self.is_results) {
+                    self.$body.addClass('results');
+                    self.$mm_parent.addClass('results');
+                    self.is_results = true;
+                    self.resize();
+                }
+            }
+
+            if('status' in updates) {
+                self.$mm_button.removeClass('status-pending');
+                self.$mm_button.removeClass('status-listening');
+                self.status = updates.status;
+                if (updates.status !== false) {
+                    self.$mm_button.addClass('status-' + updates.status);
+                }
+                if (updates.status === 'listening') {
+                    self.$input.empty();
+                    self.lettering(self.$input, 'Start speaking now...', 'mm-prompt');
+                    //this.$mm.addClass('open');
+                }
+                if (updates.status === false) {
+                    self.$mm_pulser.css('transform', 'scale(0)');
+                }
+
+                setTimeout(function() {
+                    self.$mm_alert.toggleClass('on', updates.status === 'pending');
+                }, 10);
+            }
+
+            if('is_locked' in updates) {
+                self.$mm_button.toggleClass('lock', updates.is_locked);
+            }
+
+            var textNeedsUpdate = false;
+            if ('currentEntities' in updates) {
+                self.currentEntities = updates.currentEntities;
+                textNeedsUpdate = true;
+            }
+
+            var hasConfirmedRecording = 'confirmedRecording' in updates;
+            var hasPendingRecording = 'pendingRecording' in updates;
+            if (hasConfirmedRecording) {
+                self.confirmedRecording = updates.confirmedRecording;
+            }
+            if (hasPendingRecording) {
+                self.pendingRecording = updates.pendingRecording;
+            }
+            textNeedsUpdate = textNeedsUpdate || hasConfirmedRecording || hasPendingRecording;
+
+            if (textNeedsUpdate && self.status !== 'editing') {
+                self.update_text();
+            }
+
         }
-        //*/
-        // anonymous user auth
-        anonymous: {
-          userid: userID,
-          name: MM_USER_NAME,
-          domain: window.location.hostname
+
+    };
+
+    MMVoice.onConfig = function() {
+        MMVoice._currentTextEntries = [];
+
+        var voiceNavOptions = MMVoice.config;
+
+        var initialText;
+        if (voiceNavOptions.startQuery === null) {
+            initialText = 'Enable the microphone...';
         }
-        //*/
-      }, onSuccess, onError);
+        else {
+            initialText = voiceNavOptions.startQuery;
+        }
+        $('#initialText').text(initialText);
+
+        if (MMVoice.is_voice_ready && voiceNavOptions.startQuery !== null) { // we have init before
+            MMVoice.submitText(voiceNavOptions.startQuery);
+            MMVoice._updateUI();
+        }
+        else {
+            if (typeof MMVoice.config.baseZIndex !== 'undefined') {
+                var baseZIndex = parseInt(MMVoice.config.baseZIndex);
+                MMVoice.$mm_button.css('z-index', baseZIndex + 100);
+                MMVoice.$mm_button.find('#icon-microphone, #icon-mute, #icon-lock').css('z-index', baseZIndex + 10);
+                MMVoice.$mm_alert.css('z-index', baseZIndex + 1000);
+            }
+
+            if (MMVoice.config.resetCardsCSS) {
+                $('#cards-css').remove();
+            }
+            if (MMVoice.config.cardLayout === 'custom') {
+                try {
+                    MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+                } catch (e) {
+                    UTIL.log('Voice Navigator was unable to parse card template');
+                    MMVoice.config.cardLayout = 'default';
+                }
+            }
+
+            var MM_USER_ID_PREFIX = 'vnu';
+            var MM_USER_NAME = 'Voice Navigator User';
+            var MM_USER_ID_COOKIE = 'voice_navigator_user_id';
+
+            var MM_CONFIG = {
+                appid: voiceNavOptions.appID,
+                onInit: onMMInit
+            };
+            if (typeof voiceNavOptions.cleanUrl !== 'undefined') {
+                MM_CONFIG.cleanUrl = voiceNavOptions.cleanUrl;
+            }
+            if (typeof voiceNavOptions.fayeClientUrl !== 'undefined') {
+                MM_CONFIG.fayeClientUrl = voiceNavOptions.fayeClientUrl;
+            }
+            MM.init(MM_CONFIG);
+        }
+
+        function onMMInit () {
+            if (voiceNavOptions.mmCredentials) {
+                // No need to fetch token, user, or create session
+                MM.setToken(voiceNavOptions.mmCredentials.token);
+                MM.setActiveUserID(voiceNavOptions.mmCredentials.userID);
+                MM.setActiveSessionID(voiceNavOptions.mmCredentials.sessionID);
+                onSessionStart();
+            }
+            else {
+                getToken();
+            }
+        }
+
+        function guid() {
+            return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            }));
+        }
+
+        function getUserID() {
+            // get user id cookie
+            var userID = $.cookie(MM_USER_ID_COOKIE);
+            if (typeof userID === 'undefined') {
+                userID = MM_USER_ID_PREFIX + '-' + guid();
+                $.cookie(MM_USER_ID_COOKIE, userID);
+            }
+            return userID;
+        }
+
+        function getToken() {
+            function onSuccess(result) {
+                UTIL.log('Successfully got token');
+                setUser(result.user.userid);
+            }
+            function onError (error) {
+                UTIL.log('Token was not valid');
+            }
+
+            var userID = getUserID();
+            MM.getToken({
+                anonymous: {
+                    userid: userID,
+                    name: MM_USER_NAME,
+                    domain: window.location.hostname
+                }
+                //*/
+            }, onSuccess, onError);
+        }
+
+        function setUser(userID) {
+            function onSuccess(result) {
+                createSession();
+            }
+            function onError (error) {
+                UTIL.log("Error setting user session:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            MM.setActiveUserID(userID, onSuccess, onError);
+        }
+
+        function createSession() {
+            function onSuccess(result) {
+                setSession(result.data.sessionid);
+            }
+            function onError (error) {
+                UTIL.log("Error creating new session:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            var date = new Date();
+            var sessionName = "Voice Navigator - " + date.toTimeString() + " " + date.toDateString();
+            MM.activeUser.sessions.post({
+                name: sessionName,
+                privacymode: 'inviteonly'
+            }, onSuccess, onError);
+        }
+
+        function setSession(sessionID) {
+            function onError (error) {
+                UTIL.log("Error setting session:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            MM.setActiveSessionID(sessionID, onSessionStart, onError);
+        }
+
+        function onSessionStart () {
+            subscribeToTextEntries();
+            subscribeToEntities();
+            setupSessionListener();
+            MMVoice.is_voice_ready = true;
+            MMVoice._updateUI();
+        }
+
+        function subscribeToTextEntries() {
+            function onSuccess(result) {
+                UTIL.log("Subscribed to text entries!");
+                // Optionally submit start query
+                if (voiceNavOptions.startQuery !== null) {
+                    MMVoice.submitText(voiceNavOptions.startQuery);
+                }
+            }
+            function onError() {
+                UTIL.log("Error subscribing to text entries:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            MM.activeSession.textentries.onUpdate(function(result) {
+                MMVoice.setTextEntries(result.data);
+            }, onSuccess, onError);
+        }
+        function subscribeToEntities() {
+            function onSuccess(result) {
+                UTIL.log("Subscribed to entities!");
+            }
+            function onError (error) {
+                UTIL.log("Error subscribing to entities:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            MM.activeSession.entities.onUpdate(function(result) {
+                UTIL.log('Received entities update');
+                MMVoice.setEntities(result.data);
+            }, onSuccess, onError);
+        }
+
+        function setupSessionListener() {
+            MM.activeSession.setListenerConfig(MMVoice._listenerConfig);
+        }
+    };
+
+    $(function () {
+        MMVoice.init();
+    });
+
+    var a = {
+        stream : false,
+        context : false,
+        analyzer : false,
+        frequencies : false,
+        times : false,
+        audio_started : false
+    };
+    function startVolumeMonitor() {
+        if (!a.audio_started) {
+            // GETUSERMEDIA INPUT
+            navigator.getMedia = (navigator.getUserMedia ||
+                navigator.webkitGetUserMedia ||
+                navigator.mozGetUserMedia ||
+                navigator.msGetUserMedia);
+            window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+            a.context = new AudioContext();
+            a.analyzer = a.context.createAnalyser();
+            a.analyzer.smoothingTimeConstant = 0.18;
+            a.analyzer.fftSize = 256;
+
+            a.frequencies = new Uint8Array( a.analyzer.frequencyBinCount );
+            a.times = new Uint8Array( a.analyzer.frequencyBinCount );
+
+            navigator.getMedia ( { audio: true }, microphoneReady, function(err) {
+                UTIL.log("The following error occured: " + err);
+            });
+
+            a.audio_started = true;
+
+        } else {
+            loop();
+        }
+
+        function microphoneReady(stream) {
+            a.stream = stream;
+            var stream_source = a.context.createMediaStreamSource( stream );
+            stream_source.connect( a.analyzer );
+            loop();
+        }
+
+        function loop() {
+            if (!MMVoice.status || status === 'editing') {
+                // stop recording
+                a.stream.stop();
+                a.audio_started = false;
+                return;
+            }
+
+            a.analyzer.getByteFrequencyData( a.frequencies );
+            a.analyzer.getByteTimeDomainData( a.times );
+
+            MMVoice.pulse(getVolume());
+
+            setTimeout(loop, 75);
+        }
+
+        function getVolume() {
+            return parseInt( getFreqencyRange( 0, a.analyzer.frequencyBinCount - 1 ), 10 );
+        }
+
+        function getFreqencyRange(from, to) {
+            var volume = 0;
+
+            for ( var i = from; i < to; i++ ) {
+                volume += a.frequencies[i];
+            }
+
+            return volume / ( to - from );
+        }
     }
-
-    function setUser(userID) {
-      function onSuccess(result) {
-        createSession();
-      }
-      function onError (error) {
-        UTIL.log("Error setting user session:  (Type " + error.code +
-            " - " + error.type + "): " + error.message);
-      }
-      MM.setActiveUserID(userID, onSuccess, onError);
-    }
-
-    function createSession() {
-      function onSuccess(result) {
-        setSession(result.data.sessionid);
-      }
-      function onError (error) {
-        UTIL.log("Error creating new session:  (Type " + error.code +
-            " - " + error.type + "): " + error.message);
-      }
-      var date = new Date();
-      var sessionName = "Voice Navigator - " + date.toTimeString() + " " + date.toDateString();
-      MM.activeUser.sessions.post({
-        name: sessionName,
-        privacymode: 'inviteonly'
-      }, onSuccess, onError);
-    }
-
-    function setSession(sessionID) {
-      function onSuccess(result) {
-        subscribeToTextEntries();
-        subscribeToEntities();
-        setupSessionListener();
-        MMVoice.is_voice_ready = true;
-        MMVoice._updateUI();
-      }
-      function onError (error) {
-        UTIL.log("Error setting session:  (Type " + error.code +
-            " - " + error.type + "): " + error.message);
-      }
-      MM.setActiveSessionID(sessionID, onSuccess, onError);
-    }
-
-    function subscribeToTextEntries() {
-      function onSuccess(result) {
-        UTIL.log("Subscribed to text entries!");
-      }
-      function onError() {
-        UTIL.log("Error subscribing to text entries:  (Type " + error.code +
-            " - " + error.type + "): " + error.message);
-      }
-      MM.activeSession.textentries.onUpdate(function(result) {
-        MMVoice.setTextEntries(result.data);
-      }, onSuccess, onError);
-    }
-    function subscribeToEntities() {
-      function onSuccess(result) {
-        UTIL.log("Subscribed to entities!");
-      }
-      function onError (error) {
-        UTIL.log("Error subscribing to entities:  (Type " + error.code +
-            " - " + error.type + "): " + error.message);
-      }
-      MM.activeSession.entities.onUpdate(function(result) {
-        UTIL.log('Received entities update');
-        MMVoice.setEntities(result.data);
-        MMVoice.getDocuments();
-      }, onSuccess, onError);
-    }
-
-    function setupSessionListener() {
-      MM.activeSession.setListenerConfig(MMVoice._listenerConfig);
-    }
-
-    MMVoice.init();
-  });
-
-  var a = {
-    stream : false,
-    context : false,
-    analyzer : false,
-    frequencies : false,
-    times : false,
-    audio_started : false
-  };
-  function startVolumeMonitor() {
-    if (!a.audio_started) {
-      // GETUSERMEDIA INPUT
-      navigator.getMedia = (navigator.getUserMedia ||
-                            navigator.webkitGetUserMedia ||
-                            navigator.mozGetUserMedia ||
-                            navigator.msGetUserMedia);
-      window.AudioContext = window.AudioContext || window.webkitAudioContext;
-
-      a.context = new AudioContext();
-      a.analyzer = a.context.createAnalyser();
-      a.analyzer.smoothingTimeConstant = 0.18;
-      a.analyzer.fftSize = 256;
-
-      a.frequencies = new Uint8Array( a.analyzer.frequencyBinCount );
-      a.times = new Uint8Array( a.analyzer.frequencyBinCount );
-
-      navigator.getMedia ( { audio: true }, microphoneReady, function(err) {
-        UTIL.log("The following error occured: " + err);
-      });
-
-      a.audio_started = true;
-
-    } else {
-      loop();
-    }
-
-    function microphoneReady(stream) {
-      a.stream = stream;
-      var stream_source = a.context.createMediaStreamSource( stream );
-      stream_source.connect( a.analyzer );
-      loop();
-    }
-
-    function loop() {
-      if (!MMVoice.status || status === 'editing') {
-        // stop recording
-        a.stream.stop();
-        a.audio_started = false;
-        return;
-      }
-
-      a.analyzer.getByteFrequencyData( a.frequencies );
-      a.analyzer.getByteTimeDomainData( a.times );
-
-      MMVoice.pulse(getVolume());
-
-      setTimeout(loop, 75);
-    }
-
-    function getVolume() {
-      return parseInt( getFreqencyRange( 0, a.analyzer.frequencyBinCount - 1 ), 10 );
-    }
-
-    function getFreqencyRange(from, to) {
-      var volume = 0;
-
-      for ( var i = from; i < to; i++ ) {
-        volume += a.frequencies[i];
-      }
-
-      return volume / ( to - from );
-    }
-  }
 })();
