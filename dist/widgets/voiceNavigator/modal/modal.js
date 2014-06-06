@@ -8193,9 +8193,9 @@ var MM = ( function ($, Faye) {
                     self.config = event.data.data;
                     self.onConfig();
                     self.$mm_parent.addClass('open');
-                    if (self.config.startQuery === null) {
+                    if (self.config.startQuery === null && self.config.listeningMode) {
                         self._do_on_voice_ready(function() {
-                            MMVoice.listen(false);
+                            MMVoice.listen(self.config.listeningMode == 'continuous');
                         });
                     }
                 }
@@ -8281,6 +8281,14 @@ var MM = ( function ($, Faye) {
                 }
 
                 button_status.just_locked = false;
+            });
+
+            // clicking documents
+            this.$cards.on('click', '.card', function(e) {
+
+                if (self.config.preventLinks) {
+                    e.preventDefault();
+                }
             });
 
             this.is_init = true;
@@ -8625,7 +8633,7 @@ var MM = ( function ($, Faye) {
                 class: 'card new',
                 id: 'doc_' + doc.documentid,
                 href: doc.originurl,
-                target: "_blank"
+                target: self.config.cardAnchorTarget || '_parent'
             });
             $card.attr('data-document-id', doc.documentid);
 
@@ -8911,6 +8919,10 @@ var MM = ( function ($, Faye) {
 
         _numDocuments : function () {
             var self = this;
+            if (typeof self.config.numResults !== 'undefined') {
+                return self.config.numResults;
+            }
+
             var numCols = self._numColumns();
             var numDocs = Math.max(numCols * 2, 8);
             if (numDocs % numCols !== 0) {
@@ -8922,7 +8934,7 @@ var MM = ( function ($, Faye) {
         getDocuments : function() {
             UTIL.log('getting documents');
             var self = this;
-            var queryParams = { limit: 14 };
+            var queryParams = { limit: self.config.numResults || 14 };
             var requestKey = 'default';
             var selectedEntityIDs = Object.keys(MMVoice.selectedEntityMap);
             if (selectedEntityIDs.length > 0) {
@@ -9233,9 +9245,9 @@ var MM = ( function ($, Faye) {
                 $('#cards-css').remove();
             }
 
-            if (typeof MMVoice.config.customCSSPath !== 'undefined') {
+            if (typeof MMVoice.config.customCSSURL !== 'undefined') {
                 var cssLink = document.createElement('link');
-                cssLink.href = MMVoice.config.customCSSPath;
+                cssLink.href = MMVoice.config.customCSSURL;
                 cssLink.rel = 'stylesheet';
                 cssLink.type = 'text/css';
                 document.head.appendChild(cssLink);

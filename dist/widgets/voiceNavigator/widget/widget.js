@@ -1,6 +1,6 @@
 ;
 var MM = window.MM || {};
-(function() {
+(function(MM) {
     MM.voiceNavigator = MM.voiceNavigator || {};
     MM.loader = MM.loader || {};
     MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
@@ -39,7 +39,7 @@ var MM = window.MM || {};
             var keyPressHandler = function (event) {
                 if (event.which === 13) {
                     var query = event.target.value;
-                    MM.voiceNavigator.showModal(query);
+                    MM.voiceNavigator.showModal({ query: query });
                 }
             };
             for(var j = 0; j < $textInits.length; j++) {
@@ -160,7 +160,8 @@ var MM = window.MM || {};
         }
     };
 
-    MM.voiceNavigator.showModal = function (query, forceNewIFrame) {
+    MM.voiceNavigator.showModal = function (options) {
+        options = options || {};
         if (MMVoice.is_init) {
             var iframe;
             // Initialize voice navigator config
@@ -186,8 +187,15 @@ var MM = window.MM || {};
                 }
 
                 // parse custom css
-                if (typeof MM.voiceNavigator.config.customCSSPath !== 'undefined') {
-                    MM.voiceNavigator.config.customCSSPath = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSPath);
+                if (typeof MM.voiceNavigator.config.customCSSURL !== 'undefined') {
+                    MM.voiceNavigator.config.customCSSURL = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSURL);
+                }
+
+                // default listening mode
+                if (typeof options.listeningMode !== 'undefined') {
+                    MM.voiceNavigator.config.listeningMode = options.listeningMode;
+                } else if (typeof MM.voiceNavigator.config.listeningMode === 'undefined') {
+                    MM.voiceNavigator.config.listeningMode = 'normal';
                 }
 
                 // Pass token, user ID, and session ID if they are set already
@@ -201,21 +209,21 @@ var MM = window.MM || {};
                     };
                 }
                 // If defined, pass a starting query
-                if (query !== undefined && query !== '') {
-                    MM.voiceNavigator.config.startQuery = query;
+                if (options.query !== undefined && options.query !== '') {
+                    MM.voiceNavigator.config.startQuery = options.query;
                 }
                 else {
                     MM.voiceNavigator.config.startQuery = null;
                 }
             }
 
-            if (forceNewIFrame && MMVoice.$mm_iframe) {
+            if (options.forceNewIFrame && MMVoice.$mm_iframe) {
                 iframe = document.getElementById('mindmeld-iframe');
                 iframe.parentNode.removeChild(iframe);
             }
 
             // Create iframe if first load
-            if (!MMVoice.$mm_iframe || forceNewIFrame) {
+            if (!MMVoice.$mm_iframe || options.forceNewIFrame) {
                 iframe = document.createElement('iframe');
                 iframe.setAttribute('frameBorder', '0');
                 iframe.setAttribute('id', 'mindmeld-iframe');
@@ -237,7 +245,7 @@ var MM = window.MM || {};
         }
         else {
             // Set on_init() callback to open modal
-            MMVoice.on_init = function () { MM.voiceNavigator.showModal(query);};
+            MMVoice.on_init = function () { MM.voiceNavigator.showModal(options); };
         }
 
     };
@@ -250,4 +258,4 @@ var MM = window.MM || {};
         MMVoice.init();
     });
 
-})();
+})(MM);
