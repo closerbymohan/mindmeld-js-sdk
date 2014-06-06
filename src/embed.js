@@ -108,8 +108,13 @@ var MM = window.MM || {};
         },
 
         voice: function (widgetName) {
-            loadJS(MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.min.js', widgetName);
-            loadStyle(MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.min.css');
+            var filesURL = MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.';
+            if (!MM.widgets.config.voice.development) {
+                filesURL += 'min.';
+            }
+
+            loadJS(filesURL + 'js', widgetName);
+            loadStyle(filesURL + 'css');
         }
     };
 

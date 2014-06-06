@@ -11,7 +11,6 @@
     <title>MindMeld Voice Demo</title>
     <meta content='Voice nav' name='description'>
     <meta content='width=device-width' name='viewport'>
-    <link rel="stylesheet" href="../../../dist/widgets/voiceNavigator/widget/widget.css" type="text/css">
 
     <style type="text/css">
       body {
@@ -89,11 +88,7 @@
             <p class="clear-fix"></p>
         </div>
     </script>
-
-    <script>
-        var MM = window.MM || {};
-        MM.loader = MM.loader || {};
-        MM.loader.rootURL = '//' + window.location.host + '/dist/';
+    <script type="application/javascript">
         var VOICE_NAV_APPS = {
             'west-dev-d': {
                 movieGenius: '2befc7c6ea69d12c0a34acb30c7152027cc37c78',
@@ -113,37 +108,32 @@
         };
         var DEMO_ENVIRONMENT = 'west-dev-e';
     </script>
-
-    <script>
+    <script type="application/javascript">
         var MM = window.MM || {};
-        MM.loader = MM.loader || {};
-        MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
-        MM.widgets = MM.widgets || {};
-        MM.widgets.config = {
-            appID: VOICE_NAV_APPS[DEMO_ENVIRONMENT]['movieGenius'],
-            cleanUrl: 'https://api-' + DEMO_ENVIRONMENT + '.expectlabs.com/',
-            fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye',
-            voice: {
-//*
-                cardTemplate: window['card-template'].innerHTML,
-                customCSSPath: './css/movieGenius.css'
-/*/// Comment out the cardLayout field `if you would like to use card fields
-                cardFields: [{
-                    key: 'director',
-                    label: 'Director',
-                    placeholder: 'Unknown'
+        (function (MM) {
+            MM.loader = MM.loader || {};
+            MM.loader.rootURL = '//' + window.location.host + '/dist/';
+            MM.loader.widgets = ['voice'];
+
+            MM.widgets = MM.widgets || {};
+            MM.widgets.config = {
+                appID: VOICE_NAV_APPS[DEMO_ENVIRONMENT]['movieGenius'],
+                cleanUrl: 'https://api-' + DEMO_ENVIRONMENT + '.expectlabs.com/',
+                fayeClientUrl: 'https://push-' + DEMO_ENVIRONMENT + '.expectlabs.com:443/faye',
+                voice: {
+                    development: true,
+                    cardTemplate: window['card-template'].innerHTML,
+                    customCSSPath: './css/movieGenius.css'
                 }
-                    , {
-                    key: 'pubdate',
-                    label: 'Release Date',
-                    placeholder: 'Unknown',
-                    format: 'date'
-                }]
-//*/
-            }
-        };
+            };
+
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.async = true;
+            script.src = MM.loader.rootURL + 'embed.js';
+            document.body.appendChild(script);
+        })(MM);
     </script>
-    <script src="/dist/widgets/voiceNavigator/widget/widget.js"></script>
   </body>
 </html>
 
