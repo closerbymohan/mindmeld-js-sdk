@@ -184,7 +184,7 @@ gulp.task('serve.livereload', ['watch'], function() {
 gulp.task('lint', function() {
     return gulp.src([voiceNavigator.path + 'js/*.js'])
         .pipe(jshint())
-        .pipe(jshint.reporter('build'));
+        .pipe(jshint.reporter('default'));
 });
 
 gulp.task('buildMM', function () {
