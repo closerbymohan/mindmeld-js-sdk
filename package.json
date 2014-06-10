@@ -5,6 +5,7 @@
   "homepage": "https://developer.expectlabs.com",
   "dependencies": {},
   "devDependencies": {
+    "browserify-shim": "^3.5.0",
     "event-stream": "^3.1.5",
     "grunt": "~0.4.1",
     "grunt-contrib-clean": "^0.5.0",
@@ -24,10 +25,19 @@
     "gulp-stylus": "^1.0.0",
     "gulp-task-listing": "^0.3.0",
     "gulp-uglify": "^0.3.0",
+    "gulp-util": "^2.2.16",
     "gulp-zip": "^0.3.4",
     "load-grunt-tasks": "^0.4.0",
-    "nib": "^1.0.2"
+    "nib": "^1.0.2",
+    "pretty-hrtime": "^0.2.1"
   },
+  "browserify-shim": {
+    ".src/widgets/voiceNavigator/js/vendor/contentloaded.js" : "global:contentLoaded"
+  },
+  "browserify": {
+    "transform": [ "browserify-shim" ]
+  },
+
   "repository": {
     "type": "git",
     "url": "https://github.com/expectlabs/mindmeld-js-sdk.git"
