@@ -8292,7 +8292,6 @@ var MM = ( function ($, Faye) {
             });
 
             this.is_init = true;
-
         },
 
 
@@ -8934,6 +8933,7 @@ var MM = ( function ($, Faye) {
         getDocuments : function() {
             UTIL.log('getting documents');
             var self = this;
+
             var queryParams = { limit: self.config.numResults || 14 };
             var requestKey = 'default';
             var selectedEntityIDs = Object.keys(MMVoice.selectedEntityMap);

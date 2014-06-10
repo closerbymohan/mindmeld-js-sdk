@@ -271,9 +271,7 @@
                 }
             });
 
-
             this.is_init = true;
-
         },
 
 
