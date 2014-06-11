@@ -233,13 +233,14 @@ var MM = window.MM || {};
                 MMVoice.$mm_iframe = MMVoice.el(iframe);
 
                 MMVoice.el(iframe).on('load', function() {
-                    MMVoice.postMessage('open', MM.voiceNavigator.config);
+                    MMVoice.postMessage('config', MM.voiceNavigator.config);
+                    MMVoice.postMessage('open');
                 });
 
                 MMVoice.$mm.el().appendChild(iframe);
             }
             else {
-                MMVoice.postMessage('open', MM.voiceNavigator.config);
+                MMVoice.postMessage('open');
             }
             MMVoice.$mm.addClass('on');
         }

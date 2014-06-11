@@ -5746,7 +5746,7 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 0.5
+                weight: 1.0
 
             };
             MM.activeSession.textentries.post(textEntryData);
@@ -5828,7 +5828,7 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 0.5
+                weight: 1.0
 
             };
             MM.activeSession.textentries.post(textEntryData, onCreateNewTextEntry);
@@ -7024,7 +7024,7 @@ var MM = ( function ($, Faye) {
             var session = this;
 
             /**
-             * A session's listener is automatically configured to post text entries with type 'speech' and weight of 0.5
+             * A session's listener is automatically configured to post text entries with type 'speech' and weight of 1.0
              * when it receives a final {@link ListenerResult} object. Use {@link MM.activeSession#setListenerConfig} to
              * register callbacks. Before using a Listener, check that it is supported with {@link MM.support}.
              *
@@ -7076,7 +7076,7 @@ var MM = ( function ($, Faye) {
                 session.textentries.post({
                     text: transcript,
                     type: 'speech',
-                    weight: 0.5
+                    weight: 1.0
                 }, function(response) {
                     MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
                 });
@@ -7529,7 +7529,7 @@ var MM = ( function ($, Faye) {
                  MM.activeSession.textentries.post({
                      text: text,
                      type: 'speech',
-                     weight: '0.5'
+                     weight: 1.0
                  });
              }
 
@@ -8189,9 +8189,11 @@ var MM = ( function ($, Faye) {
                     return;
                 }
 
-                if (action === 'open') {
+                if (action === 'config') {
                     self.config = event.data.data;
                     self.onConfig();
+                }
+                if (action === 'open') {
                     self.$mm_parent.addClass('open');
                     if (self.config.startQuery === null && self.config.listeningMode) {
                         self._do_on_voice_ready(function() {
@@ -8460,7 +8462,7 @@ var MM = ( function ($, Faye) {
             MM.activeSession.textentries.post({
                 text: text,
                 type: 'text',
-                weight: 0.5
+                weight: 1.0
             }, function (response) {
                 self.onTextEntryPosted(response);
             });
@@ -8481,6 +8483,7 @@ var MM = ( function ($, Faye) {
         },
 
         startListening : function(is_locked) {
+            UTIL.log('startListening()');
             this.is_locked = !!is_locked;
             this.status = 'pending';
             this.is_first_start = true;
@@ -9167,6 +9170,7 @@ var MM = ( function ($, Faye) {
             }
 
             if('status' in updates) {
+                UTIL.log('status updated: ' + updates.status);
                 self.$mm_button.removeClass('status-pending');
                 self.$mm_button.removeClass('status-listening');
                 self.status = updates.status;

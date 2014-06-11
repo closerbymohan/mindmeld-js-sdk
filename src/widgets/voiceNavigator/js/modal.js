@@ -169,9 +169,11 @@
                     return;
                 }
 
-                if (action === 'open') {
+                if (action === 'config') {
                     self.config = event.data.data;
                     self.onConfig();
+                }
+                if (action === 'open') {
                     self.$mm_parent.addClass('open');
                     if (self.config.startQuery === null && self.config.listeningMode) {
                         self._do_on_voice_ready(function() {
@@ -461,6 +463,7 @@
         },
 
         startListening : function(is_locked) {
+            UTIL.log('startListening()');
             this.is_locked = !!is_locked;
             this.status = 'pending';
             this.is_first_start = true;
@@ -1147,6 +1150,7 @@
             }
 
             if('status' in updates) {
+                UTIL.log('status updated: ' + updates.status);
                 self.$mm_button.removeClass('status-pending');
                 self.$mm_button.removeClass('status-listening');
                 self.status = updates.status;
