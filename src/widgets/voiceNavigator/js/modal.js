@@ -257,10 +257,8 @@ var MMVoice = {
 
     },
 
-
     close : function() {
         var self = this;
-
         self.stopListening();
         self.$mm_parent.removeClass('open results');
         self.$body.removeClass('results');
@@ -423,7 +421,7 @@ var MMVoice = {
         MM.activeSession.textentries.post({
             text: text,
             type: 'text',
-            weight: 0.5
+            weight: 1.0
         }, function (response) {
             self.onTextEntryPosted(response);
         });
