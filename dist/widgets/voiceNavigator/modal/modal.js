@@ -8763,39 +8763,28 @@ var MM = ( function ($, Faye) {
 
             var $newCards = $.makeArray(newCards);
 
-            if (!$('.card:not(.single-column-fix)', self.$cards).length) {
-                if (self.$cards.hasClass('isotope')) {
-                    self.$cards.isotope('destroy');
-                }
-
+            self.$cards.append( $newCards );
+            if (!self.$cards.hasClass('isotope')) {
                 // No isotope instance yet; create it.
-
-                self.$cards.append($newCards);
+                self.$cards.addClass('isotope');
                 self.$cards.isotope(self._isotope_config);
-                self.$cards.removeClass('loading');
-                self.$cards.imagesLoaded(function() {
-                    $('.not-loaded').removeClass('not-loaded');
-                    setTimeout(function() {
-                        self.$cards.isotope(self._isotope_config);
-                    }, 10);
-                });
-            } else {
-                // Isotope already exists, append cards to it
 
-                this.$cards.append( $newCards );
+            } else {
+                // Isotope instance already exists
 
                 // Single out the new cards, and 'append' them to isotope (they're already in the DOM)
                 $newCards = $('.new', self.$cards);
                 self.$cards.isotope( 'appended' , $newCards );
                 self.$cards.isotope( 'updateSortData' ).isotope(self._isotope_config);
-                self.$cards.removeClass('loading');
-                self.$cards.imagesLoaded(function() {
-                    $('.not-loaded').removeClass('not-loaded');
-                    setTimeout(function() {
-                        self.$cards.isotope(self._isotope_config);
-                    }, 10);
-                });
             }
+
+            self.$cards.removeClass('loading');
+            self.$cards.imagesLoaded(function() {
+                $('.not-loaded').removeClass('not-loaded');
+                setTimeout(function() {
+                    self.$cards.isotope(self._isotope_config);
+                }, 10);
+            });
 
             // TODO: animate this nicely?
             if ($('.card:not(.removed)', this.$cards).length === 0) {
