@@ -311,7 +311,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
         MM.activeSession.textentries.post({
           text: result.transcript,
           type: 'speech',
-          weight: 0.5
+          weight: 1.0
         });
         // Display speech segment as final
         $('#confirmed').append(' <span class="tran">' + result.transcript + '</span>');
