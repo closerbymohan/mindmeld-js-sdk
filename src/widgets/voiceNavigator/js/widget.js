@@ -185,13 +185,14 @@ MM.voiceNavigator.showModal = function (options) {
             MMVoice.$mm_iframe = UTIL.el(iframe);
 
             UTIL.el(iframe).on('load', function() {
-                MMVoice.postMessage('open', MM.voiceNavigator.config);
+                MMVoice.postMessage('config', MM.voiceNavigator.config);
+                MMVoice.postMessage('open');
             });
 
             MMVoice.$mm.el().appendChild(iframe);
         }
         else {
-            MMVoice.postMessage('open', MM.voiceNavigator.config);
+            MMVoice.postMessage('open');
         }
         MMVoice.$mm.addClass('on');
     }

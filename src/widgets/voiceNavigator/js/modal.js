@@ -150,9 +150,11 @@ var MMVoice = {
                 return;
             }
 
-            if (action === 'open') {
+            if (action === 'config') {
                 self.config = event.data.data;
                 self.onConfig();
+            }
+            if (action === 'open') {
                 self.$mm_parent.addClass('open');
                 if (self.config.startQuery === null && self.config.listeningMode) {
                     self._do_on_voice_ready(function() {
