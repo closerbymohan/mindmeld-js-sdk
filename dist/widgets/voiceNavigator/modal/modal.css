@@ -795,6 +795,8 @@ body #mindmeld-parent {
   -o-transition: 0.3s ease-out;
   -ms-transition: 0.3s ease-out;
   transition: 0.3s ease-out;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 body #mindmeld-parent.open {
   opacity: 1;
