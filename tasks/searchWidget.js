@@ -14,6 +14,8 @@ var srcSearchWidgetDir = srcDirectory + 'widgets/searchWidget/';
 var distSearchWidgetDir = distDirectory + 'widgets/searchWidget/';
 var sdkGulpfilePath = rootDirectory + 'tasks/sdk.js';
 
+// TODO: refactor this without 'no-min' tasks
+
 // Generates standalone search widget into dist/widgets/searchWidget
 gulp.task('sw.js', ['sdk.uglify', 'sw.uglify'], function () {
     return gulp.src([
