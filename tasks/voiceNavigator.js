@@ -6,7 +6,6 @@ var concat = require('gulp-concat-util');
 var rename = require('gulp-rename');
 var es = require('event-stream');
 var taskListing = require('gulp-task-listing');
-var chug = require('gulp-chug');
 var replace = require('gulp-replace');
 
 var nib = require('nib');
@@ -22,22 +21,21 @@ var voiceNavigator  = (function() {
     var rootDirectory = '../';
     var sourceVoiceNav = rootDirectory + 'src/widgets/voiceNavigator/';
     object.distVoiceNav = rootDirectory + 'dist/widgets/voiceNavigator/';
-    object.sdkGulpfilePath = rootDirectory + 'tasks/sdk.js';
     object.paths = {
-        'build.widget.css' : [
+        'vn.widget.css' : [
                 sourceVoiceNav + 'css/widget.styl'
         ],
-        'build.widget.js' : [
+        'vn.widget.js' : [
                 sourceVoiceNav + 'js/widget.js'
         ],
-        'build.modal.css.modal' : [
+        'vn.modal.css.modal' : [
                 sourceVoiceNav + 'css/vendor/normalize.styl',
                 sourceVoiceNav + 'css/modal/modal.styl'
         ],
-        'build.modal.css.cards' : [
+        'vn.modal.css.cards' : [
                 sourceVoiceNav + 'css/modal/cards.styl'
         ],
-        'build.modal.js' : [
+        'vn.modal.js' : [
                 sourceVoiceNav + 'js/vendor/jquery-1.10.1.min.js',
                 sourceVoiceNav + 'js/vendor/isotope.pkgd.min.js',
                 sourceVoiceNav + 'js/vendor/jquery.slimscroll.min.js',
@@ -48,20 +46,20 @@ var voiceNavigator  = (function() {
                 sourceVoiceNav + 'js/entityHighlighting.js',
                 sourceVoiceNav + 'js/modal.js'
         ],
-        'build.modal.img' : [
+        'vn.modal.img' : [
                 sourceVoiceNav + 'img/modal/*'
         ],
-        'build.modal.html' : [
+        'vn.modal.html' : [
                 sourceVoiceNav + 'html/modal.jade'
         ],
-        'build.modal.audio' : [
+        'vn.modal.audio' : [
                 sourceVoiceNav + 'audio/*'
         ]
     };
-    object.paths['build.modal.css'] = object.paths['build.modal.css.modal']
-        .concat(object.paths['build.modal.css.cards']);
-    object.paths['build.modal.other'] = object.paths['build.modal.img']
-        .concat(object.paths['build.modal.audio']);
+    object.paths['vn.modal.css'] = object.paths['vn.modal.css.modal']
+        .concat(object.paths['vn.modal.css.cards']);
+    object.paths['vn.modal.other'] = object.paths['vn.modal.img']
+        .concat(object.paths['vn.modal.audio']);
 
     return object;
 })();
@@ -96,15 +94,15 @@ function concatAndMinify(stream, name, type, directory) {
 }
 
 /* Widget Tasks */
-gulp.task('build.widget.css', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.widget.css'])
+gulp.task('vn.widget.css', function() {
+    var stream = gulp.src(voiceNavigator.paths['vn.widget.css'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
 
     return concatAndMinify(stream, 'widget', 'css');
 });
 
-gulp.task('build.widget.js', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.widget.js'])
+gulp.task('vn.widget.js', function() {
+    var stream = gulp.src(voiceNavigator.paths['vn.widget.js'])
         .pipe(fileinclude('@@'));
 
     return concatAndMinify(stream, 'widget', 'js');
@@ -112,37 +110,37 @@ gulp.task('build.widget.js', function() {
 
 /* Modal Tasks */
 
-gulp.task('build.modal.css.cards', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.modal.css.cards'])
+gulp.task('vn.modal.css.cards', function() {
+    var stream = gulp.src(voiceNavigator.paths['vn.modal.css.cards'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
     return concatAndMinify(stream, 'cards', 'css', 'modal');
 });
 
-gulp.task('build.modal.css.modal', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.modal.css.modal'])
+gulp.task('vn.modal.css.modal', function() {
+    var stream = gulp.src(voiceNavigator.paths['vn.modal.css.modal'])
         .pipe(stylus({ errors: true, use: [ nib() ] }));
     return concatAndMinify(stream, 'modal', 'css');
 });
 
-gulp.task('build.modal.css', ['build.modal.css.modal', 'build.modal.css.cards']);
+gulp.task('vn.modal.css', ['vn.modal.css.modal', 'vn.modal.css.cards']);
 
-gulp.task('build.modal.js', ['buildMM'], function() {
-    var stream = gulp.src(voiceNavigator.paths['build.modal.js']);
+gulp.task('vn.modal.js', ['sdk.concat'], function() {
+    var stream = gulp.src(voiceNavigator.paths['vn.modal.js']);
     return concatAndMinify(stream, 'modal', 'js');
 });
 
-gulp.task('build.modal.html', function() {
-    var stream = gulp.src(voiceNavigator.paths['build.modal.html'])
+gulp.task('vn.modal.html', function() {
+    var stream = gulp.src(voiceNavigator.paths['vn.modal.html'])
         .pipe(jade());
 
     return concatAndMinify(stream, 'modal', 'html');
 });
 
-gulp.task('build.modal.other', function() {
-    var audio = gulp.src(voiceNavigator.paths['build.modal.audio'])
+gulp.task('vn.modal.other', function() {
+    var audio = gulp.src(voiceNavigator.paths['vn.modal.audio'])
         .pipe(gulp.dest(voiceNavigator.distVoiceNav + 'modal'));
 
-    var img = gulp.src(voiceNavigator.paths['build.modal.img'])
+    var img = gulp.src(voiceNavigator.paths['vn.modal.img'])
         .pipe(gulp.dest(voiceNavigator.distVoiceNav + 'modal'));
 
     return es.merge(audio, img);
@@ -150,14 +148,14 @@ gulp.task('build.modal.other', function() {
 
 /* Handle all the watching of files */
 
-gulp.task('watch', ['build'], function() {
+gulp.task('vn.watch', ['vn.build'], function() {
     var watchLocations = [
-        'build.modal.js',
-        'build.modal.css',
-        'build.modal.html',
-        'build.modal.other',
-        'build.widget.js',
-        'build.widget.css'
+        'vn.modal.js',
+        'vn.modal.css',
+        'vn.modal.html',
+        'vn.modal.other',
+        'vn.widget.js',
+        'vn.widget.css'
     ];
 
     for (var i = 0; i < watchLocations.length; i++) {
@@ -165,40 +163,34 @@ gulp.task('watch', ['build'], function() {
     }
 });
 
-gulp.task('serve', ['watch'], function() {
+gulp.task('vn.serve', ['vn.watch'], function() {
     connect.server({
-        root: '../',
+        root: __dirname + '/../',
         https: true,
         livereload: false
     });
 });
 
-gulp.task('serve.livereload', ['watch'], function() {
+gulp.task('vn.serve.livereload', ['vn.watch'], function() {
     connect.server({
-        root: '../',
+        root: __dirname + '/../',
         https: true,
         livereload: true
     });
 });
 
-gulp.task('lint', function() {
+gulp.task('vn.lint', function() {
     return gulp.src([voiceNavigator.path + 'js/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });
 
-gulp.task('buildMM', function () {
-    return gulp.src(voiceNavigator.sdkGulpfilePath, {read: false})
-        .pipe(chug({tasks: ['buildMM']}));
-});
-
-// The default task (called when you run `gulp` from cli)
-gulp.task('build', [
-    'build.widget.css', 'build.widget.js',
-    'build.modal.css', 'build.modal.js', 'build.modal.html', 'build.modal.other'
+gulp.task('vn.build', [
+    'vn.widget.css', 'vn.widget.js',
+    'vn.modal.css', 'vn.modal.js', 'vn.modal.html', 'vn.modal.other'
 ]);
+gulp.task('vn', ['vn.build']);
 
-// Task to show list of tasks
-gulp.task('tasks', taskListing);
+// show list of voice navigator tasks
+gulp.task('vn.tasks', taskListing.withFilters(/\./, /^(?!vn).+/));
 
-gulp.task('default', ['build']);
