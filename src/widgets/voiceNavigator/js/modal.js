@@ -1181,6 +1181,10 @@ MMVoice.onConfig = function() {
     }
     $('#initialText').text(initialText);
 
+    if (voiceNavOptions.startQuery !== null && !MM.support.speechRecognition) {
+        $('input.search').val(voiceNavOptions.startQuery);
+    }
+
     if (MMVoice.is_voice_ready && voiceNavOptions.startQuery !== null) { // we have init before
         MMVoice.submitText(voiceNavOptions.startQuery);
         MMVoice._updateUI();

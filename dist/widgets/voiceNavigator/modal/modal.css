@@ -706,7 +706,6 @@ body.results #mm-button .mm-longhold {
   -o-transition: opacity 0.3s linear 0.3s;
   -ms-transition: opacity 0.3s linear 0.3s;
   transition: opacity 0.3s linear 0.3s;
-/* Delay the appearance */
   opacity: 1;
   -ms-filter: none;
   filter: none;

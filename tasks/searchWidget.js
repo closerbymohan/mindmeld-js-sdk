@@ -4,7 +4,7 @@ var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
 var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
-var chug = require('gulp-chug');
+var taskListing = require('gulp-task-listing');
 
 var rootDirectory = __dirname + '/../';
 var distDirectory = rootDirectory + 'dist/';
@@ -14,8 +14,10 @@ var srcSearchWidgetDir = srcDirectory + 'widgets/searchWidget/';
 var distSearchWidgetDir = distDirectory + 'widgets/searchWidget/';
 var sdkGulpfilePath = rootDirectory + 'tasks/sdk.js';
 
+// TODO: refactor this without 'no-min' tasks
+
 // Generates standalone search widget into dist/widgets/searchWidget
-gulp.task('searchWidgetJS', ['uglifyMM', 'uglifySearchWidget'], function () {
+gulp.task('sw.js', ['sdk.uglify', 'sw.uglify'], function () {
     return gulp.src([
             srcSearchWidgetDir + 'js/util/vendorHeader.js',
             srcSearchWidgetDir + 'js/vendor/jquery.min.js',
@@ -30,7 +32,7 @@ gulp.task('searchWidgetJS', ['uglifyMM', 'uglifySearchWidget'], function () {
         .pipe(gulp.dest(distSearchWidgetDir));
 });
 
-gulp.task('searchWidgetJSNoMin', ['buildMM'], function () {
+gulp.task('sw.js.no-min', ['sdk.js'], function () {
     return gulp.src([
             srcSearchWidgetDir + 'js/util/vendorHeader.js',
             srcSearchWidgetDir + 'js/vendor/jquery.min.js',
@@ -45,13 +47,13 @@ gulp.task('searchWidgetJSNoMin', ['buildMM'], function () {
         .pipe(gulp.dest(distSearchWidgetDir));
 });
 
-gulp.task('copySearchWidget', function () {
+gulp.task('sw.copy', function () {
     return gulp.src(srcSearchWidgetDir + 'js/jquery.mindmeld-searchwidget.js')
        .pipe(gulp.dest(distSearchWidgetDir));
 });
 
 // Uglifies search widget
-gulp.task('uglifySearchWidget', function () {
+gulp.task('sw.uglify', function () {
     return gulp.src(srcSearchWidgetDir + 'js/jquery.mindmeld-searchwidget.js')
         .pipe(uglify(), {mangle: true})
         .pipe(rename('jquery.mindmeld-searchwidget.min.js'))
@@ -59,7 +61,7 @@ gulp.task('uglifySearchWidget', function () {
 });
 
 // Compiles search widget's SASS into CSS
-gulp.task('searchWidgetSass', function () {
+gulp.task('sw.css.no-min', function () {
     return gulp.src(srcSearchWidgetDir + 'sass/main.scss')
         .pipe(sass())
         .pipe(rename('mindmeldSearchWidget.css'))
@@ -67,7 +69,7 @@ gulp.task('searchWidgetSass', function () {
 });
 
 // Minifies search widget's CSS
-gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
+gulp.task('sw.css', ['sw.css.no-min'], function () {
     return gulp.src(distSearchWidgetDir + 'mindmeldSearchWidget.css')
         .pipe(minifyCSS())
         .pipe(rename('mindmeldSearchWidget.min.css'))
@@ -75,37 +77,29 @@ gulp.task('searchWidgetCSSMin', ['searchWidgetSass'], function () {
 });
 
 // Watches search widget SASS files
-gulp.task('watchSearchWidgetStyle', ['searchWidgetCSSMin'], function () {
-    gulp.watch(srcSearchWidgetDir + 'sass/**', ['searchWidgetCSSMin']);
+gulp.task('sw.watch.css', ['sw.css'], function () {
+    gulp.watch(srcSearchWidgetDir + 'sass/**', ['sw.css']);
 });
 
 // Watches search widget JS files
-gulp.task('watchSearchWidgetJS', ['searchWidgetJS'], function () {
+gulp.task('sw.watch.js', ['sw.js'], function () {
     gulp.watch([
             srcSearchWidgetDir + 'js/**',
             srcDirectory + 'sdk/main.js',
-    ], ['searchWidgetJS']);
+    ], ['sw.js']);
 });
 
 // Watches search widget JS files and compiles un-minified standalone
 // search widget
-gulp.task('watchSearchWidgetJSNoMin', ['searchWidgetJSNoMin'], function () {
+gulp.task('sw.watch.js.no-min', ['sw.js.no-min'], function () {
     gulp.watch([
             srcSearchWidgetDir + 'js/**',
             srcDirectory + 'sdk/main.js',
-    ], ['searchWidgetJSNoMin']);
+    ], ['sw.js.no-min']);
 });
 
-// Uglifies mindmle.js for inclusion
-gulp.task('uglifyMM', function () {
-    return gulp.src(sdkGulpfilePath, {read: false})
-       .pipe(chug({tasks: ['uglifyMM']}));
-});
+gulp.task('sw.build', ['sw.js', 'sw.copy', 'sw.css']);
+gulp.task('sw', ['sw.build']);
 
-gulp.task('buildMM', function () {
-    return gulp.src(sdkGulpfilePath, {read: false})
-        .pipe(chug({tasks: ['buildMM']}));
-});
-
-gulp.task('build', ['searchWidgetJS', 'copySearchWidget', 'searchWidgetCSSMin']);
-gulp.task('default', ['build']);
+// show list of search widget tasks
+gulp.task('sw.tasks', taskListing.withFilters(/\./, /^(?!sw).+/));
