@@ -165,7 +165,7 @@ gulp.task('vn.watch', ['vn.build'], function() {
 
 gulp.task('vn.serve', ['vn.watch'], function() {
     connect.server({
-        root: '../',
+        root: __dirname + '/../',
         https: true,
         livereload: false
     });
@@ -173,7 +173,7 @@ gulp.task('vn.serve', ['vn.watch'], function() {
 
 gulp.task('vn.serve.livereload', ['vn.watch'], function() {
     connect.server({
-        root: '../',
+        root: __dirname + '/../',
         https: true,
         livereload: true
     });
