@@ -27,14 +27,11 @@ var voiceNavigator = (function() {
     var sourceVoiceNav = rootDirectory + 'src/widgets/voiceNavigator/';
     object.distVoiceNav = rootDirectory + 'dist/widgets/voiceNavigator/';
     object.paths = {
-        'browserify.widget' : [
-            sourceVoiceNav + 'js/widget.js'
-        ],
-        'browserify.modal' : [
-            sourceVoiceNav + 'js/modal.js'
-        ],
         'vn.widget.css' : [
                 sourceVoiceNav + 'css/widget.styl'
+        ],
+        'vn.widget.browserify' : [
+                sourceVoiceNav + 'js/widget.js'
         ],
         'vn.widget.js' : [
                 sourceVoiceNav + 'js/widget.bundle.js'
@@ -45,6 +42,9 @@ var voiceNavigator = (function() {
         ],
         'vn.modal.css.cards' : [
                 sourceVoiceNav + 'css/modal/cards.styl'
+        ],
+        'vn.modal.browserify' : [
+                sourceVoiceNav + 'js/modal.js'
         ],
         'vn.modal.js' : [
                 sourceVoiceNav + 'js/vendor/jquery-1.10.1.min.js',
@@ -114,7 +114,7 @@ gulp.task('vn.widget.css', function() {
 
 function browserifyTask(target) {
     var bundler = browserify({
-        entries: voiceNavigator.paths['browserify.' + target],
+        entries: voiceNavigator.paths['vn.' + target + '.browserify'],
         extensions: [ '.js' ]
     });
 
@@ -131,11 +131,11 @@ function browserifyTask(target) {
     return bundle();
 }
 
-gulp.task('browserify.widget', function() {
+gulp.task('vn.widget.browserify', function() {
     return browserifyTask('widget');
 });
 
-gulp.task('vn.widget.js', ['browserify.widget'], function() {
+gulp.task('vn.widget.js', ['vn.widget.browserify'], function() {
     var stream = gulp.src(voiceNavigator.paths['vn.widget.js'])
         .pipe(fileinclude('@@'));
 
@@ -158,11 +158,11 @@ gulp.task('vn.modal.css.modal', function() {
 
 gulp.task('vn.modal.css', ['vn.modal.css.modal', 'vn.modal.css.cards']);
 
-gulp.task('browserify.modal', function() {
+gulp.task('vn.modal.browserify', function() {
     return browserifyTask('modal');
 });
 
-gulp.task('vn.modal.js', ['sdk.concat', 'browserify.modal'], function() {
+gulp.task('vn.modal.js', ['sdk.concat', 'vn.modal.browserify'], function() {
     var stream = gulp.src(voiceNavigator.paths['vn.modal.js']);
     return concatAndMinify(stream, 'modal', 'js');
 });
@@ -188,12 +188,12 @@ gulp.task('vn.modal.other', function() {
 
 gulp.task('vn.watch', ['vn.build'], function() {
     var watchLocations = [
-        'browserify.modal',
+        'vn.modal.browserify',
         'vn.modal.js',
         'vn.modal.css',
         'vn.modal.html',
         'vn.modal.other',
-        'browserify.widget',
+        'vn.widget.browserify',
         'vn.widget.js',
         'vn.widget.css'
     ];
