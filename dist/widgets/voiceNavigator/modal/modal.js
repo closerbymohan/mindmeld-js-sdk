@@ -8088,6 +8088,8 @@ var MM = ( function ($, Faye) {
 
         $input : $(),
 
+        is_mobile: window.matchMedia("only screen and (max-device-width: 320px) and (max-device-width: 480px)").matches,
+
         // TODO: figure out a better name for this
         makeNewRecordings : function(confirmedTranscript) {
             var previousTranscript = this.confirmedRecording.transcript || '';
@@ -9261,24 +9263,35 @@ var MM = ( function ($, Faye) {
                 $('#cards-css').remove();
             }
 
-            if (typeof MMVoice.config.customCSSURL !== 'undefined') {
+            var customCSSURL = MMVoice.config.customCSSURL;
+            if(MMVoice.is_mobile && typeof MMVoice.config.customCSSMobileURL !== 'undefined') {
+              customCSSURL = MMVoice.config.customCSSMobileURL;
+            }
+
+            if (typeof customCSSURL !== 'undefined') {
                 var cssLink = document.createElement('link');
-                cssLink.href = MMVoice.config.customCSSURL;
+                cssLink.href = customCSSURL;
                 cssLink.rel = 'stylesheet';
                 cssLink.type = 'text/css';
                 document.head.appendChild(cssLink);
             }
 
-            if (typeof MMVoice.config.customCSS !== 'undefined') {
+            var customCSS = MMVoice.config.customCSS;
+            if(MMVoice.is_mobile && typeof MMVoice.config.customCSSMobile !== 'undefined') {
+              customCSS = MMVoice.config.customCSSMobile;
+            }
+
+            if (typeof customCSS !== 'undefined') {
                 var cssStyle = document.createElement('style');
                 cssStyle.type = 'text/css';
-                cssStyle.innerHTML = MMVoice.config.customCSS;
+                cssStyle.innerHTML = customCSS;
                 document.head.appendChild(cssStyle);
             }
 
             if (MMVoice.config.cardLayout === 'custom') {
                 try {
-                    MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
+                    var template = MMVoice.is_mobile ? MMVoice.config.cardTemplateMobile : MMVoice.config.cardTemplate;
+                    MMVoice.cardTemplate = _.template(template);
                 } catch (e) {
                     UTIL.log('Voice Navigator was unable to parse card template');
                     MMVoice.config.cardLayout = 'default';
@@ -9488,7 +9501,7 @@ var MM = ( function ($, Faye) {
             a.analyzer.getByteTimeDomainData( a.times );
 
             MMVoice.debounce(function() {
-              console.log('hi');
+              if(!MMVoice.status) return;
               MMVoice.pulse(getVolume());
             }, 150)();
 

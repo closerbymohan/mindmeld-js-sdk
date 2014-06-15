@@ -16,6 +16,8 @@ var MM = window.MM || {};
         is_init: false,
         on_init: function () {},
 
+        is_mobile: window.matchMedia("only screen and (max-device-width: 320px) and (max-device-width: 480px)").matches,
+
         init : function() {
             var self = this;
 
@@ -179,7 +181,9 @@ var MM = window.MM || {};
                 }
 
                 // parse card layout
-                if (typeof MM.voiceNavigator.config.cardTemplate !== 'undefined') {
+                var template = (!MMVoice.is_mobile && typeof MM.voiceNavigator.config.cardTemplate !== 'undefined');
+                var template_mobile = (MMVoice.is_mobile && typeof MM.voiceNavigator.config.cardTemplateMobile !== 'undefined');
+                if (template || template_mobile) {
                     MM.voiceNavigator.config.cardLayout = 'custom';
                 }
                 if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
@@ -189,6 +193,9 @@ var MM = window.MM || {};
                 // parse custom css
                 if (typeof MM.voiceNavigator.config.customCSSURL !== 'undefined') {
                     MM.voiceNavigator.config.customCSSURL = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSURL);
+                }
+                if (typeof MM.voiceNavigator.config.customCSSMobileURL !== 'undefined') {
+                    MM.voiceNavigator.config.customCSSMobileURL = MMVoice.convertToAbsolutePath(MM.voiceNavigator.config.customCSSMobileURL);
                 }
 
                 // default listening mode

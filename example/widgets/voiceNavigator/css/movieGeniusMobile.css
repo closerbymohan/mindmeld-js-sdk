@@ -1,8 +1,3 @@
-#results #cards a.card .mm-rt-row {
-  margin: 0;
-  display: block;
-  padding: 0 15px;
-}
 #results #cards a.card .mm-rt-row p.clear-fix {
   clear: both;
 }
@@ -52,4 +47,11 @@
 }
 #results #cards a.card .mm-rt-row:first-of-type {
   margin-top: 5px;
+}
+
+
+
+#results #cards a.card p.image {
+    max-height: 110px;
+    overflow: hidden;
 }
