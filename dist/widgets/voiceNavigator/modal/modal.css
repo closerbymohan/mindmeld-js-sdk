@@ -796,6 +796,7 @@ body #mindmeld-parent {
   -o-transition: 0.3s ease-out;
   -ms-transition: 0.3s ease-out;
   transition: 0.3s ease-out;
+  width: 100%;
 }
 body #mindmeld-parent.open {
   opacity: 1;
@@ -806,6 +807,15 @@ body #mindmeld-parent.open {
   -o-transform: translateY(80px);
   -ms-transform: translateY(80px);
   transform: translateY(80px);
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  body #mindmeld-parent.open {
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -o-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
 }
 body #mindmeld-parent.results {
   -webkit-transform: translateY(0);
@@ -997,12 +1007,19 @@ body #mindmeld-parent.results {
   #history-button {
     background: none;
     height: auto;
+    top: 0;
     padding-top: 0;
   }
 }
 .no-speech #history-button {
   top: 15px;
   left: 30px;
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  .no-speech #history-button {
+    left: 15px;
+    top: 0;
+  }
 }
 #history-button:hover {
   opacity: 1;
@@ -1022,7 +1039,12 @@ body #mindmeld-parent.results {
   line-height: 16px;
   text-align: center;
   color: #aaa;
-  padding: 5 ps;
+  padding: 5px;
+}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  #close {
+    top: 0;
+  }
 }
 #close:hover {
   color: #555;
@@ -1516,6 +1538,11 @@ body #mindmeld-parent.results {
   filter: none;
   padding: 10px 30px 30px;
 }
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  #history #history-data ul li.text-input {
+    padding: 10px 0px 30px;
+  }
+}
 #history #history-data ul li.text-input form {
   padding: 0 50px 0 0;
   margin: 0 20px;
@@ -1593,9 +1620,13 @@ body #mindmeld-parent.results {
   filter: none;
 }
 #results {
+  -webkit-overflow-scrolling: touch;
   padding-top: 140px;
   height: 510px;
   overflow: auto;
+}
+#results > * {
+  -webkit-transform: translateZ(0px);
 }
 .no-speech #results {
   padding-top: 107px;

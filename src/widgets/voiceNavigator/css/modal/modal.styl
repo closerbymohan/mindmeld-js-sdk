@@ -208,9 +208,12 @@ body
     opacity 0
     transform translateY(120px)
     transition 0.3s ease-out
+    width 100%
     &.open
       opacity 1
       transform translateY(80px)
+      @media mobile
+        transform translateY(0)
     &.results
       transform translateY(0)
 
@@ -342,10 +345,14 @@ body
   @media mobile
     background none
     height auto
+    top 0
     padding-top 0
   .no-speech &
     top 15px
     left 30px
+    @media mobile
+      left 15px
+      top 0
   &:hover
     opacity 1
     text-decoration none
@@ -362,7 +369,9 @@ body
   line-height 16px
   text-align center
   color #AAA
-  padding 5ps
+  padding 5px
+  @media mobile
+    top 0
   &:hover
     color #555
 
@@ -452,6 +461,8 @@ body
         &.text-input
           opacity 1
           padding 10px 30px 30px
+          @media mobile
+            padding 10px 0px 30px
           form
             padding 0 50px 0 0
             margin 0 20px
@@ -501,6 +512,10 @@ body
         opacity 1.0
 
 #results
+  -webkit-overflow-scrolling touch
+  > * 
+    -webkit-transform: translateZ(0px);
+
   padding-top 140px
   .no-speech &
     padding-top 107px

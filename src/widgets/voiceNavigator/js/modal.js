@@ -122,10 +122,12 @@
             this.$historyList.on('click', '.tag', onTagClick);
 
             // Scrollbars
-            $('.inner-content-div').slimScroll({
+            if(!this.is_touch_device()) {
+              $('.inner-content-div').slimScroll({
                 height: '100%',
                 distance: '6px'
-            });
+              });
+            }
 
             // Resize
             self.$window.on('resize', function(){ self.resize(); });
@@ -1184,8 +1186,12 @@
                 self.update_text();
             }
 
-        }
+        },
 
+        is_touch_device : function() {
+          return 'ontouchstart' in window // works on most browsers 
+            || 'onmsgesturechange' in window; // works on ie10
+        },
     };
 
     MMVoice.onConfig = function() {
