@@ -8352,6 +8352,19 @@ var MM = ( function ($, Faye) {
             self.$mm_pulser.css('transform', 'scale(' + scale + ')');
         },
 
+        debounce : function(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                }, wait);
+                if (immediate && !timeout) func.apply(context, args);
+            };
+        },
+
         postMessage : function(action, data) {
             parent.postMessage({
                 action: action,
@@ -9474,7 +9487,10 @@ var MM = ( function ($, Faye) {
             a.analyzer.getByteFrequencyData( a.frequencies );
             a.analyzer.getByteTimeDomainData( a.times );
 
-            MMVoice.pulse(getVolume());
+            MMVoice.debounce(function() {
+              console.log('hi');
+              MMVoice.pulse(getVolume());
+            }, 150)();
 
             setTimeout(loop, 75);
         }
