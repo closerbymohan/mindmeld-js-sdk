@@ -8292,7 +8292,7 @@ var MM = ( function ($, Faye) {
             // clicking documents
             this.$cards.on('click', '.card', function(e) {
 
-                if (self.config.preventLinks) {
+                if (self.config.cardLinkBehavior === false) {
                     e.preventDefault();
                 }
             });
@@ -8652,7 +8652,7 @@ var MM = ( function ($, Faye) {
                 class: 'card new',
                 id: 'doc_' + doc.documentid,
                 href: doc.originurl,
-                target: self.config.cardAnchorTarget || '_parent'
+                target: self.config.cardLinkBehavior || '_parent'
             });
             $card.attr('data-document-id', doc.documentid);
 

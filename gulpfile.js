@@ -1,66 +1,40 @@
 
 var gulp = require('gulp');
 require('gulp-grunt')(gulp); // Load Grunt tasks for jsdoc until gulp-jsdoc becomes more legit
-var chug = require('gulp-chug');
 var taskListing = require('gulp-task-listing');
 
+
 // -------------------------- Mindmeld.js Tasks -------------------------- //
-var sdkGulpfilePath = './tasks/sdk.js';
+require('./tasks/sdk');
 
-gulp.task('buildSDK', function () {
-   return gulp.src(sdkGulpfilePath, {read: false})
-       .pipe(chug());
-});
+gulp.task('buildSDK', ['sdk']);
 
-gulp.task('archiveSDK', ['buildSearchWidget', 'buildVoiceNavigator'], function () {
-   return gulp.src(sdkGulpfilePath, {read: false})
-       .pipe(chug({tasks: ['archiveSDK']}));
-});
+gulp.task('archiveSDK', ['archive']);
 
-gulp.task('uglifyMM', function () {
-    return gulp.src(sdkGulpfilePath, {read: false})
-        .pipe(chug({tasks: ['uglifyMM']}));
-});
+gulp.task('uglifyMM', ['sdk.uglify']);
 
 // ----------------------------------------------------------------------- //
 
 
 // ------------------------ Search Widget Tasks ------------------------ //
-var searchWidgetGulpfilePath = './tasks/searchWidget.js';
+require('./tasks/searchWidget');
 
-gulp.task('buildSearchWidget', function () {
-    return gulp.src(searchWidgetGulpfilePath, {read: false})
-        .pipe(chug());
-});
+gulp.task('buildSearchWidget', [ 'sw.build']);
 
 // --------------------------------------------------------------------- //
 
+
 // -------------------------- Voice Navigator -------------------------- //
+require('./tasks/voiceNavigator');
 
-var voiceNavigatorGulpfilePath = './tasks/voiceNavigator.js';
-
-gulp.task('buildVoiceNavigator', [ 'build.voice-navigator' ]);
-gulp.task('build.voice-navigator', function () {
-
-    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
-        .pipe( chug({ tasks: ['build'] }) );
-});
-
-gulp.task('watch.voice-navigator', function () {
-    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
-        .pipe( chug({ tasks: ['watch'] }) );
-});
-
-gulp.task('serve.voice-navigator', function () {
-    return gulp.src( voiceNavigatorGulpfilePath, { read: false } )
-        .pipe( chug({ tasks: ['serve'] }) );
-});
+gulp.task('buildVoiceNavigator', ['vn.build']);
 
 // --------------------------------------------------------------------- //
 
 // General Tasks
-gulp.task('build', ['buildSDK', 'buildSearchWidget', 'buildVoiceNavigator']);
+gulp.task('archive', ['sdk.archive', 'sw.build', 'vn.build']);
+gulp.task('build', ['sdk.build', 'sw.build', 'vn.build']);
 gulp.task('default', ['build']);
 
 // Task to show list of tasks
-gulp.task('tasks', taskListing);
+gulp.task('tasks', taskListing.withFilters(/\./));
