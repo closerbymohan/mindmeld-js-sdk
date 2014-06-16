@@ -2,6 +2,7 @@
 var gulp = require('gulp');
 require('gulp-grunt')(gulp); // Load Grunt tasks for jsdoc until gulp-jsdoc becomes more legit
 var taskListing = require('gulp-task-listing');
+var connect = require('gulp-connect');
 
 
 // -------------------------- Mindmeld.js Tasks -------------------------- //
@@ -35,6 +36,15 @@ gulp.task('buildVoiceNavigator', ['vn.build']);
 gulp.task('archive', ['sdk.archive', 'sw.build', 'vn.build']);
 gulp.task('build', ['sdk.build', 'sw.build', 'vn.build']);
 gulp.task('default', ['build']);
+
+gulp.task('serve.no-build', function() {
+    connect.server({
+        root: __dirname,
+        https: true,
+        livereload: false
+    });
+});
+
 
 // Task to show list of tasks
 gulp.task('tasks', taskListing.withFilters(/\./));

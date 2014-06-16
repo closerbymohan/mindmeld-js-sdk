@@ -1,4 +1,13 @@
 var UTIL =  require('./util');
+var highlightEntities = require('./entity-highlighting');
+var $ = window.$ = window.jQuery = require('./vendor/jquery-1.11.1');
+require('./vendor/jquery.slimscroll');
+require('./vendor/jquery.cookie-1.4.0');
+var _ = require('lodash/dist/lodash.compat');
+var MM = window.MM = window.MM || {};
+require('../../../../dist/sdk/mindmeld');
+var imagesLoaded = require('./vendor/imagesloaded.pkgd');
+var Isotope = require('./vendor/isotope.pkgd');
 
 /* Manage the state of the UI */
 var MMVoice = {

@@ -41,9 +41,11 @@ gulp.task('sdk.uglify', ['sdk.concat'], function () {
         .pipe(gulp.dest(distMMDirectory));
 });
 
+gulp.task('sdk.docs', ['grunt-buildJSDocs']);
+
 // Moves generated JS Doc, mindmeld.js, mindmeld.min.js and
 // HelloWorld page into mindmeld-js-sdk.zip
-gulp.task('sdk.zip', ['grunt-buildJSDocs', 'sdk.uglify'], function () {
+gulp.task('sdk.zip', ['sdk.docs', 'sdk.uglify'], function () {
     return es.merge(
         gulp.src('LICENSE'),
         gulp.src(distDirectory + 'docs/**', {base: distDirectory}),
@@ -78,7 +80,7 @@ gulp.task('sdk.archive.js', ['sdk.set-version', 'sdk.uglify'], function () {
 });
 
 // Creates archive of SDK at current version
-gulp.task('sdk.archive', ['sdk.set-version', 'sdk.archive.js', 'build'], function () {
+gulp.task('sdk.archive', ['sdk.set-version', 'sdk.archive.js', 'sdk.build'], function () {
     return es.merge(
         gulp.src('LICENSE', baseDirOption),
 

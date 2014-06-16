@@ -6,16 +6,29 @@
 var gutil        = require('gulp-util');
 var prettyHrtime = require('pretty-hrtime');
 var startTime;
+var task;
 
-module.exports = {
-  start: function() {
-    startTime = process.hrtime();
-    gutil.log('Running', gutil.colors.green("'bundle'") + '...');
-  },
+function getTaskName(target) {
+    var taskName = 'bundle';
+    if (typeof target === 'string' && target.length) {
+        taskName += ' ' + target;
+    }
+    return taskName;
+}
 
-  end: function() {
-    var taskTime = process.hrtime(startTime);
-    var prettyTime = prettyHrtime(taskTime);
-    gutil.log('Finished', gutil.colors.green("'bundle'"), 'in', gutil.colors.magenta(prettyTime));
-  }
+module.exports = function BundleLogger(target) {
+    var self = this;
+    self.task = getTaskName(target);
+    self.start = function() {
+        self.startTime = process.hrtime();
+        gutil.log('Running', gutil.colors.green("'" + self.task + "'") + '...');
+    };
+
+    self.end = function() {
+        var taskTime = process.hrtime(self.startTime);
+        var prettyTime = prettyHrtime(taskTime);
+        gutil.log('Finished', gutil.colors.green("'" + self.task + "'"), 'in', gutil.colors.magenta(prettyTime));
+    };
+
+    return this;
 };
