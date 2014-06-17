@@ -9,9 +9,7 @@ var connect = require('gulp-connect');
 require('./gulp/tasks/sdk');
 
 gulp.task('buildSDK', ['sdk']);
-
 gulp.task('archiveSDK', ['archive']);
-
 gulp.task('uglifyMM', ['sdk.uglify']);
 
 // ----------------------------------------------------------------------- //
@@ -44,7 +42,6 @@ gulp.task('serve.no-build', function() {
         livereload: false
     });
 });
-
 
 // Task to show list of tasks
 gulp.task('tasks', taskListing.withFilters(/\./));
