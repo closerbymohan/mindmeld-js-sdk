@@ -1,6 +1,56 @@
 var UTIL =  require('./util');
 var MM = window.MM || {};
 
+
+/**
+ * An object representing the configuration of MM.voiceNavigator
+ *
+ * @typedef {Object} VoiceNavigatorConfig
+ * @property {String} [cardLinkBehavior="_parent"] sets the behavior for anchors wrapping cards. Use 'false' to
+ *                                                 prevent opening links, '_parent' to open links in the same tab or window,
+ *                                                 or '_blank' to open links in a new tab or window. See the target attribute
+ *                                                 of [anchor](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a)
+ *                                                 elements for more information.
+ * @property {String} [listeningMode="normal"] defines the listening mode of the voice navigator when it _init opened. Acceptable
+ *                                             values include 'normal', 'continuous', and false. False prevents listening
+ *                                             and the default is 'normal'.
+ * @property {Number} [numResults] if specified, this number of cards will appear as results
+ * @property {String} [cardLayout="default"] specifies the predefined card layout used. Valid values are 'default', and 'custom'.
+ * @property {CardField[]} [cardFields] an array of card fields {@link CardField}.
+ * @property {String} [cardTemplate] an underscore (lodash) html template which is used to create card representation of documents.
+ *                                   If a value is given, cardLayout will be 'custom'
+ * @property {boolean} [resetCardsCSS] if true, removes CSS specific to the cards container.
+ * @property {String} [customCSS] specifies custom css to be applied
+ * @property {String} [customCSSURL] specifies the url of a file containing custom CSS to be applied
+ * @property {Number} [baseZIndex=100000] the voice navigator elements will have a Z index between the value given and
+ *                                        1000 greater than the value
+ *
+ */
+
+/**
+ * An Object representing a field to display in a document card for the Voice Navigator widget.
+ *
+ * @typedef {Object} CardField
+ * @property {String} key           the key containing the value of this field in document objects. This field must be specified.
+ * @property {String} [placeholder] if specified, when the key is not present in a document or is empty, this value will be displayed.
+ *                                  if omitted the value will be hidden from the card
+ * @property {String} [label]       if specified, a label with the provided text will precede the value
+ * @property {String} [format]      for formatter to be used to present the value in a user friendly form. Valid formatters
+ *                                  are default, and date.
+ *
+ * @example
+ // Will result in the following:
+ // Released 10/13/1996
+ //
+ var dateField = {
+   key: 'pubdate',
+   placeholder: 'Unknown',
+   label: 'Released',
+   format: 'date'
+ };
+ *
+ */
+
 MM.voiceNavigator = MM.voiceNavigator || {};
 MM.loader = MM.loader || {};
 MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
@@ -71,44 +121,6 @@ var MMVoice = {
             source: 'mindmeld',
             data: data
         }, "*");
-//    },
-//
-//    contentLoaded : function(fn) {
-//        // From https://github.com/dperini/ContentLoaded
-//        // Same as $().ready(), but without the jQuery dependency
-//
-//        var win = window;
-//
-//        var done = false, top = true,
-//
-//            doc = win.document, root = docconte.documentElement,
-//
-//            add = doc.addEventListener ? 'addEventListener' : 'attachEvent',
-//            rem = doc.addEventListener ? 'removeEventListener' : 'detachEvent',
-//            pre = doc.addEventListener ? '' : 'on',
-//
-//            init = function(e) {
-//                if (e.type == 'readystatechange' && doc.readyState != 'complete') return;
-//                (e.type == 'load' ? win : doc)[rem](pre + e.type, init, false);
-//                if (!done && (done = true)) fn.call(win, e.type || e);
-//            },
-//
-//            poll = function() {
-//                try { root.doScroll('left'); } catch(e) { setTimeout(poll, 50); return; }
-//                init('poll');
-//            };
-//
-//        if (doc.readyState == 'complete') fn.call(win, 'lazy');
-//        else {
-//            if (doc.createEventObject && root.doScroll) {
-//                try { top = !win.frameElement; } catch(e) { }
-//                if (top) poll();
-//            }
-//            doc[add](pre + 'DOMContentLoaded', init, false);
-//            doc[add](pre + 'readystatechange', init, false);
-//            win[add](pre + 'load', init, false);
-//        }
-
     }
 };
 
