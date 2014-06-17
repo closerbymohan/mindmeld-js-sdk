@@ -225,7 +225,7 @@ gulp.task('vn.serve.livereload', function() {
 });
 
 gulp.task('vn.lint', function() {
-    return gulp.src([voiceNavigator.path + 'js/*.js'])
+    return gulp.src([voiceNavigator.sourcePath + 'js/*.js'])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
 });

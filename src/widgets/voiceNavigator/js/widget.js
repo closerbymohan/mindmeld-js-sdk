@@ -51,82 +51,104 @@ var MM = window.MM || {};
  *
  */
 
+// TODO: add more here
+/**
+ * The voice navigator widget....
+ * @memberOf MM
+ * @namespace
+ */
 MM.voiceNavigator = MM.voiceNavigator || {};
 MM.loader = MM.loader || {};
 MM.loader.rootURL = MM.loader.rootURL || 'https://developer.expectlabs.com/public/sdks/';
 
-var MMVoice = {
-    $mm : false,
-    $mm_iframe : false,
+/**
+ * The 'div#mindmeld-modal' element which contains all of the voice navigator html
+ * @private
+ */
+var $mm = false;
 
-    // is_init is set to true once the widget has been initialized. Once
-    // the widget is initialized on_init() is called. This is used by
-    // MM.voiceNavigator.showModal() to allow users to call showModal
-    // without having to know if the widget is loaded or not
-    is_init: false,
-    on_init: function () {},
+/**
+ *
+ * @private
+ */
+var $mm_iframe = false;
 
-    init : function() {
-        var self = this;
+/**
+ * isInitialized is set to true once the widget has been initialized. Once
+ * the widget is initialized onInit() is called. This is used by
+ * MM.voiceNavigator.showModal() to allow users to call showModal
+ * without having to know if the widget is loaded or not
+ *
+ * @private
+ */
+var isInitialized = false;
+var onInit = function () {};
 
-        // Add the #mindmeld-modal div to the page
-        var mm = document.createElement('div');
-        mm.setAttribute('id', 'mindmeld-modal');
-        document.body.insertBefore(mm, document.body.childNodes[0]);
-        self.$mm = UTIL.el(mm);
+function init() {
+    // Add the #mindmeld-modal div to the page
+    var mm = document.createElement('div');
+    mm.setAttribute('id', 'mindmeld-modal');
+    document.body.insertBefore(mm, document.body.childNodes[0]);
+    $mm = UTIL.el(mm);
 
-        // Initialize any element with .mm-voice-nav-init on it
-        var $inits = document.getElementsByClassName('mm-voice-nav-init');
-        var clickHandler = function(e) {
-            e.preventDefault();
-            MM.voiceNavigator.showModal();
-        };
-        for(var i = 0; i < $inits.length; i++) {
-            UTIL.el($inits[i]).click(clickHandler);
-        }
-
-        var $textInits = document.getElementsByClassName('mm-voice-nav-text-init');
-        var keyPressHandler = function (event) {
-            if (event.which === 13) {
-                var query = event.target.value;
-                MM.voiceNavigator.showModal({ query: query });
-            }
-        };
-        for(var j = 0; j < $textInits.length; j++) {
-            UTIL.el($textInits[j]).keypress(keyPressHandler);
-        }
-
-        self.set_initialized();
-
-        // Wait for messages
-        UTIL.el(window).on('message', function(event) {
-            if (event.data.source != 'mindmeld') {
-                return;
-            }
-            if(event.data.action == 'close') {
-                MMVoice.$mm.removeClass('on');
-            }
-        });
-    },
-
-    set_initialized: function () {
-        this.is_init = true;
-        this.on_init();
-    },
-
-    postMessage : function(action, data) {
-        var win = document.getElementById("mindmeld-iframe").contentWindow;
-        win.postMessage({
-            action: action,
-            source: 'mindmeld',
-            data: data
-        }, "*");
+    // Initialize any element with .mm-voice-nav-init on it
+    var $inits = document.getElementsByClassName('mm-voice-nav-init');
+    var clickHandler = function(e) {
+        e.preventDefault();
+        MM.voiceNavigator.showModal();
+    };
+    for(var i = 0; i < $inits.length; i++) {
+        UTIL.el($inits[i]).click(clickHandler);
     }
-};
 
-MM.voiceNavigator.showModal = function (options) {
+    var $textInits = document.getElementsByClassName('mm-voice-nav-text-init');
+    var keyPressHandler = function (event) {
+        if (event.which === 13) {
+            var query = event.target.value;
+            MM.voiceNavigator.showModal({ query: query });
+        }
+    };
+    for(var j = 0; j < $textInits.length; j++) {
+        UTIL.el($textInits[j]).keypress(keyPressHandler);
+    }
+
+    setInitialized();
+
+    // Wait for messages
+    UTIL.el(window).on('message', function(event) {
+        if (event.data.source != 'mindmeld') {
+            return;
+        }
+        if(event.data.action == 'close') {
+            $mm.removeClass('on');
+        }
+    });
+}
+
+function setInitialized() {
+    isInitialized = true;
+    onInit();
+}
+
+function postMessage(action, data) {
+    var win = document.getElementById("mindmeld-iframe").contentWindow;
+    win.postMessage({
+        action: action,
+        source: 'mindmeld',
+        data: data
+    }, "*");
+}
+
+/**
+ * Opens the voice navigator modal window
+ * @param {Object} [options]
+ * @param {String} [options.query] if provided, this query will be in the
+ * @param {boolean} [options.forceNewIFrame=false] if true,
+ * @param {String|boolean} [options.listeningMode] the listening mode to be used when the voice navigator opens
+ */
+MM.voiceNavigator.showModal = function(options) {
     options = options || {};
-    if (MMVoice.is_init) {
+    if (isInitialized) {
         var iframe;
         // Initialize voice navigator config
         if (typeof MM !== 'undefined' &&
@@ -181,43 +203,47 @@ MM.voiceNavigator.showModal = function (options) {
             }
         }
 
-        if (options.forceNewIFrame && MMVoice.$mm_iframe) {
+        if (options.forceNewIFrame && $mm_iframe) {
             iframe = document.getElementById('mindmeld-iframe');
             iframe.parentNode.removeChild(iframe);
         }
 
         // Create iframe if first load
-        if (!MMVoice.$mm_iframe || options.forceNewIFrame) {
+        if (!$mm_iframe || options.forceNewIFrame) {
             iframe = document.createElement('iframe');
             iframe.setAttribute('frameBorder', '0');
             iframe.setAttribute('id', 'mindmeld-iframe');
             iframe.setAttribute('allowtransparency', 'true');
             iframe.setAttribute('src', MM.loader.rootURL + 'widgets/voiceNavigator/modal/modal.html');
 
-            MMVoice.$mm_iframe = UTIL.el(iframe);
+            $mm_iframe = UTIL.el(iframe);
 
             UTIL.el(iframe).on('load', function() {
-                MMVoice.postMessage('config', MM.voiceNavigator.config);
-                MMVoice.postMessage('open');
+                postMessage('config', MM.voiceNavigator.config);
+                postMessage('open');
             });
 
-            MMVoice.$mm.el().appendChild(iframe);
+            $mm.el().appendChild(iframe);
         }
         else {
-            MMVoice.postMessage('open');
+            postMessage('open');
         }
-        MMVoice.$mm.addClass('on');
+        $mm.addClass('on');
     }
     else {
-        // Set on_init() callback to open modal
-        MMVoice.on_init = function () { MM.voiceNavigator.showModal(options); };
+        // Set onInit() callback to open modal
+        onInit = function () { MM.voiceNavigator.showModal(options); };
     }
 };
 
+/**
+ * Closes the voice navigator modal window
+ */
 MM.voiceNavigator.hideModal = function () {
-    MMVoice.postMessage('close');
+    postMessage('close');
 };
 
+// schedule initialization of voice navigator
 UTIL.contentLoaded(window, function() {
-    MMVoice.init();
+    init();
 });
