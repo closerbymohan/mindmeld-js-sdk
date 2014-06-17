@@ -15,17 +15,16 @@ var connect = require('gulp-connect');
 
 var jshint = require('gulp-jshint');
 
-var relativePath = 'widgets/voiceNavigator/';
-
 var browserify   = require('browserify');
 var buffer       = require('vinyl-buffer');
 var source       = require('vinyl-source-stream');
-var bundleLogger = require('../gulp/util/bundleLogger');
-var handleErrors = require('../gulp/util/handleErrors');
+var bundleLogger = require('../util/bundleLogger');
+var handleErrors = require('../util/handleErrors');
 
+var relativePath = 'widgets/voiceNavigator/';
 var voiceNavigator = (function() {
     var object = {};
-    var rootDirectory = __dirname + '/../';
+    var rootDirectory = __dirname + '/../../';
     var sourceVoiceNav = rootDirectory + 'src/' + relativePath;
     object.distVoiceNav = rootDirectory + 'dist/' + relativePath;
     object.paths = {
@@ -190,7 +189,7 @@ gulp.task('vn.watch', ['vn.build'], function() {
 
 gulp.task('vn.serve', ['vn.watch'], function() {
     connect.server({
-        root: __dirname + '/../',
+        root: __dirname + '/../../',
         https: true,
         livereload: false
     });
@@ -198,7 +197,7 @@ gulp.task('vn.serve', ['vn.watch'], function() {
 
 gulp.task('vn.serve.livereload', ['vn.watch'], function() {
     connect.server({
-        root: __dirname + '/../',
+        root: __dirname + '/../../',
         https: true,
         livereload: true
     });

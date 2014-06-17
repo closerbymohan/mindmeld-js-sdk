@@ -6,7 +6,7 @@ var connect = require('gulp-connect');
 
 
 // -------------------------- Mindmeld.js Tasks -------------------------- //
-require('./tasks/sdk');
+require('./gulp/tasks/sdk');
 
 gulp.task('buildSDK', ['sdk']);
 
@@ -18,7 +18,7 @@ gulp.task('uglifyMM', ['sdk.uglify']);
 
 
 // ------------------------ Search Widget Tasks ------------------------ //
-require('./tasks/searchWidget');
+require('./gulp/tasks/searchWidget');
 
 gulp.task('buildSearchWidget', [ 'sw.build']);
 
@@ -26,7 +26,7 @@ gulp.task('buildSearchWidget', [ 'sw.build']);
 
 
 // -------------------------- Voice Navigator -------------------------- //
-require('./tasks/voiceNavigator');
+require('./gulp/tasks/voiceNavigator');
 
 gulp.task('buildVoiceNavigator', ['vn.build']);
 

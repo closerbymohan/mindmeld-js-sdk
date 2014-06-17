@@ -6,13 +6,12 @@ var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var taskListing = require('gulp-task-listing');
 
-var rootDirectory = __dirname + '/../';
+var rootDirectory = __dirname + '/../../';
 var distDirectory = rootDirectory + 'dist/';
 var srcDirectory = rootDirectory + 'src/';
 var distMMDirectory = distDirectory + 'sdk/';
 var srcSearchWidgetDir = srcDirectory + 'widgets/searchWidget/';
 var distSearchWidgetDir = distDirectory + 'widgets/searchWidget/';
-var sdkGulpfilePath = rootDirectory + 'tasks/sdk.js';
 
 // TODO: refactor this without 'no-min' tasks
 

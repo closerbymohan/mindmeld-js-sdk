@@ -8,7 +8,7 @@ var zip = require('gulp-zip');
 var fs = require('fs');
 var taskListing = require('gulp-task-listing');
 
-var rootDirectory = __dirname + '/../';
+var rootDirectory = __dirname + '/../../';
 var exampleDirectory = rootDirectory + 'example/';
 var archiveDirectory = rootDirectory + 'archive/';
 var distDirectory = rootDirectory + 'dist/';
