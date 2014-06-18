@@ -317,9 +317,7 @@ function init(config) {
 
 module.exports = {
     init: init,
-    $mm_pulser: function() { return $mm_pulser; },
     $mm_button: function() { return $mm_button; },
-    $mm_button_icon: function() { return $mm_button_icon; },
     listener: function() { return listener; },
     isLocked: function() { return isLocked; },
     hide: hide,
@@ -329,4 +327,3 @@ module.exports = {
     listening: function() { return listener.listening; },
     pending: function() { return listener.pending; }
 };
-

@@ -19,6 +19,8 @@ var Isotope = require('./vendor/isotope.pkgd');
 // must be after mindmeld js
 var microphone = require('./microphone');
 
+var cards = require('./cards');
+
 /* Manage the state of the UI */
 var MMVoice = {
     is_init : false,
@@ -45,7 +47,6 @@ var MMVoice = {
     $body : $(),
 
     $window : $(),
-    $cards : $(),
     $mm : $(),
     $mm_parent : $(),
     $mm_close : $(),
@@ -91,7 +92,6 @@ var MMVoice = {
         this.$mm_parent = $('#mindmeld-parent');
         this.$mm_alert_dismiss = $('#mm-alert-dismiss');
         this.$mm_alert = $('#mindmeld-alert');
-        this.$cards = $('#cards');
         this.$tags = $('#tags');
         this.$history = $('#history');
         this.$historyList = this.$history.find('ul');
@@ -102,6 +102,7 @@ var MMVoice = {
 
         this.$editable = $('.editable');
         this.makeNewRecordings();
+
         microphone.init(this._microphoneConfig);
 
         // Make tags clickable
@@ -162,6 +163,7 @@ var MMVoice = {
 
             if (action === 'config') {
                 self.config = event.data.data;
+                cards.init(self.config);
                 self.onConfig();
             }
             if (action === 'open') {
@@ -219,14 +221,6 @@ var MMVoice = {
             $input.focus();
             return;
         }
-
-        // clicking documents
-        this.$cards.on('click', '.card', function(e) {
-
-            if (self.config.cardLinkBehavior === false) {
-                e.preventDefault();
-            }
-        });
 
         this.is_init = true;
     },
@@ -355,7 +349,7 @@ var MMVoice = {
             MM.activeSession.textentries.delete(recording.textEntryID);
         }
         recording.transcript = text;
-        self.$cards.addClass('loading');
+        cards.setLoading(true);
         MM.activeSession.textentries.post({
             text: text,
             type: 'text',
@@ -384,7 +378,7 @@ var MMVoice = {
 
     showResults : function(data) {
         this.results_length = data.length;
-        this._updateCards(data);
+        cards.updateCards(data);
         this._updateUI();
     },
 
@@ -499,187 +493,6 @@ var MMVoice = {
         return entities;
     },
 
-    _isotope_config : {
-        itemSelector: '.card',
-        sortBy: 'sort',
-        layoutMode: 'masonry',
-        filter: ':not(.removed)',
-        getSortData: {
-            sort: '[data-sort] parseInt'
-        }
-    },
-
-    _createCard : function(doc) {
-        var self = this;
-        var $card = $('<a>', {
-            class: 'card new',
-            id: 'doc_' + doc.documentid,
-            href: doc.originurl,
-            target: self.config.cardLinkBehavior || '_parent'
-        });
-        $card.attr('data-document-id', doc.documentid);
-
-        if (self.config.cardLayout === 'custom') {
-            var html = self.cardTemplate(doc);
-            $card.html(html);
-        } else {
-            var $title = $('<h2>', {
-                class: 'title',
-                html: doc.title
-            });
-            $card.append($title);
-
-            var imageURL = false;
-            if (typeof doc.image !== 'undefined') {
-                if (typeof doc.image.url !== 'undefined') {
-                    imageURL = doc.image.url;
-                } else if (typeof doc.image.thumburl !== 'undefined') {
-                    imageURL = doc.image.thumburl;
-                }
-            }
-            if (imageURL) {
-                var $image = $('<p>', {
-                    class: 'image not-loaded'
-                });
-
-                $image.append($('<img>', {
-                    src: imageURL
-                }));
-                $card.append($image);
-            }
-
-            var description;
-            if (typeof doc.description === 'string') {
-                description = doc.description.substr(0, 150) + (doc.description.length > 150 ? "&hellip;" : "");
-            } else {
-                description = "No description";
-            }
-            $card.append($('<p>', {
-                html: description,
-                class: 'description'
-            }));
-
-            // fields
-            if (typeof self.config.cardFields !== 'undefined') {
-                function getFormattedString(format, value) {
-                    switch (format) {
-                        case 'date':
-                            var date = new Date(value * 1000);
-                            return (date.getMonth() + 1) + '/' + date.getDay() + '/' + date.getFullYear();
-                        default:
-                            return value.substr(0, 100) + (value.length > 100 ? "&hellip;" : "");
-                    }
-                }
-
-                var cardFields = self.config.cardFields;
-                $.each(cardFields, function(k2, field) {
-                    var value = doc[field.key] || field.placeholder;
-                    if (typeof value !== 'undefined' && value !== '') {
-                        var $field = $('<p>', {
-                            class: 'mm-doc-field'
-                        });
-                        if (typeof field.class !== 'undefined' && field.class !== '') {
-                            $field.addClass(field.class);
-                        }
-
-                        // If a label is specified, add a label
-                        if (typeof field.label !== 'undefined' && field.label !== '') {
-                            var $label = $('<span>', {
-                                class: 'label',
-                                html: field.label
-                            });
-                            $field.append($label);
-                        }
-
-                        var $value = $('<span>', {
-                            class: 'value'
-                        });
-                        // if we aren't using placeholder, format the string
-                        if (value !== field.placeholder) {
-                            value = getFormattedString(field.format, value);
-                        } else {
-                            $value.addClass('placeholder'); // other wise add placeholder class
-                        }
-                        $value.text(value);
-                        $field.append($value);
-                        $card.append($field);
-                    }
-                });
-            }
-        }
-        return $card;
-    },
-
-    _updateCards : function(data) {
-        var self = this;
-        var newCards = [];
-
-        // Remove the "No results" message if present
-        $('.no-results', this.$cards).remove(); // TODO: animate this nicely?
-
-        // Remove the cards filtered out last time
-        // Leave one card to prevent the single column isotope bug
-        $('.card.removed:not(.single-column-fix)', this.$cards).remove();
-
-        // Mark current to be deleted; we'll un-mark them if they exist
-        $('.card', this.$cards).each(function(k, card) {
-            var $card = $(card);
-            $card.addClass('to-delete');
-            $card.attr('data-sort', k + 1000);
-        });
-
-        $.each(data, function(k, doc) {
-            // Card exists, so update sort order and keep it
-            if ($('#doc_' + doc.documentid).length) {
-                $('#doc_' + doc.documentid).removeClass('to-delete').attr('data-sort', k);
-                return true;
-            }
-
-            // Card doesn't exist, so create it. (TODO: Maybe use a templating system?)
-            var $card = self._createCard(doc);
-            $card.attr('data-sort', k);
-            newCards.push($card);
-        });
-
-        // Filter out unused cards (we don't delete yet b/c we want them to fade out)
-        $('.card.to-delete', this.$cards).removeClass('to-delete').addClass('removed');
-
-        var $newCards = $.makeArray(newCards);
-
-        self.$cards.append( $newCards );
-        if (!self.$cards.hasClass('isotope')) {
-            // No isotope instance yet; create it.
-            self.$cards.addClass('isotope');
-            self.$cards.isotope(self._isotope_config);
-
-        } else {
-            // Isotope instance already exists
-
-            // Single out the new cards, and 'append' them to isotope (they're already in the DOM)
-            $newCards = $('.new', self.$cards);
-            self.$cards.isotope( 'appended' , $newCards );
-            self.$cards.isotope( 'updateSortData' ).isotope(self._isotope_config);
-        }
-
-        self.$cards.removeClass('loading');
-        self.$cards.imagesLoaded(function() {
-            $('.not-loaded').removeClass('not-loaded');
-            window.setTimeout(function() {
-                self.$cards.isotope(self._isotope_config);
-            }, 10);
-        });
-
-        // TODO: animate this nicely?
-        if ($('.card:not(.removed)', this.$cards).length === 0) {
-            this.$cards.append($('<div>', {
-                class: 'no-results',
-                html: 'No results'
-            }));
-        }
-
-        $('.new', this.$cards).removeClass('new');
-    },
-
     appendHistory : function(recording) {
         if (recording.transcript) {
             this._recordings.push(recording);
@@ -784,7 +597,7 @@ var MMVoice = {
         var self = this;
         var cardWidth = 218;
         var cardPadding = 20;
-        var widthRemaining = self.$cards.width() - cardPadding;
+        var widthRemaining = cards.cardsWidth() - cardPadding;
         var numCols = 0;
         while (widthRemaining >= 0) {
             numCols++;
@@ -940,7 +753,7 @@ var MMVoice = {
                 MMVoice.makeNewRecordings();
                 MMVoice.lettering(MMVoice.$input, 'Start speaking now...', 'mm-prompt'); // on start
                 MMVoice._updateUI();
-                MMVoice.$cards.addClass('loading');
+                cards.setLoading(true);
             },
             onEnd: function(/* event <-- unused */) {
                 UTIL.log("Listener: onEnd");
@@ -959,7 +772,7 @@ var MMVoice = {
                 if (pendingTranscript.length > 0) {
                     MMVoice.makeNewRecordings(pendingTranscript);
                 } else {
-                    MMVoice.$cards.removeClass('loading');
+                    cards.setLoading(false);
                 }
                 if (!microphone.isLocked()) {
                     var fullText = MMVoice.confirmedRecording.transcript + MMVoice.pendingRecording.transcript;
@@ -1127,15 +940,6 @@ MMVoice.onConfig = function() {
             cssStyle.type = 'text/css';
             cssStyle.innerHTML = MMVoice.config.customCSS;
             document.head.appendChild(cssStyle);
-        }
-
-        if (MMVoice.config.cardLayout === 'custom') {
-            try {
-                MMVoice.cardTemplate = _.template(MMVoice.config.cardTemplate);
-            } catch (e) {
-                UTIL.log('Voice Navigator was unable to parse card template');
-                MMVoice.config.cardLayout = 'default';
-            }
         }
 
         var MM_USER_ID_PREFIX = 'vnu';
