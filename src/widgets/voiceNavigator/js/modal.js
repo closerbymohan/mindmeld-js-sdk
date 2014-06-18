@@ -4,15 +4,21 @@ var $ = window.$ = window.jQuery = require('./vendor/jquery-1.11.1');
 require('./vendor/jquery.slimscroll');
 require('./vendor/jquery.cookie-1.4.0');
 var _ = require('lodash/dist/lodash.compat');
-var MM = window.MM = window.MM || {};
+
+
+var MM = window.MM = window.MM || {}; // hack for non CommonJS code
 require('../../../../dist/sdk/mindmeld');
+
+
 var imagesLoaded = require('./vendor/imagesloaded.pkgd');
 var Isotope = require('./vendor/isotope.pkgd');
+
+// must be after mindmeld js
+var microphone = require('./microphone');
 
 /* Manage the state of the UI */
 var MMVoice = {
     is_init : false,
-    is_locked : false,
     _lockWhileRecording: false,
     status : false,
     is_first_start : true,
@@ -42,9 +48,6 @@ var MMVoice = {
     $mm : $(),
     $mm_parent : $(),
     $mm_close : $(),
-    $mm_button : $(),
-    $mm_button_icon : $(),
-    $mm_pulser : $(),
     $mm_alert : $(),
     $mm_alert_dismiss : $(),
     $tags : $(),
@@ -83,10 +86,7 @@ var MMVoice = {
 
         this.$window = $(window);
         this.$mm = $('#mindmeld');
-        this.$mm_button = $('#mm-button');
         this.$mm_close = $('#close, #mindmeld-overlay');
-        this.$mm_pulser = $('#mm-pulser');
-        this.$mm_button_icon = $('#mm-button-icon');
         this.$mm_parent = $('#mindmeld-parent');
         this.$mm_alert_dismiss = $('#mm-alert-dismiss');
         this.$mm_alert = $('#mindmeld-alert');
@@ -100,7 +100,7 @@ var MMVoice = {
         this.$historyButton = $('#history-button');
 
         this.$editable = $('.editable');
-
+        microphone.init(this._listenerConfig);
         this.makeNewRecordings();
 
         // Make tags clickable
@@ -180,8 +180,8 @@ var MMVoice = {
         });
 
         if (!MM.support.speechRecognition) {
-            self.$mm_button.hide();
-            self.$mm_pulser.hide();
+            microphone.$mm_button().hide();
+            microphone.$mm_pulser().hide();
             self.$input.hide();
 
             self.$body.addClass('no-speech');
@@ -227,7 +227,7 @@ var MMVoice = {
             just_locked : true
         };
 
-        self.$mm_button_icon.on('mousedown', function(e) {
+        microphone.$mm_button_icon().on('mousedown', function(e) {
             button_status.mousedown = true;
             button_status.just_locked = false;
             setTimeout(function() {
@@ -239,7 +239,7 @@ var MMVoice = {
             }, 300);
         });
 
-        self.$mm_button_icon.on('mouseup', function(e) {
+        microphone.$mm_button_icon().on('mouseup', function(e) {
             e.preventDefault();
             button_status.mousedown = false;
             if(!button_status.locked) {
@@ -276,46 +276,6 @@ var MMVoice = {
         setTimeout(function() {
             self.postMessage('close');
         }, 500);
-    },
-
-    _do_on_voice_ready : function(fn) {
-        var self = this;
-        if(self.is_voice_ready) {
-            fn();
-        } else {
-            self.do_on_voice_ready_fn = fn;
-        }
-    },
-
-    listen : function(lock) {
-        if(!MM.support.speechRecognition) return;
-
-        var self = this;
-        var statusIsPending = (self.status === 'pending');
-        var statusIsListening= (self.status === 'listening');
-        if (!lock) {
-            if (statusIsPending || statusIsListening) {
-                self.stopListening();
-            } else {
-                self.startListening();
-            }
-        } else {
-            if (!self.is_locked && (statusIsPending || statusIsListening)) {
-                self._lockWhileRecording = true;
-                self.is_locked = true;
-            } else if (self.is_locked) {
-                self.stopListening();
-            } else {
-                self.startListening(true);
-            }
-        }
-        this._updateUI();
-    },
-
-    pulse : function(volume) {
-        var self = this;
-        var scale = ((volume / 100) * 0.5) + 1.4;
-        self.$mm_pulser.css('transform', 'scale(' + scale + ')');
     },
 
     postMessage : function(action, data) {
@@ -444,27 +404,61 @@ var MMVoice = {
      },
      */
 
-    lockWhileRecording : function() {
-        this.is_locked = true;
-        this._lockWhileRecording = false;
-        MM.activeSession.setListenerConfig({ 'continuous': this.is_locked });
+    _do_on_voice_ready : function(fn) {
+        var self = this;
+        if(self.is_voice_ready) {
+            fn();
+        } else {
+            self.do_on_voice_ready_fn = fn;
+        }
     },
 
-    startListening : function(is_locked) {
-        this.is_locked = !!is_locked;
+    listen : function(lock) {
+        if(!MM.support.speechRecognition) return;
+
+        var self = this;
+        var statusIsPending = (self.status === 'pending');
+        var statusIsListening= (self.status === 'listening');
+        if (!lock) {
+            if (statusIsPending || statusIsListening) {
+                self.stopListening();
+            } else {
+                self.startListening();
+            }
+        } else {
+            if (!microphone.isLocked() && (statusIsPending || statusIsListening)) {
+                self._lockWhileRecording = true;
+                microphone.setIsLocked(true);
+            } else if (self.is_locked) {
+                self.stopListening();
+            } else {
+                self.startListening(true);
+            }
+        }
+        this._updateUI();
+    },
+
+    lockWhileRecording : function() {
+        microphone.setIsLocked(true);
+        this._lockWhileRecording = false;
+        microphone.listener().setConfig({ 'continuous': microphone.isLocked() });
+    },
+
+    startListening : function(isLocked) {
+        microphone.setIsLocked(!!isLocked);
         this.status = 'pending';
         this.is_first_start = true;
         this._currentTextEntries = [];
-        MM.activeSession.setListenerConfig({ 'continuous': this.is_locked });
-        MM.activeSession.listener.start();
+        microphone.listener().setConfig({ 'continuous': microphone.isLocked() });
+        microphone.listener().start();
 
         this._updateUI();
     },
 
     stopListening : function() {
         if(MM.support.speechRecognition) {
-            MM.activeSession.listener.cancel();
-            this.is_locked = false;
+            microphone.listener().cancel();
+            microphone.setIsLocked(false);
         }
         this._updateUI();
     },
@@ -987,11 +981,24 @@ var MMVoice = {
         onResult: function(result /*, resultIndex, results, event  <-- unused */) {
             UTIL.log("Listener: onResult", result);
             if (result.final) {
+                // post a text entry for finalized results
+                postListenerResult(result.transcript);
+
                 MMVoice.makeNewRecordings(result.transcript);
             } else {
                 MMVoice.pendingRecording.transcript = result.transcript;
             }
             MMVoice._updateUI();
+
+            function postListenerResult(transcript) {
+                MM.activeSession.textentries.post({
+                    text: transcript,
+                    type: 'speech',
+                    weight: 1.0
+                }, function(response) {
+                    MMVoice.onTextEntryPosted(response);
+                });
+            }
         },
         onStart: function(event) {
             UTIL.log("Listener: onStart");
@@ -1017,7 +1024,7 @@ var MMVoice = {
                 if (MMVoice._lockWhileRecording) {
                     MMVoice.lockWhileRecording();
                 }
-                MM.activeSession.listener.start();
+                microphone.listener().start();
             } else {
                 MMVoice.status = false;
 
@@ -1061,7 +1068,6 @@ var MMVoice = {
 
         },
         onTextEntryPosted: function(response) {
-            MMVoice.onTextEntryPosted(response);
         }
     },
 
@@ -1105,7 +1111,7 @@ var MMVoice = {
                 self.$historyButton.show();
             }
             if(updates.recordings_length >= 1) {
-                self.$mm_button.addClass('shadow');
+                microphone.$mm_button().addClass('shadow');
             }
         }
 
@@ -1126,11 +1132,11 @@ var MMVoice = {
         }
 
         if('status' in updates) {
-            self.$mm_button.removeClass('status-pending');
-            self.$mm_button.removeClass('status-listening');
+            microphone.$mm_button().removeClass('status-pending');
+            microphone.$mm_button().removeClass('status-listening');
             self.status = updates.status;
             if (updates.status !== false) {
-                self.$mm_button.addClass('status-' + updates.status);
+                microphone.$mm_button().addClass('status-' + updates.status);
             }
             if (updates.status === 'listening') {
                 self.$input.empty();
@@ -1138,16 +1144,12 @@ var MMVoice = {
                 //this.$mm.addClass('open');
             }
             if (updates.status === false) {
-                self.$mm_pulser.css('transform', 'scale(0)');
+                microphone.$mm_pulser().css('transform', 'scale(0)');
             }
 
             setTimeout(function() {
                 self.$mm_alert.toggleClass('on', updates.status === 'pending');
             }, 10);
-        }
-
-        if('is_locked' in updates) {
-            self.$mm_button.toggleClass('lock', updates.is_locked);
         }
 
         var textNeedsUpdate = false;
@@ -1199,8 +1201,8 @@ MMVoice.onConfig = function() {
     else {
         if (typeof MMVoice.config.baseZIndex !== 'undefined') {
             var baseZIndex = parseInt(MMVoice.config.baseZIndex);
-            MMVoice.$mm_button.css('z-index', baseZIndex + 100);
-            MMVoice.$mm_button.find('#icon-microphone, #icon-mute, #icon-lock').css('z-index', baseZIndex + 10);
+            microphone.$mm_button().css('z-index', baseZIndex + 100);
+            microphone.$mm_button().find('#icon-microphone, #icon-mute, #icon-lock').css('z-index', baseZIndex + 10);
             MMVoice.$mm_alert.css('z-index', baseZIndex + 1000);
         }
 
@@ -1337,7 +1339,6 @@ MMVoice.onConfig = function() {
     function onSessionStart () {
         subscribeToTextEntries();
         subscribeToEntities();
-        setupSessionListener();
         MMVoice.is_voice_ready = true;
         MMVoice._updateUI();
     }
@@ -1371,26 +1372,30 @@ MMVoice.onConfig = function() {
             MMVoice.setEntities(result.data);
         }, onSuccess, onError);
     }
-
-    function setupSessionListener() {
-        MM.activeSession.setListenerConfig(MMVoice._listenerConfig);
-    }
 };
 
 $(function () {
     MMVoice.init();
 });
 
-var a = {
-    stream : false,
-    context : false,
-    analyzer : false,
-    frequencies : false,
-    times : false,
+
+
+var volumeMonitor = {
+    stream : null,
+    context : null,
+    analyzer : null,
+    frequencies : null,
+    times : null,
     audio_started : false
 };
+
+function pulse(volume) {
+    var scale = ((volume / 100) * 0.5) + 1.4;
+    microphone.$mm_pulser().css('transform', 'scale(' + scale + ')');
+}
+
 function startVolumeMonitor() {
-    if (!a.audio_started) {
+    if (!volumeMonitor.audio_started) {
         // GETUSERMEDIA INPUT
         navigator.getMedia = (navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
@@ -1398,56 +1403,56 @@ function startVolumeMonitor() {
             navigator.msGetUserMedia);
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
-        a.context = new AudioContext();
-        a.analyzer = a.context.createAnalyser();
-        a.analyzer.smoothingTimeConstant = 0.18;
-        a.analyzer.fftSize = 256;
+        volumeMonitor.context = new AudioContext();
+        volumeMonitor.analyzer = volumeMonitor.context.createAnalyser();
+        volumeMonitor.analyzer.smoothingTimeConstant = 0.18;
+        volumeMonitor.analyzer.fftSize = 256;
 
-        a.frequencies = new Uint8Array( a.analyzer.frequencyBinCount );
-        a.times = new Uint8Array( a.analyzer.frequencyBinCount );
+        volumeMonitor.frequencies = new Uint8Array( volumeMonitor.analyzer.frequencyBinCount );
+        volumeMonitor.times = new Uint8Array( volumeMonitor.analyzer.frequencyBinCount );
 
         navigator.getMedia ( { audio: true }, microphoneReady, function(err) {
             UTIL.log("The following error occured: " + err);
         });
 
-        a.audio_started = true;
+        volumeMonitor.audio_started = true;
 
     } else {
         loop();
     }
 
     function microphoneReady(stream) {
-        a.stream = stream;
-        var stream_source = a.context.createMediaStreamSource( stream );
-        stream_source.connect( a.analyzer );
+        volumeMonitor.stream = stream;
+        var stream_source = volumeMonitor.context.createMediaStreamSource( stream );
+        stream_source.connect( volumeMonitor.analyzer );
         loop();
     }
 
     function loop() {
-        if (!MMVoice.status || status === 'editing') {
+        if (!MMVoice.status || MMVoice.status === 'editing') {
             // stop recording
-            a.stream.stop();
-            a.audio_started = false;
+            volumeMonitor.stream.stop();
+            volumeMonitor.audio_started = false;
             return;
         }
 
-        a.analyzer.getByteFrequencyData( a.frequencies );
-        a.analyzer.getByteTimeDomainData( a.times );
+        volumeMonitor.analyzer.getByteFrequencyData( volumeMonitor.frequencies );
+        volumeMonitor.analyzer.getByteTimeDomainData( volumeMonitor.times );
 
-        MMVoice.pulse(getVolume());
+        pulse(getVolume());
 
         setTimeout(loop, 75);
     }
 
     function getVolume() {
-        return parseInt( getFreqencyRange( 0, a.analyzer.frequencyBinCount - 1 ), 10 );
+        return parseInt( getFreqencyRange( 0, volumeMonitor.analyzer.frequencyBinCount - 1 ), 10 );
     }
 
     function getFreqencyRange(from, to) {
         var volume = 0;
 
         for ( var i = from; i < to; i++ ) {
-            volume += a.frequencies[i];
+            volume += volumeMonitor.frequencies[i];
         }
 
         return volume / ( to - from );

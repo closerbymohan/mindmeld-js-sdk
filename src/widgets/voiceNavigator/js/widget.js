@@ -139,13 +139,17 @@ function postMessage(action, data) {
     }, "*");
 }
 
+
+
 /**
  * Opens the voice navigator modal window
  * @param {Object} [options]
  * @param {String} [options.query] if provided, this query will be in the
  * @param {boolean} [options.forceNewIFrame=false] if true,
- * @param {String|boolean} [options.listeningMode] the listening mode to be used when the voice navigator opens
  */
+
+// @param {String|boolean} [options.listeningMode] the listening mode to be used when the voice navigator opens
+
 MM.voiceNavigator.showModal = function(options) {
     options = options || {};
     if (isInitialized) {

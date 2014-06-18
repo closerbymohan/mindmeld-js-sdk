@@ -53,7 +53,7 @@
             <% if (typeof pubdate !== 'undefined' && pubdate && pubdate !== '') { %>
             <p class="align-right release-date">
                 <% var date = new Date(pubdate * 1000); %>
-                <%= (date.getMonth() + 1) + '/' + date.getDay() + '/' + date.getFullYear() %>
+                <%= (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear() %>
             </p>
             <% } else { %>
             <p class="align-right release-date placeholder">No release date</p>
