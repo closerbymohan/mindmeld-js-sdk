@@ -5953,6 +5953,9 @@ var MM = ( function ($, Faye) {
                     // notify handler
                     MM.Util.testAndCallThis(session._onListenerResult, session.listener, result, resultIndex, results, event);
                 },
+                onPending: function() {
+                    MM.Util.testAndCallThis(session._onListenerPending, session.listener);
+                },
                 onStart: function(event) {
                     MM.Util.testAndCallThis(session._onListenerStart, session.listener, event);
                 },
@@ -6045,6 +6048,7 @@ var MM = ( function ($, Faye) {
         setListenerConfig: function (config) {
             var configProperties = {
                 onResult: '_onListenerResult',
+                onPending: '_onListenerPending',
                 onStart: '_onListenerStart',
                 onEnd: '_onListenerEnd',
                 onError: '_onListenerError',
@@ -6377,6 +6381,7 @@ var MM = ( function ($, Faye) {
              *                                               [Stack Overflow](http://stackoverflow.com/questions/14257598/what-are-language-codes-for-voice-recognition-languages-in-chromes-implementati).
              * @property {ListenerResultCallback} [onResult] the callback that will process listener results. This property must be
              *                                               provided when creating a new {@link MM.Listener}.
+             * @property {function} [onPending=null]         the event handler which is called when a listening session is requested.
              * @property {function} [onStart=null]           the event handler which is called when a listening session begins.
              * @property {function} [onEnd=null]             the event handler which is called when a listening session ends.
              * @property {function} [onError=null]           the event handler which is called when errors are received.
@@ -6411,6 +6416,8 @@ var MM = ( function ($, Faye) {
              *            HTML are served from a web server.
              *
              * @property {boolean} listening      indicates whether or not the listener is active. Readonly.
+             * @property {boolean} pending        indicates whether or not the listener is pending. A listener is pending after
+             *                                    start() has been called, but before onStart has fired. Readonly.
              * @property {Array} results          array of {@link ListenerResult} objects received during the current or most
              *                                    recent listening session. Readonly.
              * @property {boolean} interimResults indicates whether or not interimResults are enabled. Defaults to false.
@@ -6486,6 +6493,7 @@ var MM = ( function ($, Faye) {
             setConfig: function(config) {
                 var configProperties = {
                     onResult: '_onResult',
+                    onPending: '_onPending',
                     onStart: '_onStart',
                     onEnd: '_onEnd',
                     onError: '_onError',
@@ -6502,7 +6510,7 @@ var MM = ( function ($, Faye) {
                 }
             },
             /**
-             * The time the listener last begin listening. Defaults to 0.
+             * The time the listener last began listening. Defaults to 0.
              *
              * @memberOf MM.Listener
              * @instance
@@ -6568,6 +6576,7 @@ var MM = ( function ($, Faye) {
                         MM.Util.testAndCallThis(listener._onResult, listener, result, resultIndex, results, event);
                     };
                     recognizer.onstart = function(event) {
+                        listener._pending = false;
                         listener._listening = true;
                         listener._lastStartTime = Date.now();
                         MM.Util.testAndCallThis(listener._onStart, listener, event);
@@ -6603,6 +6612,8 @@ var MM = ( function ($, Faye) {
                 listener._results = []; // clear previous results
 
                 recognizer.start();
+                listener._pending = true;
+                listener._onPending(); // trigger onPending callback
             },
             /**
              * Stops the active speech recognition session. One more result may be send to the onResult callback.
@@ -6630,6 +6641,7 @@ var MM = ( function ($, Faye) {
 
 
         Listener.prototype._listening = false;
+        Listener.prototype._pending = false;
         Listener.prototype._results = [];
         Listener.prototype.continuous = false;
         Listener.prototype.lang = "";
@@ -6638,6 +6650,11 @@ var MM = ( function ($, Faye) {
             listening: {
                 get: function() {
                     return this._listening;
+                }
+            },
+            pending: {
+                get: function() {
+                    return this._pending;
                 }
             },
             results: {
