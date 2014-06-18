@@ -2548,7 +2548,7 @@ var Faye = (function() {
  */
 var MM = ( function ($, Faye) {
 
-    var MM = window.MM || {};
+    var MM = window.MM = window.MM || {};
 
     /**
      * MindMeld SDK Version
