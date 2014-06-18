@@ -191,7 +191,9 @@ gulp.task('vn.modal.other', function() {
 
 /* Handle all the watching of files */
 
-gulp.task('vn.watch', function() {
+gulp.task('vn.watch',  ['vn.watch.setup', 'vn.build']);
+
+gulp.task('vn.watch.setup',  function() {
     var watchLocations = [
         'vn.modal.css',
         'vn.modal.html',
@@ -234,7 +236,7 @@ gulp.task('vn.lint', function() {
 gulp.task('vn.widget', ['vn.widget.css', 'vn.widget.js']);
 gulp.task('vn.modal', ['vn.modal.css', 'vn.modal.js', 'vn.modal.html', 'vn.modal.other']);
 gulp.task('vn.build', ['vn.widget', 'vn.modal']);
-gulp.task('vn.develop', ['vn.watch', 'vn.serve', 'vn.build']);
+gulp.task('vn.develop', ['vn.watch', 'vn.serve']);
 gulp.task('vn', ['vn.build']);
 
 // show list of voice navigator tasks
