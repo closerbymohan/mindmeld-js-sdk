@@ -1,6 +1,8 @@
+/* jshint undef: true, unused: true */
+/* global document, window, require */
+
 var UTIL =  require('./util');
 var MM = window.MM || {};
-
 
 /**
  * An object representing the configuration of MM.voiceNavigator

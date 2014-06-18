@@ -1,3 +1,6 @@
+/* jshint undef: true, unused: true */
+/* global document, require, window */
+
 var UTIL =  require('./util');
 var highlightEntities = require('./entity-highlighting');
 var $ = window.$ = window.jQuery = require('./vendor/jquery-1.11.1');
@@ -19,12 +22,10 @@ var microphone = require('./microphone');
 /* Manage the state of the UI */
 var MMVoice = {
     is_init : false,
-    _lockWhileRecording: false,
-    status : false,
-    is_first_start : true,
+    isEditing : false,
     is_results : false,
 
-    is_voice_ready  : false,
+    sessionIsReady  : false,
 
     config: {},
 
@@ -100,8 +101,8 @@ var MMVoice = {
         this.$historyButton = $('#history-button');
 
         this.$editable = $('.editable');
-        microphone.init(this._listenerConfig);
         this.makeNewRecordings();
+        microphone.init(this._microphoneConfig);
 
         // Make tags clickable
         function onTagClick() {
@@ -155,7 +156,7 @@ var MMVoice = {
         $(window).on('message', function(e) {
             var event = e.originalEvent;
             var action = event.data.action;
-            if (event.data.source != 'mindmeld') {
+            if (event.data.source !== 'mindmeld') {
                 return;
             }
 
@@ -166,8 +167,8 @@ var MMVoice = {
             if (action === 'open') {
                 self.$mm_parent.addClass('open');
                 if (self.config.startQuery === null && self.config.listeningMode) {
-                    self._do_on_voice_ready(function() {
-                        MMVoice.listen(self.config.listeningMode == 'continuous');
+                    self.doOnSessionReady(function() {
+                        microphone.startListening(self.config.listeningMode === 'continuous');
                     });
                 }
             }
@@ -180,8 +181,7 @@ var MMVoice = {
         });
 
         if (!MM.support.speechRecognition) {
-            microphone.$mm_button().hide();
-            microphone.$mm_pulser().hide();
+            microphone.hide();
             self.$input.hide();
 
             self.$body.addClass('no-speech');
@@ -220,41 +220,6 @@ var MMVoice = {
             return;
         }
 
-        // Button Actions
-        var button_status = {
-            mousedown : false,
-            locked : false,
-            just_locked : true
-        };
-
-        microphone.$mm_button_icon().on('mousedown', function(e) {
-            button_status.mousedown = true;
-            button_status.just_locked = false;
-            setTimeout(function() {
-                if(button_status.mousedown) {
-                    button_status.locked = true;
-                    button_status.just_locked = true;
-                    self.listen(true);
-                }
-            }, 300);
-        });
-
-        microphone.$mm_button_icon().on('mouseup', function(e) {
-            e.preventDefault();
-            button_status.mousedown = false;
-            if(!button_status.locked) {
-                self.listen(false);
-            }
-
-            if(button_status.locked && !button_status.just_locked) {
-                button_status.locked = false;
-                button_status.mousedown = false;
-                self.listen(false);
-            }
-
-            button_status.just_locked = false;
-        });
-
         // clicking documents
         this.$cards.on('click', '.card', function(e) {
 
@@ -273,13 +238,13 @@ var MMVoice = {
         self.$body.removeClass('results');
         self.is_results = false;
         self.results_length = -1;
-        setTimeout(function() {
+        window.setTimeout(function() {
             self.postMessage('close');
         }, 500);
     },
 
     postMessage : function(action, data) {
-        parent.postMessage({
+        window.parent.postMessage({
             action: action,
             source: 'mindmeld',
             data: data
@@ -287,8 +252,12 @@ var MMVoice = {
     },
 
     _historyHeight : function(scrollHeight) {
-        if(scrollHeight > this._height * 0.8) scrollHeight = this._height * 0.8;
-        if(scrollHeight < 270) scrollHeight = 270;
+        if (scrollHeight > this._height * 0.8) {
+            scrollHeight = this._height * 0.8;
+        }
+        if (scrollHeight < 270) {
+            scrollHeight = 270;
+        }
         return scrollHeight;
     },
 
@@ -302,7 +271,7 @@ var MMVoice = {
 
             // don't focus on text
             self.$editable.blur();
-            clearTimeout(self._textFocusTimeout);
+            window.clearTimeout(self._textFocusTimeout);
 
             return false; // don't bubble up
         });
@@ -315,7 +284,7 @@ var MMVoice = {
                 // Not already doing something, and not a prompt
                 var $prompt = self.$input.find('.mm-prompt');
 
-                if (!self.status && ($prompt.hasClass('mm-prompt-error') || !$prompt.length)) {
+                if (!(microphone.pending() || microphone.listening()) && ($prompt.hasClass('mm-prompt-error') || !$prompt.length)) {
                     self.$editable.height(self.$input.height());
                     self.$input.hide();
                     $prompt.empty();
@@ -327,14 +296,15 @@ var MMVoice = {
             });
 
             self.$editable.focusin(function() {
-                if (!self.status) {
+                if (!(microphone.pending() || microphone.listening())) {
                     // delay so we know it's not an entity click
-                    self._textFocusTimeout = setTimeout(function() {
-                        self.status = 'editing';
+                    self._textFocusTimeout = window.setTimeout(function() {
+                        microphone.stopListening();
+                        self.isEditing = true;
                     }, 300);
                 } else {
                     self.$editable.blur();
-                    self.status = false;
+                    self.isEditing = false;
                 }
                 return false;
             });
@@ -342,7 +312,7 @@ var MMVoice = {
             self.$editable.focusout(function() {
                 self.$editable.hide();
                 self.$input.show();
-                self.status = false;
+                self.isEditing = false;
             });
 
             self.$editable.keypress(function (e) {
@@ -379,7 +349,6 @@ var MMVoice = {
 
     submitText: function(text) {
         var self = this;
-        self.status = false;
 
         var recording = self.confirmedRecording;
         if (recording.textEntryID) {
@@ -404,63 +373,13 @@ var MMVoice = {
      },
      */
 
-    _do_on_voice_ready : function(fn) {
+    doOnSessionReady : function(fn) {
         var self = this;
-        if(self.is_voice_ready) {
+        if (self.sessionIsReady) {
             fn();
         } else {
-            self.do_on_voice_ready_fn = fn;
+            self.onSessionReadyFn = fn;
         }
-    },
-
-    listen : function(lock) {
-        if(!MM.support.speechRecognition) return;
-
-        var self = this;
-        var statusIsPending = (self.status === 'pending');
-        var statusIsListening= (self.status === 'listening');
-        if (!lock) {
-            if (statusIsPending || statusIsListening) {
-                self.stopListening();
-            } else {
-                self.startListening();
-            }
-        } else {
-            if (!microphone.isLocked() && (statusIsPending || statusIsListening)) {
-                self._lockWhileRecording = true;
-                microphone.setIsLocked(true);
-            } else if (self.is_locked) {
-                self.stopListening();
-            } else {
-                self.startListening(true);
-            }
-        }
-        this._updateUI();
-    },
-
-    lockWhileRecording : function() {
-        microphone.setIsLocked(true);
-        this._lockWhileRecording = false;
-        microphone.listener().setConfig({ 'continuous': microphone.isLocked() });
-    },
-
-    startListening : function(isLocked) {
-        microphone.setIsLocked(!!isLocked);
-        this.status = 'pending';
-        this.is_first_start = true;
-        this._currentTextEntries = [];
-        microphone.listener().setConfig({ 'continuous': microphone.isLocked() });
-        microphone.listener().start();
-
-        this._updateUI();
-    },
-
-    stopListening : function() {
-        if(MM.support.speechRecognition) {
-            microphone.listener().cancel();
-            microphone.setIsLocked(false);
-        }
-        this._updateUI();
     },
 
     showResults : function(data) {
@@ -656,13 +575,22 @@ var MMVoice = {
                 $.each(cardFields, function(k2, field) {
                     var value = doc[field.key] || field.placeholder;
                     if (typeof value !== 'undefined' && value !== '') {
+                        var $field = $('<p>', {
+                            class: 'mm-doc-field'
+                        });
+                        if (typeof field.class !== 'undefined' && field.class !== '') {
+                            $field.addClass(field.class);
+                        }
+
                         // If a label is specified, add a label
                         if (typeof field.label !== 'undefined' && field.label !== '') {
                             var $label = $('<span>', {
                                 class: 'label',
                                 html: field.label
                             });
+                            $field.append($label);
                         }
+
                         var $value = $('<span>', {
                             class: 'value'
                         });
@@ -673,13 +601,7 @@ var MMVoice = {
                             $value.addClass('placeholder'); // other wise add placeholder class
                         }
                         $value.text(value);
-                        var $field = $('<p>', {
-                            class: 'mm-doc-field'
-                        });
-                        if (typeof field.class !== 'undefined' && field.class !== '') {
-                            $field.addClass(field.class);
-                        }
-                        $field.append($label).append($value);
+                        $field.append($value);
                         $card.append($field);
                     }
                 });
@@ -742,7 +664,7 @@ var MMVoice = {
         self.$cards.removeClass('loading');
         self.$cards.imagesLoaded(function() {
             $('.not-loaded').removeClass('not-loaded');
-            setTimeout(function() {
+            window.setTimeout(function() {
                 self.$cards.isotope(self._isotope_config);
             }, 10);
         });
@@ -771,13 +693,13 @@ var MMVoice = {
             });
 
             this.$input.before($new_history);
-            console.log($new_history);
+            window.console.log($new_history);
 
             // Create the new one
             this.$input.html("&nbsp;");
 
             var self = this;
-            setTimeout(function() {
+            window.setTimeout(function() {
                 self.$input.removeClass('hide');
                 self.scrollHistory();
             }, 100);
@@ -802,7 +724,9 @@ var MMVoice = {
         //this.$historyList.empty();
         this.$historyList.find('li').each(function() {
             var recording = $(this).data('recording');
-            if(!recording) return;
+            if(!recording) {
+                return;
+            }
 
             // entities for recording
             var entities = self.entitiesForTextEntry(recording.textEntryID);
@@ -827,7 +751,7 @@ var MMVoice = {
 
             if (i === self._recordings.length - 1 && self.recordings_length !== self._recordings.length) {
                 (function($div) {
-                    setTimeout(function () {
+                    window.setTimeout(function () {
                         $div.addClass('on');
                     }, 100);
                 })($div);
@@ -977,99 +901,107 @@ var MMVoice = {
         MMVoice.getDocuments();
     },
 
-    _listenerConfig : {
-        onResult: function(result /*, resultIndex, results, event  <-- unused */) {
-            UTIL.log("Listener: onResult", result);
-            if (result.final) {
-                // post a text entry for finalized results
-                postListenerResult(result.transcript);
-
-                MMVoice.makeNewRecordings(result.transcript);
-            } else {
-                MMVoice.pendingRecording.transcript = result.transcript;
-            }
-            MMVoice._updateUI();
-
-            function postListenerResult(transcript) {
-                MM.activeSession.textentries.post({
-                    text: transcript,
-                    type: 'speech',
-                    weight: 1.0
-                }, function(response) {
-                    MMVoice.onTextEntryPosted(response);
-                });
-            }
-        },
-        onStart: function(event) {
-            UTIL.log("Listener: onStart");
-            if (MMVoice.is_first_start) {
-                MMVoice.makeNewRecordings();
-                MMVoice.is_first_start = false;
-                MMVoice.status = 'listening';
-                MMVoice._updateUI();
-                startVolumeMonitor();
-                MMVoice.$cards.addClass('loading');
-            }
-        },
-        onEnd: function(event) {
-            UTIL.log("Listener: onEnd");
-            var self = this;
-            var pendingTranscript = MMVoice.pendingRecording.transcript;
-            if (pendingTranscript.length > 0) {
-                MMVoice.makeNewRecordings(pendingTranscript);
-            } else {
-                MMVoice.$cards.removeClass('loading');
-            }
-            if (MMVoice.is_locked) {
-                if (MMVoice._lockWhileRecording) {
-                    MMVoice.lockWhileRecording();
-                }
-                microphone.listener().start();
-            } else {
-                MMVoice.status = false;
-
-                var fullText = MMVoice.confirmedRecording.transcript + MMVoice.pendingRecording.transcript;
-                if(!fullText.length) {
-                    MMVoice.lettering(MMVoice.$input, 'Whoops, we didn\'t get that...', 'mm-prompt mm-prompt-error');
-                }
-
-                UTIL.log('full text', fullText);
-
-                // Play the sound
-                $('#audio-done')[0].play();
-            }
-
-            MMVoice._updateUI();
-        },
-        onError: function(event) {
-            if (event.error === 'aborted') {
-                return; // ignore aborted errors
-            }
-            UTIL.log("Listener: onError - ", event.error, event.message);
-            switch (event.error) {
-                case 'not-allowed':
-                case 'service-not-allowed':
-                    // TODO: do something here
-                    break;
-
-                case 'language-not-supported':
-                // TODO: handle this when we allow setting language
-
-                // Ignore the rest for now
-                case 'bad-grammar':
-                case 'network':
-                case "no-speech":
-                case 'audio-capture':
-                case 'service-not-allowed':
-                    break;
-                default:
-                    break;
-            }
-
-        },
-        onTextEntryPosted: function(response) {
+    _microphoneConfig : (function () {
+        function postListenerResult(transcript) {
+            MM.activeSession.textentries.post({
+                text: transcript,
+                type: 'speech',
+                weight: 1.0
+            }, function(response) {
+                MMVoice.onTextEntryPosted(response);
+            });
         }
-    },
+        return {
+            onResult: function(result /*, resultIndex, results, event  <-- unused */) {
+                UTIL.log("Listener: onResult", result);
+                if (result.final) {
+                    // post a text entry for finalized results
+                    postListenerResult(result.transcript);
+
+                    MMVoice.makeNewRecordings(result.transcript);
+                } else {
+                    MMVoice.pendingRecording.transcript = result.transcript;
+                }
+                MMVoice._updateUI();
+            },
+            onPending: function() {
+                UTIL.log("Listener: onPending");
+
+                MMVoice._currentTextEntries = [];
+                MMVoice.$input.empty();
+                window.setTimeout(function() { // show alert if not yet listening
+                    MMVoice.$mm_alert.toggleClass('on', microphone.pending());
+                }, 10);
+            },
+            onStart: function(/* event <-- unused */) {
+                UTIL.log("Listener: onStart");
+
+                MMVoice.$mm_alert.removeClass('on'); // hide alert
+                MMVoice.makeNewRecordings();
+                MMVoice.lettering(MMVoice.$input, 'Start speaking now...', 'mm-prompt'); // on start
+                MMVoice._updateUI();
+                MMVoice.$cards.addClass('loading');
+            },
+            onEnd: function(/* event <-- unused */) {
+                UTIL.log("Listener: onEnd");
+
+                // Add last result if it was not final
+                var results = microphone.listener().results;
+                var lastResult = null;
+                if (results.length > 0) {
+                    lastResult = results[results.length - 1];
+                    if (!lastResult.final) {
+                        postListenerResult(lastResult.transcript);
+                    }
+                }
+
+                var pendingTranscript = MMVoice.pendingRecording.transcript;
+                if (pendingTranscript.length > 0) {
+                    MMVoice.makeNewRecordings(pendingTranscript);
+                } else {
+                    MMVoice.$cards.removeClass('loading');
+                }
+                if (!microphone.isLocked()) {
+                    var fullText = MMVoice.confirmedRecording.transcript + MMVoice.pendingRecording.transcript;
+                    if(!fullText.length) {
+                        MMVoice.lettering(MMVoice.$input, 'Whoops, we didn\'t get that...', 'mm-prompt mm-prompt-error');
+                    }
+
+                    UTIL.log('full text', fullText);
+
+                    // Play the sound
+                    $('#audio-done')[0].play();
+                }
+
+                MMVoice._updateUI();
+            },
+            onError: function(event) {
+                if (event.error === 'aborted') {
+                    return; // ignore aborted errors
+                }
+                UTIL.log("Listener: onError - ", event.error, event.message);
+                switch (event.error) {
+                    case 'not-allowed':
+                    case 'service-not-allowed':
+                        // TODO: do something here
+                        break;
+
+                    case 'language-not-supported':
+                    // TODO: handle this when we allow setting language
+
+                    // Ignore the rest for now
+                    case 'bad-grammar':
+                    case 'network':
+                    case "no-speech":
+                    case 'audio-capture':
+                    case 'service-not-allowed':
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+    })(),
 
     _changed_cached : {},
 
@@ -1091,7 +1023,7 @@ var MMVoice = {
         var self = this;
         var updated = {};
         $.each(items, function(k, v) {
-            if (typeof v !== 'function' && k[0] != "_" && k[0] != "$") {
+            if (typeof v !== 'function' && k[0] !== "_" && k[0] !== "$") {
                 if (self._isChanged(k)) {
                     updated[k] = v;
                 }
@@ -1115,13 +1047,6 @@ var MMVoice = {
             }
         }
 
-        if('is_voice_ready' in updates) {
-            if(self.do_on_voice_ready_fn) {
-                self.do_on_voice_ready_fn();
-                delete self.do_on_voice_ready_fn;
-            }
-        }
-
         if('results_length' in updates) {
             if(updates.results_length >= 0 && !self.is_results) {
                 self.$body.addClass('results');
@@ -1129,27 +1054,6 @@ var MMVoice = {
                 self.is_results = true;
                 self.resize();
             }
-        }
-
-        if('status' in updates) {
-            microphone.$mm_button().removeClass('status-pending');
-            microphone.$mm_button().removeClass('status-listening');
-            self.status = updates.status;
-            if (updates.status !== false) {
-                microphone.$mm_button().addClass('status-' + updates.status);
-            }
-            if (updates.status === 'listening') {
-                self.$input.empty();
-                self.lettering(self.$input, 'Start speaking now...', 'mm-prompt');
-                //this.$mm.addClass('open');
-            }
-            if (updates.status === false) {
-                microphone.$mm_pulser().css('transform', 'scale(0)');
-            }
-
-            setTimeout(function() {
-                self.$mm_alert.toggleClass('on', updates.status === 'pending');
-            }, 10);
         }
 
         var textNeedsUpdate = false;
@@ -1168,7 +1072,7 @@ var MMVoice = {
         }
         textNeedsUpdate = textNeedsUpdate || hasConfirmedRecording || hasPendingRecording;
 
-        if (textNeedsUpdate && self.status !== 'editing') {
+        if (textNeedsUpdate && !self.isEditing) {
             self.update_text();
         }
 
@@ -1194,7 +1098,7 @@ MMVoice.onConfig = function() {
         $('input.search').val(voiceNavOptions.startQuery);
     }
 
-    if (MMVoice.is_voice_ready && voiceNavOptions.startQuery !== null) { // we have init before
+    if (MMVoice.sessionIsReady && voiceNavOptions.startQuery !== null) { // we have init before
         MMVoice.submitText(voiceNavOptions.startQuery);
         MMVoice._updateUI();
     }
@@ -1286,7 +1190,7 @@ MMVoice.onConfig = function() {
             UTIL.log('Successfully got token');
             setUser(result.user.userid);
         }
-        function onError (error) {
+        function onError () {
             UTIL.log('Token was not valid');
         }
 
@@ -1302,7 +1206,7 @@ MMVoice.onConfig = function() {
     }
 
     function setUser(userID) {
-        function onSuccess(result) {
+        function onSuccess() {
             createSession();
         }
         function onError (error) {
@@ -1339,19 +1243,23 @@ MMVoice.onConfig = function() {
     function onSessionStart () {
         subscribeToTextEntries();
         subscribeToEntities();
-        MMVoice.is_voice_ready = true;
+        MMVoice.sessionIsReady = true;
+        if (MMVoice.onSessionReadyFn) {
+            MMVoice.onSessionReadyFn();
+            delete MMVoice.onSessionReadyFn;
+        }
         MMVoice._updateUI();
     }
 
     function subscribeToTextEntries() {
-        function onSuccess(result) {
+        function onSuccess() {
             UTIL.log("Subscribed to text entries!");
             // Optionally submit start query
             if (voiceNavOptions.startQuery !== null) {
                 MMVoice.submitText(voiceNavOptions.startQuery);
             }
         }
-        function onError() {
+        function onError(error) {
             UTIL.log("Error subscribing to text entries:  (Type " + error.code +
                 " - " + error.type + "): " + error.message);
         }
@@ -1360,7 +1268,7 @@ MMVoice.onConfig = function() {
         }, onSuccess, onError);
     }
     function subscribeToEntities() {
-        function onSuccess(result) {
+        function onSuccess() {
             UTIL.log("Subscribed to entities!");
         }
         function onError (error) {
@@ -1377,84 +1285,3 @@ MMVoice.onConfig = function() {
 $(function () {
     MMVoice.init();
 });
-
-
-
-var volumeMonitor = {
-    stream : null,
-    context : null,
-    analyzer : null,
-    frequencies : null,
-    times : null,
-    audio_started : false
-};
-
-function pulse(volume) {
-    var scale = ((volume / 100) * 0.5) + 1.4;
-    microphone.$mm_pulser().css('transform', 'scale(' + scale + ')');
-}
-
-function startVolumeMonitor() {
-    if (!volumeMonitor.audio_started) {
-        // GETUSERMEDIA INPUT
-        navigator.getMedia = (navigator.getUserMedia ||
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia ||
-            navigator.msGetUserMedia);
-        window.AudioContext = window.AudioContext || window.webkitAudioContext;
-
-        volumeMonitor.context = new AudioContext();
-        volumeMonitor.analyzer = volumeMonitor.context.createAnalyser();
-        volumeMonitor.analyzer.smoothingTimeConstant = 0.18;
-        volumeMonitor.analyzer.fftSize = 256;
-
-        volumeMonitor.frequencies = new Uint8Array( volumeMonitor.analyzer.frequencyBinCount );
-        volumeMonitor.times = new Uint8Array( volumeMonitor.analyzer.frequencyBinCount );
-
-        navigator.getMedia ( { audio: true }, microphoneReady, function(err) {
-            UTIL.log("The following error occured: " + err);
-        });
-
-        volumeMonitor.audio_started = true;
-
-    } else {
-        loop();
-    }
-
-    function microphoneReady(stream) {
-        volumeMonitor.stream = stream;
-        var stream_source = volumeMonitor.context.createMediaStreamSource( stream );
-        stream_source.connect( volumeMonitor.analyzer );
-        loop();
-    }
-
-    function loop() {
-        if (!MMVoice.status || MMVoice.status === 'editing') {
-            // stop recording
-            volumeMonitor.stream.stop();
-            volumeMonitor.audio_started = false;
-            return;
-        }
-
-        volumeMonitor.analyzer.getByteFrequencyData( volumeMonitor.frequencies );
-        volumeMonitor.analyzer.getByteTimeDomainData( volumeMonitor.times );
-
-        pulse(getVolume());
-
-        setTimeout(loop, 75);
-    }
-
-    function getVolume() {
-        return parseInt( getFreqencyRange( 0, volumeMonitor.analyzer.frequencyBinCount - 1 ), 10 );
-    }
-
-    function getFreqencyRange(from, to) {
-        var volume = 0;
-
-        for ( var i = from; i < to; i++ ) {
-            volume += volumeMonitor.frequencies[i];
-        }
-
-        return volume / ( to - from );
-    }
-};

@@ -1,3 +1,6 @@
+/* jshint undef: true, unused: true */
+/* global document, require, exports, window */
+
 require('./vendor/contentloaded');
 
 /* A wrapper for dom elements, basically a lite version of jQuery's $ */
@@ -55,15 +58,15 @@ function addLeadingZeros(number, digits) {
 
 exports.timestamp = function (date) {
     date = date || new Date();
-    return addLeadingZeros(date.getFullYear(), 4) + '.'
-        + addLeadingZeros(date.getMonth() + 1, 2) + '.'
-        + addLeadingZeros(date.getDate(), 2) + ' ' + date.toTimeString();
+    return addLeadingZeros(date.getFullYear(), 4) + '.' +
+        addLeadingZeros(date.getMonth() + 1, 2) + '.' +
+        addLeadingZeros(date.getDate(), 2) + ' ' + date.toTimeString();
 };
 
 exports.log = function() {
     var args = Array.prototype.slice.call(arguments, 0);
     args.splice(0, 0, exports.timestamp());
-    console.log.apply(console, args);
+    window.console.log.apply(window.console, args);
 };
 
 exports.contentLoaded = contentLoaded;
