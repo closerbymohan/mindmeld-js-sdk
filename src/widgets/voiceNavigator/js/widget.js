@@ -1,5 +1,5 @@
 var UTIL =  require('./util');
-var MM = window.MM || {};
+var MM = window.MM = window.MM || {};
 
 
 /**
