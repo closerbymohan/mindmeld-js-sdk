@@ -51,9 +51,97 @@ var MM = window.MM = window.MM || {};
  *
  */
 
-// TODO: add more here
 /**
- * The voice navigator widget....
+ * The voice navigator is a widget that allows developers to add voice-driven search to their web-based applications.
+ * By adding a small snippet of JavaScript to your page, you can add our voice navigator to your page allowing your
+ * users to search and discover your content in natural, spoken language. The voice navigator widget takes care of
+ * capturing speech input from your users, displaying a realtime transcript of what is being recorded, and displaying
+ * a collection of results in the browser.
+ *
+ * The voice navigator will display when elements with the 'mm-voice-nav-init' class are clicked and when elements with
+ * the 'mm-voice-nav-text-init' recieve an enter keypress.
+ *
+ * The voice navigator can be styled by providing custom css.
+ *
+ * See {@link VoiceNavigatorConfig} for a full list of the configuration options.
+ *
+ * @example
+<caption>Loading the voice navigator</caption>
+var MM = window.MM || {};
+( function () {
+    MM.loader = {
+        rootURL: 'https://developer.expectlabs.com/public/sdks/',
+        widgets: ['voice']
+    };
+    MM.widgets = {
+        config: {
+            appID: 'YOUR APPID',
+            voice: voiceNavigatorConfig
+        }
+    };
+    var script = document.createElement('script');
+    script.type = 'text/javascript'; script.async = true;
+    script.src = MM.loader.rootURL + 'embed.js';
+    var t = document.getElementsByTagName('script')[0];
+    t.parentNode.insertBefore(script, t);
+}());
+ *
+ * @example
+<caption>Changing button colors from the default orange to green</caption>
+// specify the following as the contents of voiceNavigatorOptions.customCSS
+.mm-button-background {
+    background: #008000;
+}
+.mm-button-background:hover {
+    background-color: #007300;
+}
+.mm-button-background:active {
+    background: -webkit-linear-gradient(#005a00, #008000);
+    background: -moz-linear-gradient(#005a00, #008000);
+    background: -o-linear-gradient(#005a00, #008000);
+    background: -ms-linear-gradient(#005a00, #008000);
+    background: linear-gradient(#005a00, #008000);
+}
+.mm-button-border {
+    border: 1px solid #006600;
+}
+
+@-moz-keyframes mm-button-background-active-anim {
+    50% { background-color: #006d00; }
+}
+@-webkit-keyframes mm-button-background-active-anim {
+    50% { background-color: #006d00; }
+}
+@-o-keyframes mm-button-background-active-anim {
+    50% { background-color: #006d00; }
+}
+@keyframes mm-button-background-active-anim {
+    50% { background-color: #006d00; }
+}
+ *
+ * @example
+<caption>Customize cards area appearance</caption>
+\#cards {
+    background-color: darkgoldenrod;
+}
+\#cards .card {
+    border: solid #333 1px;
+    border-radius: 0;
+    background: red;
+}
+\#cards .card:hover {
+    border-color: black;
+}
+\#cards .card p {
+    color: white;
+}
+\#cards .card h2.title {
+    color: #ddd;
+}
+ *
+ * See our [widgets page](https://developer-swaraj.expectlabs.com/demos) to get started with Voice Navigator. NOTE: CHANGE THE LINK!
+ * See our [demos page](https://developer.expectlabs.com/demos) to see more detailed code examples.
+ *
  * @memberOf MM
  * @namespace
  */
@@ -142,64 +230,66 @@ function postMessage(action, data) {
 /**
  * Opens the voice navigator modal window
  * @param {Object} [options]
- * @param {String} [options.query] if provided, this query will be in the
- * @param {boolean} [options.forceNewIFrame=false] if true,
- * @param {String|boolean} [options.listeningMode] the listening mode to be used when the voice navigator opens
+ * @param {String} [options.query]                 if provided, this field will be the initial query, and will immediately show results
+ * @param {boolean} [options.forceNewIFrame=false] if true, any voice navigators that previously created will be destroyed,
+ *                                                 and a new instance will be created.
  */
 MM.voiceNavigator.showModal = function(options) {
     options = options || {};
     if (isInitialized) {
         var iframe;
         // Initialize voice navigator config
-        if (typeof MM !== 'undefined' &&
-            typeof MM.widgets !== 'undefined' &&
-            typeof MM.widgets.config !== 'undefined') {
-            // Move config to voice nav config
-            MM.voiceNavigator.config = MM.widgets.config.voice || {};
-            MM.voiceNavigator.config.appID = MM.widgets.config.appID;
-            if (typeof MM.widgets.config.cleanUrl !== 'undefined') {
-                MM.voiceNavigator.config.cleanUrl = MM.widgets.config.cleanUrl;
+        if (typeof MM !== 'undefined') {
+            if (typeof MM.widgets !== 'undefined' &&
+                typeof MM.widgets.config !== 'undefined') {
+                // Move config to voice nav config
+                MM.voiceNavigator.config = MM.widgets.config.voice || {};
+                MM.voiceNavigator.config.appID = MM.widgets.config.appID;
+                if (typeof MM.widgets.config.cleanUrl !== 'undefined') {
+                    MM.voiceNavigator.config.cleanUrl = MM.widgets.config.cleanUrl;
+                }
+                if (typeof MM.widgets.config.fayeClientUrl !== 'undefined') {
+                    MM.voiceNavigator.config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
+                }
             }
-            if (typeof MM.widgets.config.fayeClientUrl !== 'undefined') {
-                MM.voiceNavigator.config.fayeClientUrl = MM.widgets.config.fayeClientUrl;
-            }
+            if (typeof MM.voiceNavigator.config !== 'undefined') {
+                // parse card layout
+                if (typeof MM.voiceNavigator.config.cardTemplate !== 'undefined') {
+                    MM.voiceNavigator.config.cardLayout = 'custom';
+                }
+                if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
+                    MM.voiceNavigator.config.cardLayout = 'default';
+                }
 
-            // parse card layout
-            if (typeof MM.voiceNavigator.config.cardTemplate !== 'undefined') {
-                MM.voiceNavigator.config.cardLayout = 'custom';
-            }
-            if (typeof MM.voiceNavigator.config.cardLayout === 'undefined') {
-                MM.voiceNavigator.config.cardLayout = 'default';
-            }
+                // make absolute URLs
+                if (typeof MM.voiceNavigator.config.customCSSURL !== 'undefined') {
+                    MM.voiceNavigator.config.customCSSURL = UTIL.convertToAbsolutePath(MM.voiceNavigator.config.customCSSURL);
+                }
 
-            // parse custom css
-            if (typeof MM.voiceNavigator.config.customCSSURL !== 'undefined') {
-                MM.voiceNavigator.config.customCSSURL = UTIL.convertToAbsolutePath(MM.voiceNavigator.config.customCSSURL);
-            }
+                // default listening mode
+                if (typeof options.listeningMode !== 'undefined') {
+                    MM.voiceNavigator.config.listeningMode = options.listeningMode;
+                } else if (typeof MM.voiceNavigator.config.listeningMode === 'undefined') {
+                    MM.voiceNavigator.config.listeningMode = 'normal';
+                }
 
-            // default listening mode
-            if (typeof options.listeningMode !== 'undefined') {
-                MM.voiceNavigator.config.listeningMode = options.listeningMode;
-            } else if (typeof MM.voiceNavigator.config.listeningMode === 'undefined') {
-                MM.voiceNavigator.config.listeningMode = 'normal';
-            }
-
-            // Pass token, user ID, and session ID if they are set already
-            if (typeof MM.token !== 'undefined' &&
-                typeof MM.activeUserId !== 'undefined' && MM.activeUserId !== null &&
-                typeof MM.activeSessionId !== 'undefined' && MM.activeSessionId !== null) {
-                MM.voiceNavigator.config.mmCredentials = {
-                    token: MM.token,
-                    userID: MM.activeUserId,
-                    sessionID: MM.activeSessionId
-                };
-            }
-            // If defined, pass a starting query
-            if (options.query !== undefined && options.query !== '') {
-                MM.voiceNavigator.config.startQuery = options.query;
-            }
-            else {
-                MM.voiceNavigator.config.startQuery = null;
+                // Pass token, user ID, and session ID if they are set already
+                if (typeof MM.token !== 'undefined' &&
+                    typeof MM.activeUserId !== 'undefined' && MM.activeUserId !== null &&
+                    typeof MM.activeSessionId !== 'undefined' && MM.activeSessionId !== null) {
+                    MM.voiceNavigator.config.mmCredentials = {
+                        token: MM.token,
+                        userID: MM.activeUserId,
+                        sessionID: MM.activeSessionId
+                    };
+                }
+                // If defined, pass a starting query
+                if (options.query !== undefined && options.query !== '') {
+                    MM.voiceNavigator.config.startQuery = options.query;
+                }
+                else {
+                    MM.voiceNavigator.config.startQuery = null;
+                }
             }
         }
 
@@ -234,7 +324,7 @@ MM.voiceNavigator.showModal = function(options) {
         // Set onInit() callback to open modal
         onInit = function () { MM.voiceNavigator.showModal(options); };
     }
-};
+}
 
 /**
  * Closes the voice navigator modal window
