@@ -14,12 +14,11 @@ require('../../../../dist/sdk/mindmeld');
 
 
 var imagesLoaded = require('./vendor/imagesloaded.pkgd');
-var Isotope = require('./vendor/isotope.pkgd');
 
+var cards = require('./cards');
 // must be after mindmeld js
 var microphone = require('./microphone');
 
-var cards = require('./cards');
 
 /* Manage the state of the UI */
 var MMVoice = {

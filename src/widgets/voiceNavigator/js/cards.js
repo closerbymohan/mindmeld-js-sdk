@@ -3,6 +3,7 @@
 
 var UTIL =  require('./util');
 var $ = require('./vendor/jquery-1.11.1');
+var _ = require('lodash/dist/lodash.compat');
 var Isotope = require('./vendor/isotope.pkgd');
 
 var $cards = $();
@@ -55,7 +56,6 @@ var Cards = {
   },
 
   updateCards : function(data) {
-    var self = this;
     var newCards = [];
 
     // Remove the "No results" message if present
@@ -80,7 +80,7 @@ var Cards = {
       }
 
       // Card doesn't exist, so create it. (TODO: Maybe use a templating system?)
-      var $card = self._createCard(doc);
+      var $card = Cards._createCard(doc);
       $card.attr('data-sort', k);
       newCards.push($card);
     });
@@ -125,7 +125,6 @@ var Cards = {
   },
 
   _createCard : function(doc) {
-    var self = this;
     var $card = $('<a>', {
       class: 'card new',
       id: 'doc_' + doc.documentid,
@@ -176,7 +175,7 @@ var Cards = {
 
       // fields
       if (typeof __config.cardFields !== 'undefined') {
-        function getFormattedString(format, value) {
+        var getFormattedString = function(format, value) {
           switch (format) {
           case 'date':
             var date = new Date(value * 1000);
@@ -184,7 +183,7 @@ var Cards = {
           default:
             return value.substr(0, 100) + (value.length > 100 ? "&hellip;" : "");
           }
-        }
+        };
 
         var cardFields = __config.cardFields;
         $.each(cardFields, function(k2, field) {
@@ -229,4 +228,9 @@ var Cards = {
 };
 
 
-module.exports = Cards;
+module.exports = {
+  init: Cards.init,
+  updateCards: Cards.updateCards,
+  setLoading: Cards.setLoading,
+  cardsWidth: Cards.cardsWidth
+};
