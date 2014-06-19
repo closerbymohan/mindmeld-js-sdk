@@ -55,17 +55,17 @@ var MM = window.MM = window.MM || {};
  */
 
 /**
- * The voice navigator is a widget that allows developers to add voice-driven search to their web-based applications.
+ * The voice navigator is a widget that allows developers to add voice-driven search to their web applications.
  * By adding a small snippet of JavaScript to your page, you can add our voice navigator to your page allowing your
  * users to search and discover your content in natural, spoken language. The voice navigator widget takes care of
- * capturing speech input from your users, displaying a realtime transcript of what is being recorded, and displaying
+ * capturing speech input from your users, displaying a real-time transcript of what is being recorded, and displaying
  * a collection of results in the browser.
  *
  * The voice navigator will display when elements with the 'mm-voice-nav-init' class are clicked and when elements with
  * the 'mm-voice-nav-text-init' receive an enter keypress.
  *
  * @see {@link VoiceNavigatorConfig} for full documentation of configuration options.
- * @see {@link https://developer-swaraj.expectlabs.com/docs/voiceWidget|MindMeld Voice Navigator} to get started with Voice Navigator. NOTE: CHANGE THE LINK!
+ * @see {@link https://developer.expectlabs.com/docs/voiceWidget|MindMeld Voice Navigator} to get started with Voice Navigator.
  * @see {@link https://developer.expectlabs.com/demos|MindMeld Demos} to see the Voice Navigator in action.
  *
  *
