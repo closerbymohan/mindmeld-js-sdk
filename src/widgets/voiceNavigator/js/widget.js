@@ -316,7 +316,7 @@ MM.voiceNavigator.showModal = function(options) {
             $mm.el().appendChild(iframe);
         }
         else {
-            postMessage('open');
+            postMessage('open', MM.voiceNavigator.config);
         }
         $mm.addClass('on');
     }

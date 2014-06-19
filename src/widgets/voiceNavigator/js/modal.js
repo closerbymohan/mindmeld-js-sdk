@@ -155,7 +155,7 @@ var MMVoice = {
         $(window).on('message', function(e) {
             var event = e.originalEvent;
             var action = event.data.action;
-            if (event.data.source != 'mindmeld') {
+            if (event.data.source !== 'mindmeld') {
                 return;
             }
 
@@ -164,10 +164,15 @@ var MMVoice = {
                 self.onConfig();
             }
             if (action === 'open') {
+                var config = event.data.data;
                 self.$mm_parent.addClass('open');
-                if (self.config.startQuery === null && self.config.listeningMode) {
+                if (MMVoice.is_voice_ready && config.startQuery !== null) { // we have init before
+                    MMVoice.submitText(config.startQuery);
+                    MMVoice._updateUI();
+                }
+                else if (self.config.startQuery === null && self.config.listeningMode) {
                     self._do_on_voice_ready(function() {
-                        MMVoice.listen(self.config.listeningMode == 'continuous');
+                        MMVoice.listen(self.config.listeningMode === 'continuous');
                     });
                 }
             }
