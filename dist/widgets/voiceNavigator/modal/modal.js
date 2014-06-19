@@ -3603,6 +3603,51 @@ var MM = ( function ($, Faye) {
         }
     });
 
+<<<<<<< HEAD
+=======
+    Faye.Transport.register('callback-polling', Faye.Transport.JSONP);
+    return Faye;
+
+})();
+/**
+ * MM is the primary interface to all MindMeld JavaScript SDK functionality. Call {@link MM#init} before anything
+ * else. Next obtain a token via {@link MM#getToken} to start making API calls.
+ *
+ * @namespace
+ */
+var MM = ( function ($, Faye) {
+
+    var MM = window.MM = window.MM || {};
+
+    /**
+     * MindMeld SDK Version
+     *
+     * @type {string}
+     * @static
+     * @private
+     */
+    Object.defineProperty(MM, 'version', {
+        value: '2.3.6',
+        writable: false
+    });
+
+    /**
+     *
+     * MindMeld configuration settings
+     *
+     * @type {object}
+     * @property {string}   cleanUrl - URL for MindMeld API
+     * @property {string}   fayeClientUrl - URL for MindMeld API Push Server
+     * @property {string}   appid - Developer's MindMeld application id
+     * @property {function} onInit - Callback called when SDK is initialized
+     * @private
+     */
+    MM.config = {
+        cleanUrl: 'https://mindmeldv2.expectlabs.com/',
+        fayeClientUrl: 'https://push-west-prod-a.expectlabs.com:443/faye'
+    };
+
+>>>>>>> develop
     /**
      * Collection MindMeld object models
      *
