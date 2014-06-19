@@ -1174,9 +1174,7 @@ var MMVoice = {
         if (textNeedsUpdate && self.status !== 'editing') {
             self.update_text();
         }
-
     }
-
 };
 
 MMVoice.onConfig = function() {
@@ -1300,7 +1298,6 @@ MMVoice.onConfig = function() {
                 name: MM_USER_NAME,
                 domain: window.location.hostname
             }
-            //*/
         }, onSuccess, onError);
     }
 

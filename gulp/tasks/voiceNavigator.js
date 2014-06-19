@@ -74,15 +74,16 @@ function genericBundle(stream, name, type) {
     }
 }
 
-function genericMinify(type) {
+// minifies the contents of stream
+function genericMinify(stream, type) {
     switch (type) {
         case 'js':
-            return uglify();
+            return stream.pipe(uglify(), { mangle: true });
         case 'css':
-            return minifyCSS();
+            return stream.pipe(minifyCSS());
         case 'html':
         default:
-            return replace(/(modal|cards)\.(css|js)/g, '$1.min.$2');
+            return stream.pipe(replace(/(modal|cards)\.(css|js)/g, '$1.min.$2'));
     }
 }
 
@@ -94,8 +95,7 @@ function writeAndMinify(stream, name, type, directory) {
     if (name === 'widget' && directory === 'widget' && type === 'js') {
         stream = stream.pipe(replace(/modal\.html/g, 'modal.min.html'));
     }
-    return stream
-        .pipe(genericMinify(type))
+    return genericMinify(stream, type)
         .pipe(gulp.dest(voiceNavigator.distPath + directory))
 
         .pipe(connect.reload());

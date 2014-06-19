@@ -36,7 +36,7 @@ gulp.task('sdk.concat', function () {
 // Uglifies mindmeld.js into mindmeld.min.js
 gulp.task('sdk.uglify', ['sdk.concat'], function () {
     return gulp.src(distMMDirectory + 'mindmeld.js')
-        .pipe(uglify(), {mangle:true})
+        .pipe(uglify(), { mangle:true })
         .pipe(rename('mindmeld.min.js'))
         .pipe(gulp.dest(distMMDirectory));
 });
@@ -100,7 +100,7 @@ gulp.task('sdk.archive', ['sdk.set-version', 'sdk.archive.js', 'sdk.build'], fun
 // Copies embed script to dist directory
 gulp.task('embed.build', function () {
     return gulp.src(srcDirectory + 'embed.js')
-        .pipe(uglify(), {mangle:true})
+        .pipe(uglify(), { mangle:true })
         .pipe(gulp.dest(distDirectory));
 });
 

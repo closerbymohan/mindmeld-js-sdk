@@ -3,7 +3,7 @@ var MM = window.MM = window.MM || {};
 
 
 /**
- * An object representing the configuration of MM.voiceNavigator
+ * An object representing the configuration of {@link MM.voiceNavigator}
  *
  * @typedef {Object} VoiceNavigatorConfig
  * @property {String} [cardLinkBehavior="_parent"] sets the behavior for anchors wrapping cards. Use 'false' to
@@ -11,19 +11,22 @@ var MM = window.MM = window.MM || {};
  *                                                 or '_blank' to open links in a new tab or window. See the target attribute
  *                                                 of [anchor](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a)
  *                                                 elements for more information.
- * @property {String} [listeningMode="normal"] defines the listening mode of the voice navigator when it _init opened. Acceptable
- *                                             values include 'normal', 'continuous', and false. False prevents listening
- *                                             and the default is 'normal'.
- * @property {Number} [numResults] if specified, this number of cards will appear as results
- * @property {String} [cardLayout="default"] specifies the predefined card layout used. Valid values are 'default', and 'custom'.
- * @property {CardField[]} [cardFields] an array of card fields {@link CardField}.
- * @property {String} [cardTemplate] an underscore (lodash) html template which is used to create card representation of documents.
- *                                   If a value is given, cardLayout will be 'custom'
- * @property {boolean} [resetCardsCSS] if true, removes CSS specific to the cards container.
- * @property {String} [customCSS] specifies custom css to be applied
- * @property {String} [customCSSURL] specifies the url of a file containing custom CSS to be applied
- * @property {Number} [baseZIndex=100000] the voice navigator elements will have a Z index between the value given and
- *                                        1000 greater than the value
+ * @property {String} [listeningMode="normal"]     defines the listening mode of the voice navigator when it _init opened. Acceptable
+ *                                                 values include 'normal', 'continuous', and false. False prevents listening
+ *                                                 and the default is 'normal'.
+ * @property {Number} [numResults]                 if specified, this number of cards will appear as results
+ * @property {String} [cardLayout="default"]       specifies the predefined card layout used. Valid values are 'default', and 'custom'.
+ * @property {CardField[]} [cardFields]            an array of card fields {@link CardField}.
+ * @property {String} [cardTemplate]               an underscore (lodash) html template which is used to create card representation
+ *                                                 of documents. If a value is given, cardLayout will be 'custom'
+ * @property {boolean} [resetCardsCSS]             if true, removes CSS specific to the cards container.
+ * @property {String} [customCSS]                  specifies custom CSS to be applied to the voice navigator. The CSS will
+ *                                                 be included as an embedded style, which takes precedence over external styles.
+ * @property {String} [customCSSURL]               specifies the url of a file containing custom CSS to be applied to the
+ *                                                 voice navigator. It will be applied as an external style.
+ *
+ * @property {Number} [baseZIndex=100000]          the voice navigator elements will have a Z index between the value
+ *                                                 given and 1000 greater than the value
  *
  */
 
@@ -59,88 +62,136 @@ var MM = window.MM = window.MM || {};
  * a collection of results in the browser.
  *
  * The voice navigator will display when elements with the 'mm-voice-nav-init' class are clicked and when elements with
- * the 'mm-voice-nav-text-init' recieve an enter keypress.
+ * the 'mm-voice-nav-text-init' receive an enter keypress.
  *
- * The voice navigator can be styled by providing custom css.
+ * @see {@link VoiceNavigatorConfig} for full documentation of configuration options.
+ * @see {@link https://developer-swaraj.expectlabs.com/docs/voiceWidget|MindMeld Voice Navigator} to get started with Voice Navigator. NOTE: CHANGE THE LINK!
+ * @see {@link https://developer.expectlabs.com/demos|MindMeld Demos} to see the Voice Navigator in action.
  *
- * See {@link VoiceNavigatorConfig} for a full list of the configuration options.
  *
- * @example
-<caption>Loading the voice navigator</caption>
-var MM = window.MM || {};
-( function () {
-    MM.loader = {
-        rootURL: 'https://developer.expectlabs.com/public/sdks/',
-        widgets: ['voice']
-    };
-    MM.widgets = {
-        config: {
-            appID: 'YOUR APPID',
-            voice: voiceNavigatorConfig
-        }
-    };
-    var script = document.createElement('script');
-    script.type = 'text/javascript'; script.async = true;
-    script.src = MM.loader.rootURL + 'embed.js';
-    var t = document.getElementsByTagName('script')[0];
-    t.parentNode.insertBefore(script, t);
-}());
+ * @example <caption> Loading the voice navigator </caption>
  *
- * @example
-<caption>Changing button colors from the default orange to green</caption>
-// specify the following as the contents of voiceNavigatorOptions.customCSS
-.mm-button-background {
-    background: #008000;
-}
-.mm-button-background:hover {
-    background-color: #007300;
-}
-.mm-button-background:active {
-    background: -webkit-linear-gradient(#005a00, #008000);
-    background: -moz-linear-gradient(#005a00, #008000);
-    background: -o-linear-gradient(#005a00, #008000);
-    background: -ms-linear-gradient(#005a00, #008000);
-    background: linear-gradient(#005a00, #008000);
-}
-.mm-button-border {
-    border: 1px solid #006600;
-}
+ <script type="text/js">
+ // This should be below all other
+ var MM = window.MM || {};
+ ( function () {
+     MM.loader = {
+         rootURL: 'https://developer.expectlabs.com/public/sdks/',
+         widgets: ['voice']
+     };
+     MM.widgets = {
+         config: {
+             appID: 'YOUR APPID',
+             voice: voiceNavigatorConfig
+         }
+     };
+     var script = document.createElement('script');
+     script.type = 'text/javascript'; script.async = true;
+     script.src = MM.loader.rootURL + 'embed.js';
+     var t = document.getElementsByTagName('script')[0];
+     t.parentNode.insertBefore(script, t);
+ }());
+ </script>
+ *
+ * @example <caption> Card Template </caption>
+ *
+ <script id="vn-card-template" type="text/template">
+     <h2 class="title"><%= title %></h2>
+     <% if (typeof image !== 'undefined' && image.url && image.url !== '') { %>
+         <p class="image not-loaded">
+             <img src="<%= image.url %>">
+         </p>
+         <% } %>
 
-@-moz-keyframes mm-button-background-active-anim {
-    50% { background-color: #006d00; }
-}
-@-webkit-keyframes mm-button-background-active-anim {
-    50% { background-color: #006d00; }
-}
-@-o-keyframes mm-button-background-active-anim {
-    50% { background-color: #006d00; }
-}
-@keyframes mm-button-background-active-anim {
-    50% { background-color: #006d00; }
-}
+     <% var desc = "No description";
+     if (typeof description === 'string') {
+         desc = description.substr(0, 150) + (description.length > 150 ? "&hellip;" : "");
+     } %>
+     <p class="description"><%= desc %></p>
+
+     <% if (typeof pubdate !== 'undefined' && pubdate && pubdate !== '') { %>
+         <p class="pub-date">
+             <% var date = new Date(pubdate * 1000);
+             var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+             var monthName = months[date.getMonth()];
+             var dateString = monthName + ' ' + date.getDate() + ', ' + date.getFullYear(); %>
+             <%= dateString %>
+         </p>
+     <% } %>
+ </script>
+ <script type="text/js">
+     var voiceNavigatorConfig = {
+         cardTemplate: window['vn-card-template'].innerHTML
+     };
+     // Now load the voice navigator
+ </script>
  *
- * @example
-<caption>Customize cards area appearance</caption>
-\#cards {
-    background-color: darkgoldenrod;
-}
-\#cards .card {
-    border: solid #333 1px;
-    border-radius: 0;
-    background: red;
-}
-\#cards .card:hover {
-    border-color: black;
-}
-\#cards .card p {
-    color: white;
-}
-\#cards .card h2.title {
-    color: #ddd;
-}
+ * @example <caption> Custom CSS: Changing button colors from the default orange to green </caption>
  *
- * See our [widgets page](https://developer-swaraj.expectlabs.com/demos) to get started with Voice Navigator. NOTE: CHANGE THE LINK!
- * See our [demos page](https://developer.expectlabs.com/demos) to see more detailed code examples.
+ <script id="vn-custom-css" type="text/css">
+     .mm-button-background {
+         background: #008000;
+     }
+     .mm-button-background:hover {
+         background-color: #007300;
+     }
+     .mm-button-background:active {
+         background: -webkit-linear-gradient(#005a00, #008000);
+         background: -moz-linear-gradient(#005a00, #008000);
+         background: -o-linear-gradient(#005a00, #008000);
+         background: -ms-linear-gradient(#005a00, #008000);
+         background: linear-gradient(#005a00, #008000);
+     }
+     .mm-button-border {
+         border: 1px solid #006600;
+     }
+
+     &#64;-moz-keyframes mm-button-background-active-anim {
+         50% { background-color: #006d00; }
+     }
+     &#64;-webkit-keyframes mm-button-background-active-anim {
+         50% { background-color: #006d00; }
+     }
+     &#64;-o-keyframes mm-button-background-active-anim {
+         50% { background-color: #006d00; }
+     }
+     &#64;keyframes mm-button-background-active-anim {
+         50% { background-color: #006d00; }
+     }
+ </script>
+ <script type="text/js">
+     var voiceNavigatorConfig = {
+         customCSS: window['vn-custom-css'].innerHTML
+     };
+     // Now load the voice navigator
+ </script>
+ *
+ * @example <caption> Custom CSS: Change cards area appearance </caption>
+ <script id="vn-custom-css" type="text/css">
+     #cards {
+         background-color: darkgoldenrod;
+     }
+     #cards .card {
+         border: solid #333 1px;
+         border-radius: 0;
+         background: red;
+     }
+     #cards .card:hover {
+         border-color: black;
+     }
+     #cards .card p {
+         color: white;
+     }
+     #cards .card h2.title {
+         color: #ddd;
+     }
+ </script>
+ <script type="text/js">
+     var voiceNavigatorConfig = {
+         customCSS: window['vn-custom-css'].innerHTML
+     };
+     // Now load the voice navigator
+ </script>
  *
  * @memberOf MM
  * @namespace
