@@ -4647,8 +4647,8 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 1.0
-
+                weight: 1.0,
+                language: 'eng'
             };
             MM.activeSession.textentries.post(textEntryData);
          }
@@ -4700,26 +4700,30 @@ var MM = ( function ($, Faye) {
          * sentences in length; the maximum size for a single text entry is 5000 characters. Once created,
          * textentry objects can be deleted but not modified.
          *
-         * @param {Object} textEntryData Object containing new text entry data.
-         * @param {string} textEntryData.text A segment of human-language text containing contextual
-         * information about the session. This string is typically one or two sentences but can be
-         * as long as 5000 characters. This text will be analyzed to understand the semantic concepts
-         * pertinent to the session over time.
-         * @param {string} textEntryData.type A short string that can be used to categorize text
-         * entries into different buckets. You may choose to categorize text entries based on the
-         * content the user has written, read, spoken or heard. For example, possible 'type'
-         * values could be 'email-written', 'email-read', 'sms-written', 'sms-read',
-         * 'post-written', 'post-read', 'tweet-written', 'tweet-read', 'voice-spoken', 'voice-heard',
-         * etc. Subsequent searches on the textentries collection can use this 'type' field
-         * to filter textentries by type.
-         * @param {number} textEntryData.weight A decimal number between 0 and 1 indicating the
-         * relative importance of this text entry in the overall history of text entries for the
-         * session. A value of 0 indicates that this text entry will be ignored in modeling the
-         * context of the session. A value of 1 indicates that any contextual information
-         * contained in the text entry will have the maximum amount of influence over
-         * document ranking and recommendations.
-         * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
-         * @param {APIErrorCallback=} onFail callback for when creating new session failed
+         * @param {Object} textEntryData            Object containing new text entry data.
+         * @param {string} textEntryData.text       A segment of human-language text containing contextual information
+         *                                          about the session. This string is typically one or two sentences but
+         *                                          can be as long as 5000 characters. This text will be analyzed to
+         *                                          understand the semantic concepts pertinent to the session over time.
+         * @param {string} textEntryData.type       A short string that can be used to categorize text entries into
+         *                                          different buckets. You may choose to categorize text entries based on
+         *                                          the content the user has written, read, spoken or heard. For example,
+         *                                          possible 'type' values could be 'email-written', 'email-read',
+         *                                          'sms-written', 'sms-read', 'post-written', 'post-read', 'tweet-written',
+         *                                          'tweet-read', 'voice-spoken', 'voice-heard', etc. Subsequent searches
+         *                                          on the textentries collection can use this 'type' field to filter
+         *                                          textentries by type.
+         * @param {number} textEntryData.weight     A decimal number between 0 and 1 indicating the relative importance
+         *                                          of this text entry in the overall history of text entries for the
+         *                                          session. A value of 0 indicates that this text entry will be ignored
+         *                                          in modeling the context of the session. A value of 1 indicates that
+         *                                          any contextual information  contained in the text entry will have the
+         *                                          maximum amount of influence over document ranking and recommendations.
+         * @param {String} [textEntryData.language] An [ISO 629-2 language code](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes)
+         *                                          for the language of the text. If this parameter is omitted, the API will
+         *                                          attempt to determine the language.
+         * @param {APISuccessCallback=} onSuccess   callback for when creating new session was successful
+         * @param {APIErrorCallback=} onFail        callback for when creating new session failed
          * @memberOf MM.activeSession.textentries
          * @instance
          *
@@ -4729,8 +4733,8 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 1.0
-
+                weight: 1.0,
+                language: 'eng'
             };
             MM.activeSession.textentries.post(textEntryData, onCreateNewTextEntry);
          }
@@ -5945,7 +5949,7 @@ var MM = ( function ($, Faye) {
                  MM.activeSession.listener.start();
              }
              */
-            this.listener = new MM.Listener({
+            var listener = this.listener = new MM.Listener({
                 interimResults: true,
                 onResult: function(result, resultIndex, results, event) {
                     // post a text entry for finalized results
@@ -5975,16 +5979,30 @@ var MM = ( function ($, Faye) {
                 }
             });
 
+            function getEffectiveLang() {
+                var language = '';
+                if (listener.lang !== '') {
+                    language = listener.lang;
+                } else if (typeof window.document !== 'undefined' && window.document.documentElement !== null && window.document.documentElement.lang !== '') {
+                    // attempt to retrieve from html element
+                    language = window.document.documentElement.lang;
+                }
+                return language;
+            }
             function postListenerResult(transcript) {
-                session.textentries.post({
+                var textEntryData = {
                     text: transcript,
                     type: 'speech',
                     weight: 1.0
-                }, function(response) {
+                };
+                var lang = getEffectiveLang();
+                if (lang.length) {
+                    textEntryData.language = MM.Listener.convertLanguageToISO6392(lang);
+                }
+                session.textentries.post(textEntryData, function(response) {
                     MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
                 });
             }
-
             $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
         },
         localStoragePath: function () {
@@ -6648,6 +6666,29 @@ var MM = ( function ($, Faye) {
                 }
             }
         });
+
+        var languageTags6391To6392 = {"ab":"abk","aa":"aar","af":"afr","sq":"sqi","am":"amh","ar":"ara","an":"arg","hy":"hye","as":"asm","ae":"ave","ay":"aym","az":"aze","ba":"bak","eu":"eus","be":"bel","bn":"ben","bh":"bih","bi":"bis","bs":"bos","br":"bre","bg":"bul","my":"mya","ca":"cat","ch":"cha","ce":"che","zh":"zho","cu":"chu","cv":"chv","kw":"cor","co":"cos","hr":"hrv","cs":"ces","da":"dan","dv":"div","nl":"nld","dz":"dzo","en":"eng","eo":"epo","et":"est","fo":"fao","fj":"fij","fi":"fin","fr":"fra","gd":"gla","gl":"glg","ka":"kat","de":"deu","el":"ell","gn":"grn","gu":"guj","ht":"hat","ha":"hau","he":"heb","hz":"her","hi":"hin","ho":"hmo","hu":"hun","is":"isl","io":"ido","id":"ind","ia":"ina","ie":"ile","iu":"iku","ik":"ipk","ga":"gle","it":"ita","ja":"jpn","jv":"jav","kl":"kal","kn":"kan","ks":"kas","kk":"kaz","km":"khm","ki":"kik","rw":"kin","ky":"kir","kv":"kom","ko":"kor","kj":"kua","ku":"kur","lo":"lao","la":"lat","lv":"lav","li":"lim","ln":"lin","lt":"lit","lb":"ltz","mk":"mkd","mg":"mlg","ms":"msa","ml":"mal","mt":"mlt","gv":"glv","mi":"mri","mr":"mar","mh":"mah","mo":"mol","mn":"mon","na":"nau","nv":"nav","nd":"nde","nr":"nbl","ng":"ndo","ne":"nep","se":"sme","no":"nor","nb":"nob","nn":"nno","ny":"nya","oc":"oci","or":"ori","om":"orm","os":"oss","pi":"pli","pa":"pan","fa":"fas","pl":"pol","pt":"por","ps":"pus","qu":"que","rm":"roh","ro":"ron","rn":"run","ru":"rus","sm":"smo","sg":"sag","sa":"san","sc":"srd","sr":"srp","sn":"sna","ii":"iii","sd":"snd","si":"sin","sk":"slk","sl":"slv","so":"som","st":"sot","es":"spa","su":"sun","sw":"swa","ss":"ssw","sv":"swe","tl":"tgl","ty":"tah","tg":"tgk","ta":"tam","tt":"tat","te":"tel","th":"tha","bo":"bod","ti":"tir","to":"ton","ts":"tso","tn":"tsn","tr":"tur","tk":"tuk","tw":"twi","ug":"uig","uk":"ukr","ur":"urd","uz":"uzb","vi":"vie","vo":"vol","wa":"wln","cy":"cym","fy":"fry","wo":"wol","xh":"xho","yi":"yid","yo":"yor","za":"zha","zu":"zul"}
+
+        /**
+         * Converts language name or tag to the [ISO 639-2](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) tag. If
+         * the language is unknown, the first three characters of lang parameter are returned.
+         *
+         * @param {String} lang An [ISO 639-1](http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) tag, for example 'en-US'.
+         *
+         * @method
+         * @memberOf MM.Listener
+         * @name convertLanguageToISO6392
+         */
+        Listener.convertLanguageToISO6392 = function(lang) {
+            var key = lang.substring(0, 2);
+            var result = languageTags6391To6392[key]; // attempt to lookup the 639-2 tag
+            if (typeof result === 'undefined') {
+                result = lang.substring(0, 3); // use first 3 letters if language is unknown
+            }
+
+            return result;
+        };
+
         return Listener;
     })();
 

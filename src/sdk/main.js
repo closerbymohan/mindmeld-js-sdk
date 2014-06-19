@@ -2105,8 +2105,8 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 1.0
-
+                weight: 1.0,
+                language: 'eng'
             };
             MM.activeSession.textentries.post(textEntryData);
          }
@@ -2191,8 +2191,8 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 1.0
-
+                weight: 1.0,
+                language: 'eng'
             };
             MM.activeSession.textentries.post(textEntryData, onCreateNewTextEntry);
          }
@@ -3407,7 +3407,7 @@ var MM = ( function ($, Faye) {
                  MM.activeSession.listener.start();
              }
              */
-            this.listener = new MM.Listener({
+            var listener = this.listener = new MM.Listener({
                 interimResults: true,
                 onResult: function(result, resultIndex, results, event) {
                     // post a text entry for finalized results
@@ -3437,16 +3437,30 @@ var MM = ( function ($, Faye) {
                 }
             });
 
+            function getEffectiveLang() {
+                var language = '';
+                if (listener.lang !== '') {
+                    language = listener.lang;
+                } else if (typeof window.document !== 'undefined' && window.document.documentElement !== null && window.document.documentElement.lang !== '') {
+                    // attempt to retrieve from html element
+                    language = window.document.documentElement.lang;
+                }
+                return language;
+            }
             function postListenerResult(transcript) {
-                session.textentries.post({
+                var textEntryData = {
                     text: transcript,
                     type: 'speech',
                     weight: 1.0
-                }, function(response) {
+                };
+                var lang = getEffectiveLang();
+                if (lang.length) {
+                    textEntryData.language = MM.Listener.convertLanguageToISO6392(lang);
+                }
+                session.textentries.post(textEntryData, function(response) {
                     MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
                 });
             }
-
             $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
         },
         localStoragePath: function () {
