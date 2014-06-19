@@ -28,12 +28,12 @@ take a hit. However, if you must link directly, you should use the versioned URL
 to prevent compatibility issues in the future.
 
 ```html
-<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.3.5.js"></script>
+<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.js"></script>
 ```
 
-* Un-minified: [mindmeld-2.3.5.js][versionedSDKDownloadLink]
-* Minified: [mindmeld-2.3.5.min.js][versionedMinifiedSDKDownloadLink]
-* Both + Hello World + Documentation: [mindmeld-js-sdk-2.3.5.zip][versionedSDKZIPDownloadLink]
+* Un-minified: [mindmeld-2.3.6.js][versionedSDKDownloadLink]
+* Minified: [mindmeld-2.3.6.min.js][versionedMinifiedSDKDownloadLink]
+* Both + Hello World + Documentation: [mindmeld-js-sdk-2.3.6.zip][versionedSDKZIPDownloadLink]
 
 ### Clone git repository 
 Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
@@ -311,7 +311,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
         MM.activeSession.textentries.post({
           text: result.transcript,
           type: 'speech',
-          weight: 0.5
+          weight: 1.0
         });
         // Display speech segment as final
         $('#confirmed').append(' <span class="tran">' + result.transcript + '</span>');
@@ -379,7 +379,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 [latestSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.js
 [latestMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.min.js
 [latestSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk.zip
-[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.3.5.js
-[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.3.5.min.js
-[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.3.5.zip
+[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.js
+[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.min.js
+[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.3.6.zip
 

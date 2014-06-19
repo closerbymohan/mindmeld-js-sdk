@@ -97,7 +97,7 @@ var MM = window.MM || {};
                 MM.widgets.config.search.voiceNavigatorEnabled = true;
             }
             loadJS(
-                MM.loader.rootURL + 'widgets/searchWidget/mindmeldSearchWidget.js',
+                    MM.loader.rootURL + 'widgets/searchWidget/mindmeldSearchWidget.js',
                 widgetName,
                 function onSearchWidgetLoad () {
                     MM.loader.$jq('#mm-search').searchwidget();
@@ -108,8 +108,13 @@ var MM = window.MM || {};
         },
 
         voice: function (widgetName) {
-            loadJS(MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.min.js', widgetName);
-            loadStyle(MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.min.css');
+            var filesURL = MM.loader.rootURL + 'widgets/voiceNavigator/widget/widget.';
+            if (!MM.widgets.config.voice.development) {
+                filesURL += 'min.';
+            }
+
+            loadJS(filesURL + 'js', widgetName);
+            loadStyle(filesURL + 'css');
         }
     };
 

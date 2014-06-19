@@ -3647,7 +3647,7 @@ var Faye = (function() {
  */
 var MM = ( function ($, Faye) {
 
-    var MM = window.MM || {};
+    var MM = window.MM = window.MM || {};
 
     /**
      * MindMeld SDK Version
@@ -3657,7 +3657,7 @@ var MM = ( function ($, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.3.5',
+        value: '2.3.6',
         writable: false
     });
 
@@ -5746,7 +5746,7 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 0.5
+                weight: 1.0
 
             };
             MM.activeSession.textentries.post(textEntryData);
@@ -5828,7 +5828,7 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 0.5
+                weight: 1.0
 
             };
             MM.activeSession.textentries.post(textEntryData, onCreateNewTextEntry);
@@ -7024,7 +7024,7 @@ var MM = ( function ($, Faye) {
             var session = this;
 
             /**
-             * A session's listener is automatically configured to post text entries with type 'speech' and weight of 0.5
+             * A session's listener is automatically configured to post text entries with type 'speech' and weight of 1.0
              * when it receives a final {@link ListenerResult} object. Use {@link MM.activeSession#setListenerConfig} to
              * register callbacks. Before using a Listener, check that it is supported with {@link MM.support}.
              *
@@ -7076,7 +7076,7 @@ var MM = ( function ($, Faye) {
                 session.textentries.post({
                     text: transcript,
                     type: 'speech',
-                    weight: 0.5
+                    weight: 1.0
                 }, function(response) {
                     MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
                 });
@@ -7529,7 +7529,7 @@ var MM = ( function ($, Faye) {
                  MM.activeSession.textentries.post({
                      text: text,
                      type: 'speech',
-                     weight: '0.5'
+                     weight: 1.0
                  });
              }
 
@@ -8453,7 +8453,7 @@ var MM = ( function ($, Faye) {
             MM.activeSession.textentries.post({
                 text: text,
                 type: 'text',
-                weight: 0.5
+                weight: 1.0
             }, function (response) {
                 self.onTextEntryPosted(response);
             });
