@@ -3647,7 +3647,7 @@ var Faye = (function() {
  */
 var MM = ( function ($, Faye) {
 
-    var MM = window.MM || {};
+    var MM = window.MM = window.MM || {};
 
     /**
      * MindMeld SDK Version
@@ -3657,7 +3657,7 @@ var MM = ( function ($, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.3.5',
+        value: '2.3.6',
         writable: false
     });
 
