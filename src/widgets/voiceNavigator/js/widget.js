@@ -181,15 +181,23 @@ function init() {
 
     // Initialize any element with .mm-voice-nav-init on it
     var $inits = document.getElementsByClassName('mm-voice-nav-init');
+    var $textInits = document.getElementsByClassName('mm-voice-nav-text-init');
     var clickHandler = function(e) {
         e.preventDefault();
-        MM.voiceNavigator.showModal();
+
+        // look for text value in mm-voice-nav-text-init element
+        if ($textInits.length > 0) {
+            var query = $textInits[0].value;
+            MM.voiceNavigator.showModal({ query: query });
+        }
+        else {
+            MM.voiceNavigator.showModal();
+        }
     };
     for(var i = 0; i < $inits.length; i++) {
         UTIL.el($inits[i]).click(clickHandler);
     }
 
-    var $textInits = document.getElementsByClassName('mm-voice-nav-text-init');
     var keyPressHandler = function (event) {
         if (event.which === 13) {
             var query = event.target.value;
