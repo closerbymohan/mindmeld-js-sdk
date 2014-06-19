@@ -2667,7 +2667,9 @@ var MM = ( function ($, Faye) {
          */
         get: function (params, onSuccess, onFail) {
             this._get(params, onSuccess, onFail);
-        }
+        },
+        channelType: 'session',
+        updateEventName: 'documentsUpdate'
     });
 
 
