@@ -2158,26 +2158,30 @@ var MM = ( function ($, Faye) {
          * sentences in length; the maximum size for a single text entry is 5000 characters. Once created,
          * textentry objects can be deleted but not modified.
          *
-         * @param {Object} textEntryData Object containing new text entry data.
-         * @param {string} textEntryData.text A segment of human-language text containing contextual
-         * information about the session. This string is typically one or two sentences but can be
-         * as long as 5000 characters. This text will be analyzed to understand the semantic concepts
-         * pertinent to the session over time.
-         * @param {string} textEntryData.type A short string that can be used to categorize text
-         * entries into different buckets. You may choose to categorize text entries based on the
-         * content the user has written, read, spoken or heard. For example, possible 'type'
-         * values could be 'email-written', 'email-read', 'sms-written', 'sms-read',
-         * 'post-written', 'post-read', 'tweet-written', 'tweet-read', 'voice-spoken', 'voice-heard',
-         * etc. Subsequent searches on the textentries collection can use this 'type' field
-         * to filter textentries by type.
-         * @param {number} textEntryData.weight A decimal number between 0 and 1 indicating the
-         * relative importance of this text entry in the overall history of text entries for the
-         * session. A value of 0 indicates that this text entry will be ignored in modeling the
-         * context of the session. A value of 1 indicates that any contextual information
-         * contained in the text entry will have the maximum amount of influence over
-         * document ranking and recommendations.
-         * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
-         * @param {APIErrorCallback=} onFail callback for when creating new session failed
+         * @param {Object} textEntryData            Object containing new text entry data.
+         * @param {string} textEntryData.text       A segment of human-language text containing contextual information
+         *                                          about the session. This string is typically one or two sentences but
+         *                                          can be as long as 5000 characters. This text will be analyzed to
+         *                                          understand the semantic concepts pertinent to the session over time.
+         * @param {string} textEntryData.type       A short string that can be used to categorize text entries into
+         *                                          different buckets. You may choose to categorize text entries based on
+         *                                          the content the user has written, read, spoken or heard. For example,
+         *                                          possible 'type' values could be 'email-written', 'email-read',
+         *                                          'sms-written', 'sms-read', 'post-written', 'post-read', 'tweet-written',
+         *                                          'tweet-read', 'voice-spoken', 'voice-heard', etc. Subsequent searches
+         *                                          on the textentries collection can use this 'type' field to filter
+         *                                          textentries by type.
+         * @param {number} textEntryData.weight     A decimal number between 0 and 1 indicating the relative importance
+         *                                          of this text entry in the overall history of text entries for the
+         *                                          session. A value of 0 indicates that this text entry will be ignored
+         *                                          in modeling the context of the session. A value of 1 indicates that
+         *                                          any contextual information  contained in the text entry will have the
+         *                                          maximum amount of influence over document ranking and recommendations.
+         * @param {String} [textEntryData.language] An [ISO 629-2 language code](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes)
+         *                                          for the language of the text. If this parameter is omitted, the API will
+         *                                          attempt to determine the language.
+         * @param {APISuccessCallback=} onSuccess   callback for when creating new session was successful
+         * @param {APIErrorCallback=} onFail        callback for when creating new session failed
          * @memberOf MM.activeSession.textentries
          * @instance
          *
