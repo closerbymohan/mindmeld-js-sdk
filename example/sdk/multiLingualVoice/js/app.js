@@ -188,7 +188,8 @@
             var animationIterations = 0;
             $('#microphone div').bind('webkitAnimationIteration', function () {
                 animationIterations++;
-                if (animationIterations % 2 === 0 && !MM.activeSession.listener.listening) {
+                if (animationIterations % 2 === 0 &&
+                    !(MM.activeSession.listener.listening || MM.activeSession.listener.isPending)) {
                     self.$microphone.removeClass('pulsing');
                 }
             });
@@ -209,15 +210,15 @@
 
             // Make sure the app ID and app secret have been entered
             if (MM_APP_ID === 'ENTER_YOUR_APP_ID' || MM_APP_SECRET === 'ENTER_YOUR_APP_SECRET') {
-                self.$documents.html('<span>Modify \'app.js\' and enter your MindMeld Application ID ' +
-                    'and Application Secret</span>');
+                self.showDocumentsMessage('Modify \'app.js\' and enter your MindMeld Application ID ' +
+                    'and Application Secret');
                 return;
             }
 
             // Make sure speech recognition is supported
             if (!MM.support.speechRecognition) {
-                self.$documents.html('<span>Sorry, this page will only work with Google Chrome. ' +
-                    'Try opening it there.</span>');
+                self.showDocumentsMessage('Sorry, this page will only work with Google Chrome. ' +
+                    'Try opening it there.');
                 return;
             }
 
@@ -361,6 +362,7 @@
          */
         setupSessionListener: function () {
             MM.activeSession.setListenerConfig(self.listenerConfig);
+            MM.activeSession.listener.isPending = false;
         },
 
         /**
@@ -382,6 +384,7 @@
                 self.scrollTextBox();
             },
             onStart: function () {
+                MM.activeSession.listener.isPending = false;
                 // disable select elements
                 self.$selectLanguage.attr('disabled', 'disabled');
                 self.$selectDialect.attr('disabled', 'disabled');
@@ -400,8 +403,15 @@
                 }
             },
             onError: function (event) {
-                window.console.log('MM.Listener: error or reconnecting');
-                window.console.log(event.error);
+                window.console.log('MM.Listener error: ' + event.error);
+
+                // If the error is 'not-allowed' and they aren't using http or https, tell them to use simple server
+                if (event.error === 'not-allowed' &&
+                    !(window.document.location.protocol === 'http' ||
+                        window.document.location.protocol === 'https')) {
+                    self.showDocumentsMessage('We were unable to use speech recognition. Try hosting this page with ' +
+                        'python\'s Simple Server using `python -m SimpleHTTPServer` from the command line');
+                }
             },
             onTextEntryPosted: function () {
                 window.console.log('text entry posted');
@@ -419,6 +429,7 @@
                 listener.stop();
             } else {
                 listener.setConfig({ lang: self.$selectDialect.val() }); // use currently selected language
+                listener.isPending = true;
                 listener.start();
             }
         },
@@ -558,6 +569,14 @@
                 text: transcript
             }));
             self.$pending.text('');
+        },
+
+        /**
+         * Displays a message in the documents area. Used to show tips to get the page working properly.
+         * @param message
+         */
+        showDocumentsMessage: function(message) {
+            self.$documents.html('<span>' + message + '</span>');
         }
 
     };
