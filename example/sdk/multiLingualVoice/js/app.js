@@ -1,16 +1,11 @@
 (function () {
     'use strict';
 
-    /**
-     * Generates unique identifier
-     * @returns {string}
-     */
-    function guid() {
-        return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-            return v.toString(16);
-        }));
-    }
+
+
+    //-------------//
+    //  Constants  //
+    //-------------//
 
     // available languages
     var langs = [
@@ -104,9 +99,13 @@
     var MM_SIMPLE_USER_ID_COOKIE = 'multilingual_voice_user_id';
 
     var self;
-    var VoiceNavigator = {
 
-        // element references
+    var MultilingualMindMeldVoice = {
+
+        //=============================//
+        //  jQuery element references  //
+        //=============================//
+
         $textBox: $(),
         $textStream: $(),
         $confirmed: $(),
@@ -118,9 +117,17 @@
         $selectLanguage: $(),
         $selectDialect: $(),
 
-        // initialization
+
+
+        //=================//
+        //  Initialization //
+        //=================//
+
         init: function () {
+            //
             // get jquery references to elements
+            //
+
             self.$textBox = $('#textBox');
             self.$textStream = $('#textStream');
             self.$confirmed = $('#confirmed');
@@ -131,6 +138,11 @@
             self.$languages = $('#languages');
             self.$selectLanguage = $('#select-language');
             self.$selectDialect = $('#select-dialect');
+
+
+            //
+            // set UI to initial state
+            //
 
             // populate speech recognition languages
             var selectLanguage = self.$selectLanguage[0];
@@ -162,18 +174,38 @@
             updateDialects();
             selectDialect.selectedIndex = 6; // usa
 
+
+            //
+            // setup event listeners
+            //
+
             // update the dialects when the language is changed
             self.$selectLanguage.change(function () {
                 updateDialects();
             });
 
-            // Store the simple user id as a cookie, so when a user returns in the same browser,
-            // they are recognized as the same user
-            self.simpleUserID = $.cookie(MM_SIMPLE_USER_ID_COOKIE);
-            if (self.simpleUserID === undefined) {
-                self.simpleUserID = MM_SIMPLE_USER_ID_PREFIX + '-' + guid();
-                $.cookie(MM_SIMPLE_USER_ID_COOKIE, self.simpleUserID);
-            }
+            // Only end recording animation when an animation cycle has completed
+            var animationIterations = 0;
+            $('#microphone div').bind('webkitAnimationIteration', function () {
+                animationIterations++;
+                if (animationIterations % 2 === 0 && !MM.activeSession.listener.listening) {
+                    self.$microphone.removeClass('pulsing');
+                }
+            });
+
+            // Start and stop listening on microphone clicks
+            self.$microphone.click(function () {
+                var $this = $(this);
+                if (!MM.activeSession.listener.listening && !$this.hasClass('pulsing')) {
+                    $this.addClass('pulsing');
+                }
+                self.toggleListening();
+            });
+
+
+            //
+            // Setup the MindMeld SDK
+            //
 
             // Make sure the app ID and app secret have been entered
             if (MM_APP_ID === 'ENTER_YOUR_APP_ID' || MM_APP_SECRET === 'ENTER_YOUR_APP_SECRET') {
@@ -192,64 +224,230 @@
             // To initialize the MindMeld SDK, we go through the following steps. Each step calls the next when it
             // completes successfully
             //
-            // 1) Load a MindMeld application with the specified app id
-            // 2) Request a user token using simple authentication
-            // 3) Set the active user
-            // 4) Create an invite only session for the active user
-            // 5) Activate the newly created session
-            // 6) Subscribe to documents update push events, so that we get new documents as text entries are posted.
-            // 7) Setup the session listener to display the transcript as it is spoken. The session listener will
+            // 1) Get simple user id
+            // 2) Load a MindMeld application with the specified app id
+            // 3) Request a user token using simple authentication and the simple user id from
+            // 4) Set the active user
+            // 5) Create an invite only session for the active user
+            // 6) Activate the newly created session
+            // 7) Subscribe to documents update push events, so that we get new documents as text entries are posted.
+            // 8) Setup the session listener to display the transcript as it is spoken. The session listener will
             //    automatically post text entries as transcripts are generated.
 
-            // begin MindMeld SDK initialization
+
+            // Step 1
+            // Store the simple user id as a cookie, so when a user returns in the same browser,
+            // they are recognized as the same user
+            self.simpleUserID = $.cookie(MM_SIMPLE_USER_ID_COOKIE);
+            if (self.simpleUserID === undefined) {
+                self.simpleUserID = MM_SIMPLE_USER_ID_PREFIX + '-' + guid();
+                $.cookie(MM_SIMPLE_USER_ID_COOKIE, self.simpleUserID);
+            }
+
+            // Step 2
+            // Load MindMeld application
             MM.init({
-                // Step 1
                 appid: MM_APP_ID,
                 onInit: function () {
                     self.getToken();
                 }
             });
 
-            // Don't abruptly stop recording animation, only when a cycle has been completed
-            var animationIterations = 0;
-            $('#microphone div').bind('webkitAnimationIteration', function () {
-                animationIterations++;
-                if (animationIterations % 2 === 0 && !MM.activeSession.listener.listening) {
-                    self.$microphone.removeClass('pulsing');
-                }
-            });
-
-            // Clicking on microphone will start and stop listening
-            self.$microphone.click(function () {
-                var $this = $(this);
-                if (!MM.activeSession.listener.listening && !$this.hasClass('pulsing')) {
-                    $this.addClass('pulsing');
-                }
-                self.toggleListening();
-            });
         },
 
-        oldTextWidth: 0,
-        textWidth: 0,
+
+
+        //----------------------------//
+        //  MindMeld SDK methods  //
+        //----------------------------//
 
         /**
-         * Horizontally scrolls the text box element as the transcript grows too big for the screen
+         * Step 3
+         * Gets a token using the app secret constant and the simple user id retrieved from cookies
+         */
+        getToken: function () {
+            function onSuccess (result) {
+                window.console.log('Successfully got token');
+                self.setUser(result.user.userid);
+            }
+            function onError () {
+                window.console.log('Unable to get token');
+            }
+
+            MM.getToken({
+                appsecret: MM_APP_SECRET,
+                simple: {
+                    userid: self.simpleUserID,
+                    name: MM_SIMPLE_USER_NAME
+                }
+            }, onSuccess, onError);
+        },
+
+        /**
+         * Step 4
+         * Set the active user based on the given id and continues MindMeld SDK setup
+         * @param userID the mindmeld identifier of the user to set
+         */
+        setUser: function (userID) {
+            function onSuccess () {
+                self.createSession();
+            }
+            function onError (error) {
+                window.console.log("Error setting user session:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            MM.setActiveUserID(userID, onSuccess, onError);
+        },
+
+        /**
+         * Step 5
+         * Creates a session for the active user and continues the Mindmeld SDK setup
+         */
+        createSession: function () {
+            function onSuccess (result) {
+                self.setSession(result.data.sessionid);
+            }
+            function onError (error) {
+                window.console.log("Error creating new session:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            var date = new Date();
+            var sessionName = "Voice Navigator - " + date.toTimeString() + " " + date.toDateString();
+            MM.activeUser.sessions.post({
+                name: sessionName,
+                privacymode: 'inviteonly'
+            }, onSuccess, onError);
+        },
+
+        /**
+         * Step 6
+         * Sets the active session to the specified id and continues MindMeld SDK setup
+         * @param sessionID
+         */
+        setSession: function (sessionID) {
+            function onSuccess () {
+                self.subscribeToDocuments();
+                self.setupSessionListener();
+            }
+            function onError (error) {
+                window.console.log("Error setting session:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            MM.setActiveSessionID(sessionID, onSuccess, onError);
+        },
+
+        /**
+         * Step 7
+         * Subscribes to document update push events. When the documents collection is updated,
+         * refreshes the user interface
+         */
+        subscribeToDocuments: function () {
+            function onSuccess () {
+                window.console.log("Subscribed to documents!");
+            }
+            function onError (error) {
+                window.console.log("Error subscribing to documents:  (Type " + error.code +
+                    " - " + error.type + "): " + error.message);
+            }
+            MM.activeSession.documents.onUpdate(function (result) {
+                window.console.log('documents updated');
+                self.updateDocuments(result);
+            }, onSuccess, onError);
+        },
+
+        /**
+         * Step 8
+         * Sets up the session listener to display transcripts as they are received
+         */
+        setupSessionListener: function () {
+            MM.activeSession.setListenerConfig(self.listenerConfig);
+        },
+
+        /**
+         * A ListenerConfig object specifying the session
+         */
+        listenerConfig: {
+            continuous: true,
+            interimResults: true,
+            onResult: function (result) {
+                if (result.final) {
+                    self.appendConfirmedTranscript(result.transcript);
+                } else {
+                    self.$pending.text(result.transcript);
+                }
+
+                self.scrollTextBox();
+            },
+            onStart: function () {
+                // disable select elements
+                self.$selectLanguage.attr('disabled', 'disabled');
+                self.$selectDialect.attr('disabled', 'disabled');
+
+                self.$confirmed.text(''); // clear previous text
+            },
+            onEnd: function () {
+                // reenable select elements
+                self.$selectLanguage.removeAttr('disabled');
+                self.$selectDialect.removeAttr('disabled');
+
+                // We will recieve no further updates, so convert any pending text to confirmed text
+                var pendingText = self.$pending.text();
+                if (pendingText !== '') {
+                    self.appendConfirmedTranscript(pendingText);
+                }
+            },
+            onError: function (event) {
+                window.console.log('MM.Listener: error or reconnecting');
+                window.console.log(event.error);
+            },
+            onTextEntryPosted: function () {
+                window.console.log('text entry posted');
+                self.$documentContainer.addClass('loading');
+            }
+        },
+
+        /**
+         * Starts the session listener if it is not already listening, using the selected language.
+         * Stops the session listener if it is already listening.
+         */
+        toggleListening: function () {
+            var listener = MM.activeSession.listener;
+            if (listener.listening) {
+                listener.stop();
+            } else {
+                listener.setConfig({ lang: self.$selectDialect.val() }); // use currently selected language
+                listener.start();
+            }
+        },
+
+
+
+        //==========================//
+        //  User interface methods  //
+        //==========================//
+
+        /**
+         * Horizontally scrolls the text box element as the transcript grows too big for the window
          */
         scrollTextBox: function () {
-            self.textWidth = self.$confirmed.width() + self.$pending.width() + 120; // padding
-            if (self.textWidth > self.oldTextWidth) {
-                self.oldTextWidth = self.textWidth; // store for later check
+            var textWidth = 0;
+            return function() {
+                var oldTextWidth = textWidth;
+                textWidth = self.$confirmed.width() + self.$pending.width() + 120; // padding
+                if (textWidth > oldTextWidth) {
+                    oldTextWidth = textWidth; // store for later check
 
-                self.$textStream.css({ width: self.textWidth });
-                self.$textBox.animate({
-                    scrollLeft: self.textWidth - self.$textBox.width()
-                }, {
-                    duration:600,
-                    queue:false
-                });
+                    self.$textStream.css({ width: textWidth });
+                    self.$textBox.animate({
+                        scrollLeft: textWidth - self.$textBox.width()
+                    }, {
+                        duration:600,
+                        queue:false
+                    });
 
-                window.console.log(this.textWidth - self.$textBox.width());
-            }
+                    window.console.log(textWidth - self.$textBox.width());
+                }
+            };
         },
 
         /**
@@ -357,174 +555,30 @@
                 text: transcript
             }));
             self.$pending.text('');
-        },
-
-        // MindMeld setup functions
-
-        /**
-         * Step 2
-         * Gets a token using the app secret constant and the simple user id retrieved from cookies
-         */
-        getToken: function () {
-            function onSuccess (result) {
-                window.console.log('Successfully got token');
-                self.setUser(result.user.userid);
-            }
-            function onError () {
-                window.console.log('Unable to get token');
-            }
-
-            MM.getToken({
-                appsecret: MM_APP_SECRET,
-                simple: {
-                    userid: self.simpleUserID,
-                    name: MM_SIMPLE_USER_NAME
-                }
-            }, onSuccess, onError);
-        },
-
-        /**
-         * Step 3
-         * Set the active user based on the given id and continues MindMeld SDK setup
-         * @param userID
-         */
-        setUser: function (userID) {
-            function onSuccess () {
-                self.createSession();
-            }
-            function onError (error) {
-                window.console.log("Error setting user session:  (Type " + error.code +
-                    " - " + error.type + "): " + error.message);
-            }
-            MM.setActiveUserID(userID, onSuccess, onError);
-        },
-
-        /**
-         * Step 4
-         * Creates a session for the active user and continues the Mindmeld SDK setup
-         */
-        createSession: function () {
-            function onSuccess (result) {
-                self.setSession(result.data.sessionid);
-            }
-            function onError (error) {
-                window.console.log("Error creating new session:  (Type " + error.code +
-                    " - " + error.type + "): " + error.message);
-            }
-            var date = new Date();
-            var sessionName = "Voice Navigator - " + date.toTimeString() + " " + date.toDateString();
-            MM.activeUser.sessions.post({
-                name: sessionName,
-                privacymode: 'inviteonly'
-            }, onSuccess, onError);
-        },
-
-        /**
-         * Step 5
-         * Sets the active session to the specified id and continues MindMeld SDK setup
-         * @param sessionID
-         */
-        setSession: function (sessionID) {
-            function onSuccess () {
-                self.subscribeToDocuments();
-                self.setupSessionListener();
-            }
-            function onError (error) {
-                window.console.log("Error setting session:  (Type " + error.code +
-                    " - " + error.type + "): " + error.message);
-            }
-            MM.setActiveSessionID(sessionID, onSuccess, onError);
-        },
-
-        /**
-         * Step 6
-         * Subscribes to document update push events. When the documents collection is updated,
-         * refreshes the user interface
-         */
-        subscribeToDocuments: function () {
-            function onSuccess () {
-                window.console.log("Subscribed to documents!");
-            }
-            function onError (error) {
-                window.console.log("Error subscribing to documents:  (Type " + error.code +
-                    " - " + error.type + "): " + error.message);
-            }
-            MM.activeSession.documents.onUpdate(function (result) {
-                window.console.log('documents updated');
-                self.updateDocuments(result);
-            }, onSuccess, onError);
-        },
-
-        /**
-         * Step 7
-         * Sets up the session listener to display transcripts as they are received
-         */
-        setupSessionListener: function () {
-            MM.activeSession.setListenerConfig(self.listenerConfig);
-        },
-
-        /**
-         * A ListenerConfig object specifying the session
-         */
-        listenerConfig: {
-            continuous: true,
-            interimResults: true,
-            onResult: function (result) {
-                if (result.final) {
-                    self.appendConfirmedTranscript(result.transcript);
-                } else {
-                    self.$pending.text(result.transcript);
-                }
-
-                self.scrollTextBox();
-            },
-            onStart: function () {
-                // disable select elements
-                self.$selectLanguage.attr('disabled', 'disabled');
-                self.$selectDialect.attr('disabled', 'disabled');
-
-                self.$confirmed.text(''); // clear previous text
-            },
-            onEnd: function () {
-                // reenable select elements
-                self.$selectLanguage.removeAttr('disabled');
-                self.$selectDialect.removeAttr('disabled');
-
-                // We will recieve no further updates, so convert any pending text to confirmed text
-                var pendingText = self.$pending.text();
-                if (pendingText !== '') {
-                    self.appendConfirmedTranscript(pendingText);
-                }
-            },
-            onError: function (event) {
-                window.console.log('MM.Listener: error or reconnecting');
-                window.console.log(event.error);
-            },
-            onTextEntryPosted: function () {
-                window.console.log('text entry posted');
-                self.$documentContainer.addClass('loading');
-            }
-        },
-
-        /**
-         * Starts the session listener if it is not already listening, using the selected language.
-         * Stops the session listener if it is already listening.
-         */
-        toggleListening: function () {
-            var listener = MM.activeSession.listener;
-            if (listener.listening) {
-                listener.stop();
-            } else {
-                listener.setConfig({ lang: self.$selectDialect.val() }); // use currently selected language
-                listener.start();
-            }
         }
+
     };
-    self = VoiceNavigator;
+    self = MultilingualMindMeldVoice; // reference for closures
     $(document).ready(function () {
         self.init(); // initialize app when document is ready
     });
 
+
+
+    //=================//
+    // Helper methods  //
+    //=================//
+
+    /**
+     * Generates unique identifier
+     * @returns {string}
+     */
+    function guid() {
+        return ('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+            return v.toString(16);
+        }));
+    }
 
     function addLeadingZeros(number, digits) {
         var base = Math.pow(10, digits);
