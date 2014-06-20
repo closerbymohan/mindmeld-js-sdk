@@ -10,7 +10,7 @@ mobile = "only screen and (min-device-width : 320px) and (max-device-width : 480
     margin auto
   &.loading
     opacity 0.3
-  a.card
+  .card
     text-decoration none
     display block
     width 218px
@@ -35,6 +35,7 @@ mobile = "only screen and (min-device-width : 320px) and (max-device-width : 480
       width 100%
       text-align center
       margin 5px 0
+      line-height initial
       &.not-loaded
         height 100px
         overflow hidden
@@ -45,7 +46,7 @@ mobile = "only screen and (min-device-width : 320px) and (max-device-width : 480
         width 100%
     img
       max-width 100%
-    p:not(.image)
+    p
       font-size 11px
       line-height 1.5em
       margin 10px 15px

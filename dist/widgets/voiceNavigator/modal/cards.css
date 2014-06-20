@@ -13,7 +13,7 @@
 #cards.loading {
   opacity: 0.3;
 }
-#cards a.card {
+#cards .card {
   text-decoration: none;
   display: block;
   width: 218px;
@@ -23,59 +23,60 @@
   padding: 15px 0px 5px;
   box-shadow: 0 0 6px rgba(0,0,0,0.2);
 }
-#cards a.card:hover {
+#cards .card:hover {
   box-shadow: 0 0 6px rgba(0,0,0,0.2), 0 0 1px #191920;
   text-decoration: none;
 }
-#cards a.card:hover .title {
+#cards .card:hover .title {
   color: #2d2d2d;
 }
-#cards a.card .title {
+#cards .card .title {
   color: #636363;
   font-size: 15px;
   font-family: 'Open Sans', sans-serif;
   margin: 0 15px;
 }
-#cards a.card p.image {
+#cards .card p.image {
   width: 100%;
   text-align: center;
   margin: 5px 0;
+  line-height: initial;
 }
-#cards a.card p.image.not-loaded {
+#cards .card p.image.not-loaded {
   height: 100px;
   overflow: hidden;
   background: #ddd url("./spinner.gif") no-repeat center;
 }
-#cards a.card p.image.not-loaded img {
+#cards .card p.image.not-loaded img {
   opacity: 0;
 }
-#cards a.card p.image img {
+#cards .card p.image img {
   width: 100%;
 }
-#cards a.card img {
+#cards .card img {
   max-width: 100%;
 }
-#cards a.card p:not(.image) {
+#cards .card p {
   font-size: 11px;
   line-height: 1.5em;
   margin: 10px 15px;
   color: #888;
 }
-#cards a.card p.mm-doc-field {
+#cards .card p.mm-doc-field {
   margin: 2px inherit;
 }
-#cards a.card p.mm-doc-field .label {
+#cards .card p.mm-doc-field .label {
   color: #888;
   margin-right: 4px;
   font-size: smaller;
 }
-#cards a.card .source {
+#cards .card .source {
   display: block;
   font-size: 11px;
   color: #999;
   padding: 15px 15px 0;
 }
-#cards a.card .source img {
+#cards .card .source img {
   margin-right: 10px;
 }
 #cards .no-results {

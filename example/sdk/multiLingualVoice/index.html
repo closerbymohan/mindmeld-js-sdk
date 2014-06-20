@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html class="no-js ie10plus" lang="en">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# getmindmeld: http://ogp.me/ns/fb/getmindmeld#">
+  <title>Multilingual MindMeld Voice</title>
+
+  <meta charset="utf-8">
+  <!--<meta http-equiv="Content-Type" content="text/html">-->
+  <script type="text/javascript" src="js/vendor/jquery-1.11.1.js"></script>
+  <script type="text/javascript" src="js/vendor/jquery.cookie-1.4.0.js"></script>
+  <script type="text/javascript" src="../../../dist/sdk/mindmeld.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+  <link href="css/style.css" rel="stylesheet" type="text/css">
+  <link href="/public/images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+</head>
+<body>
+<header class="header clearfix">
+  <img src="images/logo.png" id="logo">
+  <div id="textBox">
+    <div id="textStream">
+      <span id="confirmed" class="headText"></span>
+      <span id="pending" class="headText"></span>
+    </div>
+  </div>
+  <div id="languages">
+    <select id="select-language"></select>
+    <select id="select-dialect"></select>
+  </div>
+  <div id="microphone">
+    <div class="bottom active"></div>
+    <div class="top opaque normal"></div>
+  </div>
+</header>
+<div id="document-container">
+  <div id="documents" class="box">
+  </div>
+  <div class="overlay"></div>
+</div>
+</body>
+</html>

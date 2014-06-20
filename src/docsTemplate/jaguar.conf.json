@@ -23,7 +23,6 @@
     },
     "markdown": {
         "parser": "gfm",
-        "hardwrap": true,
-        "tags": ["examples"]
+        "hardwrap": true
     }
 }

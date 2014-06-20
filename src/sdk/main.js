@@ -4,7 +4,7 @@
  *
  * @namespace
  */
-var MM = ( function ($, Faye) {
+var MM = ( function (window, $, Faye) {
 
     var MM = window.MM = window.MM || {};
 
@@ -150,12 +150,12 @@ var MM = ( function ($, Faye) {
             subclassProto = subclass.prototype = new F();
             subclassProto.constructor = subclass;
             subclass.superclass = superclassProto;
-            if (superclassProto.constructor == objectConstructor) {
+            if (superclassProto.constructor === objectConstructor) {
                 superclassProto.constructor = superclass;
             }
-            subclassProto.superclass = subclassProto.supr = (function () {
+            subclassProto.superclass = subclassProto.supr = function () {
                 return superclassProto;
-            });
+            };
             subclassProto.proto = subclassProto;
             MM.Internal.override(subclass, overrides);
             return subclass;
@@ -251,9 +251,12 @@ var MM = ( function ($, Faye) {
 
                 var clientAuth = {
                     outgoing: function(message, callback) {
-                        if (message.channel !== '/meta/subscribe')
+                        if (message.channel !== '/meta/subscribe') {
                             return callback(message);
-                        if (!message.ext) message.ext = {};
+                        }
+                        if (!message.ext) {
+                            message.ext = {};
+                        }
                         message.ext.authToken = MM.token;
                         callback(message);
 
@@ -617,7 +620,7 @@ var MM = ( function ($, Faye) {
             //noinspection JSCheckFunctionSignatures
             MM.config = $.extend({}, defaultConfig, config);
 
-            $(document).ready(function () {
+            $(window.document).ready(function () {
                 MM.Internal.onReady();
             });
         },
@@ -779,7 +782,9 @@ var MM = ( function ($, Faye) {
 
             // Clears MM.token on success
             function onRevokeTokenSuccess(response) {
-                if (MM.config.debug) MM.Internal.log('SUCCESSFULLY REVOKED TOKEN: ' + MM.token);
+                if (MM.config.debug) {
+                    MM.Internal.log('SUCCESSFULLY REVOKED TOKEN: ' + MM.token);
+                }
                 MM.token = '';
                 if (response.data) {
                     MM.Util.testAndCall(onSuccess, response);
@@ -1016,7 +1021,11 @@ var MM = ( function ($, Faye) {
 
             headers = headers || {'X-MINDMELD-ACCESS-TOKEN': MM.token};
             var fullUrl = MM.config.cleanUrl + path;
-            if (MM.config.debug) MM.Internal.log('Calling MindMeld API with: ' + method + ' and URL: ' + fullUrl + ' and Params: ' + JSON.stringify(params));
+            if (MM.config.debug) {
+                MM.Internal.log('Calling MindMeld API with: ' + method +
+                    ' and URL: ' + fullUrl +
+                    ' and Params: ' + JSON.stringify(params));
+            }
             // Now call the API using AJAX.
             $.ajax({
                 type: method,
@@ -1026,7 +1035,9 @@ var MM = ( function ($, Faye) {
                 headers: headers,
                 ifModified: modSince,
                 success: function (result, status) {
-                    if (MM.config.debug) MM.Internal.log('The MindMeld request returned: ' + JSON.stringify(result));
+                    if (MM.config.debug) {
+                        MM.Internal.log('The MindMeld request returned: ' + JSON.stringify(result));
+                    }
                     if (status === 'notmodified') {
                         MM.Util.testAndCall(error, status);
                     }
@@ -1108,7 +1119,7 @@ var MM = ( function ($, Faye) {
          */
         backupData: function () {
             if (MM.support.localStorage) {
-                localStorage[this.localStoragePath()] = JSON.stringify(this.result);
+                window.localStorage[this.localStoragePath()] = JSON.stringify(this.result);
             }
         },
 
@@ -1133,7 +1144,7 @@ var MM = ( function ($, Faye) {
          */
         clearLocalData: function () {
             if (MM.support.localStorage) {
-                localStorage.removeItem(this.localStoragePath());
+                window.localStorage.removeItem(this.localStoragePath());
             }
         },
 
@@ -1171,7 +1182,7 @@ var MM = ( function ($, Faye) {
          */
         restore: function (onSuccess, onFail) {
             if (MM.support.localStorage) {
-                var storedData = localStorage[this.localStoragePath()];
+                var storedData = window.localStorage[this.localStoragePath()];
                 if (storedData) {
                     storedData = JSON.parse(storedData);
                     if (storedData) {
@@ -1217,7 +1228,7 @@ var MM = ( function ($, Faye) {
         makeModelRequest: function (method, path, params, success, error) {
             var me = this;
             var callback = function (result) {
-                if (result.request && result.request.method && result.request.method.toUpperCase() == 'GET') {
+                if (result.request && result.request.method && result.request.method.toUpperCase() === 'GET') {
                     me.result = result;
                     if (me.shouldPersist) {
                         me.backupData();
@@ -1256,18 +1267,18 @@ var MM = ( function ($, Faye) {
             var channelString = '/' + MM.config.appid;
             switch (this.channelType) {
                 case 'app':
-                    channelConfig['type'] = this.channelType;
-                    channelConfig['channel'] = channelString;
+                    channelConfig.type = this.channelType;
+                    channelConfig.channel = channelString;
                     break;
 
                 case 'session':
-                    channelConfig['type'] = this.channelType;
-                    channelConfig['channel'] = channelString + '/session/' + MM.activeSessionId;
+                    channelConfig.type = this.channelType;
+                    channelConfig.channel = channelString + '/session/' + MM.activeSessionId;
                     break;
 
                 case 'user':
-                    channelConfig['type'] = this.channelType;
-                    channelConfig['channel'] = channelString + '/user/' + MM.activeUserId;
+                    channelConfig.type = this.channelType;
+                    channelConfig.channel = channelString + '/user/' + MM.activeUserId;
                     break;
             }
             return channelConfig;
@@ -1349,7 +1360,7 @@ var MM = ( function ($, Faye) {
             $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on app channel
         },
         localStoragePath: function () {
-            return 'MM.app'
+            return 'MM.app';
         },
         path: function () {
             return('');
@@ -1609,7 +1620,7 @@ var MM = ( function ($, Faye) {
             $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on user channel
         },
         localStoragePath: function () {
-            return 'MM.activeUser'
+            return 'MM.activeUser';
         },
         path: function () {
             return('user/' + MM.activeUserId);
@@ -1880,7 +1891,7 @@ var MM = ( function ($, Faye) {
             MM.models.SessionList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeUser.sessions'
+            return 'MM.activeUser.sessions';
         },
         path: function () {
             return('user/' + MM.activeUserId + '/sessions');
@@ -2047,7 +2058,7 @@ var MM = ( function ($, Faye) {
             MM.models.TextEntryList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.textentries'
+            return 'MM.activeSession.textentries';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/textentries');
@@ -2241,7 +2252,7 @@ var MM = ( function ($, Faye) {
             MM.models.EntityList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.entities'
+            return 'MM.activeSession.entities';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/entities');
@@ -2429,7 +2440,7 @@ var MM = ( function ($, Faye) {
             MM.models.ArticleList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.articles'
+            return 'MM.activeSession.articles';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/articles');
@@ -2538,7 +2549,7 @@ var MM = ( function ($, Faye) {
             MM.models.SessionDocumentList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.documents'
+            return 'MM.activeSession.documents';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/documents');
@@ -2689,7 +2700,7 @@ var MM = ( function ($, Faye) {
             MM.models.AppDocumentList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.documents'
+            return 'MM.documents';
         },
         path: function () {
             return('documents');
@@ -2842,8 +2853,8 @@ var MM = ( function ($, Faye) {
             // new document added
          }
          */
-        post: function (document, onSuccess, onFail) {
-            this.makeModelRequest('POST', this.path(), document, onSuccess, onFail);
+        post: function (documentData, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), documentData, onSuccess, onFail);
         },
         /**
          * Delete a document from the application. This requires an admin token
@@ -2880,7 +2891,7 @@ var MM = ( function ($, Faye) {
             MM.models.LiveUserList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.liveusers'
+            return 'MM.activeSession.liveusers';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/liveusers');
@@ -3038,7 +3049,7 @@ var MM = ( function ($, Faye) {
             MM.models.InvitedUserList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.invitedusers'
+            return 'MM.activeSession.invitedusers';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/invitedusers');
@@ -3202,7 +3213,7 @@ var MM = ( function ($, Faye) {
             MM.models.ActivityList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.activities'
+            return 'MM.activeSession.activities';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/activities');
@@ -3464,7 +3475,7 @@ var MM = ( function ($, Faye) {
             $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
         },
         localStoragePath: function () {
-            return 'MM.activeSession'
+            return 'MM.activeSession';
         },
         path: function () {
             return('session/' + MM.activeSessionId);
@@ -4009,15 +4020,15 @@ var MM = ( function ($, Faye) {
 
                 var abortTimeout = 0;
                 function setAbortTimeout() {
-                    clearTimeout(abortTimeout);
-                    abortTimeout = setTimeout(function(event) {
+                    window.clearTimeout(abortTimeout);
+                    abortTimeout = window.setTimeout(function() {
                         recognizer.abort();
-                    }, 2000, event); // abort if the recognition fails to call onEnd (chrome bug hack)
+                    }, 2000); // abort if the recognition fails to call onEnd (chrome bug hack)
                 }
 
                 var recognizer = this._recognizer;
                 if (typeof recognizer === 'undefined') {
-                    recognizer = this._recognizer = new SpeechRecognition();
+                    recognizer = this._recognizer = new window.SpeechRecognition();
                     recognizer.onresult = function(event) {
                         var result = {
                             final: false,
@@ -4051,7 +4062,7 @@ var MM = ( function ($, Faye) {
                         MM.Util.testAndCallThis(listener._onStart, listener, event);
                     };
                     recognizer.onend = function(event) {
-                        clearTimeout(abortTimeout);
+                        window.clearTimeout(abortTimeout);
                         abortTimeout = 0;
                         listener._listening = false;
                         MM.Util.testAndCallThis(listener._onEnd, listener, event);
@@ -4059,11 +4070,11 @@ var MM = ( function ($, Faye) {
                     recognizer.onerror = function(event) {
                         MM.Util.testAndCallThis(listener._onError, listener, event);
                     };
-                    recognizer.onaudioend = function(event) {
+                    recognizer.onaudioend = function(/* event <-- ignored */) {
                         if (!recognizer.continuous) {
                             setAbortTimeout();
                         }
-                    }
+                    };
                 }
                 recognizer.continuous = this.continuous;
                 recognizer.interimResults = this.interimResults;
@@ -4071,9 +4082,9 @@ var MM = ( function ($, Faye) {
                     var language = '';
                     if (listener.lang !== '') {
                         language = listener.lang;
-                    } else if (typeof document !== 'undefined' && document.documentElement !== null && document.documentElement.lang !== '') {
+                    } else if (typeof window.document !== 'undefined' && window.document.documentElement !== null && window.document.documentElement.lang !== '') {
                         // attempt to retrieve from html element
-                        language = document.documentElement.lang;
+                        language = window.document.documentElement.lang;
                     }
                     return language;
                 })();
@@ -4190,7 +4201,7 @@ var MM = ( function ($, Faye) {
             // TODO: maybe add something here?
         }
         try {
-            var localStorage = (function(window) {
+            localStorage = (function(window) {
                 'use strict';
                 window = window || {};
                 return (typeof(window.Storage) !== 'undefined');
@@ -4207,4 +4218,4 @@ var MM = ( function ($, Faye) {
     MM.Internal.setup();
     return MM;
 
-}($, Faye));
+}(window, $, Faye));
