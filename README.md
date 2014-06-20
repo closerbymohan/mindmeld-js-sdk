@@ -153,28 +153,28 @@ MM.activeUser.sessions.post(newSessionData,
 ```
 
 ### Post a Text Entry
-To post a text entry to the session
+To post a text entry to the session, you can optionally specify the language.
 
 ```javascript
 var textEntryData = {
     text: 'Sandra Bullock might win an Academy Award for Best Actress in the movie Gravity',
     type: 'text',
-    weight: 1.0
-
+    weight: 1.0,
+    language: 'eng' // this is not required
 };
 MM.activeSession.textentries.post(textEntryData);
 ```
 
 ### Example Flow to Get Contextually Relevant Documents to a Conversation
-The following code snippet will post a text entry, receive a notification once the MindMeld API
-has extracted entities from a text entry, and fetch documents related to the original text entry
+The following code snippet will subscribe to the documents collection, post a text entry, and receive 
+a notification once the MindMeld API has updated documents for the text entry.
 
 ```javascript
-// Subscribe to push events for when the entities collection updates
-MM.activeSession.entities.onUpdate(onEntitiesUpdate, onSubscribedToEntityUpdates);
+// Subscribe to push events for when the documents collection updates
+MM.activeSession.documents.onUpdate(onDocumentsUpdate, onSubscribedToDocumentUpdates);
 
-function onSubscribedToEntityUpdates () {
-    console.log('subscribed to updates to the entities collection');
+function onSubscribedToDocumentUpdates () {
+    console.log('subscribed to updates to the documents collection');
 
     var textEntryData = {
         text: 'Sandra Bullock might win an Academy Award for Best Actress in the movie Gravity',
@@ -186,19 +186,9 @@ function onSubscribedToEntityUpdates () {
     MM.activeSession.textentries.post(textEntryData);
 }
 
-function onEntitiesUpdate () {
-    console.log('received an update to the entities collection');
-    var entities = MM.activeSession.entities.json();
-    console.log('Entities extracted: ' + JSON.stringify(entities));
-
-    // Now, fetch documents
-    MM.activeSession.documents.get(null, onDocumentsFetched);
-}
-
-function onDocumentsFetched () {
-    console.log('fetched documents related to the session');
-    // get the documents fetched from MM.activeSession.documents.get()
-    var documents =  MM.activeSession.documents.json();
+function onDocumentsUpdate () {
+    console.log('received an update to the documents collection');
+    var documents = MM.activeSession.documents.json();
     console.log('Related Documents: ' + JSON.stringify(documents));
 }
 ```
