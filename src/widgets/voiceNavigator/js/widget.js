@@ -286,7 +286,7 @@ var MM = window.MM = window.MM || {};
      #cards a.card .mm-vn-row .rating-stars-grad.r4-5 { width: 63px; }
      #cards a.card .mm-vn-row .rating-stars-grad.r4   { width: 55px; }
      #cards a.card .mm-vn-row .rating-stars-grad.r3-5 { width: 49px; }
-     #cards a.card .mm-vn-row .rating-stars-grad.r-3  { width: 41px; }
+     #cards a.card .mm-vn-row .rating-stars-grad.r3   { width: 41px; }
      #cards a.card .mm-vn-row .rating-stars-grad.r2-5 { width: 35px; }
      #cards a.card .mm-vn-row .rating-stars-grad.r2   { width: 27px; }
      #cards a.card .mm-vn-row .rating-stars-grad.r1-5 { width: 21px; }
