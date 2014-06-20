@@ -317,6 +317,7 @@ var MM = window.MM = window.MM || {};
                  ,   customCSS: window['vn-custom-css'].innerHTML
                  ,   listeningMode: 'continuous' // extended listening when opened
                  ,   cardLinkBehavior: '_blank' // links open in new tabs
+                 ,   numResults: 20 // show more cards
                  }
              }
          };
