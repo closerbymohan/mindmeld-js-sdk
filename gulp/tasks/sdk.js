@@ -60,7 +60,8 @@ gulp.task('sdk.zip', ['sdk.docs', 'sdk.uglify'], function () {
         gulp.src('LICENSE'),
         gulp.src(distDirectory + 'docs/**', {base: distDirectory}),
         gulp.src(distMMDirectory + '*.js', {base: distMMDirectory}),
-        gulp.src(exampleDirectory + 'sdk/HelloWorld.html', {base: exampleDirectory + 'sdk/'})
+        gulp.src(exampleDirectory + 'sdk/helloWorld/index.html', {base: exampleDirectory + 'sdk/'}).
+            pipe(replace('src="../../../dist/sdk/mindmeld.js"', 'src="../mindmeld.js"'))
     )
         .pipe(zip('mindmeld-js-sdk.zip'))
         .pipe(gulp.dest(distMMDirectory));
