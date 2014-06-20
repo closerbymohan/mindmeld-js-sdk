@@ -43,5 +43,21 @@ gulp.task('serve.no-build', function() {
     });
 });
 
+// serve the repo to view examples
+gulp.task('serve', function() {
+    connect.server({
+        https: true,
+        livereload: false
+    });
+});
+
+gulp.task('serve.livereload', function() {
+    connect.server({
+        https: true,
+        livereload: true
+    });
+});
+
 // Task to show list of tasks
 gulp.task('tasks', taskListing.withFilters(/\./));
+

@@ -210,22 +210,6 @@ gulp.task('vn.watch.setup',  function() {
     config.isWatching = true;
 });
 
-gulp.task('vn.serve', function() {
-    connect.server({
-        root: __dirname + '/../../',
-        https: true,
-        livereload: false
-    });
-});
-
-gulp.task('vn.serve.livereload', function() {
-    connect.server({
-        root: __dirname + '/../../',
-        https: true,
-        livereload: true
-    });
-});
-
 gulp.task('vn.lint', function() {
     return gulp.src([voiceNavigator.sourcePath + 'js/*.js'])
         .pipe(jshint())
@@ -236,7 +220,7 @@ gulp.task('vn.lint', function() {
 gulp.task('vn.widget', ['vn.widget.css', 'vn.widget.js']);
 gulp.task('vn.modal', ['vn.modal.css', 'vn.modal.js', 'vn.modal.html', 'vn.modal.other']);
 gulp.task('vn.build', ['vn.widget', 'vn.modal']);
-gulp.task('vn.develop', ['vn.watch', 'vn.serve']);
+gulp.task('vn.develop', ['vn.watch', 'serve']);
 gulp.task('vn', ['vn.build']);
 
 // show list of voice navigator tasks
