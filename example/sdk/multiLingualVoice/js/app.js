@@ -175,8 +175,17 @@
                 $.cookie(MM_SIMPLE_USER_ID_COOKIE, self.simpleUserID);
             }
 
+            // Make sure the app ID and app secret have been entered
+            if (MM_APP_ID === 'ENTER_YOUR_APP_ID' || MM_APP_SECRET === 'ENTER_YOUR_APP_SECRET') {
+                self.$documents.html('<span>Modify \'app.js\' and enter your MindMeld Application ID ' +
+                    'and Application Secret</span>');
+                return;
+            }
+
+            // Make sure speech recognition is supported
             if (!MM.support.speechRecognition) {
-                self.$documents.html('<span>Sorry, this page will only work with Google Chrome. Try opening it there.</span>');
+                self.$documents.html('<span>Sorry, this page will only work with Google Chrome. ' +
+                    'Try opening it there.</span>');
                 return;
             }
 
