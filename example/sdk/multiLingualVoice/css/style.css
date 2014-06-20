@@ -11,6 +11,7 @@ body, html {
   font-family: helvetica, arial;
   font-size: 13px;
   color: #333;
+  height: 100%;
 }
 
 * {
@@ -28,11 +29,11 @@ body, html {
 
 header {
   border-bottom: 1px solid rgba(210,220,224, 1);
-  background: -webkit-linear-gradient(top, #fff 0%, #fff 51%, 100% $f9fbfc);
-  background: -moz-linear-gradient(top, #fff 0%, #fff 51%, 100% $f9fbfc);
-  background: -o-linear-gradient(top, #fff 0%, #fff 51%, 100% $f9fbfc);
-  background: -ms-linear-gradient(top, #fff 0%, #fff 51%, 100% $f9fbfc);
-  background: linear-gradient(to bottom, #fff 0%, #fff 51%, 100% $f9fbfc);
+  background: -webkit-linear-gradient(top, #fff 0%, #fff 51%, #f9fbfc 100%);
+  background: -moz-linear-gradient(top, #fff 0%, #fff 51%, #f9fbfc 100%);
+  background: -o-linear-gradient(top, #fff 0%, #fff 51%, #f9fbfc 100%);
+  background: -ms-linear-gradient(top, #fff 0%, #fff 51%, #f9fbfc 100%);
+  background: linear-gradient(to bottom, #fff 0%, #fff 51%, #f9fbfc 100%);
   padding: 10px;
   display: -webkit-box;
   display: -moz-box;
@@ -63,7 +64,7 @@ header {
   -ms-flex-align: start;
   align-items: flex-start;
   position: fixed;
-  z-index: 2;
+  z-index: 20;
   top: 0;
   left: 0;
   width: 100%;
@@ -243,21 +244,49 @@ header > div, img {
   border-bottom: 1px dotted rgba(255, 255, 255, 0);
 }
 
-#documentBox {
+#document-container {
   -webkit-box-orient: horizontal;
-  margin: 80px 0 0 0;
-  overflow-x:hidden;
+  padding: 80px 0 0 0;
+  overflow-x: hidden;
+  position: relative;
+  height: 100%;
 }
+
 #documents {
   padding: 20px 20px 20px 40px;
   max-width:750px;
+  -webkit-transition: .5s all ease-in-out;
 }
+
+.overlay {
+    z-index: -10;
+    opacity: 0;
+    background-color: #888;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-transition: .5s opacity ease-in-out;
+}
+.loading {
+    background: url(../images/ajax_loader_gray_128.gif) no-repeat center;
+}
+
+.loading .overlay {
+    z-index: 10;
+}
+.loading #documents, .loading .overlay {
+    opacity: 0.5;
+}
+
 a.result {
   margin-bottom: 10px;
-  border-left: 5px solid white;
+  border-left: 5px solid transparent;
   text-decoration: none;
   display: block;
   padding: 10px 10px 10px 20px;
+
   -webkit-transition: .5s all ease-in-out;
 }
 a.flexBox {
@@ -277,7 +306,10 @@ a.result * {
   text-decoration: none;
   color: #333;
 }
-.result .imageItem {
+.result div {
+  flex: 1 1 auto;
+}
+.result div.imageItem {
   flex: 0 0 auto;
 }
 .result .thumb {

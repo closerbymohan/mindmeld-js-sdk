@@ -1,4 +1,6 @@
 (function () {
+    'use strict';
+
     /**
      * Generates unique identifier
      * @returns {string}
@@ -9,6 +11,8 @@
             return v.toString(16);
         }));
     }
+
+    // available languages
     var langs = [
 
         ['Afrikaans',             ['af-ZA']],
@@ -95,9 +99,9 @@
     var MM_APP_ID = 'ENTER_YOUR_APP_ID';
     var MM_APP_SECRET = 'ENTER_YOUR_APP_SECRET';
 
-    var MM_SIMPLE_USER_ID_PREFIX = 'vnu';
-    var MM_SIMPLE_USER_NAME = 'Voice Navigator User';
-    var MM_SIMPLE_USER_ID_COOKIE = 'voice_navigator_user_id';
+    var MM_SIMPLE_USER_ID_PREFIX = 'mlvu';
+    var MM_SIMPLE_USER_NAME = 'Multilingual Voice User';
+    var MM_SIMPLE_USER_ID_COOKIE = 'multilingual_voice_user_id';
 
     var self;
     var VoiceNavigator = {
@@ -108,57 +112,63 @@
         $confirmed: $(),
         $pending: $(),
         $microphone: $(),
+        $documentContainer: $(),
         $documents: $(),
         $languages: $(),
-        $select_language: $(),
-        $select_dialect: $(),
+        $selectLanguage: $(),
+        $selectDialect: $(),
 
-        init: function() {
+        // initialization
+        init: function () {
             // get jquery references to elements
             self.$textBox = $('#textBox');
             self.$textStream = $('#textStream');
             self.$confirmed = $('#confirmed');
             self.$pending = $('#pending');
             self.$microphone = $('#microphone');
+            self.$documentContainer = $('#document-container');
             self.$documents = $('#documents');
             self.$languages = $('#languages');
-            self.$select_language = $('#select_language');
-            self.$select_dialect = $('#select_dialect');
+            self.$selectLanguage = $('#select-language');
+            self.$selectDialect = $('#select-dialect');
 
             // populate speech recognition languages
-            var select_language = self.$select_language[0];
-            var select_dialect = self.$select_dialect[0];
+            var selectLanguage = self.$selectLanguage[0];
+            var selectDialect = self.$selectDialect[0];
 
             for (var i = 0; i < langs.length; i++) {
-                select_language.options[i] = new Option(langs[i][0], i);
+                selectLanguage.options[i] = new Option(langs[i][0], i);
+            }
+
+            // update dialects based on the currently selected language
+            function updateDialects () {
+                var i;
+                for (i = selectDialect.options.length - 1; i >= 0; i--) {
+                    selectDialect.remove(i);
+                }
+                var list = langs[selectLanguage.selectedIndex];
+                for (i = 1; i < list.length; i++) {
+                    selectDialect.options.add(new Option(list[i][1], list[i][0]));
+                }
+                if (list[1].length === 1) {
+                    self.$selectDialect.hide();
+                } else {
+                    self.$selectDialect.show();
+                }
             }
 
             // default to American English
-            select_language.selectedIndex = 7; // english
+            selectLanguage.selectedIndex = 7; // english
             updateDialects();
-            select_dialect.selectedIndex = 6; // usa
-
-            function updateDialects() {
-                for (var i = select_dialect.options.length - 1; i >= 0; i--) {
-                    select_dialect.remove(i);
-                }
-                var list = langs[select_language.selectedIndex];
-                for (var i = 1; i < list.length; i++) {
-                    select_dialect.options.add(new Option(list[i][1], list[i][0]));
-                }
-                if (list[1].length === 1) {
-                    self.$select_dialect.hide();
-                } else {
-                    self.$select_dialect.show();
-                }
-            }
+            selectDialect.selectedIndex = 6; // usa
 
             // update the dialects when the language is changed
-            self.$select_language.change(function () {
+            self.$selectLanguage.change(function () {
                 updateDialects();
             });
 
-            // get user id cookie
+            // Store the simple user id as a cookie, so when a user returns in the same browser,
+            // they are recognized as the same user
             self.simpleUserID = $.cookie(MM_SIMPLE_USER_ID_COOKIE);
             if (self.simpleUserID === undefined) {
                 self.simpleUserID = MM_SIMPLE_USER_ID_PREFIX + '-' + guid();
@@ -169,31 +179,39 @@
                 self.$documents.html('<span>Sorry, this page will only work with Google Chrome. Try opening it there.</span>');
                 return;
             }
-            // initialize the mindmeld sdk
-            // We go through the following steps to initialize the sdk
-            // 1) Specify the app id
-            // 2) Request a user token
-            // 3)
 
+            // To initialize the MindMeld SDK, we go through the following steps. Each step calls the next when it
+            // completes successfully
+            //
+            // 1) Load a MindMeld application with the specified app id
+            // 2) Request a user token using simple authentication
+            // 3) Set the active user
+            // 4) Create an invite only session for the active user
+            // 5) Activate the newly created session
+            // 6) Subscribe to documents update push events, so that we get new documents as text entries are posted.
+            // 7) Setup the session listener to display the transcript as it is spoken. The session listener will
+            //    automatically post text entries as transcripts are generated.
 
+            // begin MindMeld SDK initialization
             MM.init({
+                // Step 1
                 appid: MM_APP_ID,
-                onInit: function() {
+                onInit: function () {
                     self.getToken();
                 }
             });
 
-            // Animations to indicate recording is in progress
+            // Don't abruptly stop recording animation, only when a cycle has been completed
             var animationIterations = 0;
-            $('#microphone div').bind('webkitAnimationIteration', function() {
+            $('#microphone div').bind('webkitAnimationIteration', function () {
                 animationIterations++;
                 if (animationIterations % 2 === 0 && !MM.activeSession.listener.listening) {
                     self.$microphone.removeClass('pulsing');
                 }
             });
 
-            // Simple refresh button for now
-            self.$microphone.click(function() {
+            // Clicking on microphone will start and stop listening
+            self.$microphone.click(function () {
                 var $this = $(this);
                 if (!MM.activeSession.listener.listening && !$this.hasClass('pulsing')) {
                     $this.addClass('pulsing');
@@ -204,7 +222,11 @@
 
         oldTextWidth: 0,
         textWidth: 0,
-        doScrollPosition: function () {
+
+        /**
+         * Horizontally scrolls the text box element as the transcript grows too big for the screen
+         */
+        scrollTextBox: function () {
             self.textWidth = self.$confirmed.width() + self.$pending.width() + 120; // padding
             if (self.textWidth > self.oldTextWidth) {
                 self.oldTextWidth = self.textWidth; // store for later check
@@ -217,40 +239,32 @@
                     queue:false
                 });
 
-                console.log(Date.now(), this.textWidth - self.$textBox.width());
+                window.console.log(this.textWidth - self.$textBox.width());
             }
         },
 
-        documentLock: {
-            canRequestDocuments: function() {
-                return (this.lastDocumentsRequest + 500 < Date.now());
-            },
-            lastDocumentsRequest: 0
-        },
-
-        getDocuments: function() {
-            if (!self.documentLock.canRequestDocuments()) {
-                return;
-            }
-            self.documentLock.lastDocumentsRequest = Date.now();
-            MM.activeSession.documents.get(null, function(result) {
-                console.log(Date.now(), "Successfully got documents");
-                self.updateDocuments(result);
-            }, function (error) {
-                console.log(Date.now(), "Error getting documents:  (Type " + error.code +
-                    " - " + error.type + "): " + error.message);
-            });
-        },
-
-        updateDocuments: function(result) {
+        /**
+         * Updates the user interface with the documents in result. Any previous documents are removed.
+         *
+         * @param result {Object} the response from a get documents request
+         */
+        updateDocuments: function (result) {
             self.$documents.empty();
-            $.each(result.data, function(index, doc) {
+            $.each(result.data, function (index, doc) {
                 var $doc = self.createDocumentElement(doc);
                 self.$documents.append($doc);
             });
+            self.$documentContainer.removeClass('loading');
         },
 
-        createDocumentElement: function(doc) {
+        /**
+         * Creates an HTML element to display information about a document, including the title, an image, a description
+         * and the site from which it originated.
+         *
+         * @param doc
+         * @returns {*|jQuery|HTMLElement}
+         */
+        createDocumentElement: function (doc) {
             var $doc =  $('<a>', {
                 href: doc.originurl,
                 class: 'result flexBox clearfix'
@@ -266,7 +280,7 @@
                 shortDesc = "No description...";
             }
 
-            var image = doc.image
+            var image = doc.image;
             var imageURL = null;
 
             if (typeof image !== 'undefined') {
@@ -311,7 +325,7 @@
                 }));
             }
 
-            var sourceLabel = doc.source.name || doc.source.url || ''
+            var sourceLabel = doc.source.name || doc.source.url || '';
             $source.append($('<cite>', {
                 class: 'url',
                 text: sourceLabel
@@ -324,7 +338,11 @@
             return $doc;
         },
 
-        appendConfirmedTranscript: function(transcript) {
+        /**
+         * Adds another string to the confirmed portion of the transcript
+         * @param transcript
+         */
+        appendConfirmedTranscript: function (transcript) {
             self.$confirmed.append($('<span>', {
                 class: 'tran',
                 text: transcript
@@ -332,63 +350,19 @@
             self.$pending.text('');
         },
 
-        listenerConfig: {
-            continuous: true,
-            interimResults: true,
-            onResult: function(result) {
-                if (result.final) {
-                    self.appendConfirmedTranscript(result.transcript);
-                } else {
-                    self.$pending.text(result.transcript);
-                }
+        // MindMeld setup functions
 
-                self.doScrollPosition();
-            },
-            onStart: function(event) {
-                // disable select elements
-                self.$select_language.attr('disabled', 'disabled');
-                self.$select_dialect.attr('disabled', 'disabled');
-
-                self.$confirmed.text(''); // clear previous text
-            },
-            onEnd: function(event) {
-                // reenable select elements
-                self.$select_language.removeAttr('disabled');
-                self.$select_dialect.removeAttr('disabled');
-
-                var pendingText = self.$pending.text();
-                if (pendingText != '') {
-                    self.appendConfirmedTranscript(pendingText);
-                }
-            },
-            onError: function(error) {
-                console.log(Date.now(), 'error or reconnecting: ' + Date.now());
-                console.log(Date.now(), event.error);
-            },
-            onTextEntryPosted: function(result) {
-                console.log(Date.now(), 'text entry posted');
-                self.getDocuments();
-            }
-        },
-
-        toggleListening: function() {
-            var listener = MM.activeSession.listener;
-            if (listener.listening) {
-                listener.stop();
-            } else {
-                listener.setConfig({ lang: self.$select_dialect.val() });
-                listener.start();
-            }
-        },
-
-        // Mindmeld setup functions
+        /**
+         * Step 2
+         * Gets a token using the app secret constant and the simple user id retrieved from cookies
+         */
         getToken: function () {
-            function onSuccess(result) {
-                console.log(Date.now(), 'Successfully got token');
+            function onSuccess (result) {
+                window.console.log('Successfully got token');
                 self.setUser(result.user.userid);
             }
-            function onError (error) {
-                console.log(Date.now(), 'Token was not valid');
+            function onError () {
+                window.console.log('Unable to get token');
             }
 
             MM.getToken({
@@ -400,23 +374,32 @@
             }, onSuccess, onError);
         },
 
-        setUser: function(userID) {
-            function onSuccess(result) {
+        /**
+         * Step 3
+         * Set the active user based on the given id and continues MindMeld SDK setup
+         * @param userID
+         */
+        setUser: function (userID) {
+            function onSuccess () {
                 self.createSession();
             }
             function onError (error) {
-                console.log(Date.now(), "Error setting user session:  (Type " + error.code +
+                window.console.log("Error setting user session:  (Type " + error.code +
                     " - " + error.type + "): " + error.message);
             }
             MM.setActiveUserID(userID, onSuccess, onError);
         },
 
+        /**
+         * Step 4
+         * Creates a session for the active user and continues the Mindmeld SDK setup
+         */
         createSession: function () {
-            function onSuccess(result) {
+            function onSuccess (result) {
                 self.setSession(result.data.sessionid);
             }
             function onError (error) {
-                console.log(Date.now(), "Error creating new session:  (Type " + error.code +
+                window.console.log("Error creating new session:  (Type " + error.code +
                     " - " + error.type + "): " + error.message);
             }
             var date = new Date();
@@ -427,38 +410,132 @@
             }, onSuccess, onError);
         },
 
+        /**
+         * Step 5
+         * Sets the active session to the specified id and continues MindMeld SDK setup
+         * @param sessionID
+         */
         setSession: function (sessionID) {
-            function onSuccess(result) {
-                self.subscribeToEntities();
+            function onSuccess () {
+                self.subscribeToDocuments();
                 self.setupSessionListener();
             }
             function onError (error) {
-                console.log(Date.now(), "Error setting session:  (Type " + error.code +
+                window.console.log("Error setting session:  (Type " + error.code +
                     " - " + error.type + "): " + error.message);
             }
             MM.setActiveSessionID(sessionID, onSuccess, onError);
         },
 
-        subscribeToEntities: function () {
-            function onSuccess(result) {
-                console.log(Date.now(), "Subscribed to entities!");
+        /**
+         * Step 6
+         * Subscribes to document update push events. When the documents collection is updated,
+         * refreshes the user interface
+         */
+        subscribeToDocuments: function () {
+            function onSuccess () {
+                window.console.log("Subscribed to documents!");
             }
             function onError (error) {
-                console.log(Date.now(), "Error subscribing to entities:  (Type " + error.code +
+                window.console.log("Error subscribing to documents:  (Type " + error.code +
                     " - " + error.type + "): " + error.message);
             }
-            MM.activeSession.entities.onUpdate(function(result) {
-                console.log(Date.now(), 'entities');
+            MM.activeSession.documents.onUpdate(function (result) {
+                window.console.log('documents updated');
+                self.updateDocuments(result);
             }, onSuccess, onError);
         },
 
+        /**
+         * Step 7
+         * Sets up the session listener to display transcripts as they are received
+         */
         setupSessionListener: function () {
             MM.activeSession.setListenerConfig(self.listenerConfig);
+        },
 
+        /**
+         * A ListenerConfig object specifying the session
+         */
+        listenerConfig: {
+            continuous: true,
+            interimResults: true,
+            onResult: function (result) {
+                if (result.final) {
+                    self.appendConfirmedTranscript(result.transcript);
+                } else {
+                    self.$pending.text(result.transcript);
+                }
+
+                self.scrollTextBox();
+            },
+            onStart: function () {
+                // disable select elements
+                self.$selectLanguage.attr('disabled', 'disabled');
+                self.$selectDialect.attr('disabled', 'disabled');
+
+                self.$confirmed.text(''); // clear previous text
+            },
+            onEnd: function () {
+                // reenable select elements
+                self.$selectLanguage.removeAttr('disabled');
+                self.$selectDialect.removeAttr('disabled');
+
+                // We will recieve no further updates, so convert any pending text to confirmed text
+                var pendingText = self.$pending.text();
+                if (pendingText !== '') {
+                    self.appendConfirmedTranscript(pendingText);
+                }
+            },
+            onError: function (event) {
+                window.console.log('MM.Listener: error or reconnecting');
+                window.console.log(event.error);
+            },
+            onTextEntryPosted: function () {
+                window.console.log('text entry posted');
+                self.$documentContainer.addClass('loading');
+            }
+        },
+
+        /**
+         * Starts the session listener if it is not already listening, using the selected language.
+         * Stops the session listener if it is already listening.
+         */
+        toggleListening: function () {
+            var listener = MM.activeSession.listener;
+            if (listener.listening) {
+                listener.stop();
+            } else {
+                listener.setConfig({ lang: self.$selectDialect.val() }); // use currently selected language
+                listener.start();
+            }
         }
     };
     self = VoiceNavigator;
-    $(document).ready(function() {
+    $(document).ready(function () {
         self.init(); // initialize app when document is ready
     });
+
+
+    function addLeadingZeros(number, digits) {
+        var base = Math.pow(10, digits);
+        number += base;
+        number = number.toString();
+        return number.substring(number.length - digits);
+    }
+
+    function timestamp(date) {
+        date = date || new Date();
+        return addLeadingZeros(date.getFullYear(), 4) + '.'
+            + addLeadingZeros(date.getMonth() + 1, 2) + '.'
+            + addLeadingZeros(date.getDate(), 2) + ' ' + date.toTimeString();
+    }
+
+    // Add nice timestamps to logs
+    console.originalLog = console.log.bind(console);
+    console.log = function() {
+        var args = Array.prototype.slice.call(arguments, 0);
+        args.splice(0, 0, timestamp());
+        console.originalLog.apply(console, args);
+    };
 }());
