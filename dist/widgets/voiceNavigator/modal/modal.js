@@ -7078,7 +7078,7 @@ var MM = ( function ($, Faye) {
                 }
             });
 
-            function getEffectiveLang() {
+            function getEffectiveLang () {
                 var language = '';
                 if (listener.lang !== '') {
                     language = listener.lang;
@@ -7088,7 +7088,7 @@ var MM = ( function ($, Faye) {
                 }
                 return language;
             }
-            function postListenerResult(transcript) {
+            function postListenerResult (transcript) {
                 var textEntryData = {
                     text: transcript,
                     type: 'speech',
@@ -7769,10 +7769,11 @@ var MM = ( function ($, Faye) {
         var languageTags6391To6392 = {"ab":"abk","aa":"aar","af":"afr","sq":"sqi","am":"amh","ar":"ara","an":"arg","hy":"hye","as":"asm","ae":"ave","ay":"aym","az":"aze","ba":"bak","eu":"eus","be":"bel","bn":"ben","bh":"bih","bi":"bis","bs":"bos","br":"bre","bg":"bul","my":"mya","ca":"cat","ch":"cha","ce":"che","zh":"zho","cu":"chu","cv":"chv","kw":"cor","co":"cos","hr":"hrv","cs":"ces","da":"dan","dv":"div","nl":"nld","dz":"dzo","en":"eng","eo":"epo","et":"est","fo":"fao","fj":"fij","fi":"fin","fr":"fra","gd":"gla","gl":"glg","ka":"kat","de":"deu","el":"ell","gn":"grn","gu":"guj","ht":"hat","ha":"hau","he":"heb","hz":"her","hi":"hin","ho":"hmo","hu":"hun","is":"isl","io":"ido","id":"ind","ia":"ina","ie":"ile","iu":"iku","ik":"ipk","ga":"gle","it":"ita","ja":"jpn","jv":"jav","kl":"kal","kn":"kan","ks":"kas","kk":"kaz","km":"khm","ki":"kik","rw":"kin","ky":"kir","kv":"kom","ko":"kor","kj":"kua","ku":"kur","lo":"lao","la":"lat","lv":"lav","li":"lim","ln":"lin","lt":"lit","lb":"ltz","mk":"mkd","mg":"mlg","ms":"msa","ml":"mal","mt":"mlt","gv":"glv","mi":"mri","mr":"mar","mh":"mah","mo":"mol","mn":"mon","na":"nau","nv":"nav","nd":"nde","nr":"nbl","ng":"ndo","ne":"nep","se":"sme","no":"nor","nb":"nob","nn":"nno","ny":"nya","oc":"oci","or":"ori","om":"orm","os":"oss","pi":"pli","pa":"pan","fa":"fas","pl":"pol","pt":"por","ps":"pus","qu":"que","rm":"roh","ro":"ron","rn":"run","ru":"rus","sm":"smo","sg":"sag","sa":"san","sc":"srd","sr":"srp","sn":"sna","ii":"iii","sd":"snd","si":"sin","sk":"slk","sl":"slv","so":"som","st":"sot","es":"spa","su":"sun","sw":"swa","ss":"ssw","sv":"swe","tl":"tgl","ty":"tah","tg":"tgk","ta":"tam","tt":"tat","te":"tel","th":"tha","bo":"bod","ti":"tir","to":"ton","ts":"tso","tn":"tsn","tr":"tur","tk":"tuk","tw":"twi","ug":"uig","uk":"ukr","ur":"urd","uz":"uzb","vi":"vie","vo":"vol","wa":"wln","cy":"cym","fy":"fry","wo":"wol","xh":"xho","yi":"yid","yo":"yor","za":"zha","zu":"zul"}
 
         /**
-         * Converts language name or tag to the [ISO 639-2](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) tag. If
-         * the language is unknown, the first three characters of lang parameter are returned.
+         * Converts language name or tag to the [ISO 639-2](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) language
+         * code. If the language is unknown, the first three characters of lang parameter are returned.
          *
-         * @param {String} lang An [ISO 639-1](http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) tag, for example 'en-US'.
+         * @param {String} lang an [ISO 639-1](http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code, for example 'en-US'.
+         * @return {String} an [ISO 639-2](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) language code, for example 'eng'
          *
          * @method
          * @memberOf MM.Listener
