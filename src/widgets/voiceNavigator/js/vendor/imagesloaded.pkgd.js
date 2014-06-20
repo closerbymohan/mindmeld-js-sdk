@@ -470,13 +470,13 @@
 			return EventEmitter;
 		});
 	}
-	else if (typeof module === 'object' && module.exports){
+	else if (false && typeof module === 'object' && module.exports){
 		module.exports = EventEmitter;
 	}
 	else {
 		this.EventEmitter = EventEmitter;
 	}
-}.call(this));
+}.call(window));
 
 /*!
  * eventie v1.0.4
@@ -554,7 +554,7 @@ if ( typeof define === 'function' && define.amd ) {
   window.eventie = eventie;
 }
 
-})( this );
+})( window );
 
 /*!
  * imagesLoaded v3.1.4
@@ -575,13 +575,13 @@ if ( typeof define === 'function' && define.amd ) {
     ], function( EventEmitter, eventie ) {
       return factory( window, EventEmitter, eventie );
     });
-  } else if ( typeof exports === 'object' ) {
+  } else if ( false && typeof exports === 'object' ) {
     // CommonJS
-    module.exports = factory(
-      window,
-      require('eventEmitter'),
-      require('eventie')
-    );
+//    module.exports = factory(
+//      window,
+//      require('eventEmitterEventEm'),
+//      require('eventie')
+//    );
   } else {
     // browser global
     window.imagesLoaded = factory(
@@ -591,7 +591,7 @@ if ( typeof define === 'function' && define.amd ) {
     );
   }
 
-})( this,
+})( window,
 
 // --------------------------  factory -------------------------- //
 

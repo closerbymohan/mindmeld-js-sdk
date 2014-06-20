@@ -6,8 +6,9 @@ var rename = require('gulp-rename');
 var es = require('event-stream');
 var zip = require('gulp-zip');
 var fs = require('fs');
+var taskListing = require('gulp-task-listing');
 
-var rootDirectory = __dirname + '/../';
+var rootDirectory = __dirname + '/../../';
 var exampleDirectory = rootDirectory + 'example/';
 var archiveDirectory = rootDirectory + 'archive/';
 var distDirectory = rootDirectory + 'dist/';
@@ -22,7 +23,7 @@ var bowerVersion = '';
 var versionedMindMeldName = '';
 var versionedMinifiedMindMeldName = '';
 
-gulp.task('buildMM', function () {
+gulp.task('sdk.concat', function () {
     return gulp.src([
             srcMMDirectory + 'vendor/faye.js',
             srcMMDirectory + 'main.js'
@@ -33,16 +34,18 @@ gulp.task('buildMM', function () {
 
 
 // Uglifies mindmeld.js into mindmeld.min.js
-gulp.task('uglifyMM', ['buildMM'], function () {
+gulp.task('sdk.uglify', ['sdk.concat'], function () {
     return gulp.src(distMMDirectory + 'mindmeld.js')
-        .pipe(uglify(), {mangle:true})
+        .pipe(uglify(), { mangle:true })
         .pipe(rename('mindmeld.min.js'))
         .pipe(gulp.dest(distMMDirectory));
 });
 
+gulp.task('sdk.docs', ['grunt-buildJSDocs']);
+
 // Moves generated JS Doc, mindmeld.js, mindmeld.min.js and
 // HelloWorld page into mindmeld-js-sdk.zip
-gulp.task('zipSDK', ['grunt-buildJSDocs', 'uglifyMM'], function () {
+gulp.task('sdk.zip', ['sdk.docs', 'sdk.uglify'], function () {
     return es.merge(
         gulp.src('LICENSE'),
         gulp.src(distDirectory + 'docs/**', {base: distDirectory}),
@@ -55,7 +58,7 @@ gulp.task('zipSDK', ['grunt-buildJSDocs', 'uglifyMM'], function () {
 
 // Parses bower.json for current version and sets file names
 // for mindmeld-<version>.js and mindmeld-<version>.min.js
-gulp.task('setVersion', function () {
+gulp.task('sdk.set-version', function () {
     var bowerPath = rootDirectory + './bower.json';
     var bowerData = JSON.parse(fs.readFileSync(bowerPath, 'utf-8'));
     bowerVersion = bowerData.version;
@@ -64,7 +67,7 @@ gulp.task('setVersion', function () {
 });
 
 // Copy mindmeld.js and mindmeld.min.js to archive/ directory
-gulp.task('archiveJS', ['setVersion', 'uglifyMM'], function () {
+gulp.task('sdk.archive.js', ['sdk.set-version', 'sdk.uglify'], function () {
     return es.merge(
         gulp.src(distMMDirectory + 'mindmeld.js', {base: distMMDirectory})
             .pipe(rename(versionedMindMeldName))
@@ -77,7 +80,7 @@ gulp.task('archiveJS', ['setVersion', 'uglifyMM'], function () {
 });
 
 // Creates archive of SDK at current version
-gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
+gulp.task('sdk.archive', ['sdk.set-version', 'sdk.archive.js', 'sdk.build'], function () {
     return es.merge(
         gulp.src('LICENSE', baseDirOption),
 
@@ -95,17 +98,20 @@ gulp.task('archiveSDK', ['setVersion', 'archiveJS', 'build'], function () {
 });
 
 // Copies embed script to dist directory
-gulp.task('distLoader', function () {
+gulp.task('embed.build', function () {
     return gulp.src(srcDirectory + 'embed.js')
-        .pipe(uglify(), {mangle:true})
+        .pipe(uglify(), { mangle:true })
         .pipe(gulp.dest(distDirectory));
 });
 
 // Watch for changes in mindmeld js files and build mindmeld.js
-gulp.task('watchMM', ['uglifyMM', 'distLoader'], function () {
-    gulp.watch(srcMMDirectory + '**/*.js', ['buildMM']);
-    gulp.watch(srcDirectory + 'embed.js', ['distLoader']);
+gulp.task('sdk.watch', ['sdk.uglify', 'embed.build'], function () {
+    gulp.watch(srcMMDirectory + '**/*.js', ['sdk.concat']);
+    gulp.watch(srcDirectory + 'embed.js', ['embed.build']);
 });
 
-gulp.task('build', ['zipSDK', 'distLoader']);
-gulp.task('default', ['build']);
+gulp.task('sdk.build', ['sdk.zip', 'embed.build']);
+gulp.task('sdk', ['sdk.build']);
+
+// show list of sdk tasks
+gulp.task('sdk.tasks', taskListing.withFilters(/\./, /^(?!sdk).+/));

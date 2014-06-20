@@ -97,7 +97,7 @@ var MM = window.MM || {};
                 MM.widgets.config.search.voiceNavigatorEnabled = true;
             }
             loadJS(
-                    MM.loader.rootURL + 'widgets/searchWidget/mindmeldSearchWidget.js',
+                MM.loader.rootURL + 'widgets/searchWidget/mindmeldSearchWidget.js',
                 widgetName,
                 function onSearchWidgetLoad () {
                     MM.loader.$jq('#mm-search').searchwidget();
