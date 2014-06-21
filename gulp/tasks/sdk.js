@@ -70,7 +70,7 @@ gulp.task('sdk.zip', ['sdk.docs', 'sdk.uglify'], function () {
 /**
  * Creates a standalone package containing the multilingual voice example
  */
-gulp.task('sdk.examples.multilingual-voice', ['sdk.concat'], function() {
+gulp.task('sdk.examples.multilingual-voice', ['sdk.concat'], function () {
     var mlmvDirectory = exampleDirectory + 'sdk/multiLingualVoice/';
     es.merge(
         gulp.src(mlmvDirectory + 'index.html', { base: mlmvDirectory })

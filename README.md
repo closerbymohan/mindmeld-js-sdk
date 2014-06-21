@@ -28,12 +28,12 @@ take a hit. However, if you must link directly, you should use the versioned URL
 to prevent compatibility issues in the future.
 
 ```html
-<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.js"></script>
+<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.js"></script>
 ```
 
-* Un-minified: [mindmeld-2.3.6.js][versionedSDKDownloadLink]
-* Minified: [mindmeld-2.3.6.min.js][versionedMinifiedSDKDownloadLink]
-* Both + Hello World + Documentation: [mindmeld-js-sdk-2.3.6.zip][versionedSDKZIPDownloadLink]
+* Un-minified: [mindmeld-2.4.0.js][versionedSDKDownloadLink]
+* Minified: [mindmeld-2.4.0.min.js][versionedMinifiedSDKDownloadLink]
+* Both + Hello World + Documentation: [mindmeld-js-sdk-2.4.0.zip][versionedSDKZIPDownloadLink]
 
 ### Clone git repository 
 Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
@@ -348,7 +348,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 * *src/docsTemplate/*: Directory containing templates and configuration files for building JS Docs
 * *src/embed.js*: Source for embed script used to asynchronously load widgets
 * *dist/*: Directory containing all built, uglified, and production-ready files for JS SDK
-* *dist/sdk/*: Directory containing compiled mindmeld.js, mindmeld.min.js, and mindmeld-js-sdk.zip
+* *dist/sdk/*: Directory containing compiled mindmeld.js, mindmeld.min.js, mindmeld-js-sdk.zip, and examples
 * *dist/widgets/searchWidget/*: Directory containing all files necessary for using autocomplete search widget
 * *dist/widgets/voiceNavigator/*: Directory containing all files necessary for using voice navigator widget
 * *dist/widgets/voiceNavigator/widget/*: Directory containing voice navigator widget files that create the voice navigator iframe
@@ -356,7 +356,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 * *dist/embed.js*: Minified embed script used in prod
 * *example/*: Directory mirroring src/ and dist/ directories containing example HTML pages showing basic usage of SDK and widgets
 * *archive/*: Directory containing all previous versions of mindmeld.js
-* *tasks/*: Directory containing gulpfiles for building SDK and widgets
+* *gulp/*: Directory containing gulpfiles for building SDK and widgets
 * *gulpfile.js*: Main gulpfile used to orchestrate build processes
 * *Gruntfile.js*: Legacy grunt file currently only used for building JS Doc because gulp-js doc does not support our JS doc template
 * *bump.txt*: Add garbage to this file and and check it in when you just want a new SHA for this repo
@@ -369,7 +369,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 [latestSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.js
 [latestMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.min.js
 [latestSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk.zip
-[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.js
-[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.min.js
-[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.3.6.zip
+[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.js
+[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.min.js
+[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.4.0.zip
 

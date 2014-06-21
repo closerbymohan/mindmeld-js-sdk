@@ -2558,7 +2558,7 @@ var MM = ( function (window, $, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.3.6',
+        value: '2.4.0',
         writable: false
     });
 

@@ -1,6 +1,6 @@
 {
     "name": "mindmeld-js-sdk",
-    "version": "2.3.6",
+    "version": "2.4.0",
     "main": "dist/sdk/mindmeld.min.js",
     "description": "JavaScript SDK for MindMeld API",
     "homepage": "https://developer.expectlabs.com",
