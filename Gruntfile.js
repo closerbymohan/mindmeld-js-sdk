@@ -8,7 +8,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         jsdoc : {
             dist: {
-                src: ['src/sdk/main.js', 'README.md'],
+                src: ['src/sdk/main.js', 'README.md', 'src/widgets/voiceNavigator/js/widget.js'],
                 dest: 'dist/docs/',
                 options: {
                     configure: 'src/docsTemplate/jaguar.conf.json',

@@ -1,9 +1,3 @@
-/**
- * Created by jj on 4/18/14.
- */
-
-;(function() {
-
   // This method takes a list of hypothesis entity candidates, the list of known reference entities as
   // well as the original text.  It this identifies all true positive, false positive, and false
   // entityList: hypothesis entity candidates
@@ -208,5 +202,8 @@
     return [];
   }
 
+if (typeof module !== 'undefined') {
+  module.exports = highlightEntities;
+} else if (typeof window !== 'undefined') {
   window.highlightEntities = highlightEntities;
-})();
+}

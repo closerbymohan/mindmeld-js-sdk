@@ -28,12 +28,12 @@ take a hit. However, if you must link directly, you should use the versioned URL
 to prevent compatibility issues in the future.
 
 ```html
-<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.js"></script>
+<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.js"></script>
 ```
 
-* Un-minified: [mindmeld-2.3.6.js][versionedSDKDownloadLink]
-* Minified: [mindmeld-2.3.6.min.js][versionedMinifiedSDKDownloadLink]
-* Both + Hello World + Documentation: [mindmeld-js-sdk-2.3.6.zip][versionedSDKZIPDownloadLink]
+* Un-minified: [mindmeld-2.4.0.js][versionedSDKDownloadLink]
+* Minified: [mindmeld-2.4.0.min.js][versionedMinifiedSDKDownloadLink]
+* Both + Hello World + Documentation: [mindmeld-js-sdk-2.4.0.zip][versionedSDKZIPDownloadLink]
 
 ### Clone git repository 
 Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
@@ -153,28 +153,28 @@ MM.activeUser.sessions.post(newSessionData,
 ```
 
 ### Post a Text Entry
-To post a text entry to the session
+To post a text entry to the session, you can optionally specify the language.
 
 ```javascript
 var textEntryData = {
     text: 'Sandra Bullock might win an Academy Award for Best Actress in the movie Gravity',
     type: 'text',
-    weight: 1.0
-
+    weight: 1.0,
+    language: 'eng' // this is not required
 };
 MM.activeSession.textentries.post(textEntryData);
 ```
 
 ### Example Flow to Get Contextually Relevant Documents to a Conversation
-The following code snippet will post a text entry, receive a notification once the MindMeld API
-has extracted entities from a text entry, and fetch documents related to the original text entry
+The following code snippet will subscribe to the documents collection, post a text entry, and receive 
+a notification once the MindMeld API has updated documents for the text entry.
 
 ```javascript
-// Subscribe to push events for when the entities collection updates
-MM.activeSession.entities.onUpdate(onEntitiesUpdate, onSubscribedToEntityUpdates);
+// Subscribe to push events for when the documents collection updates
+MM.activeSession.documents.onUpdate(onDocumentsUpdate, onSubscribedToDocumentUpdates);
 
-function onSubscribedToEntityUpdates () {
-    console.log('subscribed to updates to the entities collection');
+function onSubscribedToDocumentUpdates () {
+    console.log('subscribed to updates to the documents collection');
 
     var textEntryData = {
         text: 'Sandra Bullock might win an Academy Award for Best Actress in the movie Gravity',
@@ -186,19 +186,9 @@ function onSubscribedToEntityUpdates () {
     MM.activeSession.textentries.post(textEntryData);
 }
 
-function onEntitiesUpdate () {
-    console.log('received an update to the entities collection');
-    var entities = MM.activeSession.entities.json();
-    console.log('Entities extracted: ' + JSON.stringify(entities));
-
-    // Now, fetch documents
-    MM.activeSession.documents.get(null, onDocumentsFetched);
-}
-
-function onDocumentsFetched () {
-    console.log('fetched documents related to the session');
-    // get the documents fetched from MM.activeSession.documents.get()
-    var documents =  MM.activeSession.documents.json();
+function onDocumentsUpdate () {
+    console.log('received an update to the documents collection');
+    var documents = MM.activeSession.documents.json();
     console.log('Related Documents: ' + JSON.stringify(documents));
 }
 ```
@@ -358,7 +348,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 * *src/docsTemplate/*: Directory containing templates and configuration files for building JS Docs
 * *src/embed.js*: Source for embed script used to asynchronously load widgets
 * *dist/*: Directory containing all built, uglified, and production-ready files for JS SDK
-* *dist/sdk/*: Directory containing compiled mindmeld.js, mindmeld.min.js, and mindmeld-js-sdk.zip
+* *dist/sdk/*: Directory containing compiled mindmeld.js, mindmeld.min.js, mindmeld-js-sdk.zip, and examples
 * *dist/widgets/searchWidget/*: Directory containing all files necessary for using autocomplete search widget
 * *dist/widgets/voiceNavigator/*: Directory containing all files necessary for using voice navigator widget
 * *dist/widgets/voiceNavigator/widget/*: Directory containing voice navigator widget files that create the voice navigator iframe
@@ -366,7 +356,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 * *dist/embed.js*: Minified embed script used in prod
 * *example/*: Directory mirroring src/ and dist/ directories containing example HTML pages showing basic usage of SDK and widgets
 * *archive/*: Directory containing all previous versions of mindmeld.js
-* *tasks/*: Directory containing gulpfiles for building SDK and widgets
+* *gulp/*: Directory containing gulpfiles for building SDK and widgets
 * *gulpfile.js*: Main gulpfile used to orchestrate build processes
 * *Gruntfile.js*: Legacy grunt file currently only used for building JS Doc because gulp-js doc does not support our JS doc template
 * *bump.txt*: Add garbage to this file and and check it in when you just want a new SHA for this repo
@@ -379,7 +369,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 [latestSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.js
 [latestMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.min.js
 [latestSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk.zip
-[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.js
-[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.3.6.min.js
-[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.3.6.zip
+[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.js
+[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.min.js
+[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.4.0.zip
 

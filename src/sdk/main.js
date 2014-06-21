@@ -4,7 +4,7 @@
  *
  * @namespace
  */
-var MM = ( function ($, Faye) {
+var MM = ( function (window, $, Faye) {
 
     var MM = window.MM = window.MM || {};
 
@@ -16,7 +16,7 @@ var MM = ( function ($, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.3.6',
+        value: '2.4.0',
         writable: false
     });
 
@@ -150,12 +150,12 @@ var MM = ( function ($, Faye) {
             subclassProto = subclass.prototype = new F();
             subclassProto.constructor = subclass;
             subclass.superclass = superclassProto;
-            if (superclassProto.constructor == objectConstructor) {
+            if (superclassProto.constructor === objectConstructor) {
                 superclassProto.constructor = superclass;
             }
-            subclassProto.superclass = subclassProto.supr = (function () {
+            subclassProto.superclass = subclassProto.supr = function () {
                 return superclassProto;
-            });
+            };
             subclassProto.proto = subclassProto;
             MM.Internal.override(subclass, overrides);
             return subclass;
@@ -251,9 +251,12 @@ var MM = ( function ($, Faye) {
 
                 var clientAuth = {
                     outgoing: function(message, callback) {
-                        if (message.channel !== '/meta/subscribe')
+                        if (message.channel !== '/meta/subscribe') {
                             return callback(message);
-                        if (!message.ext) message.ext = {};
+                        }
+                        if (!message.ext) {
+                            message.ext = {};
+                        }
                         message.ext.authToken = MM.token;
                         callback(message);
 
@@ -617,7 +620,7 @@ var MM = ( function ($, Faye) {
             //noinspection JSCheckFunctionSignatures
             MM.config = $.extend({}, defaultConfig, config);
 
-            $(document).ready(function () {
+            $(window.document).ready(function () {
                 MM.Internal.onReady();
             });
         },
@@ -779,7 +782,9 @@ var MM = ( function ($, Faye) {
 
             // Clears MM.token on success
             function onRevokeTokenSuccess(response) {
-                if (MM.config.debug) MM.Internal.log('SUCCESSFULLY REVOKED TOKEN: ' + MM.token);
+                if (MM.config.debug) {
+                    MM.Internal.log('SUCCESSFULLY REVOKED TOKEN: ' + MM.token);
+                }
                 MM.token = '';
                 if (response.data) {
                     MM.Util.testAndCall(onSuccess, response);
@@ -1016,7 +1021,11 @@ var MM = ( function ($, Faye) {
 
             headers = headers || {'X-MINDMELD-ACCESS-TOKEN': MM.token};
             var fullUrl = MM.config.cleanUrl + path;
-            if (MM.config.debug) MM.Internal.log('Calling MindMeld API with: ' + method + ' and URL: ' + fullUrl + ' and Params: ' + JSON.stringify(params));
+            if (MM.config.debug) {
+                MM.Internal.log('Calling MindMeld API with: ' + method +
+                    ' and URL: ' + fullUrl +
+                    ' and Params: ' + JSON.stringify(params));
+            }
             // Now call the API using AJAX.
             $.ajax({
                 type: method,
@@ -1026,7 +1035,9 @@ var MM = ( function ($, Faye) {
                 headers: headers,
                 ifModified: modSince,
                 success: function (result, status) {
-                    if (MM.config.debug) MM.Internal.log('The MindMeld request returned: ' + JSON.stringify(result));
+                    if (MM.config.debug) {
+                        MM.Internal.log('The MindMeld request returned: ' + JSON.stringify(result));
+                    }
                     if (status === 'notmodified') {
                         MM.Util.testAndCall(error, status);
                     }
@@ -1108,7 +1119,7 @@ var MM = ( function ($, Faye) {
          */
         backupData: function () {
             if (MM.support.localStorage) {
-                localStorage[this.localStoragePath()] = JSON.stringify(this.result);
+                window.localStorage[this.localStoragePath()] = JSON.stringify(this.result);
             }
         },
 
@@ -1133,7 +1144,7 @@ var MM = ( function ($, Faye) {
          */
         clearLocalData: function () {
             if (MM.support.localStorage) {
-                localStorage.removeItem(this.localStoragePath());
+                window.localStorage.removeItem(this.localStoragePath());
             }
         },
 
@@ -1171,7 +1182,7 @@ var MM = ( function ($, Faye) {
          */
         restore: function (onSuccess, onFail) {
             if (MM.support.localStorage) {
-                var storedData = localStorage[this.localStoragePath()];
+                var storedData = window.localStorage[this.localStoragePath()];
                 if (storedData) {
                     storedData = JSON.parse(storedData);
                     if (storedData) {
@@ -1217,7 +1228,7 @@ var MM = ( function ($, Faye) {
         makeModelRequest: function (method, path, params, success, error) {
             var me = this;
             var callback = function (result) {
-                if (result.request && result.request.method && result.request.method.toUpperCase() == 'GET') {
+                if (result.request && result.request.method && result.request.method.toUpperCase() === 'GET') {
                     me.result = result;
                     if (me.shouldPersist) {
                         me.backupData();
@@ -1256,18 +1267,18 @@ var MM = ( function ($, Faye) {
             var channelString = '/' + MM.config.appid;
             switch (this.channelType) {
                 case 'app':
-                    channelConfig['type'] = this.channelType;
-                    channelConfig['channel'] = channelString;
+                    channelConfig.type = this.channelType;
+                    channelConfig.channel = channelString;
                     break;
 
                 case 'session':
-                    channelConfig['type'] = this.channelType;
-                    channelConfig['channel'] = channelString + '/session/' + MM.activeSessionId;
+                    channelConfig.type = this.channelType;
+                    channelConfig.channel = channelString + '/session/' + MM.activeSessionId;
                     break;
 
                 case 'user':
-                    channelConfig['type'] = this.channelType;
-                    channelConfig['channel'] = channelString + '/user/' + MM.activeUserId;
+                    channelConfig.type = this.channelType;
+                    channelConfig.channel = channelString + '/user/' + MM.activeUserId;
                     break;
             }
             return channelConfig;
@@ -1349,7 +1360,7 @@ var MM = ( function ($, Faye) {
             $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on app channel
         },
         localStoragePath: function () {
-            return 'MM.app'
+            return 'MM.app';
         },
         path: function () {
             return('');
@@ -1609,7 +1620,7 @@ var MM = ( function ($, Faye) {
             $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on user channel
         },
         localStoragePath: function () {
-            return 'MM.activeUser'
+            return 'MM.activeUser';
         },
         path: function () {
             return('user/' + MM.activeUserId);
@@ -1880,7 +1891,7 @@ var MM = ( function ($, Faye) {
             MM.models.SessionList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeUser.sessions'
+            return 'MM.activeUser.sessions';
         },
         path: function () {
             return('user/' + MM.activeUserId + '/sessions');
@@ -2047,7 +2058,7 @@ var MM = ( function ($, Faye) {
             MM.models.TextEntryList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.textentries'
+            return 'MM.activeSession.textentries';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/textentries');
@@ -2105,8 +2116,8 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 1.0
-
+                weight: 1.0,
+                language: 'eng'
             };
             MM.activeSession.textentries.post(textEntryData);
          }
@@ -2158,26 +2169,30 @@ var MM = ( function ($, Faye) {
          * sentences in length; the maximum size for a single text entry is 5000 characters. Once created,
          * textentry objects can be deleted but not modified.
          *
-         * @param {Object} textEntryData Object containing new text entry data.
-         * @param {string} textEntryData.text A segment of human-language text containing contextual
-         * information about the session. This string is typically one or two sentences but can be
-         * as long as 5000 characters. This text will be analyzed to understand the semantic concepts
-         * pertinent to the session over time.
-         * @param {string} textEntryData.type A short string that can be used to categorize text
-         * entries into different buckets. You may choose to categorize text entries based on the
-         * content the user has written, read, spoken or heard. For example, possible 'type'
-         * values could be 'email-written', 'email-read', 'sms-written', 'sms-read',
-         * 'post-written', 'post-read', 'tweet-written', 'tweet-read', 'voice-spoken', 'voice-heard',
-         * etc. Subsequent searches on the textentries collection can use this 'type' field
-         * to filter textentries by type.
-         * @param {number} textEntryData.weight A decimal number between 0 and 1 indicating the
-         * relative importance of this text entry in the overall history of text entries for the
-         * session. A value of 0 indicates that this text entry will be ignored in modeling the
-         * context of the session. A value of 1 indicates that any contextual information
-         * contained in the text entry will have the maximum amount of influence over
-         * document ranking and recommendations.
-         * @param {APISuccessCallback=} onSuccess callback for when creating new session was successful
-         * @param {APIErrorCallback=} onFail callback for when creating new session failed
+         * @param {Object} textEntryData            Object containing new text entry data.
+         * @param {string} textEntryData.text       A segment of human-language text containing contextual information
+         *                                          about the session. This string is typically one or two sentences but
+         *                                          can be as long as 5000 characters. This text will be analyzed to
+         *                                          understand the semantic concepts pertinent to the session over time.
+         * @param {string} textEntryData.type       A short string that can be used to categorize text entries into
+         *                                          different buckets. You may choose to categorize text entries based on
+         *                                          the content the user has written, read, spoken or heard. For example,
+         *                                          possible 'type' values could be 'email-written', 'email-read',
+         *                                          'sms-written', 'sms-read', 'post-written', 'post-read', 'tweet-written',
+         *                                          'tweet-read', 'voice-spoken', 'voice-heard', etc. Subsequent searches
+         *                                          on the textentries collection can use this 'type' field to filter
+         *                                          textentries by type.
+         * @param {number} textEntryData.weight     A decimal number between 0 and 1 indicating the relative importance
+         *                                          of this text entry in the overall history of text entries for the
+         *                                          session. A value of 0 indicates that this text entry will be ignored
+         *                                          in modeling the context of the session. A value of 1 indicates that
+         *                                          any contextual information  contained in the text entry will have the
+         *                                          maximum amount of influence over document ranking and recommendations.
+         * @param {String} [textEntryData.language] An [ISO 629-2 language code](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes)
+         *                                          for the language of the text. If this parameter is omitted, the API will
+         *                                          attempt to determine the language.
+         * @param {APISuccessCallback=} onSuccess   callback for when creating new session was successful
+         * @param {APIErrorCallback=} onFail        callback for when creating new session failed
          * @memberOf MM.activeSession.textentries
          * @instance
          *
@@ -2187,8 +2202,8 @@ var MM = ( function ($, Faye) {
             var textEntryData = {
                 text: 'my new text segment',
                 type: 'voice-spoken',
-                weight: 1.0
-
+                weight: 1.0,
+                language: 'eng'
             };
             MM.activeSession.textentries.post(textEntryData, onCreateNewTextEntry);
          }
@@ -2237,7 +2252,7 @@ var MM = ( function ($, Faye) {
             MM.models.EntityList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.entities'
+            return 'MM.activeSession.entities';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/entities');
@@ -2425,7 +2440,7 @@ var MM = ( function ($, Faye) {
             MM.models.ArticleList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.articles'
+            return 'MM.activeSession.articles';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/articles');
@@ -2534,7 +2549,7 @@ var MM = ( function ($, Faye) {
             MM.models.SessionDocumentList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.documents'
+            return 'MM.activeSession.documents';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/documents');
@@ -2667,7 +2682,9 @@ var MM = ( function ($, Faye) {
          */
         get: function (params, onSuccess, onFail) {
             this._get(params, onSuccess, onFail);
-        }
+        },
+        channelType: 'session',
+        updateEventName: 'documentsUpdate'
     });
 
 
@@ -2683,7 +2700,7 @@ var MM = ( function ($, Faye) {
             MM.models.AppDocumentList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.documents'
+            return 'MM.documents';
         },
         path: function () {
             return('documents');
@@ -2836,8 +2853,8 @@ var MM = ( function ($, Faye) {
             // new document added
          }
          */
-        post: function (document, onSuccess, onFail) {
-            this.makeModelRequest('POST', this.path(), document, onSuccess, onFail);
+        post: function (documentData, onSuccess, onFail) {
+            this.makeModelRequest('POST', this.path(), documentData, onSuccess, onFail);
         },
         /**
          * Delete a document from the application. This requires an admin token
@@ -2874,7 +2891,7 @@ var MM = ( function ($, Faye) {
             MM.models.LiveUserList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.liveusers'
+            return 'MM.activeSession.liveusers';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/liveusers');
@@ -3032,7 +3049,7 @@ var MM = ( function ($, Faye) {
             MM.models.InvitedUserList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.invitedusers'
+            return 'MM.activeSession.invitedusers';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/invitedusers');
@@ -3196,7 +3213,7 @@ var MM = ( function ($, Faye) {
             MM.models.ActivityList.superclass.constructor.apply(this, arguments);
         },
         localStoragePath: function () {
-            return 'MM.activeSession.activities'
+            return 'MM.activeSession.activities';
         },
         path: function () {
             return('session/' + MM.activeSessionId + '/activities');
@@ -3401,7 +3418,7 @@ var MM = ( function ($, Faye) {
                  MM.activeSession.listener.start();
              }
              */
-            this.listener = new MM.Listener({
+            var listener = this.listener = new MM.Listener({
                 interimResults: true,
                 onResult: function(result, resultIndex, results, event) {
                     // post a text entry for finalized results
@@ -3431,20 +3448,34 @@ var MM = ( function ($, Faye) {
                 }
             });
 
-            function postListenerResult(transcript) {
-                session.textentries.post({
+            function getEffectiveLang () {
+                var language = '';
+                if (listener.lang !== '') {
+                    language = listener.lang;
+                } else if (typeof window.document !== 'undefined' && window.document.documentElement !== null && window.document.documentElement.lang !== '') {
+                    // attempt to retrieve from html element
+                    language = window.document.documentElement.lang;
+                }
+                return language;
+            }
+            function postListenerResult (transcript) {
+                var textEntryData = {
                     text: transcript,
                     type: 'speech',
                     weight: 1.0
-                }, function(response) {
+                };
+                var lang = getEffectiveLang();
+                if (lang.length) {
+                    textEntryData.language = MM.Listener.convertLanguageToISO6392(lang);
+                }
+                session.textentries.post(textEntryData, function(response) {
                     MM.Util.testAndCallThis(session._onTextEntryPosted, session.listener, response);
                 });
             }
-
             $.extend(this, MM.Internal.customEventHandlers); // adds support for custom events on session channel
         },
         localStoragePath: function () {
-            return 'MM.activeSession'
+            return 'MM.activeSession';
         },
         path: function () {
             return('session/' + MM.activeSessionId);
@@ -3989,15 +4020,15 @@ var MM = ( function ($, Faye) {
 
                 var abortTimeout = 0;
                 function setAbortTimeout() {
-                    clearTimeout(abortTimeout);
-                    abortTimeout = setTimeout(function(event) {
+                    window.clearTimeout(abortTimeout);
+                    abortTimeout = window.setTimeout(function() {
                         recognizer.abort();
-                    }, 2000, event); // abort if the recognition fails to call onEnd (chrome bug hack)
+                    }, 2000); // abort if the recognition fails to call onEnd (chrome bug hack)
                 }
 
                 var recognizer = this._recognizer;
                 if (typeof recognizer === 'undefined') {
-                    recognizer = this._recognizer = new SpeechRecognition();
+                    recognizer = this._recognizer = new window.SpeechRecognition();
                     recognizer.onresult = function(event) {
                         var result = {
                             final: false,
@@ -4031,7 +4062,7 @@ var MM = ( function ($, Faye) {
                         MM.Util.testAndCallThis(listener._onStart, listener, event);
                     };
                     recognizer.onend = function(event) {
-                        clearTimeout(abortTimeout);
+                        window.clearTimeout(abortTimeout);
                         abortTimeout = 0;
                         listener._listening = false;
                         MM.Util.testAndCallThis(listener._onEnd, listener, event);
@@ -4039,11 +4070,11 @@ var MM = ( function ($, Faye) {
                     recognizer.onerror = function(event) {
                         MM.Util.testAndCallThis(listener._onError, listener, event);
                     };
-                    recognizer.onaudioend = function(event) {
+                    recognizer.onaudioend = function(/* event <-- ignored */) {
                         if (!recognizer.continuous) {
                             setAbortTimeout();
                         }
-                    }
+                    };
                 }
                 recognizer.continuous = this.continuous;
                 recognizer.interimResults = this.interimResults;
@@ -4051,9 +4082,9 @@ var MM = ( function ($, Faye) {
                     var language = '';
                     if (listener.lang !== '') {
                         language = listener.lang;
-                    } else if (typeof document !== 'undefined' && document.documentElement !== null && document.documentElement.lang !== '') {
+                    } else if (typeof window.document !== 'undefined' && window.document.documentElement !== null && window.document.documentElement.lang !== '') {
                         // attempt to retrieve from html element
-                        language = document.documentElement.lang;
+                        language = window.document.documentElement.lang;
                     }
                     return language;
                 })();
@@ -4104,6 +4135,30 @@ var MM = ( function ($, Faye) {
                 }
             }
         });
+
+        var languageTags6391To6392 = {"ab":"abk","aa":"aar","af":"afr","sq":"sqi","am":"amh","ar":"ara","an":"arg","hy":"hye","as":"asm","ae":"ave","ay":"aym","az":"aze","ba":"bak","eu":"eus","be":"bel","bn":"ben","bh":"bih","bi":"bis","bs":"bos","br":"bre","bg":"bul","my":"mya","ca":"cat","ch":"cha","ce":"che","zh":"zho","cu":"chu","cv":"chv","kw":"cor","co":"cos","hr":"hrv","cs":"ces","da":"dan","dv":"div","nl":"nld","dz":"dzo","en":"eng","eo":"epo","et":"est","fo":"fao","fj":"fij","fi":"fin","fr":"fra","gd":"gla","gl":"glg","ka":"kat","de":"deu","el":"ell","gn":"grn","gu":"guj","ht":"hat","ha":"hau","he":"heb","hz":"her","hi":"hin","ho":"hmo","hu":"hun","is":"isl","io":"ido","id":"ind","ia":"ina","ie":"ile","iu":"iku","ik":"ipk","ga":"gle","it":"ita","ja":"jpn","jv":"jav","kl":"kal","kn":"kan","ks":"kas","kk":"kaz","km":"khm","ki":"kik","rw":"kin","ky":"kir","kv":"kom","ko":"kor","kj":"kua","ku":"kur","lo":"lao","la":"lat","lv":"lav","li":"lim","ln":"lin","lt":"lit","lb":"ltz","mk":"mkd","mg":"mlg","ms":"msa","ml":"mal","mt":"mlt","gv":"glv","mi":"mri","mr":"mar","mh":"mah","mo":"mol","mn":"mon","na":"nau","nv":"nav","nd":"nde","nr":"nbl","ng":"ndo","ne":"nep","se":"sme","no":"nor","nb":"nob","nn":"nno","ny":"nya","oc":"oci","or":"ori","om":"orm","os":"oss","pi":"pli","pa":"pan","fa":"fas","pl":"pol","pt":"por","ps":"pus","qu":"que","rm":"roh","ro":"ron","rn":"run","ru":"rus","sm":"smo","sg":"sag","sa":"san","sc":"srd","sr":"srp","sn":"sna","ii":"iii","sd":"snd","si":"sin","sk":"slk","sl":"slv","so":"som","st":"sot","es":"spa","su":"sun","sw":"swa","ss":"ssw","sv":"swe","tl":"tgl","ty":"tah","tg":"tgk","ta":"tam","tt":"tat","te":"tel","th":"tha","bo":"bod","ti":"tir","to":"ton","ts":"tso","tn":"tsn","tr":"tur","tk":"tuk","tw":"twi","ug":"uig","uk":"ukr","ur":"urd","uz":"uzb","vi":"vie","vo":"vol","wa":"wln","cy":"cym","fy":"fry","wo":"wol","xh":"xho","yi":"yid","yo":"yor","za":"zha","zu":"zul"}
+
+        /**
+         * Converts language name or tag to the [ISO 639-2](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) language
+         * code. If the language is unknown, the first three characters of lang parameter are returned.
+         *
+         * @param {String} lang an [ISO 639-1](http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) language code, for example 'en-US'.
+         * @return {String} an [ISO 639-2](http://en.wikipedia.org/wiki/List_of_ISO_639-2_codes) language code, for example 'eng'
+         *
+         * @method
+         * @memberOf MM.Listener
+         * @name convertLanguageToISO6392
+         */
+        Listener.convertLanguageToISO6392 = function(lang) {
+            var key = lang.substring(0, 2);
+            var result = languageTags6391To6392[key]; // attempt to lookup the 639-2 tag
+            if (typeof result === 'undefined') {
+                result = lang.substring(0, 3); // use first 3 letters if language is unknown
+            }
+
+            return result;
+        };
+
         return Listener;
     })();
 
@@ -4146,7 +4201,7 @@ var MM = ( function ($, Faye) {
             // TODO: maybe add something here?
         }
         try {
-            var localStorage = (function(window) {
+            localStorage = (function(window) {
                 'use strict';
                 window = window || {};
                 return (typeof(window.Storage) !== 'undefined');
@@ -4163,4 +4218,4 @@ var MM = ( function ($, Faye) {
     MM.Internal.setup();
     return MM;
 
-}($, Faye));
+}(window, $, Faye));
