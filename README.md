@@ -68,7 +68,7 @@ loading the MindMeld library.
 ### With Bower
 ```html
 <script src="bower_components/jquery/jquery.min.js"></script>
-<script src="bower_components/mindmeld-js-sdk/mindmeld.js"></script>
+<script src="bower_components/mindmeld-js-sdk/dist/sdk/mindmeld.js"></script>
 ```
 
 ## Getting Started
