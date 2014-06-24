@@ -2583,6 +2583,8 @@ var MM = ( function (window, $, Faye) {
          *
          * @param {APISuccessCallback=} updateHandler callback for when the activeSession's document list updates.
          * @memberOf MM.activeSession.documents
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
          * @instance
          *
          * @example
@@ -2596,8 +2598,8 @@ var MM = ( function (window, $, Faye) {
             console.log(documents);
          }
          */
-        onUpdate: function (updateHandler) {
-            this._onUpdate(updateHandler, null, null);
+        onUpdate: function (updateHandler, onSuccess, onError) {
+            this._onUpdate(updateHandler,  onSuccess, onError);
         },
         /**
          * Get and search across all documents indexed for your application. In addition to providing
