@@ -2577,9 +2577,7 @@ var MM = ( function (window, $, Faye) {
         },
         /**
          * Sets the activeSession's documents' onUpdate handler. Pass null as the updateHandler parameter to
-         * deregister a previously set updateHandler. Note that there are no push events for the documents
-         * collection so it must be polled instead. The update handler will be called automatically when
-         * calling {@link MM.activeSession.documents#get}
+         * deregister a previously set updateHandler.
          *
          * @param {APISuccessCallback=} updateHandler callback for when the activeSession's document list updates.
          * @memberOf MM.activeSession.documents
@@ -2589,13 +2587,31 @@ var MM = ( function (window, $, Faye) {
          *
          * @example
          *
-         function getDocuments () {
-            MM.activeSession.documents.onUpdate(onGetDocuments);
-            MM.activeSession.documents.get();
+         function documentsOnUpdateExample () {
+            // set the onUpdate handler for the documents list
+            MM.activeSession.documents.onUpdate(onDocumentsUpdate,
+                                    onSubscribedToDocumentsUpdates);
          }
-         function onGetDocuments () {
+         function onSubscribedToDocumentsUpdates () {
+            // successfully subscribed to updates to the session's document list
+
+            // now, post a text entry
+            createTextEntry();
+         }
+
+         function onDocumentsUpdate () {
+            // there was an update to the documents list
             var documents = MM.activeSession.documents.json();
-            console.log(documents);
+            // documents contains the latest list of documents
+         }
+
+         function createTextEntry () {
+            var textEntryData = {
+                text: 'What was the episode where Elaine is banned from the soup shop?',
+                type: 'text',
+                weight: 1.0
+            };
+            MM.activeSession.textentries.post(textEntryData);
          }
          */
         onUpdate: function (updateHandler, onSuccess, onError) {
