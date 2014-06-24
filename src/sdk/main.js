@@ -16,7 +16,7 @@ var MM = ( function (window, $, Faye) {
      * @private
      */
     Object.defineProperty(MM, 'version', {
-        value: '2.4.0',
+        value: '2.4.1',
         writable: false
     });
 
@@ -2577,27 +2577,45 @@ var MM = ( function (window, $, Faye) {
         },
         /**
          * Sets the activeSession's documents' onUpdate handler. Pass null as the updateHandler parameter to
-         * deregister a previously set updateHandler. Note that there are no push events for the documents
-         * collection so it must be polled instead. The update handler will be called automatically when
-         * calling {@link MM.activeSession.documents#get}
+         * deregister a previously set updateHandler.
          *
          * @param {APISuccessCallback=} updateHandler callback for when the activeSession's document list updates.
          * @memberOf MM.activeSession.documents
+         * @param {function=} onSuccess callback for when subscription to onUpdate event succeeds
+         * @param {function=} onError callback for when subscription to onUpdate event fails
          * @instance
          *
          * @example
          *
-         function getDocuments () {
-            MM.activeSession.documents.onUpdate(onGetDocuments);
-            MM.activeSession.documents.get();
+         function documentsOnUpdateExample () {
+            // set the onUpdate handler for the documents list
+            MM.activeSession.documents.onUpdate(onDocumentsUpdate,
+                                    onSubscribedToDocumentsUpdates);
          }
-         function onGetDocuments () {
+         function onSubscribedToDocumentsUpdates () {
+            // successfully subscribed to updates to the session's document list
+
+            // now, post a text entry
+            createTextEntry();
+         }
+
+         function onDocumentsUpdate () {
+            // there was an update to the documents list
             var documents = MM.activeSession.documents.json();
-            console.log(documents);
+            // documents contains the latest list of documents
+         }
+
+         function createTextEntry () {
+            var textEntryData = {
+                text: 'What was the episode where Elaine is banned from the soup shop?',
+                type: 'text',
+                weight: 1.0
+            };
+            MM.activeSession.textentries.post(textEntryData);
          }
          */
-        onUpdate: function (updateHandler) {
-            this._onUpdate(updateHandler, null, null);
+        onUpdate: function (updateHandler, onSuccess, onError) {
+            this._onUpdate(updateHandler,  onSuccess, onError);
         },
         /**
          * Get and search across all documents indexed for your application. In addition to providing

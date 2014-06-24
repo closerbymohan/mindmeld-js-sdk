@@ -28,12 +28,12 @@ take a hit. However, if you must link directly, you should use the versioned URL
 to prevent compatibility issues in the future.
 
 ```html
-<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.js"></script>
+<script type="text/javascript" src="https://developer.expectlabs.com/public/sdks/mindmeld-2.4.1.js"></script>
 ```
 
-* Un-minified: [mindmeld-2.4.0.js][versionedSDKDownloadLink]
-* Minified: [mindmeld-2.4.0.min.js][versionedMinifiedSDKDownloadLink]
-* Both + Hello World + Documentation: [mindmeld-js-sdk-2.4.0.zip][versionedSDKZIPDownloadLink]
+* Un-minified: [mindmeld-2.4.1.js][versionedSDKDownloadLink]
+* Minified: [mindmeld-2.4.1.min.js][versionedMinifiedSDKDownloadLink]
+* Both + Hello World + Documentation: [mindmeld-js-sdk-2.4.1.zip][versionedSDKZIPDownloadLink]
 
 ### Clone git repository 
 Both files are also available directly from the mindmeld-js-sdk git repository. Simply clone the repo:
@@ -68,7 +68,7 @@ loading the MindMeld library.
 ### With Bower
 ```html
 <script src="bower_components/jquery/jquery.min.js"></script>
-<script src="bower_components/mindmeld-js-sdk/mindmeld.js"></script>
+<script src="bower_components/mindmeld-js-sdk/dist/sdk/mindmeld.js"></script>
 ```
 
 ## Getting Started
@@ -369,7 +369,7 @@ if (MM.support.speechRecognition) { // check for support in the current browser
 [latestSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.js
 [latestMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld.min.js
 [latestSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk.zip
-[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.js
-[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.4.0.min.js
-[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.4.0.zip
+[versionedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.4.1.js
+[versionedMinifiedSDKDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-2.4.1.min.js
+[versionedSDKZIPDownloadLink]:https://developer.expectlabs.com/public/sdks/mindmeld-js-sdk-2.4.1.zip
 
