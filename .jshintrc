@@ -1,22 +1,20 @@
 {
-    /* enforcers */
+    "devel": true,
+    "bitwise": true,
+    "camelcase": true,
     "curly": true,
     "eqeqeq": true,
+    "indent": 2,
     "immed": true,
-    "indent": 4,
+    "latedef": true,
     "newcap": true,
     "noarg": true,
-    "nonbsp": true,
-    "nonew": true,
-  /*  "quotmark": "double", */
+    "quotmark": "single",
     "undef": true,
     "unused": true,
+    "strict": true,
     "trailing": true,
-
-    /* relaxers */
-    "eqnull": true,
-    "expr": true,
-
-    /* environment */
-    "jquery": true
+    "freeze": true,
+    "nonew": true,
+    "smarttabs": false
 }
