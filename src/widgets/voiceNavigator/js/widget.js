@@ -528,6 +528,13 @@ MM.voiceNavigator.hideModal = function () {
     postMessage('close');
 };
 
+/**
+ * location: {latitude:Number, longitude:Number}
+ */
+MM.voiceNavigator.setUserLocation = function (loc) {
+    postMessage('set-location', loc);
+};
+
 // schedule initialization of voice navigator
 UTIL.contentLoaded(window, function() {
     init();

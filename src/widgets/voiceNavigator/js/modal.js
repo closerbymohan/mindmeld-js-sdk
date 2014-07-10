@@ -176,6 +176,27 @@ var MMVoice = {
                     });
                 }
             }
+            if (action === 'set-location') {
+              //Yes, the whole message is in event.data,
+              //and we have a data key in that
+              if ('data' in event.data
+                  && 'latitude' in event.data.data
+                  && 'longitude' in event.data.data) {
+                var newUserInfo = {
+                  location: {
+                    latitude: event.data.data.latitude,
+                    longitude: event.data.data.longitude
+                  }
+                };
+                MM.activeUser.post(newUserInfo, function(response) {
+                  //TODO: Update documents?
+                  console.log('Location set to', newUserInfo.location);
+                });
+              } else {
+                console.error('Unexpected data for set-location:', event.data.data);
+              }
+            }
+
         });
 
         // Close the modal
