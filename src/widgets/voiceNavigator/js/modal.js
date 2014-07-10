@@ -776,9 +776,9 @@ var MMVoice = {
             // Append to the history
             var $new_history = $('<li>', {
                 data: {
-                    'recording': recording,
+                    'recording': recording
                 },
-                html: this.$input.html(),
+                html: this.$input.html()
             });
 
             this.$input.before($new_history);
